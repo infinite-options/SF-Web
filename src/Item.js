@@ -11,17 +11,54 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Switch from '@material-ui/core/Switch';
 import { makeStyles } from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Axios from 'axios';
 
+const BASE_URL = "https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
+const ITEM_EDIT_URL = BASE_URL + "addItems/";
 
-export default function Item(itemData) {
-    const [fav, setFav] = useState(false);
+export default function Item({ data }) {
+    console.log(data);
+    const [fav, setFav] = useState(data.favorite && data.favorite.toLowerCase() === "true");
     const [open, setOpen] = useState(false);
     const [file, setFile] = useState("");
-    const {data} = itemData;
     const classes = useStyles();
 
+    /* 
+     * PROPOSED ALTERNATIVE FIX (FarmerHome.js: Line 24):
+     *
+     * useEffect(() => {
+     *     if (data.favorite) setFav(data.favorite && data.favorite.toLowerCase() === "true");
+     * }, [data.favorite])
+     */
+
     const handleHeartChange = () => {
-        setFav(!fav)
+        const postData = { ...data };
+        postData.favorite = fav ? "FALSE" : "TRUE";
+        delete postData.created_at;
+        // NOTE: Calling post request with null keyword values responds with error 400.
+        //       This changes the null keyword values to "", is this a problem? Probably not...
+        Object.entries(postData).forEach(item => {
+            if (typeof item[1] !== "string") {
+                postData[item[0]] = item[1] ? String(item[1]) : "";
+            }
+        });
+        // console.log(postData);
+
+        Axios.post(ITEM_EDIT_URL + "Update", postData)
+        .then(response => {
+            console.log(response);
+            // NOTE: Google search says a component updating its own props is a no-no, 
+            //       should update data from the parent component.
+            //       https://stackoverflow.com/questions/24939623/can-i-update-a-components-props-in-react-js#:~:text=A%20React%20component%20should%20use,changed%20by%20a%20different%20component.&text=A%20React%20component%20should%20use%20state%20to%20store,the%20component%20itself%20can%20change.
+            // data.favorite = postData.favorite; 
+            setFav(!fav);
+        })
+        .catch(err => {
+            console.log("Failed favorite toggle request:", err.response);
+        });
+    }
+    const handleRefresh = () => {
+        console.log("What does this do?");
     }
     const handleOpenEditModel = () => {
         setOpen(true);
@@ -126,7 +163,7 @@ export default function Item(itemData) {
                         <IconButton onClick={handleHeartChange}>
                             <FavoriteIcon style={{color: fav ? "red" : "grey"}} />
                         </IconButton>
-                        <IconButton>
+                        <IconButton onClick={handleRefresh}>
                             <RefreshIcon />
                         </IconButton>
                         <IconButton onClick={handleOpenEditModel}>
