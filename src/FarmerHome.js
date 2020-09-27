@@ -21,7 +21,12 @@ import { makeStyles } from '@material-ui/core/styles';
 
 export default function FarmerHome() {
     const {farmID, setFarmID} = useContext(AdminFarmContext);
-    const [farmData, setFarmData] = useState([{}]);
+    // NOTE: 
+    // Empty object inside array caused the first item component to render with no data. 
+    // This meant upon a page load/refresh, the heart icon would always be greyed out regardless of the data.favorite value.
+    // Why does the farmData array initialize with an empty object? Was this required for something? 
+    // If this empty object was required, an alternative fix would be to add a useEffect with data prop dependency to Item.js.
+    const [farmData, setFarmData] = useState([]); 
     const [open, setOpen] = useState(false);
     const [file, setFile] = useState("");
     const [mealName, setMealName] = useState('');
