@@ -77,6 +77,18 @@ export default function FarmerHome() {
             <div style={labelStyle}>
                 <Button onClick={handleOpenModel}>Add Product</Button>    
             </div>
+            { farmData ? (
+                <Grid container spacing={2}>
+                    {
+                        //map through each item and display it
+                        farmData.map((itemData, idx) => {
+                            if(itemData.item_status !== "Past") // need to verfiy item is a past item or current item
+                             return <Item data={itemData} index={idx} setData={setFarmData}/>
+                        })
+                    }
+                    
+                </Grid>
+            ) : (<CircularProgress/>)}
             <Modal open={open} onClose={handleCloseModel}>
                 {modelBody}
             </Modal>
@@ -94,9 +106,9 @@ export default function FarmerHome() {
                 <Grid container spacing={2}>
                     {
                         //map through each item and display it
-                        farmData.map((itemData) => {
-                            if(true) // need to verfiy item is a past item or current item
-                             return <Item data={itemData}/>
+                        farmData.map((itemData, idx) => {
+                            if(itemData.item_status === "Past") // need to verfiy item is a past item or current item
+                             return <Item data={itemData} index={idx} setData={setFarmData}/>
                         })
                     }
                     

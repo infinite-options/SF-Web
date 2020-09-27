@@ -33,7 +33,7 @@ export default function Item(props) {
         updateData(updatedData);
     }
     const handleRefresh = () => {
-        console.log("What does this do?");
+        updateStatus("");
     }
     const handleOpenEditModel = () => {
         setOpen(true);
@@ -54,7 +54,7 @@ export default function Item(props) {
         setOpen(false);
     }
     const handleDelete = () => {
-        
+        updateStatus("Past");
     }
 
     // helper function
@@ -73,10 +73,32 @@ export default function Item(props) {
         .then(response => {
             console.log(response);
             postData.created_at = created_at;
-            setEditData(postData);
+            props.setData(prevData => {
+                const updatedData = [...prevData];
+                updatedData[props.index] = postData;
+                return updatedData;
+            });
         })
         .catch(err => {
             console.error(err);
+        });
+    }
+    const updateStatus = (status) => {
+        const postData = {
+            item_uid: props.data.item_uid,
+            item_status: status,
+        }
+        Axios.post(ITEM_EDIT_URL + "Status", postData)
+        .then(response => {
+            console.log(response);
+            props.setData(prevData => {
+                const updatedData = [...prevData];
+                updatedData[props.index].item_status = status;
+                return updatedData;
+            })
+        })
+        .catch(err => {
+            console.log(err);
         });
     }
 
@@ -174,13 +196,13 @@ export default function Item(props) {
                         <IconButton onClick={handleHeartChange}>
                             <FavoriteIcon style={{color: props.data.favorite === "TRUE" ? "red" : "grey"}} />
                         </IconButton>
-                        <IconButton onClick={handleRefresh}>
+                        <IconButton disabled={props.data.item_status !== "Past"} onClick={handleRefresh}>
                             <RefreshIcon />
                         </IconButton>
                         <IconButton onClick={handleOpenEditModel}>
                             <EditIcon/>
                         </IconButton>
-                        <IconButton>
+                        <IconButton disabled={props.data.item_status === "Past"} onClick={handleDelete}>
                             <DeleteIcon/>
                         </IconButton>
                     </CardActions>
