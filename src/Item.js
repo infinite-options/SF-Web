@@ -29,11 +29,14 @@ export default function Item(props) {
 
     const handleHeartChange = () => {
         const updatedData = { ...props.data };
-        updatedData.favorite = props.data.favorite === "TRUE" ? "FALSE" : "TRUE";
+        updatedData.favorite = props.data.favorite.toLowerCase() === "true" ? "FALSE" : "TRUE";
         updateData(updatedData);
     }
     const handleRefresh = () => {
-        updateStatus("");
+        if (props.data.item_status.toLowerCase() !== "hidden") { // Should always be true, but just in case!
+            const newStatus = props.data.item_status.toLowerCase() !== "past" ? "Past" : ""; // any status !== "Past" || "Hidden" is assumed "Current"
+            updateStatus(newStatus);
+        }
     }
     const handleOpenEditModel = () => {
         setOpen(true);
@@ -54,7 +57,7 @@ export default function Item(props) {
         setOpen(false);
     }
     const handleDelete = () => {
-        updateStatus("Past");
+        updateStatus("Hidden");
     }
 
     // helper function
@@ -194,15 +197,15 @@ export default function Item(props) {
                 <Grid item xs={12}>
                     <CardActions disableSpacing style={{overflowX: 'scroll',}}>
                         <IconButton onClick={handleHeartChange}>
-                            <FavoriteIcon style={{color: props.data.favorite === "TRUE" ? "red" : "grey"}} />
+                            <FavoriteIcon style={{color: props.data.favorite.toLowerCase() === "true" ? "red" : "grey"}} />
                         </IconButton>
-                        <IconButton disabled={props.data.item_status !== "Past"} onClick={handleRefresh}>
+                        <IconButton onClick={handleRefresh}>
                             <RefreshIcon />
                         </IconButton>
                         <IconButton onClick={handleOpenEditModel}>
                             <EditIcon/>
                         </IconButton>
-                        <IconButton disabled={props.data.item_status === "Past"} onClick={handleDelete}>
+                        <IconButton onClick={handleDelete}>
                             <DeleteIcon/>
                         </IconButton>
                     </CardActions>

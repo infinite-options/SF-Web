@@ -82,7 +82,9 @@ export default function FarmerHome() {
                     {
                         //map through each item and display it
                         farmData.map((itemData, idx) => {
-                            if(itemData.item_status !== "Past") // need to verfiy item is a past item or current item
+                            if(!itemData.item_status || 
+                                itemData.item_status.toLowerCase() !== "hidden" && 
+                                itemData.item_status.toLowerCase() !== "past")
                              return <Item data={itemData} index={idx} setData={setFarmData}/>
                         })
                     }
@@ -107,7 +109,8 @@ export default function FarmerHome() {
                     {
                         //map through each item and display it
                         farmData.map((itemData, idx) => {
-                            if(itemData.item_status === "Past") // need to verfiy item is a past item or current item
+                            if(itemData.item_status && 
+                               itemData.item_status.toLowerCase() === "past")
                              return <Item data={itemData} index={idx} setData={setFarmData}/>
                         })
                     }
