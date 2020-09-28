@@ -21,7 +21,12 @@ import { makeStyles } from '@material-ui/core/styles';
 
 export default function FarmerHome() {
     const {farmID, setFarmID} = useContext(AdminFarmContext);
-    const [farmData, setFarmData] = useState([{}]);
+    // NOTE: 
+    // Empty object inside array caused the first item component to render with no data. 
+    // This meant upon a page load/refresh, the heart icon would always be greyed out regardless of the data.favorite value.
+    // Why does the farmData array initialize with an empty object? Was this required for something? 
+    // If this empty object was required, an alternative fix would be to add a useEffect with data prop dependency to Item.js.
+    const [farmData, setFarmData] = useState([]); 
     const [open, setOpen] = useState(false);
     const [file, setFile] = useState("");
     const [mealName, setMealName] = useState('');
@@ -72,6 +77,18 @@ export default function FarmerHome() {
             <div style={labelStyle}>
                 <Button onClick={handleOpenModel}>Add Product</Button>    
             </div>
+            { farmData ? (
+                <Grid container spacing={2}>
+                    {
+                        //map through each item and display it
+                        farmData.map((itemData, idx) => {
+                            if(itemData.item_status !== "Past") // need to verfiy item is a past item or current item
+                             return <Item data={itemData} index={idx} setData={setFarmData}/>
+                        })
+                    }
+                    
+                </Grid>
+            ) : (<CircularProgress/>)}
             <Modal open={open} onClose={handleCloseModel}>
                 {modelBody}
             </Modal>
@@ -89,9 +106,9 @@ export default function FarmerHome() {
                 <Grid container spacing={2}>
                     {
                         //map through each item and display it
-                        farmData.map((itemData) => {
-                            if(true) // need to verfiy item is a past item or current item
-                             return <Item data={itemData}/>
+                        farmData.map((itemData, idx) => {
+                            if(itemData.item_status === "Past") // need to verfiy item is a past item or current item
+                             return <Item data={itemData} index={idx} setData={setFarmData}/>
                         })
                     }
                     
