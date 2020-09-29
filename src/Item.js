@@ -19,7 +19,7 @@ const ITEM_EDIT_URL = BASE_URL + "addItems/";
 export default function Item(props) {
     const [editData, setEditData] = useState(props.data);
     const [open, setOpen] = useState(false);
-    const [file, setFile] = useState("");
+    const [file, setFile] = useState({ obj: undefined, url: props.data.item_photo || "" });
     const classes = useStyles();
 
     // Fix for FarmerHome.js: Line 24
@@ -49,10 +49,14 @@ export default function Item(props) {
         setEditData({...editData, [event.target.name]: event.target.value});
     }
     const onFileChange = (event) => {
-        setFile(event.target.files[0]);
+        setFile({
+            obj: event.target.files[0],
+            url: URL.createObjectURL(event.target.files[0]),
+        });
         console.log(event.target.files[0].name)
     }
     const handleSaveButton = () => {
+        // NOTE: call turn-file-to-s3-url API Endpoint
         updateData(editData);
         setOpen(false);
     }
@@ -110,7 +114,7 @@ export default function Item(props) {
         <div className={classes.paper} >
             <Grid container style={{backgroundColor: 'white', height: '350px', textAlign: 'center', margin: 'none',}} spacing={0}>
                 <Grid item xs={12} style={{textAlign: 'center', height: '45px', backgroundColor: 'white'}}>
-                    <p3>Edit Item</p3>
+                    <h3>Edit Item</h3>
                 </Grid>
                 <Grid item xs={6}>
                     <TextField
@@ -121,10 +125,7 @@ export default function Item(props) {
                             />
                 </Grid>
                 <Grid item xs={6}>
-                    {/* NOTE: How to get value of below component? */}
-                    <Select
-                            defaultValue={"vegetable"} 
-                            >
+                    <Select name="item_type" onChange={handleEditChange} value={editData.item_type}>
                                 <MenuItem value={"vegetable"}>Vegetable</MenuItem>
                                 <MenuItem value={"fruit"}>Fruit</MenuItem>
                                 <MenuItem value={"dessert"}>Dessert</MenuItem>
@@ -143,7 +144,13 @@ export default function Item(props) {
                     />
                 </Grid>
                 <Grid item xs={6}>
-                    <FormControlLabel control={<Switch />} label="Favorite" />
+                    {file.url ? (
+                        <img src={file.url} alt="Produce Image" width="140px" height="100px" style={{ border: "3px solid grey", objectFit: "cover" }}/>
+                    ) : (
+                        <div style={{ border: "3px solid grey", width: "140px", height: "100px", margin: "auto", textAlign: "center", lineHeight: "100px", color: "grey" }}>
+                            Upload an Image
+                        </div>
+                    )}    
                 </Grid>
                 <Grid item xs={6}>
                         <Button size="small" variant="contained" onClick={handleSaveButton}>Save</Button>
@@ -172,8 +179,8 @@ export default function Item(props) {
                 style={{height: '375px',}}
             >
             <CardMedia
-                    image={props.data.item_photo}
-                    style={{width: '100%', height: '200px', margin: 'auto'}}
+                image={props.data.item_photo || "https://via.placeholder.com/400?text=No+Image+Available"}
+                style={{width: '100%', height: '200px', margin: 'auto'}}
             />
             <Grid container  style={{backgroundColor: 'white',}}>
                 <Grid item xs={12}>

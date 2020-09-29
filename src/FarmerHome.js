@@ -85,7 +85,7 @@ export default function FarmerHome() {
                             if(!itemData.item_status || 
                                 itemData.item_status.toLowerCase() !== "hidden" && 
                                 itemData.item_status.toLowerCase() !== "past")
-                             return <Item data={itemData} index={idx} setData={setFarmData}/>
+                             return <Item data={itemData} key={idx} index={idx} setData={setFarmData}/>
                         })
                     }
                     
@@ -111,7 +111,7 @@ export default function FarmerHome() {
                         farmData.map((itemData, idx) => {
                             if(itemData.item_status && 
                                itemData.item_status.toLowerCase() === "past")
-                             return <Item data={itemData} index={idx} setData={setFarmData}/>
+                             return <Item data={itemData} key={idx} index={idx} setData={setFarmData}/>
                         })
                     }
                     

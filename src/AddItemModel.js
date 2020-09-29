@@ -13,7 +13,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 
 export default function AddItemModel(farmID) {
-    const [file, setFile] = useState("");
+    const [file, setFile] = useState({ obj: undefined, url: "" });
     const [favorite, setFavorite] = useState(false);
     const classes = useStyles();
     const [value, setValue] = useState({
@@ -38,7 +38,10 @@ export default function AddItemModel(farmID) {
     }
     
     const onFileChange = (event) => {
-        setFile(event.target.files[0]);
+        setFile({
+            obj: event.target.files[0],
+            url: URL.createObjectURL(event.target.files[0]),
+        });
         console.log(event.target.files[0])
         console.log(event.target.files[0].name)
     }
@@ -53,13 +56,15 @@ export default function AddItemModel(farmID) {
         item_unit : value.item_unit,
         item_price : value.item_price,
         item_sizes : value.item_sizes,
-        favorite : favorite.toString(),
-        item_photo : "",
+        favorite : favorite.toString().toUpperCase(),
+        item_photo : "", 
         exp_date : ""
     }
 
     //post new item to endpoint
     const addItem = () => {
+        // NOTE: call turn-file-to-s3-url API Endpoint
+        // THEN -> itemInfo.item_photo = URL response
         console.log(itemInfo)
         axios.post(insertAPI,
             itemInfo
@@ -72,19 +77,19 @@ export default function AddItemModel(farmID) {
     
     return (
         <div className={classes.paper} >
-            <Grid container>
-                <Grid item xs={12} style={{textAlign: 'center'}}>
-                    Add Item
+            <Grid container style={{textAlign: 'center'}}>
+                <Grid item xs={12}>
+                    <h3>Add Item</h3>
                 </Grid>
-                <Grid container item xs={6} spacing={5}>
+                <Grid container item xs={6} spacing={2}>
                     <Grid item xs={12}>
-                        <TextField  name="item_name" style={{width: '150px', midWidth: '50px'}}label="Name of Meal" onChange={handleChange} value={value.item_name} />
+                        <TextField  name="item_name" /*style={{width: '150px', midWidth: '50px'}}*/ label="Name of Meal" onChange={handleChange} value={value.item_name} />
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
                         name="item_price"
                         label="Price"
-                        style={{width: '150px', midWidth: '50px', width: 'auto',}}
+                        // style={{width: '150px', midWidth: '50px', width: 'auto',}}
                         InputProps={{
                             inputComponent: NumberFormatCustomPrice,
                         }}
@@ -92,14 +97,23 @@ export default function AddItemModel(farmID) {
                         value={value.item_price}
                         />
                     </Grid>
-                    <Grid item xs={12} style={{height: '100px'}}>
-                        <FormControlLabel  control={<Switch name="favorite" checked={favorite} onChange={handleFavChange} />} label="Favorite" />
+                    <Grid item xs={12} style={{/*height: '100px', */textAlign: "left", marginLeft: "25px"}}>
+                        <FormControlLabel control={<Switch name="favorite" checked={favorite} onChange={handleFavChange} />} label="Favorite" />
                     </Grid>
                     <Grid item xs={12}>
-                        <Button variant="contained" component="label" onClick={addItem}>Save</Button>
+                        {file.url ? (
+                            <img src={file.url} alt="Produce Image" width="140px" height="100px" style={{ border: "3px solid grey", objectFit: "cover" }}/>
+                        ) : (
+                            <div style={{ border: "3px solid grey", width: "140px", height: "100px", margin: "auto", textAlign: "center", lineHeight: "100px", color: "grey" }}>
+                                Upload an Image
+                            </div>
+                        )}                    
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button size="small" variant="contained" /*component="label"*/ onClick={addItem}>Save</Button>
                     </Grid>
                 </Grid>
-                <Grid container item xs={6} spacing={2} style={{textAlign:'right',}}>
+                <Grid container item xs={6} spacing={2} style={{textAlign:'right'}}>
                     <Grid item xs={12} >
                         <div style={{height: '100px', backgroundColor: 'white'}}>
                             <FormControl className={classes.formControl}>
@@ -148,7 +162,7 @@ export default function AddItemModel(farmID) {
                             </FormControl>
                         </div>
                     </Grid>
-                    <Grid item xs={12} style={{height: '100px'}}>
+                    <Grid item xs={12} style={{height: '100px', marginRight: "32.5px"}}>
                         <Button size="small" variant="contained" component="label" style={{marginTop: '20px'}}>
                             Add Picture
                                 <input onChange={onFileChange} type="file" id="uploadedPhoto" accept="image/gif, image/jpeg, image/png" style={{ display: "none" }}/>
