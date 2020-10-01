@@ -13,6 +13,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Axios from 'axios';
 
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+
 const BASE_URL = "https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
 const ITEM_EDIT_URL = BASE_URL + "addItems/";
 
@@ -111,59 +114,155 @@ export default function Item(props) {
 
     //modal that pops up when farmer edits an item
     const modelBody = (
+        // <div className={classes.paper} >
+        //     <Grid container style={{backgroundColor: 'white', height: '350px', textAlign: 'center', margin: 'none',}} spacing={0}>
+        //         <Grid item xs={12} style={{textAlign: 'center', height: '45px', backgroundColor: 'white'}}>
+        //             <h3>Edit Item</h3>
+        //         </Grid>
+        //         <Grid item xs={6}>
+        //             <TextField
+        //                     label="Name of Meal"
+        //                     name="item_name"
+        //                     value={editData.item_name}
+        //                     onChange={handleEditChange}
+        //                     />
+        //         </Grid>
+        //         <Grid item xs={6}>
+        //             <Select name="item_type" onChange={handleEditChange} value={editData.item_type}>
+        //                         <MenuItem value={"vegetable"}>Vegetable</MenuItem>
+        //                         <MenuItem value={"fruit"}>Fruit</MenuItem>
+        //                         <MenuItem value={"dessert"}>Dessert</MenuItem>
+        //                         <MenuItem value={"other"}>Other</MenuItem>
+        //             </Select>
+        //         </Grid>
+        //         <Grid item xs={6}>
+        //             <TextField
+        //             label="Price"
+        //             name="item_price"
+        //             value={editData.item_price}
+        //             onChange={handleEditChange}
+        //             InputProps={{
+        //                 inputComponent: NumberFormatCustomPrice,
+        //             }}
+        //             />
+        //         </Grid>
+        //         <Grid item xs={6}>
+        //             {file.url ? (
+        //                 <img src={file.url} alt="Produce Image" width="140px" height="100px" style={{ border: "3px solid grey", objectFit: "cover" }}/>
+        //             ) : (
+        //                 <div style={{ border: "3px solid grey", width: "140px", height: "100px", margin: "auto", textAlign: "center", lineHeight: "100px", color: "grey" }}>
+        //                     Upload an Image
+        //                 </div>
+        //             )}    
+        //         </Grid>
+        //         <Grid item xs={6}>
+        //                 <Button size="small" variant="contained" onClick={handleSaveButton}>Save</Button>
+        //         </Grid>
+        //         <Grid container item xs={6}>
+        //             <Grid item xs={12}>
+        //                 <Button size="small" variant="contained" component="label">
+        //                     Edit Picture
+        //                     <input onChange={onFileChange} type="file" id="uploadedPhoto" accept="image/gif, image/jpeg, image/png" style={{ display: "none" }}/>
+        //                  </Button>
+        //             </Grid>
+        //             <Grid item xs={12}>
+        //                 <Typography style={{fontSize:'10px'}} varient="h6">{file.name}</Typography>
+        //             </Grid>
+        //         </Grid>
+        //     </Grid>
+        // </div>
+
         <div className={classes.paper} >
-            <Grid container style={{backgroundColor: 'white', height: '350px', textAlign: 'center', margin: 'none',}} spacing={0}>
-                <Grid item xs={12} style={{textAlign: 'center', height: '45px', backgroundColor: 'white'}}>
-                    <h3>Edit Item</h3>
+            <Grid container style={{textAlign: 'center'}}>
+                <Grid item xs={12}>
+                    <h3>Add Item</h3>
                 </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                            label="Name of Meal"
-                            name="item_name"
-                            value={editData.item_name}
-                            onChange={handleEditChange}
-                            />
-                </Grid>
-                <Grid item xs={6}>
-                    <Select name="item_type" onChange={handleEditChange} value={editData.item_type}>
-                                <MenuItem value={"vegetable"}>Vegetable</MenuItem>
-                                <MenuItem value={"fruit"}>Fruit</MenuItem>
-                                <MenuItem value={"dessert"}>Dessert</MenuItem>
-                                <MenuItem value={"other"}>Other</MenuItem>
-                    </Select>
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                    label="Price"
-                    name="item_price"
-                    value={editData.item_price}
-                    onChange={handleEditChange}
-                    InputProps={{
-                        inputComponent: NumberFormatCustomPrice,
-                    }}
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    {file.url ? (
-                        <img src={file.url} alt="Produce Image" width="140px" height="100px" style={{ border: "3px solid grey", objectFit: "cover" }}/>
-                    ) : (
-                        <div style={{ border: "3px solid grey", width: "140px", height: "100px", margin: "auto", textAlign: "center", lineHeight: "100px", color: "grey" }}>
-                            Upload an Image
-                        </div>
-                    )}    
-                </Grid>
-                <Grid item xs={6}>
-                        <Button size="small" variant="contained" onClick={handleSaveButton}>Save</Button>
-                </Grid>
-                <Grid container item xs={6}>
+                <Grid container item xs={6} spacing={2}>
                     <Grid item xs={12}>
-                        <Button size="small" variant="contained" component="label">
-                            Edit Picture
-                            <input onChange={onFileChange} type="file" id="uploadedPhoto" accept="image/gif, image/jpeg, image/png" style={{ display: "none" }}/>
-                         </Button>
+                        <TextField  name="item_name" /*style={{width: '150px', midWidth: '50px'}}*/ label="Name of Meal" onChange={handleEditChange} value={editData.item_name} />
                     </Grid>
                     <Grid item xs={12}>
-                        <Typography style={{fontSize:'10px'}} varient="h6">{file.name}</Typography>
+                        <TextField
+                        name="item_price"
+                        label="Price"
+                        // style={{width: '150px', midWidth: '50px', width: 'auto',}}
+                        InputProps={{
+                            inputComponent: NumberFormatCustomPrice,
+                        }}
+                        onChange={handleEditChange}
+                        value={editData.item_price}
+                        />
+                    </Grid>
+                    <Grid item xs={12} style={{/*height: '100px', */textAlign: "left", marginLeft: "25px"}}>
+                        {/* <FormControlLabel control={<Switch name="favorite" checked={editData.favorite.toLowerCase() === "true"} onChange={handleEditChange} />} label="Favorite" /> */}
+                    </Grid>
+                    <Grid item xs={12}>
+                        {file.url ? (
+                            <img src={file.url} alt="Produce Image" width="140px" height="100px" style={{ border: "3px solid grey", objectFit: "cover" }}/>
+                        ) : (
+                            <div style={{ border: "3px solid grey", width: "140px", height: "100px", margin: "auto", textAlign: "center", lineHeight: "100px", color: "grey" }}>
+                                Upload an Image
+                            </div>
+                        )}                    
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button size="small" variant="contained" component="label"/* style={{marginTop: '20px'}}*/>
+                            Add Picture
+                                <input onChange={onFileChange} type="file" id="uploadedPhoto" accept="image/gif, image/jpeg, image/png" style={{ display: "none" }}/>
+                         </Button>
+                    </Grid>
+                </Grid>
+                <Grid container item xs={6} spacing={2} style={{textAlign:'right'}}>
+                    <Grid item xs={12} >
+                        <div style={{height: '100px', backgroundColor: 'white'}}>
+                            <FormControl className={classes.formControl}>
+                                <InputLabel id="demo-simple-select-label">Type of Food</InputLabel>
+                                <Select name="item_type" onChange={handleEditChange} autoWidth  value={editData.item_type}>
+                                    <MenuItem value={"vegetable"}>Vegetable</MenuItem>
+                                    <MenuItem value={"fruit"}>Fruit</MenuItem>
+                                    <MenuItem value={"dessert"}>Dessert</MenuItem>
+                                    <MenuItem value={"other"}>Other</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </div>
+                    </Grid>
+                    <Grid item xs={12} style={{height: '100px'}}>
+                        <FormControl className={classes.formControl}>
+                            <InputLabel id="demo-simple-select-label">Farming Method</InputLabel>
+                            <Select name="item_desc" onChange={handleEditChange} autoWidth value={editData.item_desc}>
+                                <MenuItem value={"Organic"}>Organic</MenuItem>
+                                <MenuItem value={"cOrganic"}>Certified Organic</MenuItem>
+                                <MenuItem value={"notOrganic"}>Not Organic</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12} style={{height: '100px'}}>
+                        <FormControl className={classes.formControl}>
+                            <InputLabel id="demo-simple-select-label">Unit</InputLabel>
+                            <Select name="item_unit" onChange={handleEditChange} autoWidth  value={editData.item_unit}>
+                                <MenuItem value={"lbs"}>lbs</MenuItem>
+                                <MenuItem value={"bunch"}>Bunch</MenuItem>
+                                <MenuItem value={"basket"}>Basket</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    
+                    <Grid item xs={12} >
+                        <div style={{height: '100px', backgroundColor: 'white'}}>
+                            <FormControl className={classes.formControl}>
+                                <InputLabel id="demo-simple-select-label">Size</InputLabel>
+                                <Select name="item_sizes" onChange={handleEditChange} autoWidth value={editData.item_sizes}>
+                                    <MenuItem value={"XS"}>X-Small</MenuItem>
+                                    <MenuItem value={"S"}>Small</MenuItem>
+                                    <MenuItem value={"M"}>Medium</MenuItem>
+                                    <MenuItem value={"L"}>Large</MenuItem>
+                                    <MenuItem value={"XL"}>X-Large</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </div>
+                    </Grid>
+                    <Grid item xs={12} style={{height: '100px', marginRight: "55px"}}>
+                        <Button size="small" variant="contained"/* component="label"*/ style={{marginTop: '20px'}} onClick={handleSaveButton}>Save</Button>
                     </Grid>
                 </Grid>
             </Grid>
@@ -267,7 +366,7 @@ function NumberFormatCustomPrice(props) {
       position: 'absolute',
       width: '75%',
       maxWidth: '500px',
-      height: '350px',
+    //   height: '350px',
       backgroundColor: theme.palette.background.paper,
       border: '2px solid #000',
       borderRadius: '20px',
@@ -280,6 +379,11 @@ function NumberFormatCustomPrice(props) {
     },
     card: {
         maxHeight: '600px',
+    },
+    formControl: {
+        margin: theme.spacing(1),
+        width: 150,
+        minWidth: 75,
     },
 }));
 
