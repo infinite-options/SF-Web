@@ -12,7 +12,7 @@ import {Grid, Paper, Button, Typography, Card, CardActions, CardMedia, CardConte
 import { makeStyles } from '@material-ui/core/styles';
 
 
-export default function AddItemModel(farmID) {
+export default function AddItemModel({ farmID, ...props }) {
     const [file, setFile] = useState({ obj: undefined, url: "" });
     const [favorite, setFavorite] = useState(false);
     const classes = useStyles();
@@ -48,7 +48,7 @@ export default function AddItemModel(farmID) {
     const insertAPI = 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/addItems/Insert'
 
     const itemInfo = {
-        itm_business_uid : farmID.farmID,
+        itm_business_uid : farmID,
         item_name : value.item_name,
         item_status : "active",
         item_type : value.item_type,
@@ -70,6 +70,15 @@ export default function AddItemModel(farmID) {
             itemInfo
         ).then(response => {
             console.log(response);
+            
+            // appending new item to the business's items list
+            // NOTE: currently getting info by searching through sql string response
+            const sqlString = response.data.sql;
+            itemInfo.item_uid = sqlString.substring(sqlString.indexOf("item_uid = '") + 12, sqlString.indexOf("item_uid = '") + 22);
+            itemInfo.created_at = sqlString.substring(sqlString.indexOf("created_at = '") + 14, sqlString.indexOf("created_at = '") + 24);
+            props.setData(prevData => ([...prevData, itemInfo]));
+            
+            props.handleClose();
         }).catch(er => {
             console.log(er);
         });
@@ -110,7 +119,10 @@ export default function AddItemModel(farmID) {
                         )}                    
                     </Grid>
                     <Grid item xs={12}>
-                        <Button size="small" variant="contained" /*component="label"*/ onClick={addItem}>Save</Button>
+                        <Button size="small" variant="contained" component="label"/* style={{marginTop: '20px'}}*/>
+                            Add Picture
+                                <input onChange={onFileChange} type="file" id="uploadedPhoto" accept="image/gif, image/jpeg, image/png" style={{ display: "none" }}/>
+                         </Button>
                     </Grid>
                 </Grid>
                 <Grid container item xs={6} spacing={2} style={{textAlign:'right'}}>
@@ -162,11 +174,8 @@ export default function AddItemModel(farmID) {
                             </FormControl>
                         </div>
                     </Grid>
-                    <Grid item xs={12} style={{height: '100px', marginRight: "32.5px"}}>
-                        <Button size="small" variant="contained" component="label" style={{marginTop: '20px'}}>
-                            Add Picture
-                                <input onChange={onFileChange} type="file" id="uploadedPhoto" accept="image/gif, image/jpeg, image/png" style={{ display: "none" }}/>
-                         </Button>
+                    <Grid item xs={12} style={{height: '100px', marginRight: "55px"}}>
+                        <Button size="small" variant="contained"/* component="label"*/ style={{marginTop: '20px'}} onClick={addItem}>Save</Button>
                     </Grid>
                 </Grid>
             </Grid>

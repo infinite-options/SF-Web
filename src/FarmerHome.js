@@ -34,7 +34,6 @@ export default function FarmerHome() {
     const classes = useStyles();
 
     const API_BASE_URL = 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/itemsByBusiness/'
-    let API_URL = API_BASE_URL + farmID;
 
     let farmName;
     if(farmID === '200-000003') {farmName = 'Esquivel Farm'}
@@ -42,15 +41,21 @@ export default function FarmerHome() {
     
     useEffect(() => {
         //get data from farm
-        axios.get(
-            API_URL
-        ).then(response => {
+        getBusinessItems(API_BASE_URL + farmID, setFarmData);
+    }, [farmID]);
+
+    const getBusinessItems = (urlAPI, setData) => {
+        axios.get(urlAPI)
+        .then(response => {
             console.log('reload')
             
             console.log(response.data.result.result)
-            setFarmData(response.data.result.result)
+            setData(response.data.result.result)
         })
-    }, [farmID]);
+        .catch(err => {
+            console.log(err);
+        });
+    };
 
     const handleOpenModel = () => {
         console.log(farmData)
@@ -63,7 +68,7 @@ export default function FarmerHome() {
     
     //model for when farmer adds new item
     const modelBody = (
-        <AddItemModel farmID={farmID}/>
+        <AddItemModel farmID={farmID} handleClose={handleCloseModel} setData={setFarmData}/>
     );
 
     return (
