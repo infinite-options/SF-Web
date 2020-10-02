@@ -13,7 +13,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 
 export default function AddItemModel({ farmID, ...props }) {
-    const [file, setFile] = useState({ obj: undefined, url: "" });
+    const [file, setFile] = useState({ obj: undefined, url: "" }); // NOTE: url key is probably useless
     const [favorite, setFavorite] = useState(false);
     const classes = useStyles();
     const [value, setValue] = useState({
@@ -57,17 +57,24 @@ export default function AddItemModel({ farmID, ...props }) {
         item_price : value.item_price,
         item_sizes : value.item_sizes,
         favorite : favorite.toString().toUpperCase(),
-        item_photo : "", 
-        exp_date : ""
+        item_photo : file.obj, 
+        exp_date : "",
+        image_category: "item_images", // NOTE: temporary
     }
 
     //post new item to endpoint
     const addItem = () => {
         // NOTE: call turn-file-to-s3-url API Endpoint
         // THEN -> itemInfo.item_photo = URL response
+        
+        let formData = new FormData();
+        Object.entries(itemInfo).forEach(entry => {
+            formData.append(entry[0], entry[1]);
+        });
+
         console.log(itemInfo)
         axios.post(insertAPI,
-            itemInfo
+            formData // itemInfo
         ).then(response => {
             console.log(response);
             
@@ -76,6 +83,7 @@ export default function AddItemModel({ farmID, ...props }) {
             const sqlString = response.data.sql;
             itemInfo.item_uid = sqlString.substring(sqlString.indexOf("item_uid = '") + 12, sqlString.indexOf("item_uid = '") + 22);
             itemInfo.created_at = sqlString.substring(sqlString.indexOf("created_at = '") + 14, sqlString.indexOf("created_at = '") + 24);
+            itemInfo.item_photo = sqlString.substring(sqlString.indexOf("item_photo = '") + 14, sqlString.indexOf("item_photo = '") + 84);
             props.setData(prevData => ([...prevData, itemInfo]));
             
             props.handleClose();

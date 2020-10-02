@@ -37,7 +37,7 @@ export default function Item(props) {
     }
     const handleRefresh = () => {
         if (props.data.item_status.toLowerCase() !== "hidden") { // Should always be true, but just in case!
-            const newStatus = props.data.item_status.toLowerCase() !== "past" ? "Past" : ""; // any status !== "Past" || "Hidden" is assumed "Current"
+            const newStatus = props.data.item_status.toLowerCase() !== "past" ? "Past" : "active"; // any status !== "Past" || "Hidden" is assumed "Current"
             updateStatus(newStatus);
         }
     }
@@ -68,23 +68,29 @@ export default function Item(props) {
     }
 
     // helper function
-    const updateData = (data) => { // FIXME: update item from parent component
+    // NOTE: Parva currently working on update endpoint so I don't need to upload image for every item update
+    const updateData = (data) => { 
         const postData = { ...data };
         const created_at = postData.created_at;
         delete postData.created_at;
+
+        let formData = new FormData();
 
         Object.entries(postData).forEach(item => {
             if (typeof item[1] !== "string") {
                 postData[item[0]] = item[1] ? String(item[1]) : "";
             }
+            formData.append(item[0], item[1]);
+            formData.append("image_category", "item_images"); // NOTE: temporary
         });
 
-        Axios.post(ITEM_EDIT_URL + "Update", postData)
+        Axios.post(ITEM_EDIT_URL + "Update", formData/*postData*/)
         .then(response => {
             console.log(response);
             postData.created_at = created_at;
             props.setData(prevData => {
                 const updatedData = [...prevData];
+                // if (imageUpdated) postData.item_photo = NEW_IMAGE_URL;
                 updatedData[props.index] = postData;
                 return updatedData;
             });
@@ -94,11 +100,15 @@ export default function Item(props) {
         });
     }
     const updateStatus = (status) => {
-        const postData = {
-            item_uid: props.data.item_uid,
-            item_status: status,
-        }
-        Axios.post(ITEM_EDIT_URL + "Status", postData)
+        // const postData = {
+        //     item_uid: props.data.item_uid,
+        //     item_status: status,
+        // }
+        let formData = new FormData();
+        formData.append("item_uid", props.data.item_uid);
+        formData.append("item_status", status);
+
+        Axios.post(ITEM_EDIT_URL + "Status", formData/*postData*/)
         .then(response => {
             console.log(response);
             props.setData(prevData => {
@@ -108,7 +118,7 @@ export default function Item(props) {
             })
         })
         .catch(err => {
-            console.log(err);
+            console.log(err.response || err);
         });
     }
 
