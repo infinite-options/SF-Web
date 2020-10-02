@@ -1,9 +1,9 @@
 import React from 'react'
 
-export default function FarmerReport() {
+export default function FarmerSettings() {
     return (
         <div>
-            W I P
+            W I P 2
         </div>
     )
 }

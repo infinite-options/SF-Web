@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
       marginRight: theme.spacing(2),
   }
 }));
-export default function FarmerNavBar() {
+export default function FarmerNavBar({ changeTab , ...props }) {
     const classes = useStyles();
     return (
         <div className={classes.root}>
@@ -52,10 +52,10 @@ export default function FarmerNavBar() {
         <AppBar color="primary" position="static">
             <Toolbar>
                 <div className={classes.navButtons}>
-                    <Button size={"small"} className={classes.button} >Home</Button>
-                    <Button size={"small"} className={classes.button} >Reports</Button>
-                    <Button size={"small"} className={classes.button} >Settings</Button>
-                    <Button size={"small"} className={classes.button} > Logout</Button>
+                    <Button size={"small"} className={classes.button} onClick={() => changeTab(0)}>Home</Button>
+                    <Button size={"small"} className={classes.button} onClick={() => changeTab(1)}>Reports</Button>
+                    <Button size={"small"} className={classes.button} onClick={() => changeTab(2)}>Settings</Button>
+                    {/* <Button size={"small"} className={classes.button} > Logout</Button> */}
                 </div>
             </Toolbar>
         </AppBar>
