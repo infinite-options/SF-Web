@@ -1,9 +1,20 @@
 import React from 'react'
 
-export default function FarmerSettings() {
+export default function FarmerSettings(props) {
     return (
-        <div>
-            W I P 2
+        <div hidden={props.hidden}>
+            <div style={labelStyle}>
+                <h1>Update Business Settings</h1>
+            </div>
         </div>
     )
+}
+
+// styling
+const labelStyle = {
+    backgroundColor: 'white',
+    width: '80%',
+    textAlign: 'left',
+    marginLeft: '25px',
+    marginBottom: '20px',
 }

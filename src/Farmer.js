@@ -22,12 +22,20 @@ export default function Farmer() {
     }, [tab]);
 
     const handleTab = () => {
-        switch (tab) {
-            case 0: return <FarmerHome />;
-            case 1: return <FarmerReport />;
-            case 2: return <FarmerSettings />;
-            default: return <FarmerHome />;
-        }
+        // switch (tab) {
+        //     case 0: return <FarmerHome />;
+        //     case 1: return <FarmerReport />;
+        //     case 2: return <FarmerSettings />;
+        //     default: return <FarmerHome />;
+        // }
+        return (
+            <React.Fragment>
+                {/* if farmerTab is tampered with & is out of scope, defaults to FarmerHome */}
+                <FarmerHome hidden={tab === 1 || tab === 2}/>
+                <FarmerReport hidden={tab !== 1}/>
+                <FarmerSettings hidden={tab !== 2}/>
+            </React.Fragment>
+        )
     };
 
     return (

@@ -19,7 +19,7 @@ import { makeStyles } from '@material-ui/core/styles';
 //api/v2/businesses
 //https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/businesses
 
-export default function FarmerHome() {
+export default function FarmerHome(props) {
     const {farmID, setFarmID} = useContext(AdminFarmContext);
     // NOTE: 
     // Empty object inside array caused the first item component to render with no data. 
@@ -41,6 +41,7 @@ export default function FarmerHome() {
     
     useEffect(() => {
         //get data from farm
+        console.log("get farm data..");
         getBusinessItems(API_BASE_URL + farmID, setFarmData);
     }, [farmID]);
 
@@ -72,7 +73,7 @@ export default function FarmerHome() {
     );
 
     return (
-        <div>
+        <div hidden={props.hidden}>
             <div style={labelStyle}>
                 <h1>{farmName}</h1>
             </div>
@@ -83,7 +84,7 @@ export default function FarmerHome() {
                 <Button onClick={handleOpenModel}>Add Product</Button>    
             </div>
             { farmData ? (
-                <Grid container spacing={2}>
+                <Grid container spacing={2}/* style={{ width: "100%", margin: 0 }}*/>
                     {
                         //map through each item and display it
                         farmData.map((itemData, idx) => {

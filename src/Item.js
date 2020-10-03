@@ -284,8 +284,7 @@ export default function Item(props) {
                 {modelBody}
             </Modal>
             <Card
-                
-                style={{height: '375px',}}
+                style={{height: '375px'/*, border: "1px solid #ccc", borderRadius: "16px"*/}}
             >
             <CardMedia
                 image={props.data.item_photo || "https://via.placeholder.com/400?text=No+Image+Available"}
@@ -293,8 +292,8 @@ export default function Item(props) {
             />
             <Grid container  style={{backgroundColor: 'white',}}>
                 <Grid item xs={12}>
-                    <CardContent style={{backgroundColor:'white', height: '20px', overflowY:'scroll',}}>
-                            <h5 style={{backgroundColor: 'white', overflowY:'scroll', padding:'0', margin: '0',}}>{props.data.item_name}</h5>
+                    <CardContent style={{backgroundColor:'white', height: '20px', overflowY:'auto',}}>
+                            <h5 style={{backgroundColor: 'white'/*, overflowY:'scroll'*/, padding:'0', margin: '0',}}>{props.data.item_name}</h5>
                     </CardContent>
                 </Grid>
                 <Grid item xs={4} style={{backgroundColor:'white',}}>
@@ -311,7 +310,7 @@ export default function Item(props) {
                     </CardContent>
                 </Grid>
                 <Grid item xs={12}>
-                    <CardActions disableSpacing style={{overflowX: 'scroll',}}>
+                    <CardActions disableSpacing style={{/*overflowX: 'scroll', */justifyContent: "center"}}>
                         <IconButton onClick={handleHeartChange}>
                             <FavoriteIcon style={{color: props.data.favorite.toLowerCase() === "true" ? "red" : "grey"}} />
                         </IconButton>
