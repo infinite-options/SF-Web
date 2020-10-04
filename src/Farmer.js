@@ -9,6 +9,14 @@ import FarmerSettings from './FarmerSettings.js';
 import FarmerNavBar from './FarmerNavBar.js';
 
 export default function Farmer() {
+    const {farmID, setFarmID} = useContext(AdminFarmContext);
+    const farmName = (() => {
+        switch (farmID) {
+            case '200-000003': return 'Esquivel Farm';
+            case '200-000004': return 'Resendiz Family';
+            default: return null;
+        }
+    })();
     /* 
      * tab values:
      *   0 -> home
@@ -31,9 +39,9 @@ export default function Farmer() {
         return (
             <React.Fragment>
                 {/* if farmerTab is tampered with & is out of scope, defaults to FarmerHome */}
-                <FarmerHome hidden={tab === 1 || tab === 2}/>
-                <FarmerReport hidden={tab !== 1}/>
-                <FarmerSettings hidden={tab !== 2}/>
+                <FarmerHome farmID={farmID} farmName={farmName} hidden={tab === 1 || tab === 2}/>
+                <FarmerReport farmID={farmID} farmName={farmName} hidden={tab !== 1}/>
+                <FarmerSettings farmID={farmID} farmName={farmName} hidden={tab !== 2}/>
             </React.Fragment>
         )
     };

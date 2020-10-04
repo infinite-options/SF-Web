@@ -18,9 +18,10 @@ import { makeStyles } from '@material-ui/core/styles';
 //https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/itemsByBusiness/200-000003
 //api/v2/businesses
 //https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/businesses
+const API_BASE_URL = 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/itemsByBusiness/';
 
-export default function FarmerHome(props) {
-    const {farmID, setFarmID} = useContext(AdminFarmContext);
+export default function FarmerHome({ farmID, farmName, ...props }) {
+    // const {farmID, setFarmID} = useContext(AdminFarmContext);
     // NOTE: 
     // Empty object inside array caused the first item component to render with no data. 
     // This meant upon a page load/refresh, the heart icon would always be greyed out regardless of the data.favorite value.
@@ -33,11 +34,9 @@ export default function FarmerHome(props) {
     const [item, setItem] = useState({name:'', quantity:'', price:'',});
     const classes = useStyles();
 
-    const API_BASE_URL = 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/itemsByBusiness/'
-
-    let farmName;
-    if(farmID === '200-000003') {farmName = 'Esquivel Farm'}
-    if(farmID === '200-000004') {farmName = 'Resendiz Family'}
+    // let farmName;
+    // if(farmID === '200-000003') {farmName = 'Esquivel Farm'}
+    // if(farmID === '200-000004') {farmName = 'Resendiz Family'}
     
     useEffect(() => {
         //get data from farm
