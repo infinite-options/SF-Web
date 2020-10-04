@@ -49,7 +49,7 @@ export default function FarmerHome({ farmID, farmName, ...props }) {
         .then(response => {
             console.log('reload')
             
-            console.log(response.data.result.result)
+            console.log("Home:", response.data.result.result)
             setData(response.data.result.result)
         })
         .catch(err => {
@@ -82,7 +82,7 @@ export default function FarmerHome({ farmID, farmName, ...props }) {
             <div style={labelStyle}>
                 <Button onClick={handleOpenModel}>Add Product</Button>    
             </div>
-            { farmData ? (
+            {/* {!farmData.length ? ( */}
                 <Grid container spacing={2}/* style={{ width: "100%", margin: 0 }}*/>
                     {
                         //map through each item and display it
@@ -95,21 +95,21 @@ export default function FarmerHome({ farmID, farmName, ...props }) {
                     }
                     
                 </Grid>
-            ) : (<CircularProgress/>)}
+            {/* ) : (<CircularProgress/>)} */}
             <Modal open={open} onClose={handleCloseModel}>
                 {modelBody}
             </Modal>
-            { farmData ? (
+            {/* {!farmData.length ? ( */}
                 <Grid container spacing={2}>
                    
                 </Grid>
-            ) : (<CircularProgress/>)}
+            {/* ) : (<CircularProgress/>)} */}
             
             <div style={labelStyle}>
                 <h2>Past Produce</h2>
             </div>
             
-            { farmData ? (
+            {/* {!farmData.length ? ( */}
                 <Grid container spacing={2}>
                     {
                         //map through each item and display it
@@ -121,7 +121,7 @@ export default function FarmerHome({ farmID, farmName, ...props }) {
                     }
                     
                 </Grid>
-            ) : (<CircularProgress/>)}
+            {/* ) : (<CircularProgress/>)} */}
         </div>
     )
 }

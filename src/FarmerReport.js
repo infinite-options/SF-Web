@@ -27,7 +27,7 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
         if (resOrders/* && resItems*/) {
             const orders = resOrders.data.result;
             // const items = resItems.data.result;
-            console.log(orders/*, items*/);
+            console.log("Reports:", orders/*, items*/);
             setOrders(() => {
                 const farmOrders = orders.filter(order => order.pur_business_uid === farmID);
                 return farmOrders;
