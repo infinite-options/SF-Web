@@ -78,10 +78,10 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
                                         <TableCell>{JSON.parse(order.items)[0].qty}</TableCell>
                                         <TableCell>{hasPaid}</TableCell>
                                         <TableCell>
-                                            <Button size="small" style={{ margin: "2px", backgroundColor: "blue", color: "white", padding: "2px 10px" }} variant="contained">Orders</Button><br />
-                                            <Button size="small" style={{ margin: "2px", backgroundColor: "grey", color: "white", padding: "2px 10px" }} variant="contained">Deliver</Button><br />
-                                            <Button size="small" style={{ margin: "2px", backgroundColor: "aqua", color: "white", padding: "2px 10px" }} variant="contained">Copy</Button><br />
-                                            <Button size="small" style={{ margin: "2px", backgroundColor: "red" , color: "white", padding: "2px 10px" }} variant="contained">Delete</Button>
+                                            <Button size="small" style={{ margin: "2px", backgroundColor: "#007bff", color: "white", padding: "2px 10px" }} variant="contained">Orders</Button><br />
+                                            <Button size="small" style={{ margin: "2px", backgroundColor: "#6c757d", color: "white", padding: "2px 10px" }} variant="contained">Deliver</Button><br />
+                                            <Button size="small" style={{ margin: "2px", backgroundColor: "#17a2b8", color: "white", padding: "2px 10px" }} variant="contained">Copy</Button><br />
+                                            <Button size="small" style={{ margin: "2px", backgroundColor: "#dc3545", color: "white", padding: "2px 10px" }} variant="contained">Delete</Button>
                                         </TableCell>
                                     </TableRow>
                                 );
