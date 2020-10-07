@@ -30,6 +30,15 @@ export default function Item(props) {
         setEditData(props.data);
     }, [props.data]);
 
+    useEffect(() => {
+        // creating File object from item_photo URL
+        fetch("https://cors-anywhere.herokuapp.com/" + props.data.item_photo)
+        .then(response => response.blob())
+        .then(blob => new File([blob], "item_photo.png", { type: "image/png" }))
+        .then(file => setFile(prevFile => ({ ...prevFile, obj: file })))
+        .catch(err => console.log(err));
+    }, []);
+
     const handleHeartChange = () => {
         const updatedData = { ...props.data };
         updatedData.favorite = props.data.favorite.toLowerCase() === "true" ? "FALSE" : "TRUE";
@@ -70,9 +79,13 @@ export default function Item(props) {
     // helper function
     // NOTE: Parva currently working on update endpoint so I don't need to upload image for every item update
     const updateData = (data) => { 
+
         const postData = { ...data };
         const created_at = postData.created_at;
         delete postData.created_at;
+        postData.item_photo = file.obj; // change to File object
+        postData.image_category = "item_images"; // NOTE: temporary
+        // console.log(postData);
 
         let formData = new FormData();
 
@@ -81,7 +94,6 @@ export default function Item(props) {
                 postData[item[0]] = item[1] ? String(item[1]) : "";
             }
             formData.append(item[0], item[1]);
-            formData.append("image_category", "item_images"); // NOTE: temporary
         });
 
         Axios.post(ITEM_EDIT_URL + "Update", formData/*postData*/)
@@ -90,13 +102,18 @@ export default function Item(props) {
             postData.created_at = created_at;
             props.setData(prevData => {
                 const updatedData = [...prevData];
-                // if (imageUpdated) postData.item_photo = NEW_IMAGE_URL;
-                updatedData[props.index] = postData;
+                updatedData[props.index] = { 
+                    ...postData, 
+                    // Converts price input from String to Number, to deal with empty string input cases. 
+                    // Without this conversion in this case, price value would not be displayed since item_price = "".
+                    item_price: Number(postData.item_price), 
+                    item_photo: file.url 
+                };
                 return updatedData;
             });
         })
         .catch(err => {
-            console.error(err);
+            console.error(err.response || err);
         });
     }
     const updateStatus = (status) => {
