@@ -47,6 +47,7 @@ export default function AddItemModel({ farmID, ...props }) {
     }
     const insertAPI = 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/addItems/Insert'
 
+    // NOTE: Which item inputs are optional/required?
     const itemInfo = {
         itm_business_uid : farmID,
         item_name : value.item_name,

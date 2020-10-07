@@ -58,7 +58,7 @@ export default function FarmerHome({ farmID, farmName, ...props }) {
     };
 
     const handleOpenModel = () => {
-        console.log(farmData)
+        // console.log(farmData)
         setOpen(true);
     };
     const handleCloseModel = () => {
