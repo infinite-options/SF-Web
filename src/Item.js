@@ -32,11 +32,21 @@ export default function Item(props) {
 
     useEffect(() => {
         // creating File object from item_photo URL
-        fetch("https://cors-anywhere.herokuapp.com/" + props.data.item_photo)
-        .then(response => response.blob())
-        .then(blob => new File([blob], "item_photo.png", { type: "image/png" }))
-        .then(file => setFile(prevFile => ({ ...prevFile, obj: file })))
-        .catch(err => console.log(err));
+        (async () => {
+            // console.log(props.index, props.data.item_photo);
+            const response = await fetch("https://cors-anywhere.herokuapp.com/" + props.data.item_photo);
+            if (response.status === 200) {
+                const file = await (blob => new File([blob], "item_photo.png", { type: "image/png" }))(response.blob());
+                setFile(prevFile => ({ ...prevFile, obj: file }));
+            }
+        })();
+        // fetch("https://cors-anywhere.herokuapp.com/" + props.data.item_photo)
+        // .then(response => {
+        //     if (response.status === 200) return response.blob();
+        // })
+        // .then(blob => new File([blob], "item_photo.png", { type: "image/png" }))
+        // .then(file => setFile(prevFile => ({ ...prevFile, obj: file })))
+        // .catch(err => console.log(err.response || err));
     }, []);
 
     const handleHeartChange = () => {
@@ -84,7 +94,7 @@ export default function Item(props) {
         const created_at = postData.created_at;
         delete postData.created_at;
         postData.item_photo = file.obj; // change to File object
-        postData.image_category = "item_images"; // NOTE: temporary
+        // postData.image_category = "item_images"; // NOTE: temporary
         // console.log(postData);
 
         let formData = new FormData();

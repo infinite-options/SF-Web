@@ -60,14 +60,11 @@ export default function AddItemModel({ farmID, ...props }) {
         favorite : favorite.toString().toUpperCase(),
         item_photo : file.obj, 
         exp_date : "",
-        image_category: "item_images", // NOTE: temporary
+        // image_category: "item_images", // NOTE: temporary
     }
 
     //post new item to endpoint
     const addItem = () => {
-        // NOTE: call turn-file-to-s3-url API Endpoint
-        // THEN -> itemInfo.item_photo = URL response
-        
         let formData = new FormData();
         Object.entries(itemInfo).forEach(entry => {
             formData.append(entry[0], entry[1]);
@@ -84,7 +81,7 @@ export default function AddItemModel({ farmID, ...props }) {
             const sqlString = response.data.sql;
             itemInfo.item_uid = sqlString.substring(sqlString.indexOf("item_uid = '") + 12, sqlString.indexOf("item_uid = '") + 22);
             itemInfo.created_at = sqlString.substring(sqlString.indexOf("created_at = '") + 14, sqlString.indexOf("created_at = '") + 24);
-            itemInfo.item_photo = sqlString.substring(sqlString.indexOf("item_photo = '") + 14, sqlString.indexOf("item_photo = '") + 84);
+            itemInfo.item_photo = sqlString.substring(sqlString.indexOf("item_photo = '") + 14, sqlString.indexOf("item_photo = '") + 72);
             props.setData(prevData => ([...prevData, itemInfo]));
             
             props.handleClose();
