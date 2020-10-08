@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
+// import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Input from '@material-ui/core/Input';
 import axios from 'axios';
 
 const BUSINESS_DETAILS_URL = "https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/business_details_update/";
+
+// const useStyles = makeStyles((theme) => ({
+//   root: {
+//     '& .MuiTextField-root': {
+//     //   margin: theme.spacing(1),
+//     //   width: '25ch',
+//     },
+//   },
+// }));
 
 export default function FarmerSettings({ farmID, farmName, ...props }) {
     const [settings, setSettings] = useState({});
@@ -24,13 +34,14 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
         });
     };
 
+    // const classes = useStyles();
     return (
         <div hidden={props.hidden}>
             <div style={labelStyle}>
                 <h1>Update Business Settings</h1>
             </div>
             <Grid container style={{/* textAlign: "left",*/ fontFamily: "monospace" }}>
-                <Grid container xs={12} sm={6} lg={3}>
+                <Grid container item xs={12} sm={6} lg={3}>
                     <Grid item xs={12}>
                         <div style={{ fontSize: "1rem", marginBottom: "0.25rem" }}>Orders Accepting Hours</div>
                         <DayHours weekday="Sun" />
@@ -52,18 +63,20 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                         <DayHours weekday="Sat" />
                     </Grid>
                 </Grid>
-                <Grid container xs={12} sm={6} lg={3}>
+                <Grid container item xs={12} sm={6} lg={3}>
                     <Grid item xs={12}>
                         <TextField 
-                            variant="outlined" size="small" 
+                            size="small" 
                             label="Business Name" 
                         />
                     </Grid>
                     <Grid item xs={12}>
                     <TextField 
-                        variant="outlined" size="small" 
+                        size="small" 
                         multiline rows={4} 
                         label="Description" 
+                        // added 5px of horizontal padding since multiline textfields shrink for whatever reason
+                        InputProps={{ style: { paddingLeft: "5px", paddingRight: "5px" } }}
                     />
                     </Grid>
                     <Grid item xs={12}>
@@ -76,22 +89,22 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                         <h3>Cancellation</h3>
                     </Grid>
                 </Grid>
-                <Grid container xs={12} sm={6} lg={3}>
+                <Grid container item xs={12} sm={6} lg={3}>
                     <Grid item xs={12}>
                         <TextField 
-                            variant="outlined" size="small" 
+                            size="small" 
                             label="First Name" 
                         />
                     </Grid>
                     <Grid item xs={12}>
                         <TextField 
-                            variant="outlined" size="small" 
+                            size="small" 
                             label="Last Name" 
                         />
                     </Grid>
                     <Grid item xs={12}>
                         <TextField 
-                            variant="outlined" size="small" 
+                            size="small" 
                             label="Phone Number" 
                         />
                     </Grid>
@@ -111,7 +124,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                         <h3>ZIP Code</h3>
                     </Grid>
                 </Grid>
-                <Grid container xs={12} sm={6} lg={3}>
+                <Grid container item xs={12} sm={6} lg={3}>
                     <Grid item xs={12}>
                         <h3>Profile Picture</h3>
                     </Grid>
@@ -135,15 +148,15 @@ function DayHours({ weekday, ...props }) {
         <div style={{ marginBottom: "0.25rem" }}>
             <span style={{ marginRight: "0.5rem" }}>{weekday}</span>
             <TextField 
-                size="small" variant="outlined" type="time"
-                style={{ width: "110px" }}
-                InputProps={{ style: { height: "20px", fontSize: "0.6rem" } }}
+                size="small"  type="time"
+                style={{ width: "100px" }}
+                InputProps={{ style: { height: "20px", fontSize: "0.7rem" } }}
             />
             <span style={{ margin: "0.5rem" }}>-</span>
             <TextField 
-                size="small" variant="outlined" type="time"
-                style={{ width: "110px" }}
-                InputProps={{ style: { height: "20px", fontSize: "0.6rem" } }}
+                size="small"  type="time"
+                style={{ width: "100px" }}
+                InputProps={{ style: { height: "20px", fontSize: "0.7rem" } }}
             />
         </div>
     )

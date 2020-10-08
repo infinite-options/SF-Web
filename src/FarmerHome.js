@@ -68,7 +68,8 @@ export default function FarmerHome({ farmID, farmName, ...props }) {
     
     //model for when farmer adds new item
     const modelBody = (
-        <AddItemModel farmID={farmID} handleClose={handleCloseModel} setData={setFarmData}/>
+        // adding parent <div> fixes 'Material-UI: The modal content node does not accept focus' warning.
+        <div><AddItemModel farmID={farmID} handleClose={handleCloseModel} setData={setFarmData}/></div>
     );
 
     return (

@@ -32,21 +32,11 @@ export default function Item(props) {
 
     useEffect(() => {
         // creating File object from item_photo URL
-        (async () => {
-            // console.log(props.index, props.data.item_photo);
-            const response = await fetch("https://cors-anywhere.herokuapp.com/" + props.data.item_photo);
-            if (response.status === 200) {
-                const file = await (blob => new File([blob], "item_photo.png", { type: "image/png" }))(response.blob());
-                setFile(prevFile => ({ ...prevFile, obj: file }));
-            }
-        })();
-        // fetch("https://cors-anywhere.herokuapp.com/" + props.data.item_photo)
-        // .then(response => {
-        //     if (response.status === 200) return response.blob();
-        // })
-        // .then(blob => new File([blob], "item_photo.png", { type: "image/png" }))
-        // .then(file => setFile(prevFile => ({ ...prevFile, obj: file })))
-        // .catch(err => console.log(err.response || err));
+        fetch("https://cors-anywhere.herokuapp.com/" + props.data.item_photo)
+        .then(response => response.blob())
+        .then(blob => new File([blob], "item_photo.png", { type: "image/png" }))
+        .then(file => setFile(prevFile => ({ ...prevFile, obj: file })))
+        .catch(err => console.log(err.response || err));
     }, []);
 
     const handleHeartChange = () => {
@@ -112,12 +102,13 @@ export default function Item(props) {
             postData.created_at = created_at;
             props.setData(prevData => {
                 const updatedData = [...prevData];
+                const sqlString = response.data.sql;
                 updatedData[props.index] = { 
                     ...postData, 
                     // Converts price input from String to Number, to deal with empty string input cases. 
                     // Without this conversion in this case, price value would not be displayed since item_price = "".
                     item_price: Number(postData.item_price), 
-                    item_photo: file.url 
+                    item_photo: sqlString.substring(sqlString.indexOf("item_photo = '") + 14, sqlString.indexOf("item_photo = '") + 72),
                 };
                 return updatedData;
             });
@@ -151,64 +142,6 @@ export default function Item(props) {
 
     //modal that pops up when farmer edits an item
     const modelBody = (
-        // <div className={classes.paper} >
-        //     <Grid container style={{backgroundColor: 'white', height: '350px', textAlign: 'center', margin: 'none',}} spacing={0}>
-        //         <Grid item xs={12} style={{textAlign: 'center', height: '45px', backgroundColor: 'white'}}>
-        //             <h3>Edit Item</h3>
-        //         </Grid>
-        //         <Grid item xs={6}>
-        //             <TextField
-        //                     label="Name of Meal"
-        //                     name="item_name"
-        //                     value={editData.item_name}
-        //                     onChange={handleEditChange}
-        //                     />
-        //         </Grid>
-        //         <Grid item xs={6}>
-        //             <Select name="item_type" onChange={handleEditChange} value={editData.item_type}>
-        //                         <MenuItem value={"vegetable"}>Vegetable</MenuItem>
-        //                         <MenuItem value={"fruit"}>Fruit</MenuItem>
-        //                         <MenuItem value={"dessert"}>Dessert</MenuItem>
-        //                         <MenuItem value={"other"}>Other</MenuItem>
-        //             </Select>
-        //         </Grid>
-        //         <Grid item xs={6}>
-        //             <TextField
-        //             label="Price"
-        //             name="item_price"
-        //             value={editData.item_price}
-        //             onChange={handleEditChange}
-        //             InputProps={{
-        //                 inputComponent: NumberFormatCustomPrice,
-        //             }}
-        //             />
-        //         </Grid>
-        //         <Grid item xs={6}>
-        //             {file.url ? (
-        //                 <img src={file.url} alt="Produce Image" width="140px" height="100px" style={{ border: "3px solid grey", objectFit: "cover" }}/>
-        //             ) : (
-        //                 <div style={{ border: "3px solid grey", width: "140px", height: "100px", margin: "auto", textAlign: "center", lineHeight: "100px", color: "grey" }}>
-        //                     Upload an Image
-        //                 </div>
-        //             )}    
-        //         </Grid>
-        //         <Grid item xs={6}>
-        //                 <Button size="small" variant="contained" onClick={handleSaveButton}>Save</Button>
-        //         </Grid>
-        //         <Grid container item xs={6}>
-        //             <Grid item xs={12}>
-        //                 <Button size="small" variant="contained" component="label">
-        //                     Edit Picture
-        //                     <input onChange={onFileChange} type="file" id="uploadedPhoto" accept="image/gif, image/jpeg, image/png" style={{ display: "none" }}/>
-        //                  </Button>
-        //             </Grid>
-        //             <Grid item xs={12}>
-        //                 <Typography style={{fontSize:'10px'}} varient="h6">{file.name}</Typography>
-        //             </Grid>
-        //         </Grid>
-        //     </Grid>
-        // </div>
-
         <div className={classes.paper} >
             <Grid container style={{textAlign: 'center'}}>
                 <Grid item xs={12}>

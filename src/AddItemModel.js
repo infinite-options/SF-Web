@@ -1,4 +1,4 @@
-import React, { Component, useContext, useState, useEffect } from 'react'
+import React, { Component, useContext, useState, useEffect, forwardRef } from 'react'
 import NumberFormat from 'react-number-format';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -12,7 +12,7 @@ import {Grid, Paper, Button, Typography, Card, CardActions, CardMedia, CardConte
 import { makeStyles } from '@material-ui/core/styles';
 
 
-export default function AddItemModel({ farmID, ...props }) {
+const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
     const [file, setFile] = useState({ obj: undefined, url: "" }); // NOTE: url key is probably useless
     const [favorite, setFavorite] = useState(false);
     const classes = useStyles();
@@ -91,7 +91,7 @@ export default function AddItemModel({ farmID, ...props }) {
     }
     
     return (
-        <div className={classes.paper} >
+        <div className={classes.paper} ref={ref}>
             <Grid container style={{textAlign: 'center'}}>
                 <Grid item xs={12}>
                     <h3>Add Item</h3>
@@ -188,7 +188,7 @@ export default function AddItemModel({ farmID, ...props }) {
             
         </div>
     )
-}
+})
 
 
 //styling
@@ -259,3 +259,4 @@ function NumberFormatCustomPrice(props) {
     );
   }
 
+export default AddItemModel;
