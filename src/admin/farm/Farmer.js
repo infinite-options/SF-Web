@@ -1,12 +1,12 @@
 import React, { Component, useContext, useState, useEffect } from 'react'
-import {AdminFarmContext} from './AdminFarmContext.js'
+import {AdminFarmContext} from '../AdminFarmContext'
 import axios from 'axios';
 import {Grid, Paper, Button, Typography, Card, CardMedia, CardContent, Modal, TextField, CircularProgress} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import FarmerHome from './FarmerHome.js';
-import FarmerReport from './FarmerReport.js';
-import FarmerSettings from './FarmerSettings.js';
-import FarmerNavBar from './FarmerNavBar.js';
+import FarmerHome from './FarmerHome';
+import FarmerReport from './FarmerReport';
+import FarmerSettings from './FarmerSettings';
+import FarmerNavBar from './FarmerNavBar';
 
 export default function Farmer() {
     const {farmID, setFarmID} = useContext(AdminFarmContext);

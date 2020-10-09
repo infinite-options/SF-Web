@@ -6,7 +6,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Switch from '@material-ui/core/Switch';
-import {AdminFarmContext} from './AdminFarmContext.js'
+import {AdminFarmContext} from '../AdminFarmContext'
 import axios from 'axios';
 import {Grid, Paper, Button, Typography, Card, CardActions, CardMedia, CardContent, Modal, TextField, CircularProgress} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';

@@ -7,7 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import {Grid, Paper, Button, Typography} from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { sizing } from '@material-ui/system';
-import { AuthContext } from './AuthContext';
+import { AuthContext } from '../auth/AuthContext';
 
 export default function AdminLogin(){
     const [emailValue, setEmail] = useState('');

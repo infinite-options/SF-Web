@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Admin from './Admin.js'
+import Admin from './admin/Admin';
 import {BrowserRouter as Router,Switch,Route,Link} from "react-router-dom";
-import Farmer from './Farmer';
-import AdminLogin from './AdminLogin';
-import FarmerLogin from './FarmerLogin';
-import FarmerSignUp from './FarmerSignUp';
-import { AuthContext } from './AuthContext';
-import AuthAdminRoute from './AuthAdminRoute'
+import AdminLogin from './admin/AdminLogin';
+import FarmerLogin from './farmer/FarmerLogin';
+import FarmerSignUp from './farmer/FarmerSignUp';
+import { AuthContext } from './auth/AuthContext';
+import AuthAdminRoute from './auth/AuthAdminRoute'
 import Cookies from 'js-cookie'
-import AuthAdminLoginRoute from './AuthAdminLoginRoute';
+import AuthAdminLoginRoute from './auth/AuthAdminLoginRoute';
 function App() {
   const[isAuth, setIsAuth] = useState(false);
   

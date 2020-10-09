@@ -1,7 +1,7 @@
 import React, { Component, useState, useContext } from 'react'
 import AdminNavBar from './AdminNavBar'
-import Farmer from './Farmer.js'
-import {AdminFarmContext} from './AdminFarmContext'
+import Farmer from './farm/Farmer'
+import { AdminFarmContext } from './AdminFarmContext'
 //within this admin page, we need ability to display any farmer page
 //the option to select which farm to view is in AdminNavBar
 //get selected farm from AdmiNavBar and use it in Farmer

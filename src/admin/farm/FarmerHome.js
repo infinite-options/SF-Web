@@ -1,6 +1,6 @@
 import React, { Component, useContext, useState, useEffect } from 'react'
-import Item from "./Item.js";
-import AddItemModel from './AddItemModel.js'
+import Item from "../../Item";
+import AddItemModel from './AddItemModel'
 import NumberFormat from 'react-number-format';
 import IconButton from '@material-ui/core/IconButton';
 import Fab from '@material-ui/core/Fab';
@@ -10,7 +10,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Switch from '@material-ui/core/Switch';
-import {AdminFarmContext} from './AdminFarmContext.js'
+import {AdminFarmContext} from '../AdminFarmContext'
 import axios from 'axios';
 import {Grid, Paper, Button, Typography, Card, CardActions, CardMedia, CardContent, Modal, TextField, CircularProgress} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';

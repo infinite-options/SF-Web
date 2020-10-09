@@ -25,7 +25,6 @@ export default function Item(props) {
     const [file, setFile] = useState({ obj: undefined, url: props.data.item_photo || "" });
     const classes = useStyles();
 
-    // Fix for FarmerHome.js: Line 24
     useEffect(() => {
         setEditData(props.data);
     }, [props.data]);
