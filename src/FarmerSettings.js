@@ -1,20 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
-// import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Input from '@material-ui/core/Input';
 import axios from 'axios';
 
 const BUSINESS_DETAILS_URL = "https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/business_details_update/";
-
-// const useStyles = makeStyles((theme) => ({
-//   root: {
-//     '& .MuiTextField-root': {
-//     //   margin: theme.spacing(1),
-//     //   width: '25ch',
-//     },
-//   },
-// }));
 
 export default function FarmerSettings({ farmID, farmName, ...props }) {
     const [settings, setSettings] = useState({});
@@ -34,7 +24,6 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
         });
     };
 
-    // const classes = useStyles();
     return (
         <div hidden={props.hidden}>
             <div style={labelStyle}>
@@ -43,7 +32,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
             <Grid container style={{/* textAlign: "left",*/ fontFamily: "monospace" }}>
                 <Grid container item xs={12} sm={6} lg={3}>
                     <Grid item xs={12}>
-                        <div style={{ fontSize: "1rem", marginBottom: "0.25rem" }}>Orders Accepting Hours</div>
+                        <div style={{ color: "grey", fontSize: "1rem", margin: "0.3rem 0 0.7rem" }}>Orders Accepting Hours</div>
                         <DayHours weekday="Sun" />
                         <DayHours weekday="Mon" />
                         <DayHours weekday="Tue" />
@@ -53,7 +42,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                         <DayHours weekday="Sat" />
                     </Grid>
                     <Grid item xs={12}>
-                        <div style={{ fontSize: "1rem", marginBottom: "0.25rem" }}>Delivery Hours</div>
+                        <div style={{ color: "grey", fontSize: "1rem", margin: "0.3rem 0 0.7rem" }}>Delivery Hours</div>
                         <DayHours weekday="Sun" />
                         <DayHours weekday="Mon" />
                         <DayHours weekday="Tue" />
@@ -66,18 +55,16 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                 <Grid container item xs={12} sm={6} lg={3}>
                     <Grid item xs={12}>
                         <TextField 
-                            size="small" 
+                            size="small" margin="dense"
                             label="Business Name" 
                         />
                     </Grid>
                     <Grid item xs={12}>
-                    <TextField 
-                        size="small" 
-                        multiline rows={4} 
-                        label="Description" 
-                        // added 5px of horizontal padding since multiline textfields shrink for whatever reason
-                        InputProps={{ style: { paddingLeft: "5px", paddingRight: "5px" } }}
-                    />
+                        <TextField 
+                            variant="outlined" size="small" margin="dense" 
+                            multiline rows={4} 
+                            label="Description" 
+                        />
                     </Grid>
                     <Grid item xs={12}>
                         <h3>Delivery Strategy</h3>
@@ -92,19 +79,19 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                 <Grid container item xs={12} sm={6} lg={3}>
                     <Grid item xs={12}>
                         <TextField 
-                            size="small" 
+                            size="small" margin="dense" 
                             label="First Name" 
                         />
                     </Grid>
                     <Grid item xs={12}>
                         <TextField 
-                            size="small" 
+                            size="small" margin="dense" 
                             label="Last Name" 
                         />
                     </Grid>
                     <Grid item xs={12}>
                         <TextField 
-                            size="small" 
+                            size="small" margin="dense" 
                             label="Phone Number" 
                         />
                     </Grid>
@@ -146,15 +133,15 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
 function DayHours({ weekday, ...props }) {
     return (
         <div style={{ marginBottom: "0.25rem" }}>
-            <span style={{ marginRight: "0.5rem" }}>{weekday}</span>
+            <b style={{ marginRight: "0.5rem" }}>{weekday}</b>
             <TextField 
-                size="small"  type="time"
+                size="small" type="time"
                 style={{ width: "100px" }}
                 InputProps={{ style: { height: "20px", fontSize: "0.7rem" } }}
             />
-            <span style={{ margin: "0.5rem" }}>-</span>
+            <b style={{ margin: "0.75rem" }}>—</b>
             <TextField 
-                size="small"  type="time"
+                size="small" type="time"
                 style={{ width: "100px" }}
                 InputProps={{ style: { height: "20px", fontSize: "0.7rem" } }}
             />
