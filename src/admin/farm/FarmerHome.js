@@ -1,5 +1,5 @@
 import React, { Component, useContext, useState, useEffect } from 'react'
-import Item from "../../Item";
+import Item from "./Item";
 import AddItemModel from './AddItemModel'
 import NumberFormat from 'react-number-format';
 import IconButton from '@material-ui/core/IconButton';
