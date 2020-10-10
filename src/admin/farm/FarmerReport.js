@@ -59,8 +59,9 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
         });
     };
 
-    const handleShowOrders = (event, order) => {
+    const handleShowOrders = (event, order, hideFunc) => {
         console.log(JSON.parse(order.items));
+        hideFunc(prevBool => !prevBool);
     };
     const handleDeliver = (event, order) => {
         console.log("W I P 2.1");
@@ -119,7 +120,7 @@ function OrdersTable({ orders, type, ...props }) {
                             !order.delivery_status || order.delivery_status.toLowerCase() !== "yes";
                         
                         if (isDisplayed) {
-                            return <OrderItem key={idx} order={order} type={type} functions={props.functions} />
+                            return <OrderRow key={idx} order={order} type={type} functions={props.functions} />
                         }
                     })}
                 </TableBody>
@@ -128,8 +129,8 @@ function OrdersTable({ orders, type, ...props }) {
     );
 };
 
-function OrderItem({ order, type, ...props }) {
-    const [hidden, setHidden] = useState(false);
+function OrderRow({ order, type, ...props }) {
+    const [hidden, setHidden] = useState(true);
 
     const address = (() => {
         return `${order.delivery_address} ` + (order.delivery_unit ? `${order.delivery_unit} ` : "") + 
@@ -148,40 +149,63 @@ function OrderItem({ order, type, ...props }) {
     })();
 
     return (
+        <React.Fragment>
+            <TableRow>
+                <TableCell component="th" scope="row">{order.purchase_date}</TableCell>
+                <TableCell>{order.delivery_first_name + " " + order.delivery_last_name}</TableCell>
+                <TableCell>{order.delivery_email}</TableCell>
+                <TableCell>{address}</TableCell>
+                <TableCell>{order.delivery_phone_num}</TableCell>
+                <TableCell>{order.amount_due}</TableCell>
+                <TableCell>{count}</TableCell>
+                <TableCell>{hasPaid}</TableCell>
+                <TableCell>
+                    <Button 
+                        size="small" variant="contained"// value="orders"
+                        style={{ ...tinyButtonStyle, backgroundColor: "#007bff" }} 
+                        onClick={e => props.functions.handleShowOrders(e, order, setHidden)}
+                    >orders</Button><br />
+                    <Button 
+                        size="small" variant="contained"// value="cancel"
+                        style={{ ...tinyButtonStyle, backgroundColor: "#6c757d" }} 
+                        onClick={e => props.functions[type === "open" ? "handleDeliver" : "handleCancel"](e, order)} 
+                    >{type === "open" ? "deliver" : "cancel"}</Button><br />
+                    <Button 
+                        size="small" variant="contained"// value="copy"
+                        style={{ ...tinyButtonStyle, backgroundColor: "#17a2b8" }} 
+                        onClick={e => props.functions.handleCopy(e, order)} 
+                    >copy</Button><br />
+                    <Button 
+                        size="small" variant="contained"// value="delete"
+                        style={{ ...tinyButtonStyle, backgroundColor: "#dc3545" }} 
+                        onClick={e => props.functions.handleDelete(e, order)} 
+                    >delete</Button><br />
+                </TableCell>
+            </TableRow>
+            {!hidden && JSON.parse(order.items).map((item, idx) => (
+                <OrderItem key={idx} item={item} />
+            ))}
+        </React.Fragment>
+    );
+};
+
+function OrderItem({ item, ...props }) {
+
+    return (
+        // {...(props.hidden ? { display: "none" } : {})}
         <TableRow>
-            <TableCell component="th" scope="row">{order.purchase_date}</TableCell>
-            <TableCell>{order.delivery_first_name + " " + order.delivery_last_name}</TableCell>
-            <TableCell>{order.delivery_email}</TableCell>
-            <TableCell>{address}</TableCell>
-            <TableCell>{order.delivery_phone_num}</TableCell>
-            <TableCell>{order.amount_due}</TableCell>
-            <TableCell>{count}</TableCell>
-            <TableCell>{hasPaid}</TableCell>
-            <TableCell>
-                <Button 
-                    size="small" variant="contained"// value="orders"
-                    style={{ ...tinyButtonStyle, backgroundColor: "#007bff" }} 
-                    onClick={e => props.functions.handleShowOrders(e, order)}
-                >orders</Button><br />
-                <Button 
-                    size="small" variant="contained"// value="cancel"
-                    style={{ ...tinyButtonStyle, backgroundColor: "#6c757d" }} 
-                    onClick={e => props.functions[type === "open" ? "handleDeliver" : "handleCancel"](e, order)} 
-                >{type === "open" ? "deliver" : "cancel"}</Button><br />
-                <Button 
-                    size="small" variant="contained"// value="copy"
-                    style={{ ...tinyButtonStyle, backgroundColor: "#17a2b8" }} 
-                    onClick={e => props.functions.handleCopy(e, order)} 
-                >copy</Button><br />
-                <Button 
-                    size="small" variant="contained"// value="delete"
-                    style={{ ...tinyButtonStyle, backgroundColor: "#dc3545" }} 
-                    onClick={e => props.functions.handleDelete(e, order)} 
-                >delete</Button><br />
+            <TableCell colSpan={9}>
+                <div style={{ border: "1px solid grey", padding: "0 10px" }}>
+                    <h3>{item.name}</h3>
+                    <p>Quantity: {item.qty}</p>
+                    <p>Revenue: ${(item.price * item.qty).toFixed(2)}</p>
+                </div>
             </TableCell>
+            {/* <TableCell /><TableCell /><TableCell /><TableCell />
+            <TableCell /><TableCell /><TableCell /><TableCell /> */}
         </TableRow>
     );
-;}
+};
 
 // styling
 const labelStyle = {
