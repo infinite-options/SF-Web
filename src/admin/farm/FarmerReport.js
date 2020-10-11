@@ -12,6 +12,7 @@ import axios from 'axios';
 const BASE_URL = "https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
 const ORDERS_INFO_URL = BASE_URL + "orders_info";
 const ORDERS_BY_FARM_URL = BASE_URL + "orders_by_farm";
+const UPDATE_PURCHASE_URL = BASE_URL + "purchase";
 
 export default function FarmerReport({ farmID, farmName, ...props }) {
     const [responseData, setResponseData] = useState();
@@ -63,10 +64,36 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
         console.log(JSON.parse(order.items));
         hideFunc(prevBool => !prevBool);
     };
-    const handleDeliver = (event, order) => {
+    const handleDeliver = (event, order, index) => {
+        const updatedOrder = { ...order };
+        updatedOrder.delivery_status = "Yes";
+        console.log(updatedOrder);
+        // axios.post(UPDATE_PURCHASE_URL, updatedOrder)
+        // .then(response => {
+        //     console.log(response);
+        //     setOrders(prevOrders => {
+        //         const updatedOrders = [...prevOrders];
+        //         updatedOrders[index] = updatedOrder;
+        //         return updatedOrders;
+        //     });
+        // })
+        // .catch(err => { console.log(err.response || err) });
         console.log("W I P 2.1");
     };
-    const handleCancel = (event, order) => {
+    const handleCancel = (event, order, index) => {
+        const updatedOrder = { ...order };
+        updatedOrder.delivery_status = "";
+        console.log(updatedOrder);
+        // axios.post(UPDATE_PURCHASE_URL, updatedOrder)
+        // .then(response => {
+        //     console.log(response);
+        //     setOrders(prevOrders => {
+        //         const updatedOrders = [...prevOrders];
+        //         updatedOrders[index] = updatedOrder;
+        //         return updatedOrders;
+        //     });
+        // })
+        // .catch(err => { console.log(err.response || err) });
         console.log("W I P 2.2");
     };
     const handleCopy = (event, order) => {
@@ -120,7 +147,7 @@ function OrdersTable({ orders, type, ...props }) {
                             !order.delivery_status || order.delivery_status.toLowerCase() !== "yes";
                         
                         if (isDisplayed) {
-                            return <OrderRow key={idx} order={order} type={type} functions={props.functions} />
+                            return <OrderRow key={idx} index={idx} order={order} type={type} functions={props.functions} />
                         }
                     })}
                 </TableBody>
@@ -168,7 +195,7 @@ function OrderRow({ order, type, ...props }) {
                     <Button 
                         size="small" variant="contained"// value="cancel"
                         style={{ ...tinyButtonStyle, backgroundColor: "#6c757d" }} 
-                        onClick={e => props.functions[type === "open" ? "handleDeliver" : "handleCancel"](e, order)} 
+                        onClick={e => props.functions[type === "open" ? "handleDeliver" : "handleCancel"](e, order, props.index)} 
                     >{type === "open" ? "deliver" : "cancel"}</Button><br />
                     <Button 
                         size="small" variant="contained"// value="copy"
