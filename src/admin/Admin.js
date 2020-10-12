@@ -10,10 +10,14 @@ import { AdminFarmContext } from './AdminFarmContext'
 
 function Admin(){
     const [farmID, setFarmID] = useState('200-000003');
+    const [timeChange,setTimeChange]=useState({});
+    const [deliveryTime,setDeliveryTime]=useState({});
 
     return (
         <div>
-            <AdminFarmContext.Provider value={{farmID, setFarmID}}>
+            <AdminFarmContext.Provider value={{farmID, setFarmID,
+                                                timeChange,setTimeChange,
+                                                deliveryTime,setDeliveryTime}}>
                 <AdminNavBar/>
                 <Farmer/>
             </AdminFarmContext.Provider>
