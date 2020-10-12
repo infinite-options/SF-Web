@@ -10,6 +10,7 @@ import { AuthContext } from './auth/AuthContext';
 import AuthAdminRoute from './auth/AuthAdminRoute'
 import Cookies from 'js-cookie'
 import AuthAdminLoginRoute from './auth/AuthAdminLoginRoute';
+import AdminSocialSignup from './admin/AdminSocialSignup';
 function App() {
   const[isAuth, setIsAuth] = useState(false);
   
@@ -32,6 +33,7 @@ function App() {
           <Route exact path='/'/>
           <AuthAdminRoute path="/admin" component={Admin} auth={isAuth}/>
           <AuthAdminLoginRoute path="/adminlogin" component={AdminLogin} auth={isAuth}/>
+          <AuthAdminLoginRoute path="/socialsignup" component={AdminSocialSignup} auth={isAuth}/>
         </AuthContext.Provider>
       </div>
     </Router>
