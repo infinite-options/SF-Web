@@ -1,0 +1,27 @@
+
+
+
+
+
+.noBlock{
+    display: inline-block;
+}
+
+.weekday{
+    width: 100px;
+    text-align: left;
+    /* position: relative;
+    right: 70px; */
+}
+
+.dashSpace{
+    width: 20px;
+}
+
+.spaceBetweenTime{
+    margin-bottom: 15px;
+}
+
+.alignLeft{
+    text-align: left;
+}
