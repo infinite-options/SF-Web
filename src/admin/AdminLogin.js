@@ -380,7 +380,6 @@ function AdminLogin(props) {
                         error={errorValue}
                         id="outlined-required"
                         label="email"
-                        defaultValue=""
                         variant="outlined"
                         value={emailValue}
                         onChange={handleEmailChange}
