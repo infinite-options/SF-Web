@@ -331,6 +331,10 @@ function AdminLogin(props) {
             console.log(err);
         })
     }
+
+    const handleSignup = () => {
+        props.history.push("/signup");
+    }
     
     return (
         <div>
@@ -404,6 +408,9 @@ function AdminLogin(props) {
                         <Button onClick={verifyLoginInfo}>
                             Login
                         </Button>
+                        <Button style={{ marginLeft: '20px' }} onClick={handleSignup}>
+                            Sign Up
+                        </Button>
                     </Grid>
                 </Grid>
             </Paper>               
@@ -412,7 +419,7 @@ function AdminLogin(props) {
 }
 
 const paperStyle = {
-    height: '500px',
+    height: '700px',
     width: '80%',
     maxWidth: '500px',
     textAlign: 'center',
