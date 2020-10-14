@@ -13,8 +13,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
 const BUSINESS_DETAILS_URL = "https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/business_details_update/";
-
-
+const API_URL = "https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
 
 function createDateTimeAccept(props){
     return(
@@ -47,7 +46,75 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
     //use this state below to set up information of middle collumn
     const [businessAndFarmDetail, setBusFarm] = useState({});
     const [passwordHere,setPass]=useState("");
+    // const [errorStatus,setErrorPass]=useState(false);
+    // const [userChangePass,setNewChangePass]= usestate("");
     const [errorStatus,setErrorPass]=useState(false);
+
+    function update(){
+        console.log("Error status", errorStatus);
+        if(!errorStatus){
+            var tempoData= settings;
+            var acceptTime=context.timeChange;
+            var deliveryTime = context.deliveryTime;
+            tempoData.business_name= businessAndFarmDetail.business_name;
+            tempoData.business_desc= businessAndFarmDetail.description;
+            tempoData.business_contact_first_name= businessAndFarmDetail.firstName;
+            tempoData.business_contact_last_name= businessAndFarmDetail.lastName;
+            tempoData.business_phone_num= businessAndFarmDetail.phone;
+            tempoData.business_address= businessAndFarmDetail.street;
+            tempoData.business_city= businessAndFarmDetail.city;
+            tempoData.business_state= businessAndFarmDetail.state;
+            tempoData.business_zip= businessAndFarmDetail.zip;
+            tempoData.business_accepting_hours= JSON.stringify(acceptTime);
+            tempoData.business_delivery_hours= JSON.stringify(deliveryTime);
+            // console.log("Show timechange",tempoData.business_accepting_hours)
+
+            //third column
+            if(deliverStrategy.pickupStatus=== true){
+                tempoData.delivery= "0";
+            }else{
+                tempoData.delivery= "1";
+            }
+
+            if(storage.reusable ===true){
+                tempoData.reusable= "1";
+            }else{
+                tempoData.reusable= "0";
+            }
+
+            if(cancellation.allowCancel===true){
+                tempoData.can_cancel= "1";
+            }else{
+                tempoData.can_cancel= "0";
+            }
+
+            if(passwordHere!==""){
+                tempoData.business_password= passwordHere;
+            }
+
+            console.log(tempoData);
+            // axios.post("https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/business_details_update/Post",tempoData).then(res=>{
+            //     console.log(res)
+            // }).catch(err=>{
+            //     console.log(err)
+            // })
+            console.log("test log the email: ", tempoData.business_email);
+            var objEmail={
+                "email":"xyz@gmail.com"
+            }
+            objEmail=JSON.stringify(objEmail);
+            // console.log("type of email:",typeof tempoData.business_email);
+            console.log("test log the email JSON: ", objEmail);
+            axios
+            .post(API_URL + 'AccountSalt',objEmail
+            ).then((response)=>{
+                console.log(response);
+                console.log("New Test",response.data.code);
+            })
+            
+        }
+    }
+
 
     const handleChange = (event) => {
         if(event.target.name==="phone"){
@@ -57,11 +124,23 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
         }else if(event.target.name==="password"){
             setPass(event.target.value);
         }else if(event.target.name==="passwordConfirm"){
-            if(event.target.value !== passwordHere){
-                setErrorPass(true);
-            }else{
-                setErrorPass(false);
+            //this case The admin doesn't want to change password
+            if(passwordHere===""){
+                
+                if(event.target.value !== businessAndFarmDetail.madeUpPassword){
+                    setErrorPass(true);
+                }else{
+                    setErrorPass(false);
+                }
+
+            }else{//they want to change since they enter new password bar
+                if(event.target.value !== passwordHere){
+                    setErrorPass(true);
+                }else{
+                    setErrorPass(false);
+                }
             }
+
         }else if(event.target.name==="email"){
 
         } else{
@@ -69,7 +148,6 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
         }
         
     };
-    // console.log(businessAndFarmDetail);
 
     const [deliverStrategy, setDeliveryStrategy] = useState({
         pickupStatus: true,
@@ -138,6 +216,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
 
     useEffect(() => {
         getFarmSettings();
+        // getSaltPassword();
     }, [farmID])
     
     const getFarmSettings = () => {
@@ -159,7 +238,8 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                 state: holdData.business_state,
                 zip: holdData.business_zip,
                 email:holdData.business_email,
-                password: holdData.business_password
+                password: holdData.business_password,
+                madeUpPassword:"password_to_test"
             }
             setBusFarm(BusAndFarmObj);
             setLoaded(true);
@@ -337,6 +417,9 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
         }
     }
 
+    // context.setTimeChange(AcceptTimeObj);
+    // context.setDeliveryTime(DeliveryTime);
+
     return (
         <div hidden={props.hidden} className="alignLeft">
             <div style={labelStyle}>
@@ -347,24 +430,10 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                 <Grid container item xs={12} sm={6} lg={3} style={{ textAlign: "center" }}>
                     <Grid item xs={12}>
                         <div style={{ color: "grey", fontSize: "1rem", margin: "0.3rem 0 0.7rem" }}>Orders Accepting Hours</div>    
-                        {/* <OneDay weekday="Sunday" />
-                        <DayHours weekday="Monday" />
-                        <DayHours weekday="Tuesday" />
-                        <DayHours weekday="Wednesday" />
-                        <DayHours weekday="Thursday" />
-                        <DayHours weekday="Friday" />
-                        <DayHours weekday="Saturday" /> */}
                         {AcceptTimeObj.map(createDateTimeAccept)}
                     </Grid>
                     <Grid item xs={12}>
                         <div style={{ color: "grey", fontSize: "1rem", margin: "0.3rem 0 0.7rem" }}>Delivery Hours</div>
-                        {/* <DayHours weekday="Sunday" />
-                        <DayHours weekday="Monday" />
-                        <DayHours weekday="Tuesday" />
-                        <DayHours weekday="Wednesday" />
-                        <DayHours weekday="Thursday" />
-                        <DayHours weekday="Friday" />
-                        <DayHours weekday="Saturday" /> */}
                         {DeliveryTime.map(createDateTimeDelivery)}
                     </Grid>
                 </Grid>
@@ -517,78 +586,45 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                     <div>
                         <div>Email Address</div>
                             <TextField 
+                                
                                 size="small" margin="dense" 
+                                id="standard-read-only-input"
                                 label={businessAndFarmDetail.email}
                                 variant="outlined"
+                                // defaultValue={businessAndFarmDetail.email}
                                 name="email"
-                                onChange={handleChange}
+                                // onChange={handleChange}
+                                InputProps={{
+                                    readOnly: true,
+                                }}
                             />
                         <div>New Password</div>
                         <TextField 
                             error={errorStatus}
                             size="small" margin="dense" 
-                            label={errorStatus?"Not matching":""}
+                            label="*********"
+                            // defaultValue={businessAndFarmDetail.madeUpPassword}
+                            type="password"
                             variant="outlined"
                             name="password"
                             onChange={handleChange}
                         />
 
-                        <div>Confirm Password</div>
+                        <div>Confirm New Password</div>
                         <TextField 
                             error={errorStatus}
                             size="small" margin="dense" 
-                            label={errorStatus?"Not matching":""}
+                            label=""
                             variant="outlined"
                             name="passwordConfirm"
                             onChange={handleChange}
+                            helperText={errorStatus?"Password not match":""}
                         />
                         
                     </div>
                     <Grid item xs={12}>
-                        <button>Update</button>
+                        <button onClick={update}>Update</button>
                     </Grid>
-                    {/* <button>Update</button> */}
-                    {/* <Grid item xs={12}>
-                        <div>Email Address</div>
-                        <TextField 
-                            size="small" margin="dense" 
-                            label={businessAndFarmDetail.email}
-                            variant="outlined"
-                            name="email"
-                            onChange={handleChange}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <div>New Password</div>
-                        <TextField 
-                            error={errorStatus}
-                            size="small" margin="dense" 
-                            label={errorStatus?"Not matching":""}
-                            variant="outlined"
-                            name="password"
-                            onChange={handleChange}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <div>Confirm Password</div>
-                        <TextField 
-                            error={errorStatus}
-                            size="small" margin="dense" 
-                            label={errorStatus?"Not matching":""}
-                            variant="outlined"
-                            name="passwordConfirm"
-                            onChange={handleChange}
-                        />
-                    </Grid> */}
-                    {/* <Grid item xs={12}>
-                        <h3>Email</h3>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <h3>New Password</h3>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <h3>Confirm New Password</h3>
-                    </Grid> */}
                 </Grid>
             </Grid>
         </div>
