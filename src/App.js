@@ -12,21 +12,42 @@ import Cookies from 'js-cookie'
 import AuthAdminLoginRoute from './auth/AuthAdminLoginRoute';
 import AdminSocialSignup from './admin/AdminSocialSignup';
 import AdminSignup from './admin/AdminSignup';
+import axios from 'axios';
+
+const BASE_URL = "https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
+
 function App() {
   const[isAuth, setIsAuth] = useState(false);
+  const [accountType, setAccountType] = useState();
   
   const readCookie = () => {
-    const loggedIn = Cookies.get('login-session')
-    console.log('asduojhfhuasdf')
+    const loggedIn = Cookies.get('login-session');
+    // console.log('asduojhfhuasdf');
     if(loggedIn){ 
-      setIsAuth(true)
-      console.log('User is already logged in')
+      setIsAuth(true);
+      console.log('User is already logged in');
     }
   }
 
   useEffect(() => {
-    readCookie()
-  })
+    console.log("reading cookie...");
+    readCookie();
+  }, []);
+
+  useEffect(() => {
+    if (isAuth) {
+      axios.get(BASE_URL + "Profile/" + Cookies.get('customer_uid'))
+      .then((response) => {
+        console.log("Account:", response);
+        setAccountType(response.data.result[0].role);
+      })
+      .catch(err => {
+        console.log(err.response || err);
+      });
+    }
+    else { setAccountType(); }
+  }, [isAuth])
+
   return (
     <Router>
       <div className="App">
