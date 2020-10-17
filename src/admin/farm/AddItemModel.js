@@ -51,7 +51,7 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
     const itemInfo = {
         itm_business_uid : farmID,
         item_name : value.item_name,
-        item_status : "active",
+        item_status : "Active",
         item_type : value.item_type,
         item_desc : value.item_desc,
         item_unit : value.item_unit,

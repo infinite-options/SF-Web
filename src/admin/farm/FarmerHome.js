@@ -87,10 +87,9 @@ export default function FarmerHome({ farmID, farmName, ...props }) {
                 <Grid container spacing={2}/* style={{ width: "100%", margin: 0 }}*/>
                     {
                         //map through each item and display it
-                        farmData.map((itemData, idx) => {
-                            if(!itemData.item_status || 
-                                itemData.item_status.toLowerCase() !== "hidden" && 
-                                itemData.item_status.toLowerCase() !== "past")
+                        farmData.map((itemData, idx) => { // display 'active' status items only
+                            if(itemData.item_status && 
+                               itemData.item_status.toLowerCase() === "active")
                              return <Item data={itemData} key={idx} index={idx} setData={setFarmData}/>
                         })
                     }
@@ -114,13 +113,13 @@ export default function FarmerHome({ farmID, farmName, ...props }) {
                 <Grid container spacing={2}>
                     {
                         //map through each item and display it
-                        farmData.map((itemData, idx) => {
-                            if(itemData.item_status && 
-                               itemData.item_status.toLowerCase() === "past")
+                        farmData.map((itemData, idx) => { // display 'past' status items AND items with no status tag
+                            if(!itemData.item_status || 
+                                itemData.item_status.toLowerCase() === "past")
                              return <Item data={itemData} key={idx} index={idx} setData={setFarmData}/>
                         })
                     }
-                    
+                {/* NOTE: Any item with a status tag of not 'past' nor 'active' is considered deleted and will be hidden */}
                 </Grid>
             {/* ) : (<CircularProgress/>)} */}
         </div>

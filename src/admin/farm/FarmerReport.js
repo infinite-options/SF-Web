@@ -11,8 +11,8 @@ import axios from 'axios';
 
 const BASE_URL = "https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
 const ORDERS_INFO_URL = BASE_URL + "orders_info";
-const ORDERS_BY_FARM_URL = BASE_URL + "orders_by_farm";
-const UPDATE_PURCHASE_URL = BASE_URL + "purchase";
+const ORDER_ACTIONS_URL = BASE_URL + "order_actions/";
+const INSERT_ORDER_URL = BASE_URL + "purchase";
 
 export default function FarmerReport({ farmID, farmName, ...props }) {
     const [responseData, setResponseData] = useState();
@@ -60,46 +60,77 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
         });
     };
 
-    const handleShowOrders = (event, order, hideFunc) => {
+    const handleShowOrders = (event, order, setHidden) => {
         console.log(JSON.parse(order.items));
-        hideFunc(prevBool => !prevBool);
+        setHidden(prevBool => !prevBool);
     };
     const handleDeliver = (event, order, index) => {
-        const updatedOrder = { ...order };
-        updatedOrder.delivery_status = "Yes";
-        console.log(updatedOrder);
-        // axios.post(UPDATE_PURCHASE_URL, updatedOrder)
-        // .then(response => {
-        //     console.log(response);
-        //     setOrders(prevOrders => {
-        //         const updatedOrders = [...prevOrders];
-        //         updatedOrders[index] = updatedOrder;
-        //         return updatedOrders;
-        //     });
-        // })
-        // .catch(err => { console.log(err.response || err) });
-        console.log("W I P 2.1");
+        axios.post(ORDER_ACTIONS_URL + "delivery_status_YES", { purchase_uid: order.purchase_uid })
+        .then(response => {
+            console.log(response);
+
+            const updatedOrder = { ...order };
+            updatedOrder.delivery_status = "Yes";
+            console.log(updatedOrder);
+
+            setOrders(prevOrders => {
+                const updatedOrders = [...prevOrders];
+                updatedOrders[index] = updatedOrder;
+                return updatedOrders;
+            });
+        })
+        .catch(err => { console.log(err.response || err) });
     };
     const handleCancel = (event, order, index) => {
-        const updatedOrder = { ...order };
-        updatedOrder.delivery_status = "";
-        console.log(updatedOrder);
-        // axios.post(UPDATE_PURCHASE_URL, updatedOrder)
-        // .then(response => {
-        //     console.log(response);
-        //     setOrders(prevOrders => {
-        //         const updatedOrders = [...prevOrders];
-        //         updatedOrders[index] = updatedOrder;
-        //         return updatedOrders;
-        //     });
-        // })
-        // .catch(err => { console.log(err.response || err) });
-        console.log("W I P 2.2");
+        axios.post(ORDER_ACTIONS_URL + "delivery_status_NO", { purchase_uid: order.purchase_uid })
+        .then(response => {
+            console.log(response);
+
+            const updatedOrder = { ...order };
+            updatedOrder.delivery_status = "No";
+            console.log(updatedOrder);
+
+            setOrders(prevOrders => {
+                const updatedOrders = [...prevOrders];
+                updatedOrders[index] = updatedOrder;
+                return updatedOrders;
+            });
+        })
+        .catch(err => { console.log(err.response || err) });
     };
     const handleCopy = (event, order) => {
-        console.log("W I P 3");
+        const copiedOrder = {
+            pur_customer_uid: order.pur_customer_uid,
+            pur_business_uid: order.pur_business_uid,
+            items: order.items,
+            order_instructions: order.order_instructions,
+            delivery_instructions : order.delivery_instructions,
+            order_type: order.order_type,
+            delivery_first_name: order.delivery_first_name,
+            delivery_last_name: order.delivery_last_name,
+            delivery_phone_num: order.delivery_phone_num,
+            delivery_email: order.delivery_email,
+            delivery_address: order.delivery_address,
+            delivery_unit: order.delivery_unit,
+            delivery_city: order.delivery_city,
+            delivery_state: order.delivery_state,
+            delivery_zip: order.delivery_zip,
+            delivery_latitude: order.delivery_latitude,
+            delivery_longitude: order.delivery_longitude,
+            purchase_notes: order.purchase_notes,
+        };
+        console.log(copiedOrder);
+        axios.post(INSERT_ORDER_URL, copiedOrder)
+        .then(response => {
+            console.log(response);
+        })
+        .catch(err => { console.log(err.response || err) });
     };
     const handleDelete = (event, order) => {
+        axios.post(ORDER_ACTIONS_URL + "Delete", { purchase_uid: order.purchase_uid })
+        .then(response => {
+            console.log(response);
+        })
         console.log("W I P 4");
     };
 
@@ -142,9 +173,16 @@ function OrdersTable({ orders, type, ...props }) {
                 </TableHead>
                 <TableBody>
                     {orders.map((order, idx) => {
-                        const isDisplayed = type === "open" ? 
-                            order.delivery_status && order.delivery_status.toLowerCase() === "yes" :
-                            !order.delivery_status || order.delivery_status.toLowerCase() !== "yes";
+                        const isDisplayed = (() => {
+                            try {
+                                return type === "open" ? 
+                                    order.delivery_status.toLowerCase() === "no" : 
+                                    order.delivery_status.toLowerCase() === "yes";
+                            }
+                            catch (err) { return false/*type === "open"*/; }
+                        })();
+                            // !order.delivery_status && order.delivery_status.toLowerCase() !== "yes" :
+                            // order.delivery_status || order.delivery_status.toLowerCase() === "yes";
                         
                         if (isDisplayed) {
                             return <OrderRow key={idx} index={idx} order={order} type={type} functions={props.functions} />
