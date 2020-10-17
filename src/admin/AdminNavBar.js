@@ -3,7 +3,12 @@ import Cookies from 'js-cookie'
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+
+import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
@@ -35,20 +40,17 @@ const useStyles = makeStyles((theme) => ({
   button: {
     marginRight: theme.spacing(1),
   },
-  navButtons: {
+  rightButtons: {
     position: 'absolute',
-    right: '5px',
-  },
-  newbutton: {
-    backgroundColor: 'red',
+    right: '10px',
   },
   farmSelect: {
       marginRight: theme.spacing(2),
   }
 }));
 
-export default function AdminNavBar() {
-    const { farmID, setFarmID} = useContext(AdminFarmContext);
+export default function AdminNavBar({ tab, setTab, ...props }) {
+    const { farmID, setFarmID } = useContext(AdminFarmContext);
     const Auth = useContext(AuthContext);
     //when admin logs out, remove their login info from cookies
     const handleClickLogOut = () => {
@@ -67,22 +69,30 @@ export default function AdminNavBar() {
           <ThemeProvider theme={theme}>
             <AppBar color="primary" position="static">
                 <Toolbar>
-                    <div className={classes.navButtons}>
-                        <Select
+                    <Select
                         defaultValue={"200-000003"}
                         className={classes.farmSelect}
                         onChange={handleChangeFarm}
-                        >
-                            <MenuItem value={"200-000003"}>Esquivel Farm</MenuItem>
-                            <MenuItem value={"200-000004"}>Resendiz Family</MenuItem>
-                        </Select>
-                        <Link to='/admin/messages' style={{ textDecoration: 'none' }}>
-                            <Button size={"small"}className={classes.button} >Messages</Button>
-                        </Link>
-                        <Link to='/admin/charts' style={{ textDecoration: 'none' }}>
-                            <Button size={"small"} className={classes.button} >Charts</Button>
-                        </Link>
-                        <Button size={"small"} className={classes.button} onClick={handleClickLogOut}> Logout</Button>
+                    >
+                        <MenuItem value={"200-000003"}>Esquivel Farm</MenuItem>
+                        <MenuItem value={"200-000004"}>Resendiz Family</MenuItem>
+                    </Select>
+                    <Button size={"small"} className={classes.button} onClick={() => setTab(0)}>Home</Button>
+                    <Button size={"small"} className={classes.button} onClick={() => setTab(1)}>Reports</Button>
+                    <Button size={"small"} className={classes.button} onClick={() => setTab(2)}>Settings</Button>
+                    <div className={classes.rightButtons}>
+                        {Auth.authLevel >= 2 && (
+                            <React.Fragment>
+                                <Link to='/admin/messages' style={{ textDecoration: 'none' }}>
+                                    <Button size={"small"}className={classes.button}>Messages</Button>
+                                </Link>
+                                <Link to='/admin/charts' style={{ textDecoration: 'none' }}>
+                                    <Button size={"small"} className={classes.button}>Charts</Button>
+                                </Link>
+                            </React.Fragment>
+                        )}
+                        <Button size={"small"} onClick={handleClickLogOut}>Logout</Button>
+
                     </div>
                 </Toolbar>
             </AppBar>

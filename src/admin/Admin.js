@@ -1,4 +1,4 @@
-import React, { Component, useState, useContext } from 'react'
+import React, { Component, useState, useContext, useEffect } from 'react'
 import AdminNavBar from './AdminNavBar'
 import Farmer from './farm/Farmer'
 import { AdminFarmContext } from './AdminFarmContext'
@@ -13,16 +13,22 @@ function Admin(){
     const [timeChange,setTimeChange]=useState({});
     const [deliveryTime,setDeliveryTime]=useState({});
 
+    const [tab, setTab] = useState(Number(localStorage.getItem("farmerTab")) || 0);
+
+    useEffect(() => {
+        localStorage.setItem("farmerTab", tab);
+    }, [tab]);
+
     return (
         <div>
             <AdminFarmContext.Provider value={{farmID, setFarmID,
                                                 timeChange,setTimeChange,
                                                 deliveryTime,setDeliveryTime}}>
-                <AdminNavBar/>
-                <Farmer/>
+                <AdminNavBar tab={tab} setTab={setTab} />
+                <Farmer tab={tab} />
             </AdminFarmContext.Provider>
         </div>
     )
 }
 
-export default Admin
+export default Admin;

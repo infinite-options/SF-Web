@@ -51,10 +51,10 @@ function AdminLogin(props) {
         //Attempt to login
         // Get salt for account
         axios
-        .get(API_URL + 'AccountSalt',{
-            params: {
+        .post(API_URL + 'AccountSalt',{
+            // params: {
                 email: emailValue,
-            }
+            // }
         })
         .then((res) => {
             // console.log(emailValue, passwordValue);

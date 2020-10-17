@@ -17,8 +17,22 @@ import axios from 'axios';
 const BASE_URL = "https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
 
 function App() {
-  const[isAuth, setIsAuth] = useState(false);
+  const [isAuth, setIsAuth] = useState(false); // checks if user is logged in
   const [accountType, setAccountType] = useState();
+
+  // IF USER IS LOGGED IN, CHECK THEIR ACCOUNT AUTHORITY:
+  // Level  0: Lowest level 
+  // Level  1: User is logged in & is farmer or higher 
+  // Level  2: User is logged in & is admin 
+  // const authLevel = (() => { // 
+  //   switch (accountType) {
+  //       case 'customer': return 0;
+  //       case 'farmer': return 1;
+  //       case 'admin': return 2;
+  //       default: return 0;
+  //   }
+  // })();
+  const authLevel = 2; // temporary value for testing purposes
   
   const readCookie = () => {
     const loggedIn = Cookies.get('login-session');
@@ -39,7 +53,10 @@ function App() {
       axios.get(BASE_URL + "Profile/" + Cookies.get('customer_uid'))
       .then((response) => {
         console.log("Account:", response);
-        setAccountType(response.data.result[0].role);
+        setAccountType(response.data.result[0].role ? 
+          response.data.result[0].role.toLowerCase() : 
+          ''
+        );
       })
       .catch(err => {
         console.log(err.response || err);
@@ -51,9 +68,9 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <AuthContext.Provider value={{isAuth, setIsAuth}}>
+        <AuthContext.Provider value={{isAuth, setIsAuth, authLevel}}>
           <Route exact path='/'/>
-          <AuthAdminRoute path="/admin" component={Admin} auth={isAuth}/>
+          <AuthAdminRoute path="/admin" component={Admin} auth={isAuth} authLevel={authLevel}/>
           <AuthAdminLoginRoute path="/adminlogin" component={AdminLogin} auth={isAuth}/>
           <AuthAdminLoginRoute path="/socialsignup" component={AdminSocialSignup} auth={isAuth}/>
           <AuthAdminLoginRoute path="/signup" component={AdminSignup} auth={isAuth}/>

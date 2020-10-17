@@ -6,9 +6,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import FarmerHome from './FarmerHome';
 import FarmerReport from './FarmerReport';
 import FarmerSettings from './FarmerSettings';
-import FarmerNavBar from './FarmerNavBar';
+// import FarmerNavBar from './FarmerNavBar';
 
-export default function Farmer() {
+export default function Farmer({ tab, ...props }) {
     const {farmID, setFarmID} = useContext(AdminFarmContext);
     const farmName = (() => {
         switch (farmID) {
@@ -17,29 +17,24 @@ export default function Farmer() {
             default: return null;
         }
     })();
+
     /* 
      * tab values:
      *   0 -> home
      *   1 -> reports
      *   2 -> settings
      */
-    const [tab, setTab] = useState(Number(localStorage.getItem("farmerTab")) || 0);
-
-    useEffect(() => {
-        localStorage.setItem("farmerTab", tab);
-    }, [tab]);
-
+    
+    // Home/Report/Settings Buttons do not redirect to another URL path,
+    // instead the admin page renders each component based on the tag condition 
     const handleTab = () => {
-        // switch (tab) {
-        //     case 0: return <FarmerHome />;
-        //     case 1: return <FarmerReport />;
-        //     case 2: return <FarmerSettings />;
-        //     default: return <FarmerHome />;
-        // }
+        // 0 <= tab <= MAX_VALUE
+        const tabIsValid = tab >= 0 && tab <= 2; // If more tabs are added, change max value 
+
         return (
             <React.Fragment>
                 {/* if farmerTab is tampered with & is out of scope, defaults to FarmerHome */}
-                <FarmerHome farmID={farmID} farmName={farmName} hidden={tab === 1 || tab === 2}/>
+                <FarmerHome farmID={farmID} farmName={farmName} hidden={tab !== 0 && tabIsValid}/>
                 <FarmerReport farmID={farmID} farmName={farmName} hidden={tab !== 1}/>
                 <FarmerSettings farmID={farmID} farmName={farmName} hidden={tab !== 2}/>
             </React.Fragment>
@@ -48,8 +43,8 @@ export default function Farmer() {
 
     return (
         <div>
-            <Paper style={paperStyle} elevation={3}>
-                <FarmerNavBar changeTab={setTab}/>
+            <Paper style={paperStyle} elevation={0}>
+                {/* <FarmerNavBar changeTab={setTab}/> */}
                 {handleTab()}
             </Paper>
             

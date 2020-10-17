@@ -11,8 +11,10 @@ const AuthAdminRoute = ({auth, component: Component, ...rest}) => {
         // Otherwise, redirect the user to /adminlogin page
         <Route {...rest} render={props => (
             auth ?
-                <Component {...props} />
-            : <Redirect to="/adminlogin" />
+                // Checking if user is farmer or higher
+                rest.authLevel >= 1 ? 
+                    <Component {...props} /> : <Redirect to ="/customer" />
+                : <Redirect to="/adminlogin" />
         )} />
     );
 };
