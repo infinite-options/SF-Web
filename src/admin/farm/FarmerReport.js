@@ -33,7 +33,7 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
             if (resOrders/* && resItems*/) {
                 const orders = resOrders.data.result;
                 // const items = resItems.data.result;
-                console.log("Reports:", orders/*, items*/);
+                console.log("All Reports:", orders/*, items*/);
                 setResponseData({ orders/*, items*/ });
                 updateOrders(orders/*, items*/);
             }
@@ -56,6 +56,7 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
             // );
             // console.log(farmOrders);
             const farmOrders = orders.filter(order => order.pur_business_uid === farmID);
+            // console.log("Reports", farmOrders);
             return farmOrders;
         });
     };
@@ -98,45 +99,77 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
         })
         .catch(err => { console.log(err.response || err) });
     };
-    const handleCopy = (event, order) => {
-        const copiedOrder = {
-            pur_customer_uid: order.pur_customer_uid,
-            pur_business_uid: order.pur_business_uid,
-            items: order.items,
-            order_instructions: order.order_instructions,
-            delivery_instructions : order.delivery_instructions,
-            order_type: order.order_type,
-            delivery_first_name: order.delivery_first_name,
-            delivery_last_name: order.delivery_last_name,
-            delivery_phone_num: order.delivery_phone_num,
-            delivery_email: order.delivery_email,
-            delivery_address: order.delivery_address,
-            delivery_unit: order.delivery_unit,
-            delivery_city: order.delivery_city,
-            delivery_state: order.delivery_state,
-            delivery_zip: order.delivery_zip,
-            delivery_latitude: order.delivery_latitude,
-            delivery_longitude: order.delivery_longitude,
-            purchase_notes: order.purchase_notes,
-        };
-        console.log(copiedOrder);
-        axios.post(INSERT_ORDER_URL, copiedOrder)
-        .then(response => {
-            console.log(response);
-        })
-        .catch(err => { console.log(err.response || err) });
+    const handleCopy = (event, order, index) => {
+        // const copiedOrder = {
+        //     pur_customer_uid: order.pur_customer_uid,
+        //     pur_business_uid: order.pur_business_uid,
+        //     items: order.items,
+        //     order_instructions: order.order_instructions,
+        //     delivery_instructions : order.delivery_instructions,
+        //     order_type: order.order_type,
+        //     delivery_first_name: order.delivery_first_name,
+        //     delivery_last_name: order.delivery_last_name,
+        //     delivery_phone_num: order.delivery_phone_num,
+        //     delivery_email: order.delivery_email,
+        //     delivery_address: order.delivery_address,
+        //     delivery_unit: order.delivery_unit,
+        //     delivery_city: order.delivery_city,
+        //     delivery_state: order.delivery_state,
+        //     delivery_zip: order.delivery_zip,
+        //     delivery_latitude: order.delivery_latitude,
+        //     delivery_longitude: order.delivery_longitude,
+        //     purchase_notes: order.purchase_notes,
+        // };
+        // console.log(copiedOrder);
+        // axios.post(INSERT_ORDER_URL, copiedOrder)
+        // .then(response => {
+        //     console.log(response);
+        // })
+        // .catch(err => { console.log(err.response || err) });
     };
-    const handleDelete = (event, order) => {
+    const handleDelete = (event, order, index) => {
         axios.post(ORDER_ACTIONS_URL + "Delete", { purchase_uid: order.purchase_uid })
         .then(response => {
             console.log(response);
+
+            setOrders(prevOrders => {
+                const updatedOrders = [...prevOrders];
+                updatedOrders.splice(index, 1);
+                return updatedOrders;
+            });
         })
+        .catch(err => { console.log(err.response || err) });
         console.log("W I P 4");
     };
+    const handleItemDelete = (event, order, index, itemIndex) => {
+        const updatedItemData = (() => {
+            let items = JSON.parse(order.items);
+            items.splice(itemIndex, 1);
+            return JSON.stringify(items);
+        })();
+        console.log(updatedItemData);
+        axios.post(ORDER_ACTIONS_URL + "item_delete", { 
+            purchase_uid: order.purchase_uid,
+            item_data: updatedItemData,
+        })
+        .then(response => {
+            console.log(response);
+            const updatedOrder = { ...order };
+            updatedOrder.items = updatedItemData;
+            console.log(updatedOrder);
+
+            setOrders(prevOrders => {
+                const updatedOrders = [...prevOrders];
+                updatedOrders[index] = updatedOrder;
+                return updatedOrders;
+            });
+        })
+        .catch(err => { console.log(err.response || err) });
+    }
 
     const buttonFunctions = { 
         handleShowOrders, handleDeliver, 
-        handleCancel, handleCopy, handleDelete, 
+        handleCancel, handleCopy, handleDelete, handleItemDelete
     };
 
     return (
@@ -179,6 +212,7 @@ function OrdersTable({ orders, type, ...props }) {
                                     order.delivery_status.toLowerCase() === "no" : 
                                     order.delivery_status.toLowerCase() === "yes";
                             }
+                            // NOTE: Not sure what to do with orders with undefined/null value delivery_status tags. Are they open? delivered? deleted?
                             catch (err) { return false/*type === "open"*/; }
                         })();
                             // !order.delivery_status && order.delivery_status.toLowerCase() !== "yes" :
@@ -238,30 +272,36 @@ function OrderRow({ order, type, ...props }) {
                     <Button 
                         size="small" variant="contained"// value="copy"
                         style={{ ...tinyButtonStyle, backgroundColor: "#17a2b8" }} 
-                        onClick={e => props.functions.handleCopy(e, order)} 
+                        onClick={e => props.functions.handleCopy(e, order, props.index)} 
                     >copy</Button><br />
                     <Button 
                         size="small" variant="contained"// value="delete"
                         style={{ ...tinyButtonStyle, backgroundColor: "#dc3545" }} 
-                        onClick={e => props.functions.handleDelete(e, order)} 
+                        onClick={e => props.functions.handleDelete(e, order, props.index)} 
                     >delete</Button><br />
                 </TableCell>
             </TableRow>
             {!hidden && JSON.parse(order.items).map((item, idx) => (
-                <OrderItem key={idx} item={item} />
+                <OrderItem key={idx} order={order} item={item} deleteItem={props.functions.handleItemDelete} index={props.index} itemIndex={idx} />
             ))}
         </React.Fragment>
     );
 };
 
-function OrderItem({ item, ...props }) {
+function OrderItem({ order, item, deleteItem, ...props }) {
 
     return (
         // {...(props.hidden ? { display: "none" } : {})}
         <TableRow>
             <TableCell colSpan={9}>
                 <div style={{ border: "1px solid grey", padding: "0 10px" }}>
-                    <h3>{item.name}</h3>
+                    <h3>
+                        {item.name}
+                        <Button 
+                            style={{ ...tinyButtonStyle, float: "right", backgroundColor: "#dc3545" }} 
+                            onClick={e => deleteItem(e, order, props.index, props.itemIndex)}
+                        >Delete</Button>
+                    </h3>
                     <p>Quantity: {item.qty}</p>
                     <p>Revenue: ${(item.price * item.qty).toFixed(2)}</p>
                 </div>
