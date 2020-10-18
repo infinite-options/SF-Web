@@ -26,7 +26,10 @@ export default function Farmer({ tab, ...props }) {
      */
     
     // Home/Report/Settings Buttons do not redirect to another URL path,
-    // instead the admin page renders each component based on the tag condition 
+    // instead the admin page renders each component based on the tag condition. 
+    // Tag value currently stored in localStorage. 
+    // Could have buttons redirect to an admin/reports, etc path, 
+    // if we don't like the localStorage conditional rendering way.
     const handleTab = () => {
         // 0 <= tab <= MAX_VALUE
         const tabIsValid = tab >= 0 && tab <= 2; // If more tabs are added, change max value 

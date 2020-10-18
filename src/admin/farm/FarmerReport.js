@@ -12,7 +12,7 @@ import axios from 'axios';
 const BASE_URL = "https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
 const ORDERS_INFO_URL = BASE_URL + "orders_info";
 const ORDER_ACTIONS_URL = BASE_URL + "order_actions/";
-const INSERT_ORDER_URL = BASE_URL + "purchase";
+const INSERT_ORDER_URL = BASE_URL + "purchase_Data_SF";
 
 export default function FarmerReport({ farmID, farmName, ...props }) {
     const [responseData, setResponseData] = useState();
@@ -22,9 +22,9 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
         getFarmOrders();
     }, [farmID]);
 
-    const getFarmOrders = async () => {
-        if (responseData) {
-            updateOrders(responseData.orders, responseData.items);
+    const getFarmOrders = async (hasCopied=false) => {
+        if (responseData && !hasCopied) {
+            updateOrders(responseData.orders/*, responseData.items*/);
         }
         else {
             const resOrders = await axios.get(ORDERS_INFO_URL).catch(err => { console.log(err.response || err) });
@@ -100,32 +100,46 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
         .catch(err => { console.log(err.response || err) });
     };
     const handleCopy = (event, order, index) => {
-        // const copiedOrder = {
-        //     pur_customer_uid: order.pur_customer_uid,
-        //     pur_business_uid: order.pur_business_uid,
-        //     items: order.items,
-        //     order_instructions: order.order_instructions,
-        //     delivery_instructions : order.delivery_instructions,
-        //     order_type: order.order_type,
-        //     delivery_first_name: order.delivery_first_name,
-        //     delivery_last_name: order.delivery_last_name,
-        //     delivery_phone_num: order.delivery_phone_num,
-        //     delivery_email: order.delivery_email,
-        //     delivery_address: order.delivery_address,
-        //     delivery_unit: order.delivery_unit,
-        //     delivery_city: order.delivery_city,
-        //     delivery_state: order.delivery_state,
-        //     delivery_zip: order.delivery_zip,
-        //     delivery_latitude: order.delivery_latitude,
-        //     delivery_longitude: order.delivery_longitude,
-        //     purchase_notes: order.purchase_notes,
-        // };
-        // console.log(copiedOrder);
-        // axios.post(INSERT_ORDER_URL, copiedOrder)
-        // .then(response => {
-        //     console.log(response);
-        // })
-        // .catch(err => { console.log(err.response || err) });
+        const copiedOrder = {
+            pur_customer_uid: order.pur_customer_uid,
+            pur_business_uid: order.pur_business_uid,
+            items: JSON.parse(order.items),
+            order_instructions: order.order_instructions,
+            delivery_instructions : order.delivery_instructions,
+            order_type: order.order_type,
+            delivery_first_name: order.delivery_first_name,
+            delivery_last_name: order.delivery_last_name,
+            delivery_phone_num: order.delivery_phone_num,
+            delivery_email: order.delivery_email,
+            delivery_address: order.delivery_address,
+            delivery_unit: order.delivery_unit,
+            delivery_city: order.delivery_city,
+            delivery_state: order.delivery_state,
+            delivery_zip: order.delivery_zip,
+            delivery_latitude: order.delivery_latitude,
+            delivery_longitude: order.delivery_longitude,
+            purchase_notes: order.purchase_notes,
+            start_delivery_date: "",
+            pay_coupon_id: "",
+            amount_due: "",
+            amount_discount: "",
+            amount_paid: "",
+            info_is_Addon: "",
+            cc_num: "",
+            cc_exp_date: "",
+            cc_cvv: "",
+            cc_zip: "",
+            charge_id: "",
+            payment_type: "",
+        };
+        console.log(copiedOrder);
+        axios.post(INSERT_ORDER_URL, copiedOrder)
+        .then(response => {
+            console.log(response);
+            // append orders list with new copied order
+            getFarmOrders(true); // calls orders_info endpoint again
+        })
+        .catch(err => { console.log(err.response || err) });
     };
     const handleDelete = (event, order, index) => {
         axios.post(ORDER_ACTIONS_URL + "Delete", { purchase_uid: order.purchase_uid })
@@ -139,15 +153,14 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
             });
         })
         .catch(err => { console.log(err.response || err) });
-        console.log("W I P 4");
     };
     const handleItemDelete = (event, order, index, itemIndex) => {
         const updatedItemData = (() => {
             let items = JSON.parse(order.items);
             items.splice(itemIndex, 1);
-            return JSON.stringify(items);
+            return items;
         })();
-        console.log(updatedItemData);
+        console.log(order.purchase_uid, updatedItemData);
         axios.post(ORDER_ACTIONS_URL + "item_delete", { 
             purchase_uid: order.purchase_uid,
             item_data: updatedItemData,
@@ -155,7 +168,7 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
         .then(response => {
             console.log(response);
             const updatedOrder = { ...order };
-            updatedOrder.items = updatedItemData;
+            updatedOrder.items = JSON.stringify(updatedItemData);
             console.log(updatedOrder);
 
             setOrders(prevOrders => {
@@ -213,7 +226,7 @@ function OrdersTable({ orders, type, ...props }) {
                                     order.delivery_status.toLowerCase() === "yes";
                             }
                             // NOTE: Not sure what to do with orders with undefined/null value delivery_status tags. Are they open? delivered? deleted?
-                            catch (err) { return false/*type === "open"*/; }
+                            catch (err) { return type === "open"; }
                         })();
                             // !order.delivery_status && order.delivery_status.toLowerCase() !== "yes" :
                             // order.delivery_status || order.delivery_status.toLowerCase() === "yes";
