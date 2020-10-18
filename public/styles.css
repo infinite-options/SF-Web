@@ -25,3 +25,8 @@
 .alignLeft{
     text-align: left;
 }
+
+.imageSize{
+    height: 250px;
+    width: 250px;
+}
