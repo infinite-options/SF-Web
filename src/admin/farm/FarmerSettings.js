@@ -11,10 +11,12 @@ import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+// import UploadPreview from 'material-ui-upload/UploadPreview';
+// import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import ImageUploading from "react-images-uploading";
 
 const BUSINESS_DETAILS_URL = "https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/business_details_update/";
-
-
+const API_URL = "https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
 
 function createDateTimeAccept(props){
     return(
@@ -47,7 +49,182 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
     //use this state below to set up information of middle collumn
     const [businessAndFarmDetail, setBusFarm] = useState({});
     const [passwordHere,setPass]=useState("");
-    const [errorStatus,setErrorPass]=useState(false);
+    // const [errorStatus,setErrorPass]=useState(false);
+    // const [userChangePass,setNewChangePass]= usestate("");
+    // const [errorStatus,setErrorPass]=useState(false);
+    //this one is state of confirmPassword
+    const [confirmPass, setConfirmPass]= useState("");
+    const [saltPack,setSaltPack]= useState({});
+    // const [image,setImage]=useState({});
+    const [imgs,setImgs] = useState([]);
+    const maxNumImg = 1;
+
+    const changeImage = (imgList, newIndex)=>{
+        console.log(imgList,newIndex);
+        setImgs(imgList);
+        // setAdd(true);
+        // console.log(imgs);
+        // console.log(isAdded);
+        // currentImg= imgs;
+    }
+
+    async function digestMessage(message,alg) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(message);
+        const hash = await crypto.subtle.digest(alg, data);
+        const hashArray = Array.from(new Uint8Array(hash));                     // convert buffer to byte array
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
+        // setConfirmPass(hashHex);
+        return hashHex;
+        // return hash;
+    }
+
+    async function update(){
+        var tempoData= settings;
+        let hasEnterNewPass=false;
+        let notSameOldPass=false;
+        let doUpdate=false;
+        let saltAlg=saltPack.hashAlg;
+        let salt = saltPack.salt;
+        let saltPassword = confirmPass+salt;
+        const digestHex = await digestMessage(saltPassword,saltAlg);
+
+        var acceptTime=context.timeChange;
+        var deliveryTime = context.deliveryTime;
+        
+        tempoData.business_name= businessAndFarmDetail.business_name;
+        tempoData.business_desc= businessAndFarmDetail.description;
+        tempoData.business_contact_first_name= businessAndFarmDetail.firstName;
+        tempoData.business_contact_last_name= businessAndFarmDetail.lastName;
+        tempoData.business_phone_num= businessAndFarmDetail.phone;
+        tempoData.business_address= businessAndFarmDetail.street;
+        tempoData.business_city= businessAndFarmDetail.city;
+        tempoData.business_state= businessAndFarmDetail.state;
+        tempoData.business_zip= businessAndFarmDetail.zip;
+        tempoData.business_accepting_hours= acceptTime;
+        tempoData.business_delivery_hours= deliveryTime;
+        // console.log(typeof tempoData.business_hours);
+
+        if(typeof tempoData.business_hours==="string"){
+            tempoData.business_hours= JSON.parse(tempoData.business_hours);
+        }
+
+        if(typeof tempoData.business_association==="string"){
+            tempoData.business_association= JSON.parse(tempoData.business_association);
+        }
+         
+        if(imgs.length!==0){
+            tempoData.business_image=imgs[0].data_url;
+        }
+
+        //third column
+        if(deliverStrategy.pickupStatus=== true){
+            tempoData.delivery= "0";
+        }else{
+            tempoData.delivery= "1";
+        }
+
+        if(storage.reusable ===true){
+            tempoData.reusable= "1";
+        }else{
+            tempoData.reusable= "0";
+        }
+        if(cancellation.allowCancel===true){
+            tempoData.can_cancel= "1";
+        }else{
+            tempoData.can_cancel= "0";
+        }       
+
+        //first check if user want to change password
+        if(passwordHere!==""){
+            hasEnterNewPass=true;
+            //they want to change but then check if they has filled confirm pass field?
+            if(confirmPass===""){
+                console.log("You need to enter confirm new password field");
+            }else{
+                //they already filled it and want to change password
+                //check if those 2 passwords or the same
+                if(passwordHere!==confirmPass){
+                    // flag= false;
+                    console.log("2 password fields are not matched");
+                }else{
+                    //same passwword entering
+                    console.log("matched password! comparing with the one on server");
+                    // wantChangePass=true;
+                    if(digestHex===tempoData.business_password){
+                        console.log("You are currently using this password");
+                    }else{
+                        console.log("hasing new password to store in database");
+                        notSameOldPass=true;
+                    }
+
+                }
+            }
+            
+        }
+        //if they want to change pass and the new password and the confirm new password 
+        //field are matched, set new password and ready to update new password
+        if(hasEnterNewPass&&notSameOldPass){
+            tempoData.business_password= digestHex;
+            console.log(tempoData);
+            doUpdate=true;
+        }
+        
+        //at this point, admin only enter confirm password to update
+        if(!hasEnterNewPass){
+            // console.log("confirmPassTest: ",confirmPass);
+            if(confirmPass===""){
+                console.log("Password field is empty");
+            }else{
+                if(digestHex===tempoData.business_password){
+                    console.log(tempoData);
+                    doUpdate=true;
+                }else{
+                    console.log("wrong Password to Update");
+                }
+            }
+        }
+        // do the update if doUpdate=true;
+        if(doUpdate){
+            axios.post("https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/business_details_update/Post",tempoData).then(res=>{
+                console.log("succsess posting check password: ",res)
+            }).catch(err=>{
+                console.log(err)
+            })
+        }
+
+
+    }
+
+    // async function changePassToTest(){
+    //     let object= settings;
+
+    //     let saltAlg=saltPack.hashAlg;
+    //     let salt = saltPack.salt;
+    //     let madePass="test123";
+    //     let saltPassword = madePass+salt;
+    //     const hashedPassword = await digestMessage(saltPassword,saltAlg);
+    //     console.log("Hash already",hashedPassword);
+    //     object.business_password=hashedPassword;
+    //     let acceptHour=JSON.parse(object.business_accepting_hours);
+    //     let deliveryHour=JSON.parse(object.business_delivery_hours);
+    //     let businessHour=JSON.parse(object.business_hours);
+    //     let association=JSON.parse(object.business_association);
+    //     object.business_accepting_hours=acceptHour;
+    //     object.business_delivery_hours=deliveryHour;
+    //     object.business_hours=businessHour;
+    //     object.business_association=association;
+    //     object.can_cancel=JSON.stringify(object.can_cancel);
+    //     object.delivery=JSON.stringify(object.delivery);
+    //     object.reusable=JSON.stringify(object.reusable);
+
+    //     console.log(object);
+    //     axios.post("https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/business_details_update/Post",object).then(res=>{
+    //             console.log("succsess posting check password: ",res)
+    //         }).catch(err=>{
+    //             console.log(err)
+    //         })
+    // }
 
     const handleChange = (event) => {
         if(event.target.name==="phone"){
@@ -57,11 +234,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
         }else if(event.target.name==="password"){
             setPass(event.target.value);
         }else if(event.target.name==="passwordConfirm"){
-            if(event.target.value !== passwordHere){
-                setErrorPass(true);
-            }else{
-                setErrorPass(false);
-            }
+            setConfirmPass(event.target.value);
         }else if(event.target.name==="email"){
 
         } else{
@@ -69,7 +242,6 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
         }
         
     };
-    // console.log(businessAndFarmDetail);
 
     const [deliverStrategy, setDeliveryStrategy] = useState({
         pickupStatus: true,
@@ -138,7 +310,45 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
 
     useEffect(() => {
         getFarmSettings();
+        // getSaltPassword();
     }, [farmID])
+
+    useEffect(() => {
+        console.log("test log the email: ", settings.business_email);
+        if(settings.business_email===undefined){
+            console.log("true undifined");
+        }
+        var objEmail={
+            "email":settings.business_email
+        }
+        objEmail=JSON.stringify(objEmail);
+        axios.post(API_URL + 'AccountSalt',objEmail
+            ).then((response)=>{
+                // console.log(response);
+                // console.log("New Test",response.data.code);
+                if(response.data.code===280){
+                    let hashAlg = response.data.result[0].password_algorithm;
+                    let salt = response.data.result[0].password_salt;
+                    if(hashAlg!==null && salt!==null){
+                        if(hashAlg!==""&&salt!==""){
+                            switch(hashAlg) {
+                                case "SHA512":
+                                    hashAlg = "SHA-512";
+                                    break;
+                                default:
+                                    console.log("display default falling into");
+                                    break;
+                            }
+                            let newObj={
+                                hashAlg:hashAlg,
+                                salt:salt
+                            }
+                            setSaltPack(newObj);
+                        }
+                    }
+                }
+        })
+    }, [settings])
     
     const getFarmSettings = () => {
         axios.post(BUSINESS_DETAILS_URL + "Get", { business_uid: businessID })
@@ -159,8 +369,46 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                 state: holdData.business_state,
                 zip: holdData.business_zip,
                 email:holdData.business_email,
-                password: holdData.business_password
+                password: holdData.business_password,
+                // madeUpPassword:"test123"
             }
+            if(holdData.delivery===0){
+                setDeliveryStrategy({
+                    pickupStatus: true,
+                    deliverStatus: false,
+                });
+            }else{
+                setDeliveryStrategy({
+                    pickupStatus: false,
+                    deliverStatus: true,
+                });
+            }
+
+            if(holdData.can_cancel===0){
+                setCancellation({
+                    allowCancel: false,
+                    noAllowCancel: true,
+                });
+            }else{
+                setCancellation({
+                    allowCancel: true,
+                    noAllowCancel: false,
+                });
+            }
+
+            if(holdData.reusable===0){
+                setStorage({
+                    reusable: false,
+                    disposable: true,
+                });
+            }else{
+                setStorage({
+                    reusable: true,
+                    disposable: false,
+                });
+            }
+            
+
             setBusFarm(BusAndFarmObj);
             setLoaded(true);
         })
@@ -347,24 +595,10 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                 <Grid container item xs={12} sm={6} lg={3} style={{ textAlign: "center" }}>
                     <Grid item xs={12}>
                         <div style={{ color: "grey", fontSize: "1rem", margin: "0.3rem 0 0.7rem" }}>Orders Accepting Hours</div>    
-                        {/* <OneDay weekday="Sunday" />
-                        <DayHours weekday="Monday" />
-                        <DayHours weekday="Tuesday" />
-                        <DayHours weekday="Wednesday" />
-                        <DayHours weekday="Thursday" />
-                        <DayHours weekday="Friday" />
-                        <DayHours weekday="Saturday" /> */}
                         {AcceptTimeObj.map(createDateTimeAccept)}
                     </Grid>
                     <Grid item xs={12}>
                         <div style={{ color: "grey", fontSize: "1rem", margin: "0.3rem 0 0.7rem" }}>Delivery Hours</div>
-                        {/* <DayHours weekday="Sunday" />
-                        <DayHours weekday="Monday" />
-                        <DayHours weekday="Tuesday" />
-                        <DayHours weekday="Wednesday" />
-                        <DayHours weekday="Thursday" />
-                        <DayHours weekday="Friday" />
-                        <DayHours weekday="Saturday" /> */}
                         {DeliveryTime.map(createDateTimeDelivery)}
                     </Grid>
                 </Grid>
@@ -511,83 +745,83 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                     </FormControl>
                 </Grid>
                 <Grid container item xs={12} sm={6} lg={3}>
-                    <Grid item xs={12}>
-                        <h3>Profile Picture</h3>
-                    </Grid>
+                        <Grid item xs={12}>
+                            <h3>Profile Picture</h3>
+                            <div className="makeTopRefund">
+                                <ImageUploading 
+                                    multiple
+                                    value = {imgs}
+                                    onChange = {changeImage}
+                                    maxNumber = {maxNumImg}
+                                    dataURLKey = "data_url"
+                                > 
+                                {
+                                    ({
+                                        imageList, onImageUpload, onImageRemoveAll, onImageUpdate, onImageRemove, isDragging, dragProps
+                                    }) => (
+                                        <div>
+                                            <img className="imageSize" src={imgs.length!==0?imgs[0].data_url :settings.business_image} alt ="no-img-displace" 
+                                                style={isDragging ? { color: "red" } : null}
+                                                onClick={onImageUpload}
+                                                {...dragProps}> 
+                                            </img>
+                                           
+                                            &nbsp;
+                                            <button className="" onClick={onImageUpload}>
+                                                    Upload Photo</button>
+                                        </div>
+                                    )
+                                }
+                                
+                                
+                                </ImageUploading>
+                            </div>
+                         </Grid>
+        
                     <div>
                         <div>Email Address</div>
                             <TextField 
+                                
                                 size="small" margin="dense" 
+                                id="standard-read-only-input"
                                 label={businessAndFarmDetail.email}
                                 variant="outlined"
+                                // defaultValue={businessAndFarmDetail.email}
                                 name="email"
-                                onChange={handleChange}
+                                // onChange={handleChange}
+                                InputProps={{
+                                    readOnly: true,
+                                }}
                             />
                         <div>New Password</div>
                         <TextField 
-                            error={errorStatus}
+                            // error={errorStatus}
                             size="small" margin="dense" 
-                            label={errorStatus?"Not matching":""}
+                            label="*********"
+                            // defaultValue={businessAndFarmDetail.madeUpPassword}
+                            type="password"
                             variant="outlined"
                             name="password"
                             onChange={handleChange}
                         />
 
-                        <div>Confirm Password</div>
+                        <div>Confirm New Password</div>
                         <TextField 
-                            error={errorStatus}
+                            // error={errorStatus}
                             size="small" margin="dense" 
-                            label={errorStatus?"Not matching":""}
+                            label=""
                             variant="outlined"
                             name="passwordConfirm"
                             onChange={handleChange}
+                            // helperText={errorStatus?"Password not match":""}
                         />
                         
                     </div>
                     <Grid item xs={12}>
-                        <button>Update</button>
+                        <button onClick={update}>Update</button>
                     </Grid>
-                    {/* <button>Update</button> */}
                     {/* <Grid item xs={12}>
-                        <div>Email Address</div>
-                        <TextField 
-                            size="small" margin="dense" 
-                            label={businessAndFarmDetail.email}
-                            variant="outlined"
-                            name="email"
-                            onChange={handleChange}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <div>New Password</div>
-                        <TextField 
-                            error={errorStatus}
-                            size="small" margin="dense" 
-                            label={errorStatus?"Not matching":""}
-                            variant="outlined"
-                            name="password"
-                            onChange={handleChange}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <div>Confirm Password</div>
-                        <TextField 
-                            error={errorStatus}
-                            size="small" margin="dense" 
-                            label={errorStatus?"Not matching":""}
-                            variant="outlined"
-                            name="passwordConfirm"
-                            onChange={handleChange}
-                        />
-                    </Grid> */}
-                    {/* <Grid item xs={12}>
-                        <h3>Email</h3>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <h3>New Password</h3>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <h3>Confirm New Password</h3>
+                        <button onClick={changePassToTest}>MakePassToTest</button>
                     </Grid> */}
                 </Grid>
             </Grid>
