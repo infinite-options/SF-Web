@@ -30,3 +30,19 @@
     height: 250px;
     width: 250px;
 }
+
+
+/*
+todo: css for chart page
+*/
+.monthYearPicker{
+    text-align: left;
+}
+
+.sameRow{
+    display: inline-block;
+}
+
+.makeSpace{
+    margin-left: 50px;
+}

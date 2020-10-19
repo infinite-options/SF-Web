@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import FarmerHome from './FarmerHome';
 import FarmerReport from './FarmerReport';
 import FarmerSettings from './FarmerSettings';
+import Chart from './chart';
 // import FarmerNavBar from './FarmerNavBar';
 
 export default function Farmer({ tab, ...props }) {
@@ -32,7 +33,7 @@ export default function Farmer({ tab, ...props }) {
     // if we don't like the localStorage conditional rendering way.
     const handleTab = () => {
         // 0 <= tab <= MAX_VALUE
-        const tabIsValid = tab >= 0 && tab <= 2; // If more tabs are added, change max value 
+        const tabIsValid = tab >= 0 && tab <= 3; // If more tabs are added, change max value 
 
         return (
             <React.Fragment>
@@ -40,6 +41,7 @@ export default function Farmer({ tab, ...props }) {
                 <FarmerHome farmID={farmID} farmName={farmName} hidden={tab !== 0 && tabIsValid}/>
                 <FarmerReport farmID={farmID} farmName={farmName} hidden={tab !== 1}/>
                 <FarmerSettings farmID={farmID} farmName={farmName} hidden={tab !== 2}/>
+                <Chart farmID={farmID} farmName={farmName} hidden={tab !== 3}/>
             </React.Fragment>
         )
     };
