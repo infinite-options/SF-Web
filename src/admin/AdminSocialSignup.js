@@ -33,7 +33,6 @@ function AdminSocialSignup(props) {
     });
 
     useEffect(() => {
-        console.log()
         // Check query String for Apple Login
         let queryString = props.location.search;
         let urlParams = new URLSearchParams(queryString);
@@ -46,7 +45,7 @@ function AdminSocialSignup(props) {
             .get('https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/Profile/' + urlParams.get('id'))
             .then((res) => {
                 let customer = res.data.result[0];
-                console.log(customer);
+                // console.log(customer);
                 setState(prevState => ({
                     ...prevState,
                 mounted: true,
@@ -67,7 +66,7 @@ function AdminSocialSignup(props) {
         }
         // Check location state for Gogle/Facebook Login
         else if(props.location.state !== undefined) {
-          console.log(props.location.state)
+          // console.log(props.location.state)
           if(props.location.state.email && props.location.state.socialId && props.location.state.platform) {
               setState(prevState => ({
                   ...prevState,
@@ -171,7 +170,7 @@ function AdminSocialSignup(props) {
         }
     })
     .then((res) => {
-      console.log(state)
+      // console.log(state)
       let locationApiResult = res.data;
       if(locationApiResult.statusCode === 200) {
         let locations = locationApiResult.resourceSets[0].resources;
@@ -183,7 +182,7 @@ function AdminSocialSignup(props) {
             lat = location.geocodePoints[1].coordinates[0];
             long = location.geocodePoints[1].coordinates[1];
         }
-        console.log(lat,long);
+        // console.log(lat,long);
         let object = {};
         if(!state.signUpApple){
           object = {
@@ -241,9 +240,7 @@ function AdminSocialSignup(props) {
         .then((res) => {
             console.log(res);
             let customerInfo = res.data.result;
-            console.log('cookie',document.cookie)
             document.cookie = 'customer_uid=' + customerInfo.customer_uid;
-            console.log('cookie',document.cookie)
             Auth.setIsAuth(true);
             Cookies.set('login-session', 'good');
             props.history.push("/admin");

@@ -35,9 +35,7 @@ function AdminLogin(props) {
         // Successful Log in with Apple, set cookies, context, redirect
         if(urlParams.has('id')) {
             let customerId = urlParams.get('id');
-            console.log('cookie',document.cookie)
             document.cookie = 'customer_uid=' + customerId;
-            console.log('cookie',document.cookie)
             Auth.setIsAuth(true);
             Cookies.set('login-session', 'good');
             props.history.push("/admin");
@@ -69,7 +67,7 @@ function AdminLogin(props) {
         .then((res) => {
             // console.log(emailValue, passwordValue);
             let saltObject = res;
-            console.log(saltObject);//, saltObject.data.code, saltObject.data.code !== 200, !(saltObject.data.code && saltObject.data.code !== 200));
+            // console.log(saltObject);//, saltObject.data.code, saltObject.data.code !== 200, !(saltObject.data.code && saltObject.data.code !== 200));
             if(!(saltObject.data.code && saltObject.data.code !== 280)) {
                 let hashAlg = saltObject.data.result[0].password_algorithm;
                 let salt = saltObject.data.result[0].password_salt;
@@ -118,7 +116,7 @@ function AdminLogin(props) {
                                 if(res.data.code === 200) {
                                     console.log('Login success')
                                     let customerInfo = res.data.result[0];
-                                    console.log('cookie',document.cookie)
+                                    // console.log('cookie',document.cookie)
                                     document.cookie = 'customer_uid=' + customerInfo.customer_uid;
                                     // console.log('cookie',document.cookie)
 
@@ -229,9 +227,9 @@ function AdminLogin(props) {
             if(!(res.data.code && res.data.code !== 200)) {
                 let customerInfo = res.data.result[0];
                 console.log(customerInfo);
-                console.log('cookie',document.cookie)
+                // console.log('cookie',document.cookie)
                 document.cookie = 'customer_uid=' + customerInfo.customer_uid;
-                console.log('cookie',document.cookie)
+                // console.log('cookie',document.cookie)
                 Auth.setIsAuth(true);
                 Cookies.set('login-session', 'good');
                 // Successful log in, Try to update tokens, then log in
@@ -239,7 +237,7 @@ function AdminLogin(props) {
                 .post('https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/token_fetch_update/update_web',{
                     uid: customerInfo.customer_uid,
                     user_access_token: accessToken,
-                    userrefresh_token: 'FALSE',
+                    user_refresh_token: 'FALSE',
                 })
                 .then((res) => {
                     console.log(res);

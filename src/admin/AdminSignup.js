@@ -42,8 +42,8 @@ function Signup(props) {
 
   const _onSubmit = (event) => {
     event.preventDefault();
-    console.log('_onSubmit')
-    console.log(state);
+    // console.log('_onSubmit')
+    // console.log(state);
     if(state.password === state.confirmPassword) {
       axios
       .get('https://dev.virtualearth.net/REST/v1/Locations/',{
@@ -57,7 +57,7 @@ function Signup(props) {
         }
       })
       .then((res) => {
-        console.log(res)
+        // console.log(res)
         let locationApiResult = res.data;
             if(locationApiResult.statusCode === 200) {
                 let locations = locationApiResult.resourceSets[0].resources;
