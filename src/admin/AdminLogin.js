@@ -33,8 +33,8 @@ function AdminLogin(props) {
         // Clear Query parameters
         window.history.pushState({}, document.title, window.location.pathname);
         // Successful Log in with Apple, set cookies, context, redirect
-        if(urlParams.has('customer_uid')) {
-            customerId = urlParams.get('customer_uid');
+        if(urlParams.has('id')) {
+            let customerId = urlParams.get('id');
             console.log('cookie',document.cookie)
             document.cookie = 'customer_uid=' + customerId;
             console.log('cookie',document.cookie)
@@ -188,6 +188,7 @@ function AdminLogin(props) {
             }
             console.log(err);
         })
+    }
 
     const responseGoogle = (response) => {
         console.log(response);
@@ -235,9 +236,10 @@ function AdminLogin(props) {
                 Cookies.set('login-session', 'good');
                 // Successful log in, Try to update tokens, then log in
                 axios
-                .post('https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/token_fetch_update/post_web',{
-                    id: customerInfo.customer_uid,
+                .post('https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/token_fetch_update/update_web',{
+                    uid: customerInfo.customer_uid,
                     user_access_token: accessToken,
+                    userrefresh_token: 'FALSE',
                 })
                 .then((res) => {
                     console.log(res);

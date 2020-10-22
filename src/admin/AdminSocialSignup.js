@@ -21,7 +21,7 @@ function AdminSocialSignup(props) {
         email: '',
         platform: '',
         accessToken: '',
-        refreshToken: '',
+        socialId: '',
         firstName: '',
         lastName: '',
         phone: '',
@@ -73,14 +73,16 @@ function AdminSocialSignup(props) {
               mounted: true,
               email: props.location.state.email,
               platform: props.location.state.platform,
-              socialId: props.location.state.social_id,
+              socialId: props.location.state.socialId,
               accessToken: props.location.state.accessToken ?  props.location.state.accessToken : 'access token'
               }))
           } else {
               console.log('Necessary information not provided');  
+              props.history.push("/adminlogin");
           }
         } else {
             console.log('Necessary information not provided');
+            props.history.push("/adminlogin");
         }
     }, []);
 
@@ -155,9 +157,6 @@ function AdminSocialSignup(props) {
     })
   }
 
-  /*
-    Note: Refresh token here is actually social Id for Google/Facebook/Apple
-  */
   const _onSubmit = () => {
     axios
     .get('https://dev.virtualearth.net/REST/v1/Locations/',{
@@ -200,7 +199,7 @@ function AdminSocialSignup(props) {
             referral_source: 'WEB',
             role: 'CUSTOMER',
             social: state.platform,
-            social_id: state.refreshToken,
+            social_id: state.socialId,
             user_access_token: state.accessToken,
             user_refresh_token: 'FALSE',
             mobile_access_token: 'FALSE',
@@ -223,7 +222,7 @@ function AdminSocialSignup(props) {
             referral_source: 'WEB',
             role: 'CUSTOMER',
             social: state.platform,
-            social_id: state.refreshToken,
+            social_id: state.socialId,
             user_access_token: state.accessToken,
             user_refresh_token: 'FALSE',
             mobile_access_token: 'FALSE',
