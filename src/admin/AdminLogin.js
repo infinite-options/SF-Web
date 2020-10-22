@@ -32,16 +32,17 @@ function AdminLogin(props) {
         let urlParams = new URLSearchParams(queryString);
         // Clear Query parameters
         window.history.pushState({}, document.title, window.location.pathname);
-        // Log which media platform user should have signed in with instead of Apple
+        // Successful Log in with Apple, set cookies, context, redirect
         if(urlParams.has('customer_uid')) {
             customerId = urlParams.get('customer_uid');
             console.log('cookie',document.cookie)
-            document.cookie = 'customer_uid=' + customerInfo.customer_uid;
+            document.cookie = 'customer_uid=' + customerId;
             console.log('cookie',document.cookie)
             Auth.setIsAuth(true);
             Cookies.set('login-session', 'good');
             props.history.push("/admin");
         }
+        // Log which media platform user should have signed in with instead of Apple
         // May eventually implement to display the message for which platform to Login
         else if(urlParams.has('media')) {
             console.log(urlParams.get('media'));
