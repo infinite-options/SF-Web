@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { withRouter } from "react-router";
 import TextField from '@material-ui/core/TextField';
 import { Box } from '@material-ui/core'
 import Paper from '@material-ui/core/Paper';
@@ -60,18 +61,20 @@ function AdminSocialSignup(props) {
                     console.log(err.response);
                 }
                 console.log(err);
+                console.log('Necessary information not received');
+                props.history.push("/adminlogin");
             })
         }
         // Check location state for Gogle/Facebook Login
         else if(props.location.state !== undefined) {
-          if(props.location.state.email && props.location.state.refreshToken && props.location.state.platform) {
+          if(props.location.state.email && props.location.state.socialId && props.location.state.platform) {
               setState(prevState => ({
                   ...prevState,
               mounted: true,
               email: props.location.state.email,
               platform: props.location.state.platform,
-              refreshToken: props.location.state.refreshToken,
-              accessToken: props.location.state.refreshToken ?  props.location.state.accessToken : 'access token'
+              socialId: props.location.state.social_id,
+              accessToken: props.location.state.accessToken ?  props.location.state.accessToken : 'access token'
               }))
           } else {
               console.log('Necessary information not provided');  
@@ -353,4 +356,4 @@ function AdminSocialSignup(props) {
 }
 // AdminSocialSignup.contextType = AuthContext;
 
-export default AdminSocialSignup;
+export default withRouter(AdminSocialSignup);

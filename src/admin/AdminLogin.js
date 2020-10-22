@@ -93,7 +93,7 @@ function AdminLogin(props) {
                             let loginObject = {
                                 email: emailValue,
                                 password: hashedPassword,
-                                token: '',
+                                social_id: '',
                                 signup_platform: ''
                             }
                             // console.log(JSON.stringify(loginObject))
@@ -274,8 +274,8 @@ function AdminLogin(props) {
             console.log("Google login successful");
             let email = response.profileObj.email;
             let accessToken = response.accessToken;
-            let refreshToken = response.googleId;
-            _socialLoginAttempt(email,accessToken,refreshToken,'GOOGLE');
+            let socialId = response.googleId;
+            _socialLoginAttempt(email,accessToken,socialId,'GOOGLE');
         } else {
             console.log('Google login unsuccessful')
         }
@@ -287,19 +287,19 @@ function AdminLogin(props) {
             console.log("Facebook login successful");
             let email = response.email;
             let accessToken = response.accessToken;
-            let refreshToken = response.id;
-            _socialLoginAttempt(email,accessToken,refreshToken,'FACEBOOK');
+            let socialId = response.id;
+            _socialLoginAttempt(email,accessToken,socialId,'FACEBOOK');
         } else {
             console.log('Facebook login unsuccessful')
         }
     }
 
-    const _socialLoginAttempt = (email, accessToken, refreshToken, platform) => {
+    const _socialLoginAttempt = (email, accessToken, socialId, platform) => {
         axios
         .post('https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/Login/',{
             email: email,
             password: '',
-            token: refreshToken,
+            social_id: socialId,
             signup_platform: platform,
         })
         .then((res) => {
@@ -333,7 +333,7 @@ function AdminLogin(props) {
                 props.history.push("/socialsignup",{
                     email: email, 
                     accessToken: accessToken,
-                    refreshToken: refreshToken,
+                    socialId: socialId,
                     platform: platform,    
                 });
             }
