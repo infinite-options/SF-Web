@@ -67,6 +67,7 @@ function AdminSocialSignup(props) {
         }
         // Check location state for Gogle/Facebook Login
         else if(props.location.state !== undefined) {
+          console.log(props.location.state)
           if(props.location.state.email && props.location.state.socialId && props.location.state.platform) {
               setState(prevState => ({
                   ...prevState,
@@ -170,6 +171,7 @@ function AdminSocialSignup(props) {
         }
     })
     .then((res) => {
+      console.log(state)
       let locationApiResult = res.data;
       if(locationApiResult.statusCode === 200) {
         let locations = locationApiResult.resourceSets[0].resources;
