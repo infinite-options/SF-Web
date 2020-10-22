@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Admin from './admin/Admin';
-import {BrowserRouter as Router,Switch,Route,Link} from "react-router-dom";
+import {BrowserRouter as Router,Switch,Route,Link,Redirect} from "react-router-dom";
 import AdminLogin from './admin/AdminLogin';
 import FarmerLogin from './farmer/FarmerLogin';
 import FarmerSignUp from './farmer/FarmerSignUp';
@@ -74,6 +74,9 @@ function App() {
           <AuthAdminLoginRoute path="/adminlogin" component={AdminLogin} auth={isAuth}/>
           <AuthAdminLoginRoute path="/socialsignup" component={AdminSocialSignup} auth={isAuth}/>
           <AuthAdminLoginRoute path="/signup" component={AdminSignup} auth={isAuth}/>
+          <Route path='/*'>
+            <Redirect to="/adminlogin" />
+          </Route>
         </AuthContext.Provider>
       </div>
     </Router>

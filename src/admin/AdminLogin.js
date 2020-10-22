@@ -310,11 +310,25 @@ function AdminLogin(props) {
                 console.log('cookie',document.cookie)
                 document.cookie = 'customer_uid=' + customerInfo.customer_uid;
                 console.log('cookie',document.cookie)
-
                 Auth.setIsAuth(true);
                 Cookies.set('login-session', 'good');
-
-                props.history.push("/admin");
+                // Successful log in, Try to update tokens, then log in
+                axios
+                .post('https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/token_fetch_update/post_web',{
+                    id: customerInfo.customer_uid,
+                    user_access_token: accessToken,
+                })
+                .then((res) => {
+                    console.log(res);
+                    props.history.push("/admin");
+                })
+                .catch((err) => {
+                    if(err.response) {
+                        console.log(err.response);
+                    }
+                    console.log(err);
+                    props.history.push("/admin");
+                })
             } else if(res.data.code === 404) {
                 props.history.push("/socialsignup",{
                     email: email, 

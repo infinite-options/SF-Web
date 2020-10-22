@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { Box } from '@material-ui/core'
 import Paper from '@material-ui/core/Paper';
@@ -30,26 +30,6 @@ function AdminSocialSignup(props) {
         state: '',
         zip: '',
     });
-//   constructor(props) {
-//     super();
-//     state = {
-//       mounted: false,
-//       signUpApple: false,
-//       customerId: '',
-//       email: '',
-//       platform: '',
-//       accessToken: '',
-//       refreshToken: '',
-//       firstName: '',
-//       lastName: '',
-//       phone: '',
-//       address: '',
-//       unit: '',
-//       city: '',
-//       state: '',
-//       zip: '',
-//     }
-//   }
 
     useEffect(() => {
         console.log()
@@ -84,70 +64,22 @@ function AdminSocialSignup(props) {
         }
         // Check location state for Gogle/Facebook Login
         else if(props.location.state !== undefined) {
-        if(props.location.state.email && props.location.state.refreshToken && props.location.state.platform) {
-            setState(prevState => ({
-                ...prevState,
-            mounted: true,
-            email: props.location.state.email,
-            platform: props.location.state.platform,
-            refreshToken: props.location.state.refreshToken,
-            accessToken: props.location.state.refreshToken ?  props.location.state.accessToken : 'access token'
-            }))
-        } else {
-            console.log('Necessary information not provided');  
-        }
+          if(props.location.state.email && props.location.state.refreshToken && props.location.state.platform) {
+              setState(prevState => ({
+                  ...prevState,
+              mounted: true,
+              email: props.location.state.email,
+              platform: props.location.state.platform,
+              refreshToken: props.location.state.refreshToken,
+              accessToken: props.location.state.refreshToken ?  props.location.state.accessToken : 'access token'
+              }))
+          } else {
+              console.log('Necessary information not provided');  
+          }
         } else {
             console.log('Necessary information not provided');
         }
     }, []);
-
-//   componentDidMount() {
-//     console.log()
-//     // Check query String for Apple Login
-//     let queryString = this.props.location.search;
-//     let urlParams = new URLSearchParams(queryString);
-//     // Clear Query parameters
-//     window.history.pushState({}, document.title, window.location.pathname);
-//     // Receive email and social platform
-//     if(urlParams.has('id')) {
-//       // Using Came from Apple Login
-//       axios
-//         .get('https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/Profile/' + urlParams.get('id'))
-//         .then((res) => {
-//             let customer = res.data.result[0];
-//             console.log(customer);
-//             this.setState({
-//               mounted: true,
-//               signUpApple: true,
-//               email: customer.customer_email,
-//               customerId: customer.customer_uid,
-//               platform: 'APPLE'
-//             })
-//         })
-//         .catch((err) => {
-//             if(err.response) {
-//                 console.log(err.response);
-//             }
-//             console.log(err);
-//         })
-//     }
-//     // Check location state for Gogle/Facebook Login
-//     else if(this.props.location.state !== undefined) {
-//       if(this.props.location.state.email && this.props.location.state.refreshToken && this.props.location.state.platform) {
-//         this.setState({
-//           mounted: true,
-//           email: this.props.location.state.email,
-//           platform: this.props.location.state.platform,
-//           refreshToken: this.props.location.state.refreshToken,
-//           accessToken: this.props.location.state.refreshToken ?  this.props.location.state.accessToken : 'access token'
-//         })
-//       } else {
-//         console.log('Necessary information not provided');  
-//       }
-//     } else {
-//       console.log('Necessary information not provided');
-//     }
-//   }
 
   const _onReset = () => {
     setState(prevState => ({
@@ -220,6 +152,9 @@ function AdminSocialSignup(props) {
     })
   }
 
+  /*
+    Note: Refresh token here is actually social Id for Google/Facebook/Apple
+  */
   const _onSubmit = () => {
     axios
     .get('https://dev.virtualearth.net/REST/v1/Locations/',{
@@ -249,8 +184,6 @@ function AdminSocialSignup(props) {
         if(!state.signUpApple){
           object = {
             email: state.email,
-            access_token: state.accessToken,
-            refresh_token: state.refreshToken,
             first_name: state.firstName,
             last_name: state.lastName,
             phone_number: state.phone,
@@ -261,16 +194,19 @@ function AdminSocialSignup(props) {
             zip_code: state.zip,
             latitude: lat.toString(),
             longitude: long.toString(),
-            referral_source: 'Website',
-            role: 'customer',
+            referral_source: 'WEB',
+            role: 'CUSTOMER',
             social: state.platform,
+            social_id: state.refreshToken,
+            user_access_token: state.accessToken,
+            user_refresh_token: 'FALSE',
+            mobile_access_token: 'FALSE',
+            mobile_refresh_token: 'FALSE',
           }
         } else {
           object = {
             cust_id: state.customerId,
             email: state.email,
-            access_token: state.accessToken,
-            refresh_token: state.refreshToken,
             first_name: state.firstName,
             last_name: state.lastName,
             phone_number: state.phone,
@@ -281,9 +217,14 @@ function AdminSocialSignup(props) {
             zip_code: state.zip,
             latitude: lat.toString(),
             longitude: long.toString(),
-            referral_source: 'Website',
-            role: 'customer',
+            referral_source: 'WEB',
+            role: 'CUSTOMER',
             social: state.platform,
+            social_id: state.refreshToken,
+            user_access_token: state.accessToken,
+            user_refresh_token: 'FALSE',
+            mobile_access_token: 'FALSE',
+            mobile_refresh_token: 'FALSE',
           }
         }
         console.log(JSON.stringify(object));

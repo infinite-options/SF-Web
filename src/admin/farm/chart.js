@@ -11,7 +11,7 @@ import ReactApexChart from "react-apexcharts";
 *Chart function to display analytics and Revenue
 ! using Material UI to implement Month Year picker
 */ 
-function Chart(){
+function Chart({ farmID, farmName, ...props }){
     const [monthYearvalue, setMonthYear] = useState(new Date());
     const [endMonthYearvalue, setEndMonthYear] = useState(new Date());
     // console.log(monthYearvalue);
@@ -79,7 +79,7 @@ function Chart(){
 
 
     return(
-    <div>
+    <div hidden={props.hidden}>
         <div className="monthYearPicker">
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <div className="sameRow">

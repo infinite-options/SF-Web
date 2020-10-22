@@ -86,8 +86,11 @@ function Signup(props) {
                   referral_source: 'WEB',
                   role: 'CUSTOMER',
                   social: 'FALSE',
-                  access_token: 'NULL',
-                  refresh_token: 'NULL',
+                  social_id: '',
+                  user_access_token: 'FALSE',
+                  user_refresh_token: 'FALSE',
+                  mobile_access_token: 'FALSE',
+                  mobile_refresh_token: 'FALSE',
                 }
                 console.log(JSON.stringify(object));
                 axios
