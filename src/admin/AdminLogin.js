@@ -33,18 +33,27 @@ function AdminLogin(props) {
         // Clear Query parameters
         window.history.pushState({}, document.title, window.location.pathname);
         // Log which media platform user should have signed in with instead of Apple
+        if(urlParams.has('customer_uid')) {
+            customerId = urlParams.get('customer_uid');
+            console.log('cookie',document.cookie)
+            document.cookie = 'customer_uid=' + customerInfo.customer_uid;
+            console.log('cookie',document.cookie)
+            Auth.setIsAuth(true);
+            Cookies.set('login-session', 'good');
+            props.history.push("/admin");
+        }
         // May eventually implement to display the message for which platform to Login
-        if(urlParams.has('media')) {
+        else if(urlParams.has('media')) {
             console.log(urlParams.get('media'));
         }
     }, []);
 
     const handleEmailChange = (e) => {
-        console.log('email is changing')
+        // console.log('email is changing')
         setEmail(e.target.value)
     }
     const handlePasswordChange = (e) => {
-        console.log('password is changing')
+        // console.log('password is changing')
         setPassword(e.target.value)
     }
     const verifyLoginInfo = (e) => {
@@ -178,95 +187,6 @@ function AdminLogin(props) {
             }
             console.log(err);
         })
-        // const SOCIAL_API = "https://dc3so1gav1.execute-api.us-west-1.amazonaws.com/dev/api/v2/social/";
-        // const LOGIN_API = "https://dc3so1gav1.execute-api.us-west-1.amazonaws.com/dev/api/v2/login";
-        // console.log('Email: ' + emailValue);
-        // console.log('Password: ' + passwordValue);
-        // const data = {
-        //     "email": emailValue,
-        //     "password": passwordValue,
-        // }
-        // //post request to see if user login credentials are correct
-        // axios.post(
-        //     LOGIN_API, 
-        //     data
-        // ).then(response => {
-        //     console.log(response)
-        //     if(response.data.auth_success === true){
-        //         setError(false);
-        //         console.log('Login successful')
-        //         Auth.setIsAuth(true)
-        //         Cookies.set('login-session', 'good')
-        //         console.log(Auth.isAuth)
-        //     }
-        // }).catch(err => {
-        //     console.log(err)
-        //     if(err.response.status === 400){
-        //         console.log('User does not exist');
-        //         setError(true);
-        //     }
-        //     if(err.response.status === 401){
-        //         console.log('Invalid email or password');
-        //         setError(true);
-        //     }
-        // })
-    }
-    // const responseFacebook = async response => {
-    //     console.log(response)
-    //     axios.get(
-    //         SOCIAL_API,
-    //         {
-    //             params: {email: response.email}
-    //         } 
-    //     ).then(response => {
-    //         console.log(response)
-    //         if(response.data.auth_success === true){
-    //             setError(false);
-    //             console.log('Login successful')
-    //             Auth.setIsAuth(true)
-    //             Cookies.set('login-session', 'good')
-    //             console.log(Auth.isAuth)
-    //         }
-    //     }).catch(err => {
-    //         console.log(err)
-    //         if(err.response.status === 400){
-    //             console.log('User does not exist');
-    //             setError(true);
-    //         }
-    //         if(err.response.status === 401){
-    //             console.log('Invalid email or password');
-    //             setError(true);
-    //         }
-    //     })
-    // }
-    // const responseGoogle = async response => {
-    //     console.log(response)
-    //     axios.get(
-    //         SOCIAL_API,
-    //         {
-    //             params: {email: response.profileObj.email}
-    //         } 
-    //     ).then(response => {
-    //         console.log(response)
-    //         if(response.data.auth_success === true){
-    //             setError(false);
-    //             console.log('Login successful')
-    //             Auth.setIsAuth(true)
-    //             Cookies.set('login-session', 'good')
-    //             console.log(Auth.isAuth)
-    //         }
-    //     }).catch(err => {
-    //         console.log(err)
-    //         if(err.response.status === 400){
-    //             console.log('User does not exist');
-    //             setError(true);
-    //         }
-    //         if(err.response.status === 401){
-    //             console.log('Invalid email or password');
-    //             setError(true);
-    //         }
-    //     })
-    // }
 
     const responseGoogle = (response) => {
         console.log(response);
