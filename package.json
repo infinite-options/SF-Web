@@ -13,6 +13,8 @@
     "apexcharts": "^3.22.0",
     "axios": "^0.20.0",
     "date-fns": "^2.16.1",
+    "highcharts": "^8.2.2",
+    "highcharts-react-official": "^3.0.0",
     "js-cookie": "^2.2.1",
     "material-ui-upload": "^1.2.1",
     "react": "^16.13.1",

@@ -1,42 +1,46 @@
 .noBlock {
-  display: inline-block;
+	display: inline-block;
 }
 
 .weekday {
-  width: 100px;
-  text-align: left;
-  /* position: relative;
+	width: 100px;
+	text-align: left;
+	/* position: relative;
     right: 70px; */
 }
 
 .dashSpace {
-  width: 20px;
+	width: 20px;
 }
 
 .spaceBetweenTime {
-  margin-bottom: 15px;
+	margin-bottom: 15px;
 }
 
 .alignLeft {
-  text-align: left;
+	text-align: left;
 }
 
 .imageSize {
-  height: 250px;
-  width: 250px;
+	height: 250px;
+	width: 250px;
 }
 
 /*
 todo: css for chart page
 */
 .monthYearPicker {
-  text-align: left;
+	text-align: left;
 }
 
 .sameRow {
-  display: inline-block;
+	display: inline-block;
 }
 
 .makeSpace {
-  margin-left: 50px;
+	margin-left: 50px;
+}
+
+.hideChart {
+	display: none;
 }
