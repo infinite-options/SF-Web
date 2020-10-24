@@ -1,24 +1,26 @@
-import React, { Component, useState, useContext, useEffect } from 'react';
-import FacebookLogin from 'react-facebook-login';
-import GoogleLogin from 'react-google-login';
-import Cookies from 'js-cookie'
-import axios from 'axios';
-import TextField from '@material-ui/core/TextField';
-import {Grid, Paper, Button, Typography} from '@material-ui/core';
-import { withStyles } from '@material-ui/styles';
-import { sizing } from '@material-ui/system';
-import { AuthContext } from '../auth/AuthContext';
-import { withRouter } from "react-router";
+import React, {Component, useState, useContext, useEffect} from "react";
+import FacebookLogin from "react-facebook-login";
+import GoogleLogin from "react-google-login";
+import Cookies from "js-cookie";
+import axios from "axios";
+import TextField from "@material-ui/core/TextField";
+import {Grid, Paper, Button, Typography} from "@material-ui/core";
+import {withStyles} from "@material-ui/styles";
+import {sizing} from "@material-ui/system";
+import {AuthContext} from "../auth/AuthContext";
+import {withRouter} from "react-router";
+import RevenueHighchart from "./farm/RevenueHighchart";
 
-const API_URL = 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
+const API_URL =
+	"https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
 
 function AdminLogin(props) {
-    const [emailValue, setEmail] = useState('');
-    const [passwordValue, setPassword] = useState('');
-    const [errorValue, setError] = useState(false);
-    const [error, RaiseError] = useState(null);
+	const [emailValue, setEmail] = useState("");
+	const [passwordValue, setPassword] = useState("");
+	const [errorValue, setError] = useState(false);
+	const [error, RaiseError] = useState(null);
 
-    const Auth = useContext(AuthContext);
+	const Auth = useContext(AuthContext);
 
     useEffect(() => {
         if(process.env.REACT_APP_APPLE_CLIENT_ID && process.env.REACT_APP_APPLE_REDIRECT_URI){
@@ -119,10 +121,8 @@ function AdminLogin(props) {
                                     // console.log('cookie',document.cookie)
                                     document.cookie = 'customer_uid=' + customerInfo.customer_uid;
                                     // console.log('cookie',document.cookie)
-
                                     Auth.setIsAuth(true);
-                                    Cookies.set('login-session', 'good');
-
+                                    Cookies.set("login-session", "good");
                                     props.history.push("/admin");
                                 } else if (res.data.code === 406 || res.data.code === 404){
                                     console.log('Invalid credentials')
@@ -267,100 +267,104 @@ function AdminLogin(props) {
         })
     }
 
-    const handleSignup = () => {
-        props.history.push("/signup");
-    }
-    
-    return (
-        <div>
-            <Paper style={paperStyle} elevation={3} >
-                <Grid container spacing={5} justify={"center"} direction="column" style={{marginTop: '20px'}}>
-                    <Grid item xs={12}>
-                    <FacebookLogin
-                        appId='257223515515874'
-                        autoLoad={false}
-                        fields='name,email,picture'
-                        onClick='return false'
-                        callback={responseFacebook}
-                        size='small'
-                        textButton='Continue with FB'
-                    />
-                    </Grid>
-                    <Grid item xs={12}>
-                    <GoogleLogin
-                        clientId='478982641106-1pq9nhdubrcpnii3ms0rmdpa0kmcjhgj.apps.googleusercontent.com'
-                        buttonText='Continue with Google'
-                        onSuccess={responseGoogle}
-                        onFailure={responseGoogle}
-                        isSignedIn={false}
-                        disable={false}
-                        cookiePolicy={"single_host_origin"}
-                    />
-                    </Grid>
-                    <Grid item xs={12}>
-                    <Button
-                        variant="contained"
-                        onClick={() => {
-                            window.AppleID.auth.signIn();
-                        }}
-                    >
-                        Apple Login
-                    </Button>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <h3>Admin Login</h3>
-                    </Grid> 
-                    <Grid item xs={12}>
-                        <TextField
-                        error={errorValue}
-                        id="outlined-required"
-                        label="email"
-                        variant="outlined"
-                        value={emailValue}
-                        onChange={handleEmailChange}
-                        style ={{width: '75%'}}
-                        />
-                    </Grid> 
-                    <Grid item xs={12}>
-                        <TextField
-                        error={errorValue}
-                        id="outlined-password-input"
-                        label="Password"
-                        type="password"
-                        variant="outlined"
-                        value={passwordValue}
-                        onChange={handlePasswordChange}
-                        style ={{width: '75%'}}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                    {errorValue && (
-                        <Typography style={{color: 'red'}}>Invalid login</Typography>
-                    )}
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Button onClick={verifyLoginInfo}>
-                            Login
-                        </Button>
-                        <Button style={{ marginLeft: '20px' }} onClick={handleSignup}>
-                            Sign Up
-                        </Button>
-                    </Grid>
-                </Grid>
-            </Paper>               
-        </div>
-    )
+	const handleSignup = () => {
+		props.history.push("/signup");
+	};
+
+	return (
+		<div>
+			<Paper style={paperStyle} elevation={3}>
+				<Grid
+					container
+					spacing={5}
+					justify={"center"}
+					direction="column"
+					style={{marginTop: "20px"}}
+				>
+					<Grid item xs={12}>
+						<FacebookLogin
+							appId="257223515515874"
+							autoLoad={false}
+							fields="name,email,picture"
+							onClick="return false"
+							callback={responseFacebook}
+							size="small"
+							textButton="Continue with FB"
+						/>
+					</Grid>
+					<Grid item xs={12}>
+						<GoogleLogin
+							clientId="478982641106-1pq9nhdubrcpnii3ms0rmdpa0kmcjhgj.apps.googleusercontent.com"
+							buttonText="Continue with Google"
+							onSuccess={responseGoogle}
+							onFailure={responseGoogle}
+							isSignedIn={false}
+							disable={false}
+							cookiePolicy={"single_host_origin"}
+						/>
+					</Grid>
+					<Grid item xs={12}>
+						<Button
+							variant="contained"
+							onClick={() => {
+								window.AppleID.auth.signIn();
+							}}
+						>
+							Apple Login
+						</Button>
+					</Grid>
+					<Grid item xs={12}>
+						<h3>Admin Login</h3>
+					</Grid>
+					<Grid item xs={12}>
+						<TextField
+							error={errorValue}
+							id="outlined-required"
+							label="email"
+							variant="outlined"
+							value={emailValue}
+							onChange={handleEmailChange}
+							style={{width: "75%"}}
+						/>
+					</Grid>
+					<Grid item xs={12}>
+						<TextField
+							error={errorValue}
+							id="outlined-password-input"
+							label="Password"
+							type="password"
+							variant="outlined"
+							value={passwordValue}
+							onChange={handlePasswordChange}
+							style={{width: "75%"}}
+						/>
+					</Grid>
+					<Grid item xs={12}>
+						{errorValue && (
+							<Typography style={{color: "red"}}>Invalid login</Typography>
+						)}
+					</Grid>
+					<Grid item xs={12}>
+						<Button onClick={verifyLoginInfo}>Login</Button>
+						<Button style={{marginLeft: "20px"}} onClick={handleSignup}>
+							Sign Up
+						</Button>
+					</Grid>
+				</Grid>
+			</Paper>
+		</div>
+	);
 }
 
 const paperStyle = {
-    height: '700px',
-    width: '80%',
-    maxWidth: '500px',
-    textAlign: 'center',
-    display: 'inline-block',
-    padding: '10px',
-    marginTop: '50px',
-    backgroundColor: 'white',
+	height: "700px",
+	width: "80%",
+	maxWidth: "500px",
+	textAlign: "center",
+	display: "inline-block",
+	padding: "10px",
+	marginTop: "50px",
+	backgroundColor: "white",
 };
 
 export default withRouter(AdminLogin);
