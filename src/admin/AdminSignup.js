@@ -42,8 +42,8 @@ function Signup(props) {
 
   const _onSubmit = (event) => {
     event.preventDefault();
-    console.log('_onSubmit')
-    console.log(state);
+    // console.log('_onSubmit')
+    // console.log(state);
     if(state.password === state.confirmPassword) {
       axios
       .get('https://dev.virtualearth.net/REST/v1/Locations/',{
@@ -57,7 +57,7 @@ function Signup(props) {
         }
       })
       .then((res) => {
-        console.log(res)
+        // console.log(res)
         let locationApiResult = res.data;
             if(locationApiResult.statusCode === 200) {
                 let locations = locationApiResult.resourceSets[0].resources;
@@ -86,8 +86,11 @@ function Signup(props) {
                   referral_source: 'WEB',
                   role: 'CUSTOMER',
                   social: 'FALSE',
-                  access_token: 'NULL',
-                  refresh_token: 'NULL',
+                  social_id: 'NULL',
+                  user_access_token: 'FALSE',
+                  user_refresh_token: 'FALSE',
+                  mobile_access_token: 'FALSE',
+                  mobile_refresh_token: 'FALSE',
                 }
                 console.log(JSON.stringify(object));
                 axios

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Admin from './admin/Admin';
-import {BrowserRouter as Router,Switch,Route,Link} from "react-router-dom";
+import {BrowserRouter as Router,Switch,Route,Link,Redirect} from "react-router-dom";
 import AdminLogin from './admin/AdminLogin';
 import FarmerLogin from './farmer/FarmerLogin';
 import FarmerSignUp from './farmer/FarmerSignUp';
@@ -69,11 +69,16 @@ function App() {
     <Router>
       <div className="App">
         <AuthContext.Provider value={{isAuth, setIsAuth, authLevel}}>
-          <Route exact path='/'/>
-          <AuthAdminRoute path="/admin" component={Admin} auth={isAuth} authLevel={authLevel}/>
-          <AuthAdminLoginRoute path="/adminlogin" component={AdminLogin} auth={isAuth}/>
-          <AuthAdminLoginRoute path="/socialsignup" component={AdminSocialSignup} auth={isAuth}/>
-          <AuthAdminLoginRoute path="/signup" component={AdminSignup} auth={isAuth}/>
+          <Switch>
+            {/* <Route exact path='/'/> */}
+            <AuthAdminRoute path="/admin" component={Admin} auth={isAuth} authLevel={authLevel}/>
+            <AuthAdminLoginRoute path="/adminlogin" component={AdminLogin} auth={isAuth}/>
+            <AuthAdminLoginRoute path="/socialsignup" component={AdminSocialSignup} auth={isAuth}/>
+            <AuthAdminLoginRoute path="/signup" component={AdminSignup} auth={isAuth}/>
+            <Route path='/*'>
+              <Redirect to="/adminlogin" />
+            </Route>
+          </Switch>
         </AuthContext.Provider>
       </div>
     </Router>
