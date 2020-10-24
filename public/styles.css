@@ -1,48 +1,42 @@
-
-
-
-
-
-.noBlock{
-    display: inline-block;
+.noBlock {
+  display: inline-block;
 }
 
-.weekday{
-    width: 100px;
-    text-align: left;
-    /* position: relative;
+.weekday {
+  width: 100px;
+  text-align: left;
+  /* position: relative;
     right: 70px; */
 }
 
-.dashSpace{
-    width: 20px;
+.dashSpace {
+  width: 20px;
 }
 
-.spaceBetweenTime{
-    margin-bottom: 15px;
+.spaceBetweenTime {
+  margin-bottom: 15px;
 }
 
-.alignLeft{
-    text-align: left;
+.alignLeft {
+  text-align: left;
 }
 
-.imageSize{
-    height: 250px;
-    width: 250px;
+.imageSize {
+  height: 250px;
+  width: 250px;
 }
-
 
 /*
 todo: css for chart page
 */
-.monthYearPicker{
-    text-align: left;
+.monthYearPicker {
+  text-align: left;
 }
 
-.sameRow{
-    display: inline-block;
+.sameRow {
+  display: inline-block;
 }
 
-.makeSpace{
-    margin-left: 50px;
+.makeSpace {
+  margin-left: 50px;
 }

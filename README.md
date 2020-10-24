@@ -66,3 +66,10 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+
+### API for chart
+
+[Get]: https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/admin_report/<business_uid>
+[Get]: https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/admin_report/200-000006
+Attach business_UID at the end to get data
