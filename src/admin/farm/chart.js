@@ -109,7 +109,7 @@ function Chart() {
 								}
 							} else {
 								//!this mean that we assume adding the newest customer with his first time order counter
-								console.log(j);
+								// console.log(j);
 								let tempArr = new Array(customer_identity_arr.length).fill(
 									0,
 									0,
@@ -130,7 +130,7 @@ function Chart() {
 					}
 				}
 				setSeries(seriesObj);
-				console.log("test for the series Object making", seriesObj);
+				// console.log("test for the series Object making", seriesObj);
 
 				//todo: after attaching, now set to x-axis and domain name
 				setCustomer(customer_identity_arr);
@@ -143,7 +143,7 @@ function Chart() {
 				setError(true);
 			})
 			.finally(() => {
-				console.log("Loading Status: Good! ");
+				// console.log("Loading Status: Good! ");
 				setLoaded(true);
 			});
 	}, [businessID]);
