@@ -73,3 +73,10 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/tr
 [Get]: https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/admin_report/<business_uid>
 [Get]: https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/admin_report/200-000006
 Attach business_UID at the end to get data
+
+
+### Here is the outlook of Revenue Chart
+![image](https://user-images.githubusercontent.com/45501926/97096221-c59a0480-161d-11eb-84fd-13a0a40c6082.png)
+
+### You can find the menu bar near the top right corner of the chart which allows the Admin to view Full Screen or print it out with many types of data.
+![image](https://user-images.githubusercontent.com/45501926/97096241-1c074300-161e-11eb-8015-741ac339a456.png)
