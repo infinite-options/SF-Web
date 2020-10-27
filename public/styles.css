@@ -48,7 +48,7 @@ todo: css for chart page
 	display: none;
 }
 
-/* css for setting */
+/*todo css for setting */
 .multichoice {
 	position: relative;
 	top: 25px;
@@ -92,4 +92,11 @@ todo: css for chart page
 .hourSetting {
 	position: relative;
 	bottom: 8px;
+}
+
+.hrwhite {
+	border-top: 1px solid white;
+}
+.hrorange {
+	border-top: 1px solid orange;
 }

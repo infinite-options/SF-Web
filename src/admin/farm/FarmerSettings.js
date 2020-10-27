@@ -442,124 +442,7 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 	};
 
 	if (error && !loaded) {
-		return (
-			<div hidden={props.hidden}>
-				<div style={labelStyle}>
-					<h1>Update Business Settings</h1>
-					<hr></hr>
-				</div>
-				<Grid
-					container
-					style={{/* textAlign: "left",*/ fontFamily: "monospace"}}
-				>
-					<Grid container item xs={12} sm={6} lg={3}>
-						<Grid item xs={12}>
-							<div
-								style={{
-									color: "grey",
-									fontSize: "1rem",
-									margin: "0.3rem 0 0.7rem",
-								}}
-							>
-								Orders Accepting Hours
-							</div>
-							{/* <OneDay weekday="Sunday" /> */}
-							<DayHours weekday="Monday" />
-							<DayHours weekday="Tuesday" />
-							<DayHours weekday="Wednesday" />
-							<DayHours weekday="Thursday" />
-							<DayHours weekday="Friday" />
-							<DayHours weekday="Saturday" />
-							{/* {arrObj.map(createDateTime)} */}
-						</Grid>
-						<Grid item xs={12}>
-							<div
-								style={{
-									color: "grey",
-									fontSize: "1rem",
-									margin: "0.3rem 0 0.7rem",
-								}}
-							>
-								Delivery Hours
-							</div>
-							<DayHours weekday="Sunday" />
-							<DayHours weekday="Monday" />
-							<DayHours weekday="Tuesday" />
-							<DayHours weekday="Wednesday" />
-							<DayHours weekday="Thursday" />
-							<DayHours weekday="Friday" />
-							<DayHours weekday="Saturday" />
-							{/* {arrObj.map(createDateTime)} */}
-						</Grid>
-					</Grid>
-					<Grid container item xs={12} sm={6} lg={3}>
-						<Grid item xs={12}>
-							<h3>Business Name</h3>
-							<TextField size="small" margin="dense" label="Business Name" />
-						</Grid>
-						<Grid item xs={12}>
-							<TextField
-								variant="outlined"
-								size="small"
-								margin="dense"
-								multiline
-								rows={4}
-								label="Description"
-							/>
-						</Grid>
-						<Grid item xs={12}>
-							<h3>Delivery Strategy</h3>
-						</Grid>
-						<Grid item xs={12}>
-							<h3>Storage</h3>
-						</Grid>
-						<Grid item xs={12}>
-							<h3>Cancellation</h3>
-						</Grid>
-					</Grid>
-					<Grid container item xs={12} sm={6} lg={3}>
-						<Grid item xs={12}>
-							<TextField size="small" margin="dense" label="First Name" />
-						</Grid>
-						<Grid item xs={12}>
-							<TextField size="small" margin="dense" label="Last Name" />
-						</Grid>
-						<Grid item xs={12}>
-							<TextField size="small" margin="dense" label="Phone Number" />
-						</Grid>
-						<Grid item xs={6}>
-							<h3>Street</h3>
-						</Grid>
-						<Grid item xs={6}>
-							<h3>Unit</h3>
-						</Grid>
-						<Grid item xs={4}>
-							<h3>City</h3>
-						</Grid>
-						<Grid item xs={4}>
-							<h3>State</h3>
-						</Grid>
-						<Grid item xs={4}>
-							<h3>ZIP Code</h3>
-						</Grid>
-					</Grid>
-					<Grid container item xs={12} sm={6} lg={3}>
-						<Grid item xs={12}>
-							<h3>Profile Picture</h3>
-						</Grid>
-						<Grid item xs={12}>
-							<h3>Email</h3>
-						</Grid>
-						<Grid item xs={12}>
-							<h3>New Password</h3>
-						</Grid>
-						<Grid item xs={12}>
-							<h3>Confirm New Password</h3>
-						</Grid>
-					</Grid>
-				</Grid>
-			</div>
-		);
+		return <div>We are loading Setting page for you</div>;
 	}
 	var AcceptTimeObj = [];
 	var DeliveryTime = [];
@@ -630,7 +513,7 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 		<div hidden={props.hidden} className="alignLeft">
 			<div className="divleft">
 				<h1>Update Business Settings</h1>
-				<hr></hr>
+				<hr className="hrorange"></hr>
 
 				<Grid
 					container
@@ -862,7 +745,7 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 			</div>
 			<div className="divright">
 				<h1>Profile</h1>
-				<hr></hr>
+				<hr className="hrwhite"></hr>
 
 				<div className="makeMargin30">
 					<Grid
