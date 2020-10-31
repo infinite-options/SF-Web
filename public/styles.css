@@ -19,6 +19,9 @@
 
 .alignLeft {
 	text-align: left;
+	position: absolute;
+	top: 65px;
+	left: 0px;
 }
 
 .imageSize {
@@ -43,4 +46,57 @@ todo: css for chart page
 
 .hideChart {
 	display: none;
+}
+
+/*todo css for setting */
+.multichoice {
+	position: relative;
+	top: 25px;
+}
+
+.divright {
+	width: 29.8%;
+	background-color: orange;
+	display: inline-block;
+	text-align: left;
+	height: 960px;
+	/* position: relative;
+	top: 9px; */
+	border-radius: 15px;
+	margin-left: 2px;
+	color: white;
+}
+
+.divleft {
+	background-color: #e0e4de;
+	width: 70%;
+	text-align: left;
+	display: inline-block;
+	border-radius: 15px;
+	color: #0e918c;
+}
+
+.chooseFileBrn {
+	position: relative;
+	bottom: 100px;
+}
+
+.makeMargin30 {
+	position: relative;
+	left: 70px;
+}
+.updateBtn {
+	position: relative;
+	left: 210px;
+}
+.hourSetting {
+	position: relative;
+	bottom: 8px;
+}
+
+.hrwhite {
+	border-top: 1px solid white;
+}
+.hrorange {
+	border-top: 1px solid orange;
 }

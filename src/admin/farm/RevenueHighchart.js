@@ -1,14 +1,98 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
+import axios from "axios";
 require("highcharts/modules/exporting")(Highcharts);
 require("highcharts/modules/export-data")(Highcharts);
 
+const report_API =
+	"https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/admin_report/";
+
 function RevenueHighchart() {
-	const newCustomers = [3, 1, 1, 0, 5, 3, 2, 2];
-	const returnCustomers = [2, 3, 4, 1, 3, 1, 0, 4];
-	const cumulativeProfit = [10, 29, 54, 57, 99, 115, 130, 155];
-	const dailyRevenue = [10, 19, 25, 3, 42, 16, 15, 25];
+	const [chartData, setChartData] = useState({});
+	const [dataError, setError] = useState(false);
+	const [listOfDates, setDates] = useState([]);
+	const [listOfNewBuyer, setNew] = useState([]);
+	const [listOfRetuner, setOld] = useState([]);
+	const [listOfCumRevenue, setCumRenevue] = useState([]);
+	const [listOfDailyRevenue, setDailyRevenue] = useState([]);
+	let businessID = "200-000006";
+
+	//todo:First need to get all the dates that has customer activities, sort them
+	// const newCustomers = [3, 1, 1, 0, 5, 3];
+	// const returnCustomers = [2, 3, 4, 1, 3, 1];
+	// const cumulativeProfit = [10, 29, 54, 57, 99, 115];
+	// const dailyRevenue = [10, 19, 25, 3, 42, 16];
+
+	useEffect(() => {
+		axios
+			.get(report_API + businessID)
+			.then((res) => {
+				let theData = res.data.result;
+				setChartData(theData);
+				console.log(theData);
+
+				//todo: get list of dates
+				let dayArr = [];
+				theData.map((days) => {
+					let tempDays = days.purchase_date;
+					!dayArr.includes(tempDays) && dayArr.push(tempDays);
+				});
+				dayArr.sort(function (a, b) {
+					a = a.split("-").join("");
+					b = b.split("-").join("");
+					return a > b ? 1 : a < b ? -1 : 0;
+					// return a.localeCompare(b);         // <-- alternative
+				});
+				console.log(dayArr); //!comment out
+				setDates(dayArr);
+
+				//Todo: atfter getting all the dates, we get the buyer next
+				//todo (returner or new customers)
+				let buyerContainer = [];
+				let oldCustomer = new Array(dayArr.length).fill(0);
+				let newCustomer = new Array(dayArr.length).fill(0);
+				let dailyIncome = new Array(dayArr.length).fill(0);
+				let revenue = new Array(dayArr.length).fill(0);
+				let total = 0;
+
+				for (var i = 0; i < dayArr.length; i++) {
+					let displayArrayOfDate = theData.filter((aDate) => {
+						//!each of this will be one day
+						return aDate.purchase_date === dayArr[i];
+					});
+
+					let dailyProfit = 0;
+
+					for (var j = 0; j < displayArrayOfDate.length; j++) {
+						if (
+							buyerContainer.includes(displayArrayOfDate[j].pur_customer_uid)
+						) {
+							oldCustomer[i] += 1;
+						} else {
+							buyerContainer.push(displayArrayOfDate[j].pur_customer_uid);
+							newCustomer[i] += 1;
+						}
+
+						dailyProfit += parseInt(displayArrayOfDate[j].Amount);
+					}
+					total += dailyProfit;
+					dailyIncome[i] = dailyProfit;
+					revenue[i] = total;
+				}
+				setNew(newCustomer);
+				setOld(oldCustomer);
+				setCumRenevue(revenue);
+				setDailyRevenue(dailyIncome);
+				// console.log("buyerContainer ", buyerContainer);
+				// console.log("retuners ", oldCustomer);
+				// console.log("NewBuyer ", newCustomer);
+			})
+			.catch((err) => {
+				console.log("The error is from Highchart.js: ", err);
+				setError(true);
+			});
+	}, [businessID]);
 
 	const options = {
 		title: {
@@ -34,20 +118,7 @@ function RevenueHighchart() {
 		},
 		xAxis: [
 			{
-				categories: [
-					"Jan",
-					"Feb",
-					"Mar",
-					"Apr",
-					"May",
-					"Jun",
-					"Jul",
-					"Aug",
-					"Sep",
-					"Oct",
-					"Nov",
-					"Dec",
-				],
+				categories: listOfDates,
 				crosshair: true,
 			},
 		],
@@ -56,19 +127,33 @@ function RevenueHighchart() {
 				min: 0,
 				title: {
 					text: "Daily Revenue ($)",
+					style: {
+						color: "#f08a5d",
+					},
 				},
 			},
 			{
 				min: 0,
 				title: {
 					text: "Cumulative Revenue ($)",
+					style: {
+						color: "#32e0c4",
+					},
 				},
 			},
 			{
 				min: 0,
 				title: {
-					text: "Number of Customers",
+					text: "Number of Orders",
+					style: {
+						color: "#f56a79",
+					},
 				},
+				// labels: {
+				// 	style: {
+				// 		fontSize: "19px",
+				// 	},
+				// },
 				opposite: true,
 			},
 		],
@@ -96,7 +181,7 @@ function RevenueHighchart() {
 				type: "column",
 				name: "New Customers",
 				showInLegend: false,
-				data: newCustomers,
+				data: listOfNewBuyer,
 				tooltip: {
 					pointFormat:
 						"{series.name}: <b>{point.y}</b><br/>Total: <b>{point.stackTotal}</b>",
@@ -107,7 +192,7 @@ function RevenueHighchart() {
 				type: "column",
 				name: "Return Customers",
 				showInLegend: false,
-				data: returnCustomers,
+				data: listOfRetuner,
 				tooltip: {
 					pointFormat:
 						"{series.name}: <b>{point.y}</b><br/>Total: <b>{point.stackTotal}</b>",
@@ -117,7 +202,7 @@ function RevenueHighchart() {
 			{
 				name: "Cumulative Revenue",
 				showInLegend: false,
-				data: cumulativeProfit,
+				data: listOfCumRevenue,
 				tooltip: {
 					pointFormat: "{series.name}: <b>${point.y}</b>",
 				},
@@ -126,7 +211,7 @@ function RevenueHighchart() {
 			{
 				name: "Daily Revenue",
 				showInLegend: false,
-				data: dailyRevenue,
+				data: listOfDailyRevenue,
 				tooltip: {
 					pointFormat: "{series.name}: <b>${point.y}</b>",
 				},

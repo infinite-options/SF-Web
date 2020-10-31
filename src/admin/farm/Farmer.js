@@ -56,7 +56,6 @@ export default function Farmer({tab, ...props}) {
 	const handleTab = () => {
 		// 0 <= tab <= MAX_VALUE
 		const tabIsValid = tab >= 0 && tab <= 5; // If more tabs are added, change max value
-		console.log("tab is: " + tab);
 		return (
 			<React.Fragment>
 				{/* if farmerTab is tampered with & is out of scope, defaults to FarmerHome */}

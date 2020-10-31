@@ -8,7 +8,7 @@ import {
 import DateFnsUtils from "@date-io/date-fns";
 import ReactApexChart from "react-apexcharts";
 import axios from "axios";
-import {setDayOfYear} from "date-fns";
+// import {setDayOfYear} from "date-fns";
 /*
 *Chart function to display analytics and Revenue
 ! using Material UI to implement Month Year picker
@@ -18,8 +18,14 @@ import {setDayOfYear} from "date-fns";
 const report_API =
 	"https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/admin_report/";
 function Chart() {
-	const [monthYearvalue, setMonthYear] = useState(new Date());
-	const [endMonthYearvalue, setEndMonthYear] = useState(new Date());
+	let today = new Date();
+	let pastTime = new Date(
+		new Date().getFullYear(),
+		new Date().getMonth() - 5,
+		1
+	);
+	const [monthYearvalue, setMonthYear] = useState(pastTime);
+	const [endMonthYearvalue, setEndMonthYear] = useState(today);
 	const [dataError, setError] = useState(false);
 	const [loadStatus, setLoaded] = useState(false);
 	const [data, setData] = useState({});
@@ -32,19 +38,61 @@ function Chart() {
 
 	//todo:series state
 	const [series, setSeries] = useState([]);
+
 	// console.log(monthYearvalue);
 	let businessID = "200-000006";
+	const changeOldDate = (event) => {
+		console.log("start time: ", monthYearvalue);
+		console.log("end time: ", endMonthYearvalue);
+		setMonthYear(event);
+		console.log(series);
+		console.log(customers);
+	};
+	const changeCurrentDate = (event) => {
+		console.log("start time: ", monthYearvalue);
+		console.log("end time: ", endMonthYearvalue);
+		setEndMonthYear(event);
+		console.log(series);
+		console.log(customers);
+	};
 
 	useEffect(() => {
 		axios
 			.get(report_API + businessID)
 			.then((response) => {
 				// console.log("Data from UID: " + businessID,response);
-				let theData = response.data.result;
+				let res = response.data.result;
 				// console.log(response.data.result);
-				setData(theData);
-				let monthYear_arr = customers;
-				let customer_identity_arr = domainName;
+				setData(res);
+
+				//todo: now remake theData to match the date given:
+				let start = monthYearvalue;
+				let end = endMonthYearvalue;
+				let tempData = [];
+				if (start > end) {
+					console.log("Error: Ending time should be latter than Starting");
+				} else {
+					// let check = new Date(c[2], parseInt(c[1])-1, c[0]);
+					console.log("Valid Times");
+					res.map((obj) => {
+						let dateString = obj.purchase_date;
+						dateString = dateString.split("-"); //!In the format of YYYY-MM-DD
+						let dateObj = new Date(
+							dateString[0],
+							parseInt(dateString[1]) - 1,
+							dateString[2]
+						);
+
+						if (dateObj >= start && dateObj <= end) {
+							tempData.push(obj);
+						}
+					});
+				}
+				console.log("tempData testing ", tempData);
+				let theData = tempData;
+
+				let monthYear_arr = [];
+				let customer_identity_arr = [];
 				for (var i = 0; i < theData.length; i++) {
 					let cusName =
 						theData[i].delivery_first_name +
@@ -54,9 +102,11 @@ function Chart() {
 						? (cusName = theData[i].pur_customer_uid)
 						: (cusName = cusName);
 					let pur_date = theData[i].purchase_date;
+					//todo if the name is not in the list yet, add it
 					if (!customer_identity_arr.includes(cusName)) {
 						customer_identity_arr.push(cusName);
 					}
+
 					if (!monthYear_arr.includes(pur_date)) {
 						monthYear_arr.push(pur_date);
 					}
@@ -109,7 +159,7 @@ function Chart() {
 								}
 							} else {
 								//!this mean that we assume adding the newest customer with his first time order counter
-								console.log(j);
+								// console.log(j);
 								let tempArr = new Array(customer_identity_arr.length).fill(
 									0,
 									0,
@@ -130,7 +180,7 @@ function Chart() {
 					}
 				}
 				setSeries(seriesObj);
-				console.log("test for the series Object making", seriesObj);
+				// console.log("test for the series Object making", seriesObj);
 
 				//todo: after attaching, now set to x-axis and domain name
 				setCustomer(customer_identity_arr);
@@ -143,33 +193,10 @@ function Chart() {
 				setError(true);
 			})
 			.finally(() => {
-				console.log("Loading Status: Good! ");
+				// console.log("Loading Status: Good! ");
 				setLoaded(true);
 			});
-	}, [businessID]);
-
-	// const seriesDefault = [
-	//   {
-	//     name: "NextDoor man",
-	//     data: [44, 55, 41, 67, 22, 43],
-	//   },
-	//   {
-	//     name: "Justin B",
-	//     data: [0, 23, 20, 8, 13, 27],
-	//   },
-	//   {
-	//     name: "Random C",
-	//     data: [11, 17, 15, 15, 21, 14],
-	//   },
-	//   {
-	//     name: "Buyer D",
-	//     data: [21, 7, 25, 13, 22, 8],
-	//   },
-	//   {
-	//     name: "seller E",
-	//     data: [21, 7, 25, 13, 22, 8, 11],
-	//   },
-	// ];
+	}, [businessID, monthYearvalue, endMonthYearvalue]);
 
 	const options = {
 		chart: {
@@ -250,7 +277,7 @@ function Chart() {
 								label="Start time"
 								helperText="choose starting month/year"
 								value={monthYearvalue}
-								onChange={setMonthYear}
+								onChange={changeOldDate}
 							/>
 						</div>
 
@@ -262,7 +289,7 @@ function Chart() {
 								label="End time"
 								helperText="choose ending month/year"
 								value={endMonthYearvalue}
-								onChange={setEndMonthYear}
+								onChange={changeCurrentDate}
 							/>
 						</div>
 					</MuiPickersUtilsProvider>
@@ -277,40 +304,7 @@ function Chart() {
 			</div>
 		);
 	}
-	return (
-		<div>
-			{/* <div className="monthYearPicker">
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <div className="sameRow">
-                    <DatePicker
-                        variant="outlined"
-                        openTo="month"
-                        views={["month", "year"]}
-                        label="Start time"
-                        helperText="choose starting month/year"
-                        value={monthYearvalue}
-                        onChange={setMonthYear}
-                    />
-                </div>
-                
-                <div className="sameRow makeSpace">
-                    <DatePicker
-                        variant="outlined"
-                        openTo="month"
-                        views={["month","year"]}
-                        label="End time"
-                        helperText="choose ending month/year"
-                        value={endMonthYearvalue}
-                        onChange={setEndMonthYear}
-                    />
-                </div>
-            </MuiPickersUtilsProvider>
-        </div>
-        
-        <ReactApexChart options={options} series={series} type="bar" height={350} /> */}
-			Data is comming up fast! Give us a sec
-		</div>
-	);
+	return <div>Data is comming up fast! Give us a sec</div>;
 }
 
 export default Chart;
