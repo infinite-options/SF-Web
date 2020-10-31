@@ -101,11 +101,13 @@ export default function AdminNavBar({ tab, setTab, ...props }) {
             <div className={classes.rightButtons}>
               {Auth.authLevel >= 2 && (
                 <React.Fragment>
-                  <Link to="/admin/messages" style={{ textDecoration: "none" }}>
-                    <Button size={"small"} className={classes.button}>
+                  <Button
+                    size={"small"}
+                    className={classes.button}
+                    onClick={() => setTab(5)}
+                  >
                       Messages
-                    </Button>
-                  </Link>
+                  </Button>
                   <Button
                     size={"small"}
                     className={classes.button}
