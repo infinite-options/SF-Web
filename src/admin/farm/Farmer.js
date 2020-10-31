@@ -20,6 +20,7 @@ import FarmerSettings from "./FarmerSettings";
 import Chart from "./chart";
 import Revenue from "./revenue";
 import RevenueHighchat from "./RevenueHighchart";
+import Notifications from './Notifications';
 // import FarmerNavBar from './FarmerNavBar';
 
 export default function Farmer({tab, ...props}) {
@@ -43,6 +44,7 @@ export default function Farmer({tab, ...props}) {
 	 *   2 -> settings
 	 *   3 -> chart
 	 *   4 -> revenue
+	 * 	 5 -> messages
 	 */
 
 	// Home/Report/Settings Buttons do not redirect to another URL path,
@@ -53,8 +55,7 @@ export default function Farmer({tab, ...props}) {
 	//!The reason using css to display none is for the css file which can't be hidden by html
 	const handleTab = () => {
 		// 0 <= tab <= MAX_VALUE
-		const tabIsValid = tab >= 0 && tab <= 4; // If more tabs are added, change max value
-		console.log("test hidden", tab !== 3);
+		const tabIsValid = tab >= 0 && tab <= 5; // If more tabs are added, change max value
 		console.log("tab is: " + tab);
 		return (
 			<React.Fragment>
@@ -77,10 +78,19 @@ export default function Farmer({tab, ...props}) {
 					{/* <Revenue farmID={farmID} farmName={farmName} /> */}
 					<RevenueHighchat farmID={farmID} farmName={farmName} />
 				</div>
+				<Notifications farmID={farmID} farmName={farmName} hidden={tab !== 5} />
 			</React.Fragment>
 		);
 	};
 
+	// No Paper for Notifications
+	if(tab === 5) {
+		return (
+			<div>
+				{handleTab()}
+			</div>
+		);
+	}
 	return (
 		<div>
 			<Paper style={paperStyle} elevation={0}>

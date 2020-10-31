@@ -84,7 +84,7 @@ function AdminSocialSignup(props) {
             console.log('Necessary information not provided');
             props.history.push("/adminlogin");
         }
-    }, []);
+    }, [props.history,props.location]);
 
   const _onReset = () => {
     setState(prevState => ({
