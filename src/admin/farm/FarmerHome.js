@@ -1,19 +1,21 @@
-import React, { Component, useContext, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Item from "./Item";
 import AddItemModel from './AddItemModel'
 import NumberFormat from 'react-number-format';
-import IconButton from '@material-ui/core/IconButton';
-import Fab from '@material-ui/core/Fab';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import Switch from '@material-ui/core/Switch';
-import {AdminFarmContext} from '../AdminFarmContext'
-import axios from 'axios';
-import {Grid, Paper, Button, Typography, Card, CardActions, CardMedia, CardContent, Modal, TextField, CircularProgress} from '@material-ui/core';
+// import IconButton from '@material-ui/core/IconButton';
+// import Fab from '@material-ui/core/Fab';
+// import Select from '@material-ui/core/Select';
+// import MenuItem from '@material-ui/core/MenuItem';
+// import InputLabel from '@material-ui/core/InputLabel';
+// import FormControlLabel from '@material-ui/core/FormControlLabel';
+// import FormControl from '@material-ui/core/FormControl';
+// import Switch from '@material-ui/core/Switch';
+// import {AdminFarmContext} from '../AdminFarmContext'
+// import {Grid, Paper, ButtonBase, Button, Typography, Card, CardActions, CardMedia, CardContent, Modal, TextField, CircularProgress, Divider} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import {ButtonBase, Divider, Grid, Modal} from '@material-ui/core';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import axios from 'axios';
 
 //https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/itemsByBusiness/200-000003
 //api/v2/businesses
@@ -75,13 +77,14 @@ export default function FarmerHome({ farmID, farmName, ...props }) {
     return (
         <div hidden={props.hidden}>
             <div style={labelStyle}>
-                <h1>{farmName}</h1>
+                <h2 className={classes.heading}>{farmName}</h2>
+            </div>
+            <Divider className={classes.divider}/>
+            <div style={labelStyle}>
+                <h2 className={classes.subHeading}>Current Produce</h2>
             </div>
             <div style={labelStyle}>
-                <h2>Current Produce</h2>
-            </div>
-            <div style={labelStyle}>
-                <Button onClick={handleOpenModel}>Add Product</Button>    
+                <ButtonBase onClick={handleOpenModel}> <h2 className={classes.subHeading}> + Add Product </h2> </ButtonBase>
             </div>
             {/* {!farmData.length ? ( */}
                 <Grid container spacing={2}/* style={{ width: "100%", margin: 0 }}*/>
@@ -91,6 +94,7 @@ export default function FarmerHome({ farmID, farmName, ...props }) {
                             if(itemData.item_status && 
                                itemData.item_status.toLowerCase() === "active")
                              return <Item data={itemData} key={idx} index={idx} setData={setFarmData}/>
+                            return null;
                         })
                     }
                     
@@ -100,15 +104,17 @@ export default function FarmerHome({ farmID, farmName, ...props }) {
                 {modelBody}
             </Modal>
             {/* {!farmData.length ? ( */}
-                <Grid container spacing={2}>
+                {/* <Grid container spacing={2}>
                    
-                </Grid>
+                </Grid> */}
             {/* ) : (<CircularProgress/>)} */}
-            
+            <Divider className={classes.divider}/>
             <div style={labelStyle}>
-                <h2>Past Produce</h2>
+                <h2 className={classes.subHeading}>Past Produce</h2>
             </div>
-            
+            <div style={labelStyle}>
+                <ButtonBase> <h2 className={classes.subHeading}> <RefreshIcon /> Renew All Products </h2> </ButtonBase>
+            </div>
             {/* {!farmData.length ? ( */}
                 <Grid container spacing={2}>
                     {
@@ -117,6 +123,7 @@ export default function FarmerHome({ farmID, farmName, ...props }) {
                             if(!itemData.item_status || 
                                 itemData.item_status.toLowerCase() === "past")
                              return <Item data={itemData} key={idx} index={idx} setData={setFarmData}/>
+                            return null;
                         })
                     }
                 {/* NOTE: Any item with a status tag of not 'past' nor 'active' is considered deleted and will be hidden */}
@@ -170,6 +177,16 @@ const useStyles = makeStyles((theme) => ({
       selectEmpty: {
         marginTop: theme.spacing(2),
     },
+    heading: {
+        color: "#337178",
+    },
+    subHeading: {
+        color: "#a3a3a3",
+    },
+    divider: {
+        backgroundColor: "#337178",
+        margin: theme.spacing(3)
+    }
 }));
 
 function NumberFormatCustomPrice(props) {

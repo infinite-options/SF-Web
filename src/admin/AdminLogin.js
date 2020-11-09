@@ -118,11 +118,9 @@ function AdminLogin(props) {
                                 if(res.data.code === 200) {
                                     console.log('Login success')
                                     let customerInfo = res.data.result[0];
-                                    // console.log('cookie',document.cookie)
-                                    document.cookie = 'customer_uid=' + customerInfo.customer_uid;
-                                    // console.log('cookie',document.cookie)
                                     Auth.setIsAuth(true);
                                     Cookies.set("login-session", "good");
+                                    Cookies.set('customer_uid',customerInfo.customer_uid)
                                     props.history.push("/admin");
                                 } else if (res.data.code === 406 || res.data.code === 404){
                                     console.log('Invalid credentials')
@@ -226,13 +224,7 @@ function AdminLogin(props) {
             console.log(res);
             if(!(res.data.code && res.data.code !== 200)) {
                 let customerInfo = res.data.result[0];
-                console.log(customerInfo);
-                // console.log('cookie',document.cookie)
-                document.cookie = 'customer_uid=' + customerInfo.customer_uid;
-                // console.log('cookie',document.cookie)
-                Auth.setIsAuth(true);
-                Cookies.set('login-session', 'good');
-                // Successful log in, Try to update tokens, then log in
+                // Successful log in, Try to update tokens, then continue to next page based on role
                 axios
                 .post('https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/token_fetch_update/update_web',{
                     uid: customerInfo.customer_uid,
@@ -241,14 +233,19 @@ function AdminLogin(props) {
                 })
                 .then((res) => {
                     console.log(res);
-                    props.history.push("/admin");
                 })
                 .catch((err) => {
                     if(err.response) {
                         console.log(err.response);
                     }
                     console.log(err);
-                    props.history.push("/admin");
+                })
+                .finally(() => {
+                    console.log(customerInfo);
+                    Cookies.set('login-session', 'good');
+                    Cookies.set('customer_uid',customerInfo.customer_uid)
+                    Auth.setIsAuth(true);
+                    // props.history.push("/admin");
                 })
             } else if(res.data.code === 404) {
                 props.history.push("/socialsignup",{

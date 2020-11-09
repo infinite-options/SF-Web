@@ -61,9 +61,9 @@ function OptionBar({notification, setNotification, ...props }) {
         setNotification(event.target.value)
     }
 
-    const [openHistory, setOpenHistory] = React.useState(false);
-    const [openGroup, setOpenGroup] = React.useState(false);
-    const [openMessage, setOpenMessage] = React.useState(false);
+    const [openHistory, setOpenHistory] = useState(false);
+    const [openGroup, setOpenGroup] = useState(false);
+    const [openMessage, setOpenMessage] = useState(false);
 
     const classes = useStyles();
     return (

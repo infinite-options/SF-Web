@@ -1,16 +1,18 @@
-import React, { Component, useContext, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import NumberFormat from 'react-number-format';
-import IconButton from '@material-ui/core/IconButton';
-import FavoriteIcon from '@material-ui/icons/Favorite';
+// import FavoriteIcon from '@material-ui/icons/Favorite';
+import StarRateIcon from '@material-ui/icons/StarRate';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import {Grid, Paper, Button, Typography, Card, CardActions, CardMedia, CardContent, Modal, TextField, CircularProgress} from '@material-ui/core';
+// import {Grid, Paper, Button, Typography, Card, CardActions, CardMedia, CardContent, Modal, TextField, CircularProgress} from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import Switch from '@material-ui/core/Switch';
+// import Switch from '@material-ui/core/Switch';
 import { makeStyles } from '@material-ui/core/styles';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+// import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { Button, Card, CardActions, CardContent, CardMedia, Grid, Modal, TextField } from '@material-ui/core';
 import Axios from 'axios';
 
 import InputLabel from '@material-ui/core/InputLabel';
@@ -29,14 +31,14 @@ export default function Item(props) {
         setEditData(props.data);
     }, [props.data]);
 
-    useEffect(() => {
-        // creating File object from item_photo URL
-        fetch("https://cors-anywhere.herokuapp.com/" + props.data.item_photo)
-        .then(response => response.blob())
-        .then(blob => new File([blob], "item_photo.png", { type: "image/png" }))
-        .then(file => setFile(prevFile => ({ ...prevFile, obj: file })))
-        .catch(err => console.log(err.response || err));
-    }, []);
+    // useEffect(() => {
+    //     // creating File object from item_photo URL
+    //     fetch("https://cors-anywhere.herokuapp.com/" + props.data.item_photo)
+    //     .then(response => response.blob())
+    //     .then(blob => new File([blob], "item_photo.png", { type: "image/png" }))
+    //     .then(file => setFile(prevFile => ({ ...prevFile, obj: file })))
+    //     .catch(err => console.log(err.response || err));
+    // }, []);
 
     const handleHeartChange = () => {
         const updatedData = { ...props.data };
@@ -237,58 +239,100 @@ export default function Item(props) {
             </Grid>
         </div>
     );
+    // let oldCardItem = (
+    //     <Grid container  style={{backgroundColor: 'white',}}>
+    //         <Grid item xs={12}>
+    //             <CardContent style={{backgroundColor:'white', height: '20px', overflowY:'auto',}}>
+    //                     <h5 style={{backgroundColor: 'white', padding:'0', margin: '0',}}>{props.data.item_name}</h5>
+    //             </CardContent>
+    //         </Grid>
+    //         <Grid item xs={4} style={{backgroundColor:'white'}}>
+    //             <CardContent>
+    //                 <h5 style={{padding:'0', margin: '0',}}> <NumberFormat decimalScale={2}  fixedDecimalScale={true} value={props.data.item_price} displayType={'text'} thousandSeparator={true} prefix={'$'} /> </h5>
+    //             </CardContent>
+    //         </Grid>
+    //         <Grid item xs={2} style={{backgroundColor:'white',}}>
+                
+    //         </Grid>
+    //         <Grid item xs={6} style={{backgroundColor:'white',}}>
+    //             <CardContent>
+                    
+    //             </CardContent>
+    //         </Grid>
+    //         <Grid item xs={12}>
+    //             <CardActions disableSpacing style={{justifyContent: "center"}}>
+    //                 <IconButton onClick={handleHeartChange}>
+    //                     <FavoriteIcon style={{color: props.data.favorite.toLowerCase() === "true" ? "red" : "grey"}} />
+    //                 </IconButton>
+    //                 <IconButton onClick={handleRefresh}>
+    //                     <RefreshIcon />
+    //                 </IconButton>
+    //                 <IconButton onClick={handleOpenEditModel}>
+    //                     <EditIcon/>
+    //                 </IconButton>
+    //                 <IconButton onClick={handleDelete}>
+    //                     <DeleteIcon/>
+    //                 </IconButton>
+    //             </CardActions>
+    //         </Grid>
+    //     </Grid>
+    // );
+
+    const itemDescription = (description) => {
+        // Description can be string or array
+        try {
+            let descriptionObject = JSON.parse(description);
+            // console.log('Description array');
+            // console.log(descriptionObject)
+            let descriptionString = descriptionObject.reduce((acc, cur, idx) => {
+                if(idx !== 0) {
+                    return acc + ', ' + cur;
+                } else {
+                    return cur;
+                }
+            },'');
+            return descriptionString;
+        } catch (e) {
+            // Description is string, return directly
+            return description;
+        }
+    }
+
     return (
         <Grid item xs={6} sm={4} md={3} lg={2}>
             <Modal open={open} onClose={handleCloseEditModel}>
                 {modelBody}
             </Modal>
             <Card
-                style={{height: '375px'/*, border: "1px solid #ccc", borderRadius: "16px"*/}}
+                variant="outlined"
+                className={classes.card}
             >
-            <CardMedia
-                image={props.data.item_photo || "https://via.placeholder.com/400?text=No+Image+Available"}
-                style={{width: '100%', height: '200px', margin: 'auto'}}
-            />
-            <Grid container  style={{backgroundColor: 'white',}}>
-                <Grid item xs={12}>
-                    <CardContent style={{backgroundColor:'white', height: '20px', overflowY:'auto',}}>
-                            <h5 style={{backgroundColor: 'white'/*, overflowY:'scroll'*/, padding:'0', margin: '0',}}>{props.data.item_name}</h5>
-                    </CardContent>
-                </Grid>
-                <Grid item xs={4} style={{backgroundColor:'white',}}>
-                    <CardContent>
-                        <NumberFormat decimalScale={2}  fixedDecimalScale={true} value={props.data.item_price} displayType={'text'} thousandSeparator={true} prefix={'$'} />
-                    </CardContent>
-                </Grid>
-                <Grid item xs={2} style={{backgroundColor:'white',}}>
-                    
-                </Grid>
-                <Grid item xs={6} style={{backgroundColor:'white',}}>
-                    <CardContent>
-                        
-                    </CardContent>
-                </Grid>
-                <Grid item xs={12}>
-                    <CardActions disableSpacing style={{/*overflowX: 'scroll', */justifyContent: "center"}}>
-                        <IconButton onClick={handleHeartChange}>
-                            <FavoriteIcon style={{color: props.data.favorite.toLowerCase() === "true" ? "red" : "grey"}} />
-                        </IconButton>
-                        <IconButton onClick={handleRefresh}>
-                            <RefreshIcon />
-                        </IconButton>
-                        <IconButton onClick={handleOpenEditModel}>
-                            <EditIcon/>
-                        </IconButton>
-                        <IconButton onClick={handleDelete}>
-                            <DeleteIcon/>
-                        </IconButton>
-                    </CardActions>
-                </Grid>
-            </Grid>
+                <CardMedia
+                    image={props.data.item_photo || "https://via.placeholder.com/400?text=No+Image+Available"}
+                    style={{width: '100%', height: '200px', margin: 'auto'}}
+                />
+                <CardContent>
+                    <h5 className={classes.itemName}>{props.data.item_name}</h5>
+                    <p className={classes.itemDesc}>{itemDescription(props.data.item_desc)}</p>
+                </CardContent>
+                <NumberFormat decimalScale={2}  fixedDecimalScale={true} value={props.data.item_price} displayType={'text'} thousandSeparator={true} prefix={'$'} className={classes.itemPrice}/>
+                <IconButton onClick={handleHeartChange} className={classes.itemIcon}>
+                    <StarRateIcon style={{color: props.data.favorite.toLowerCase() === "true" ? "#f7b300" : "grey"}} />
+                </IconButton>
+                <IconButton onClick={handleRefresh} className={classes.itemIcon}>
+                    <RefreshIcon />
+                </IconButton>
+                <IconButton onClick={handleDelete} className={classes.itemIcon}>
+                    <DeleteIcon/>
+                </IconButton>
+                <IconButton onClick={handleOpenEditModel} className={classes.itemIcon}>
+                    <EditIcon/>
+                </IconButton>
             </Card>  
         </Grid>
     )
 }
+
 function NumberFormatCustomQuantity(props) {
     const { inputRef, onChange, ...other } = props;
   
@@ -353,6 +397,34 @@ function NumberFormatCustomPrice(props) {
         width: 150,
         minWidth: 75,
     },
+    card: {
+        minHeight: '300px',
+        border: "1px solid #ccc",
+        borderRadius: "16px"
+    },
+    itemName: {
+        backgroundColor:'white',
+        fontSize: '0.83rem',
+        padding: '0',
+        margin: '0',
+    },
+    itemDesc: {
+        fontSize: '0.75rem',
+        color: '#a3a3a3',
+        textAlign: 'left',
+    },
+    itemPrice: {
+        float: 'left',
+        fontWeight: 'bold',
+        fontSize: '0.83rem',
+        padding: '0',
+        margin: '0.2rem',
+    },
+    itemIcon: {
+        float: 'right',
+        padding: '0',
+        margin: '0.2rem',
+    }
 }));
 
 /*

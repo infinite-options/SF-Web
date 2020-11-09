@@ -69,35 +69,39 @@ export default function AdminNavBar({ tab, setTab, ...props }) {
       <ThemeProvider theme={theme}>
         <AppBar color="primary" position="static">
           <Toolbar>
-            <Select
-              defaultValue={"200-000003"}
-              className={classes.farmSelect}
-              onChange={handleChangeFarm}
-            >
-              <MenuItem value={"200-000003"}>Esquivel Farm</MenuItem>
-              <MenuItem value={"200-000004"}>Resendiz Family</MenuItem>
-            </Select>
-            <Button
-              size={"small"}
-              className={classes.button}
-              onClick={() => setTab(0)}
-            >
-              Home
-            </Button>
-            <Button
-              size={"small"}
-              className={classes.button}
-              onClick={() => setTab(1)}
-            >
-              Reports
-            </Button>
-            <Button
-              size={"small"}
-              className={classes.button}
-              onClick={() => setTab(2)}
-            >
-              Settings
-            </Button>
+            { Auth.authLevel >= 1 && (
+              <React.Fragment>
+                <Select
+                  defaultValue={"200-000003"}
+                  className={classes.farmSelect}
+                  onChange={handleChangeFarm}
+                >
+                  <MenuItem value={"200-000003"}>Esquivel Farm</MenuItem>
+                  <MenuItem value={"200-000004"}>Resendiz Family</MenuItem>
+                </Select>
+                <Button
+                  size={"small"}
+                  className={classes.button}
+                  onClick={() => setTab(0)}
+                >
+                  Home
+                </Button>
+                <Button
+                  size={"small"}
+                  className={classes.button}
+                  onClick={() => setTab(1)}
+                >
+                  Reports
+                </Button>
+                <Button
+                  size={"small"}
+                  className={classes.button}
+                  onClick={() => setTab(2)}
+                >
+                  Settings
+                </Button>
+              </React.Fragment>)
+            }
             <div className={classes.rightButtons}>
               {Auth.authLevel >= 2 && (
                 <React.Fragment>

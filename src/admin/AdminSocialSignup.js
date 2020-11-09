@@ -240,9 +240,9 @@ function AdminSocialSignup(props) {
         .then((res) => {
             console.log(res);
             let customerInfo = res.data.result;
-            document.cookie = 'customer_uid=' + customerInfo.customer_uid;
             Auth.setIsAuth(true);
             Cookies.set('login-session', 'good');
+            Cookies.set('customer_uid',customerInfo.customer_uid)
             props.history.push("/admin");
         })
         .catch((err) => {

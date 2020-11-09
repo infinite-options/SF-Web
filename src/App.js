@@ -23,16 +23,8 @@ function App() {
   // IF USER IS LOGGED IN, CHECK THEIR ACCOUNT AUTHORITY:
   // Level  0: Lowest level 
   // Level  1: User is logged in & is farmer or higher 
-  // Level  2: User is logged in & is admin 
-  // const authLevel = (() => { // 
-  //   switch (accountType) {
-  //       case 'customer': return 0;
-  //       case 'farmer': return 1;
-  //       case 'admin': return 2;
-  //       default: return 0;
-  //   }
-  // })();
-  const authLevel = 2; // temporary value for testing purposes
+  // Level  2: User is logged in & is admin
+  const [authLevel, setAuthLevel] = useState(0);
   
   const readCookie = () => {
     const loggedIn = Cookies.get('login-session');
@@ -53,10 +45,22 @@ function App() {
       axios.get(BASE_URL + "Profile/" + Cookies.get('customer_uid'))
       .then((response) => {
         console.log("Account:", response);
+        let newAccountType = response.data.result[0].role.toLowerCase()
         setAccountType(response.data.result[0].role ? 
-          response.data.result[0].role.toLowerCase() : 
+           newAccountType : 
           ''
         );
+        let newAuthLevel = (() => {
+          console.log(newAccountType)
+          switch (newAccountType) {
+              case 'customer': return 0;
+              case 'farmer': return 1;
+              case 'admin': return 2;
+              default: return 0;
+          }
+        })();
+        console.log(newAuthLevel)
+        setAuthLevel(newAuthLevel);
       })
       .catch(err => {
         console.log(err.response || err);
