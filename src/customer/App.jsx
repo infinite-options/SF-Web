@@ -1,29 +1,10 @@
+import { BrowserRouter } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Admin from './admin/Admin';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  Redirect,
-} from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import Nav from './customer/Nav';
-import someContexts from './customer/makeContext';
-import AdminLogin from './admin/AdminLogin';
-import FarmerLogin from './farmer/FarmerLogin';
-import FarmerSignUp from './farmer/FarmerSignUp';
-import { AuthContext } from './auth/AuthContext';
-import AuthAdminRoute from './auth/AuthAdminRoute';
-import AuthAdminLoginRoute from './auth/AuthAdminLoginRoute';
-import AdminSocialSignup from './admin/AdminSocialSignup';
-import AdminSignup from './admin/AdminSignup';
+import Nav from './Nav';
+import someContexts from './makeContext';
+// import { response } from "express";
 import axios from 'axios';
-
-const BASE_URL =
-  'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
 
 const cookies = new Cookies();
 
@@ -50,7 +31,8 @@ function App() {
   const [othersSort, setValOther] = useState(true);
 
   //this part will work for fatching and displaying the products of all items in shop
-  var url = BASE_URL + 'itemsByBusiness/200-000003';
+  var url =
+    'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/itemsByBusiness/200-000003';
   const [itemsFromFetchTodDisplay, SetfetchData] = useState([]);
   const [itemError, setHasError] = useState(false);
   const [itemIsLoading, setIsLoading] = useState(false);
@@ -144,126 +126,84 @@ function App() {
       });
   }, [businessURL]);
 
-  //if user wants to filtering day
-  const [newWeekDay, setWeekDay] = useState([]);
-
-  const [isAuth, setIsAuth] = useState(false); // checks if user is logged in
-  const [accountType, setAccountType] = useState();
+  const [userRole, setUserRole] = useState('CUSTOMER');
   const [isUserLoaded, setIsUserLoaded] = useState(false);
 
   let uid =
     cookies.get('customer_uid') == null ? '' : cookies.get('customer_uid');
 
-  // IF USER IS LOGGED IN, CHECK THEIR ACCOUNT AUTHORITY:
-  // Level  0: Lowest level
-  // Level  1: User is logged in & is farmer or higher
-  // Level  2: User is logged in & is admin
-  const [authLevel, setAuthLevel] = useState(0);
-
-  const readCookie = () => {
-    const loggedIn = cookies.get('login-session');
-    // console.log('asduojhfhuasdf');
-    if (loggedIn) {
-      setIsAuth(true);
-      console.log('User is already logged in');
-    }
-  };
-
+  const userUrl =
+    'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/Profile/' +
+    uid;
+  //this useEffect to fetch the user role
   useEffect(() => {
-    console.log('reading cookie...');
-    readCookie();
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get(BASE_URL + 'Profile/' + cookies.get('customer_uid'))
-      .then((response) => {
-        console.log('Account:', response);
-        let newAccountType = response.data.result[0].role.toLowerCase();
-        setAccountType(response.data.result[0].role ? newAccountType : '');
-        let newAuthLevel = (() => {
-          console.log(newAccountType);
-          switch (newAccountType) {
-            case 'customer':
-              return 0;
-            case 'farmer':
-              return 1;
-            case 'admin':
-              return 2;
-            default:
-              return 0;
+    let flag = false;
+    const fetchData = async () => {
+      if (uid != '') {
+        try {
+          const response = await fetch(userUrl);
+          const responseData = await response.json();
+          if (responseData.code === 200) {
+            console.log('Got the user Data');
+            if (!flag) {
+              setUserRole(responseData.result[0].role);
+              // console.log('role set: ', responseData.result[0].role);
+            }
           }
-        })();
-        console.log(newAuthLevel);
-        setAuthLevel(newAuthLevel);
-      })
-      .catch((err) => {
-        console.log(err.response || err);
-      });
-  }, [isAuth]);
+        } catch (err) {
+          console.log('user error: ', err);
+        } finally {
+          console.log('finish loading');
+          setIsUserLoaded(true);
+        }
+      }
+    };
+    fetchData();
+
+    return () => {
+      flag = true;
+    };
+  }, [userUrl]);
+
+  //if user wants to filtering day
+  const [newWeekDay, setWeekDay] = useState([]);
 
   return (
-    <Router>
-      <div className="App">
-        <AuthContext.Provider value={{ isAuth, setIsAuth, authLevel }}>
-          <someContexts.Provider
-            value={{
-              cartTotal,
-              setCartTotal,
-              fruitSort,
-              setValFruit,
-              vegeSort,
-              setValVege,
-              dessertSort,
-              setValDessert,
-              othersSort,
-              setValOther,
-              itemsFromFetchTodDisplay,
-              itemError,
-              itemIsLoading,
-              currentFootClick,
-              setFootClick,
-              defaultBussines,
-              busIsLoad,
-              busError,
-              newWeekDay,
-              setWeekDay,
-              market,
-              setMarket,
-              farmClicked,
-              setFarmClicked,
-              isUserLoaded,
-            }}
-          >
-            <Switch>
-              {/* <Route exact path='/'/> */}
-              <AuthAdminRoute
-                path="/admin"
-                component={Admin}
-                auth={isAuth}
-                authLevel={authLevel}
-              />
-              <AuthAdminLoginRoute
-                path="/adminlogin"
-                component={AdminLogin}
-                auth={isAuth}
-              />
-              <AuthAdminLoginRoute
-                path="/socialsignup"
-                component={AdminSocialSignup}
-                auth={isAuth}
-              />
-              <AuthAdminLoginRoute
-                path="/signup"
-                component={AdminSignup}
-                auth={isAuth}
-              />
-            </Switch>
-            <Nav />
-          </someContexts.Provider>
-        </AuthContext.Provider>
-      </div>
-    </Router>
+    <BrowserRouter>
+      <someContexts.Provider
+        value={{
+          cartTotal,
+          setCartTotal,
+          fruitSort,
+          setValFruit,
+          vegeSort,
+          setValVege,
+          dessertSort,
+          setValDessert,
+          othersSort,
+          setValOther,
+          itemsFromFetchTodDisplay,
+          itemError,
+          itemIsLoading,
+          currentFootClick,
+          setFootClick,
+          defaultBussines,
+          busIsLoad,
+          busError,
+          newWeekDay,
+          setWeekDay,
+          market,
+          setMarket,
+          farmClicked,
+          setFarmClicked,
+          userRole,
+          setUserRole,
+          isUserLoaded,
+        }}
+      >
+        <Nav />
+      </someContexts.Provider>
+    </BrowserRouter>
   );
 }
 
