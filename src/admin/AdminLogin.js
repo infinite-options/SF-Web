@@ -127,7 +127,17 @@ function AdminLogin(props) {
                       Auth.setIsAuth(true);
                       Cookies.set('login-session', 'good');
                       Cookies.set('customer_uid', customerInfo.customer_uid);
-                      props.history.push('/admin');
+                      switch (customerInfo.role) {
+                        case 'ADMIN':
+                          props.history.push('/admin');
+                          break;
+                        case 'FARMER':
+                          props.history.push('/store');
+                          break;
+                        case 'CUSTOMER':
+                          props.history.push('/store');
+                          break;
+                      }
                     } else if (res.data.code === 406 || res.data.code === 404) {
                       console.log('Invalid credentials');
                     } else if (res.data.code === 401) {

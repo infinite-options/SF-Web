@@ -9,6 +9,7 @@ import Background from '../welcome-bg.png';
 
 import axios from 'axios';
 import Login from './auth/Login';
+import AdminLogin from '../admin/AdminLogin';
 import Signup from './auth/Signup';
 
 const styles = {
@@ -111,9 +112,9 @@ class Landing extends Component {
   render() {
     return (
       <div>
+        <AdminLogin />
         <Grid container style={styles} spacing={3} direction="column">
           <h1 style={{ color: 'black' }}>Welcome to Serving Fresh</h1>
-          <Login />
           <Signup />
           <Grid item xs>
             <Button component={Link} to="/farms" variant="contained">

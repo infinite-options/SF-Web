@@ -6,6 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 
@@ -63,6 +64,11 @@ export default function AdminNavBar({ tab, setTab, ...props }) {
     setFarmID(event.target.value);
   };
 
+  const handleLogoClick = (event) => {
+    console.log(event.target.value);
+    // props.history.push('/store');
+  };
+
   const classes = useStyles();
   return (
     <div className={classes.root}>
@@ -102,6 +108,21 @@ export default function AdminNavBar({ tab, setTab, ...props }) {
                 </Button>
               </React.Fragment>
             )}
+            <Box
+              property="div"
+              width="100%"
+              position="absolute"
+              display="flex"
+              justifyContent="center"
+            >
+              <img
+                width="50"
+                height="50"
+                src="./sf logo_without text.png"
+                alt="logo"
+                onClick={handleLogoClick}
+              />
+            </Box>
             <div className={classes.rightButtons}>
               {Auth.authLevel >= 2 && (
                 <React.Fragment>

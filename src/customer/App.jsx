@@ -1,7 +1,7 @@
 import { BrowserRouter } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import Cookies from 'universal-cookie';
-import Nav from './Nav';
+import Nav from '../Nav';
 import someContexts from './makeContext';
 // import { response } from "express";
 import axios from 'axios';

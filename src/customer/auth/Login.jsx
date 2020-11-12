@@ -11,6 +11,7 @@ import axios from 'axios';
 import { withRouter } from 'react-router';
 import appColors from '../../styles/AppColors';
 import someContexts from '../makeContext';
+import { AuthContext } from '../../auth/AuthContext';
 
 let API_URL =
   'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
@@ -18,7 +19,7 @@ let API_URL =
 const cookies = new Cookies();
 
 class Login extends Component {
-  static contextType = someContexts;
+  static contextType = AuthContext;
 
   constructor(props) {
     super();
@@ -144,6 +145,7 @@ class Login extends Component {
                         path: '/',
                         secure: true,
                       });
+                      this.context.setIsAuth(true);
                       // console.log('cookie',document.cookie)
                       switch (customerInfo.role) {
                         case 'ADMIN':
