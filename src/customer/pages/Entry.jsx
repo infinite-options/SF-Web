@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import someContexts from '../makeContext';
-import { Box } from '@material-ui/core';
+import { Box, Button } from '@material-ui/core';
 import appColors from '../../styles/AppColors';
 
 //this function get an array of all items in localstorage
@@ -71,45 +71,62 @@ function Entry(props) {
   }
 
   return (
-    <Box width="170px" flexGrow={1} m={1}>
-      <Box
-        height="170px"
-        style={{ borderRadius: 10, border: '1px solid ' + appColors.border }}
-      >
+    <>
+      <Box width="170px" flexGrow={1} m={1} mb={-8}>
         <Box
+          className="center-cropped"
           display="flex"
           alignItems="flex-start"
           position="relative"
           zIndex="modal"
-        >
-          <img width="170px" height="170px" src={props.img} alt={tempName} />
-        </Box>
-        <Box position="relative" zIndex="tooltip" top={-90}>
-          <Box alignSelf="flex-start">
+          style={{
+            width: '170px',
+            height: '170px',
+            backgroundImage: `url(${props.img})`,
+            backgroundSize: '100% 100%',
+            backgroundPosition: 'center center',
+            backgroundRepeat: 'no-repeat',
+            borderRadius: 5,
+            border: '1px solid ' + appColors.border,
+          }}
+        ></Box>
+        <Box position="relative" zIndex="tooltip" top={-81}>
+          <Box>
             <h3>{count}</h3>
           </Box>
-          <Box alignSelf="flex-end">
-            <div>
-              <button onClick={decrease}>-</button>
-              <button onClick={increase}>+</button>
-            </div>
-            {/* <hr className="hrProduct" /> */}
+          <Button
+            variant="contained"
+            size="small"
+            color="white"
+            onClick={decrease}
+            style={{ width: '84px' }}
+          >
+            -
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            color="white"
+            onClick={increase}
+            style={{ width: '84px' }}
+          >
+            +
+          </Button>
+          <Box
+            width="168px"
+            p={0.1}
+            style={{
+              fontSize: '12px',
+              backgroundColor: 'white',
+              borderRadius: 5,
+              border: '1px solid ' + appColors.border,
+            }}
+          >
+            {props.name}${props.price} {props.meaning}
           </Box>
         </Box>
       </Box>
-      <Box
-        p={0.1}
-        style={{
-          fontSize: '12px',
-          backgroundColor: 'white',
-          borderRadius: 3,
-          border: '1px solid ' + appColors.border,
-        }}
-      >
-        {props.name}
-        {props.price} {props.meaning}
-      </Box>
-    </Box>
+    </>
   );
 }
 

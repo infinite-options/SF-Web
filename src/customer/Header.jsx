@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import someContexts from './makeContext';
 import { Link } from 'react-router-dom';
+import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 
 function Header(props) {
   const cartContext = useContext(someContexts);

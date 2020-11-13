@@ -78,16 +78,21 @@ function DisplayProduct() {
       copyFarm = holdItem;
     }
     return (
-      <Box
-        ml={2}
-        p={2}
-        display="flex"
-        flexWrap="wrap"
-        width="100%"
-        style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
-      >
-        {copyFarm.map(createProduct2)}
-      </Box>
+      <>
+        <Box
+          ml={2}
+          p={2}
+          width="100%"
+          style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
+        >
+          <Box mb={2}>
+            Produce from farms delivering on {someContexts.newWeekDay}
+          </Box>
+          <Box display="flex" flexWrap="wrap">
+            {copyFarm.map(createProduct2)}
+          </Box>
+        </Box>
+      </>
     );
   } else {
     return <div>Please wait.. We are loading the products for you..!</div>;

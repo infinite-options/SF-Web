@@ -16,6 +16,7 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { AuthContext } from '../auth/AuthContext';
 import { AdminFarmContext } from './AdminFarmContext';
+import appColors from 'styles/AppColors';
 
 const theme = createMuiTheme({
   palette: {
@@ -73,8 +74,30 @@ export default function AdminNavBar({ tab, setTab, ...props }) {
   return (
     <div className={classes.root}>
       <ThemeProvider theme={theme}>
-        <AppBar color="primary" position="static">
+        <AppBar
+          color="white"
+          position="static"
+          style={{
+            borderBottom: '1px solid ' + appColors.secondary,
+            boxShadow: 0,
+          }}
+        >
           <Toolbar>
+            <Box
+              width="98%"
+              position="absolute"
+              display="flex"
+              justifyContent="center"
+            >
+              <img
+                width="50"
+                height="50"
+                src="./sf logo_without text.png"
+                alt="logo"
+                onClick={() => setTab(6)}
+                style={{ cursor: 'pointer' }}
+              />
+            </Box>
             {Auth.authLevel >= 1 && (
               <React.Fragment>
                 <Select
@@ -108,21 +131,6 @@ export default function AdminNavBar({ tab, setTab, ...props }) {
                 </Button>
               </React.Fragment>
             )}
-            <Box
-              property="div"
-              width="100%"
-              position="absolute"
-              display="flex"
-              justifyContent="center"
-            >
-              <img
-                width="50"
-                height="50"
-                src="./sf logo_without text.png"
-                alt="logo"
-                onClick={handleLogoClick}
-              />
-            </Box>
             <div className={classes.rightButtons}>
               {Auth.authLevel >= 2 && (
                 <React.Fragment>
