@@ -5,7 +5,7 @@ import Cart from './customer/pages/cart';
 import Store from './customer/Store';
 import FarmGrid from './customer/FarmGrid';
 import Profile from './customer/Profile';
-import Landing from './customer/Landing';
+import Landing from './home/Landing';
 import Signup from './customer/auth/Signup';
 import SocialSignUp from './customer/auth/SocialSignUp';
 import Login from './customer/auth/Login';

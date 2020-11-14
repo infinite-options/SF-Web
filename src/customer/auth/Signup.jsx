@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withStyles } from '@material-ui/styles';
 import TextField from '@material-ui/core/TextField';
 import { Box } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
@@ -7,6 +8,19 @@ import Button from '@material-ui/core/Button';
 import { withRouter } from 'react-router';
 import axios from 'axios';
 import appColors from '../../styles/AppColors';
+
+const CssTextField = withStyles({
+  root: {
+    '& label.Mui-focused': {
+      color: appColors.secondary,
+    },
+    '& .MuiOutlinedInput-root': {
+      '&.Mui-focused fieldset': {
+        borderColor: appColors.secondary,
+      },
+    },
+  },
+})(TextField);
 
 class Signup extends Component {
   constructor(props) {
@@ -198,6 +212,7 @@ class Signup extends Component {
           height: 700,
           width: 350,
           padding: 20,
+          backgroundColor: appColors.componentBg,
           textAlign: 'center',
           display: 'inline-block',
         }}
@@ -205,7 +220,7 @@ class Signup extends Component {
         <p style={{ color: appColors.secondary }}>SIGN UP</p>
         <form onSubmit={this._onSubmit}>
           <Box mb={1}>
-            <TextField
+            <CssTextField
               value={this.state.email}
               onChange={this._emailChange}
               label="Email"
@@ -215,7 +230,7 @@ class Signup extends Component {
             />
           </Box>
           <Box mb={1}>
-            <TextField
+            <CssTextField
               value={this.state.password}
               onChange={this._passwordChange}
               type="password"
@@ -226,7 +241,7 @@ class Signup extends Component {
             />
           </Box>
           <Box mb={1}>
-            <TextField
+            <CssTextField
               value={this.state.confirmPassword}
               onChange={this._confirmPasswordChange}
               type="password"
@@ -237,7 +252,7 @@ class Signup extends Component {
             />
           </Box>
           <Box mb={1}>
-            <TextField
+            <CssTextField
               value={this.state.firstName}
               onChange={this._firstNameChange}
               label="First Name"
@@ -247,7 +262,7 @@ class Signup extends Component {
             />
           </Box>
           <Box mb={1}>
-            <TextField
+            <CssTextField
               value={this.state.lastName}
               onChange={this._lastNameChange}
               label="Last Name"
@@ -257,7 +272,7 @@ class Signup extends Component {
             />
           </Box>
           <Box mb={1}>
-            <TextField
+            <CssTextField
               value={this.state.phone}
               onChange={this._phoneChange}
               label="Phone"
@@ -267,7 +282,7 @@ class Signup extends Component {
             />
           </Box>
           <Box mb={1}>
-            <TextField
+            <CssTextField
               value={this.state.address}
               onChange={this._addressChange}
               label="Address"
@@ -277,7 +292,7 @@ class Signup extends Component {
             />
           </Box>
           <Box mb={1}>
-            <TextField
+            <CssTextField
               value={this.state.unit}
               onChange={this._unitChange}
               label="Unit"
@@ -287,7 +302,7 @@ class Signup extends Component {
             />
           </Box>
           <Box mb={1}>
-            <TextField
+            <CssTextField
               value={this.state.city}
               onChange={this._cityChange}
               label="City"
@@ -297,7 +312,7 @@ class Signup extends Component {
             />
           </Box>
           <Box mb={1}>
-            <TextField
+            <CssTextField
               value={this.state.state}
               onChange={this._stateChange}
               label="State"
@@ -306,7 +321,7 @@ class Signup extends Component {
               fullWidth
             />
           </Box>
-          <TextField
+          <CssTextField
             value={this.state.zip}
             onChange={this._zipChange}
             label="Zip code"

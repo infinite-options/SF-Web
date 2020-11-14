@@ -9,6 +9,7 @@ import {
   Link,
   Redirect,
 } from 'react-router-dom';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import Cookies from 'universal-cookie';
 import Nav from './Nav';
 import { AdminFarmContext } from './admin/AdminFarmContext';
@@ -18,6 +19,7 @@ import FarmerLogin from './farmer/FarmerLogin';
 import FarmerSignUp from './farmer/FarmerSignUp';
 import { AuthContext } from './auth/AuthContext';
 import axios from 'axios';
+import appColors from './styles/AppColors';
 
 const BASE_URL =
   'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
@@ -43,6 +45,29 @@ function App() {
   const [isAuth, setIsAuth] = useState(false); // checks if user is logged in
   const [accountType, setAccountType] = useState();
   const [isUserLoaded, setIsUserLoaded] = useState(false);
+
+  const theme = createMuiTheme({
+    palette: {
+      primary: {
+        // light: will be calculated from palette.primary.main,
+        main: appColors.primary,
+        // dark: will be calculated from palette.primary.main,
+        // contrastText: will be calculated to contrast with palette.primary.main
+      },
+      secondary: {
+        main: appColors.secondary,
+        // dark: will be calculated from palette.secondary.main,
+      },
+      componentBg: {
+        main: appColors.componentBg,
+        // dark: will be calculated from palette.secondary.main,
+      },
+      secondary: {
+        main: appColors.secondary,
+        // dark: will be calculated from palette.secondary.main,
+      },
+    },
+  });
 
   let uid =
     cookies.get('customer_uid') == null ? '' : cookies.get('customer_uid');
@@ -110,26 +135,30 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <AuthContext.Provider value={{ isAuth, setIsAuth, authLevel }}>
-          {authLevel >= 1 ? (
-            <AdminFarmContext.Provider
-              value={{
-                farmID,
-                setFarmID,
-                timeChange,
-                setTimeChange,
-                deliveryTime,
-                setDeliveryTime,
-                tab,
-                setTab,
-              }}
-            >
+        <ThemeProvider theme={theme}>
+          <AuthContext.Provider
+            value={{ isAuth, setIsAuth, authLevel, setAuthLevel }}
+          >
+            {authLevel >= 1 ? (
+              <AdminFarmContext.Provider
+                value={{
+                  farmID,
+                  setFarmID,
+                  timeChange,
+                  setTimeChange,
+                  deliveryTime,
+                  setDeliveryTime,
+                  tab,
+                  setTab,
+                }}
+              >
+                <Nav isAuth={isAuth} authLevel={authLevel} />
+              </AdminFarmContext.Provider>
+            ) : (
               <Nav isAuth={isAuth} authLevel={authLevel} />
-            </AdminFarmContext.Provider>
-          ) : (
-            <Nav isAuth={isAuth} authLevel={authLevel} />
-          )}
-        </AuthContext.Provider>
+            )}
+          </AuthContext.Provider>
+        </ThemeProvider>
       </div>
     </Router>
   );

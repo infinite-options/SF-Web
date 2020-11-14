@@ -92,7 +92,7 @@ export default function AdminNavBar({ tab, setTab, ...props }) {
               <img
                 width="50"
                 height="50"
-                src="./sf logo_without text.png"
+                src="./logos/sf logo_without text.png"
                 alt="logo"
                 onClick={() => setTab(6)}
                 style={{ cursor: 'pointer' }}

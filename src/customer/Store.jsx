@@ -168,7 +168,7 @@ const Store = ({ ...props }) => {
           setFarmClicked,
         }}
       >
-        {Auth.authLevel === 0 ? <StoreNavBar /> : <Redirect to="/admin" />}
+        {Auth.authLevel === 0 ? <StoreNavBar /> : <></>}
         <Box display="flex">
           <StoreFilter />
           <DisplayProduce />
