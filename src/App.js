@@ -2,91 +2,136 @@ import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Admin from './admin/Admin';
-import {BrowserRouter as Router,Switch,Route,Link,Redirect} from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+} from 'react-router-dom';
+import Cookies from 'universal-cookie';
+import Nav from './Nav';
+import { AdminFarmContext } from './admin/AdminFarmContext';
+import someContexts from './customer/makeContext';
 import AdminLogin from './admin/AdminLogin';
 import FarmerLogin from './farmer/FarmerLogin';
 import FarmerSignUp from './farmer/FarmerSignUp';
 import { AuthContext } from './auth/AuthContext';
-import AuthAdminRoute from './auth/AuthAdminRoute'
-import Cookies from 'js-cookie'
-import AuthAdminLoginRoute from './auth/AuthAdminLoginRoute';
-import AdminSocialSignup from './admin/AdminSocialSignup';
-import AdminSignup from './admin/AdminSignup';
 import axios from 'axios';
 
-const BASE_URL = "https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
+const BASE_URL =
+  'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
+
+const cookies = new Cookies();
+
+//this function calculate the number of items in the cart and set it to global hook context
+function calTotal() {
+  var amount = 0,
+    keys = Object.keys(localStorage),
+    index = keys.length;
+  for (var i = 0; i < index; i++) {
+    if (keys[i].length > 30) {
+      var quantity = window.localStorage.getItem(keys[i]);
+      amount += parseInt(quantity);
+      // arr.push(JSON.parse(keys[i]));
+    }
+  }
+  return amount;
+}
 
 function App() {
   const [isAuth, setIsAuth] = useState(false); // checks if user is logged in
   const [accountType, setAccountType] = useState();
+  const [isUserLoaded, setIsUserLoaded] = useState(false);
+
+  let uid =
+    cookies.get('customer_uid') == null ? '' : cookies.get('customer_uid');
 
   // IF USER IS LOGGED IN, CHECK THEIR ACCOUNT AUTHORITY:
-  // Level  0: Lowest level 
-  // Level  1: User is logged in & is farmer or higher 
+  // Level  0: Lowest level
+  // Level  1: User is logged in & is farmer or higher
   // Level  2: User is logged in & is admin
   const [authLevel, setAuthLevel] = useState(0);
-  
+
   const readCookie = () => {
-    const loggedIn = Cookies.get('login-session');
+    const loggedIn = cookies.get('login-session');
     // console.log('asduojhfhuasdf');
-    if(loggedIn){ 
+    if (loggedIn) {
       setIsAuth(true);
       console.log('User is already logged in');
     }
-  }
+  };
 
   useEffect(() => {
-    console.log("reading cookie...");
+    console.log('reading cookie...');
     readCookie();
   }, []);
 
+  const [farmID, setFarmID] = useState('200-000003');
+  const [timeChange, setTimeChange] = useState({});
+  const [deliveryTime, setDeliveryTime] = useState({});
+
+  const [tab, setTab] = useState(
+    Number(localStorage.getItem('farmerTab')) || 0
+  );
+
   useEffect(() => {
-    if (isAuth) {
-      axios.get(BASE_URL + "Profile/" + Cookies.get('customer_uid'))
+    localStorage.setItem('farmerTab', tab);
+  }, [tab]);
+
+  useEffect(() => {
+    axios
+      .get(BASE_URL + 'Profile/' + cookies.get('customer_uid'))
       .then((response) => {
-        console.log("Account:", response);
-        let newAccountType = response.data.result[0].role.toLowerCase()
-        setAccountType(response.data.result[0].role ? 
-           newAccountType : 
-          ''
-        );
+        console.log('Account:', response);
+        let newAccountType = response.data.result[0].role.toLowerCase();
+        setAccountType(response.data.result[0].role ? newAccountType : '');
         let newAuthLevel = (() => {
-          console.log(newAccountType)
+          console.log(newAccountType);
           switch (newAccountType) {
-              case 'customer': return 0;
-              case 'farmer': return 1;
-              case 'admin': return 2;
-              default: return 0;
+            case 'customer':
+              return 0;
+            case 'farmer':
+              return 1;
+            case 'admin':
+              return 2;
+            default:
+              return 0;
           }
         })();
-        console.log(newAuthLevel)
+        console.log(newAuthLevel);
         setAuthLevel(newAuthLevel);
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err.response || err);
       });
-    }
-    else { setAccountType(); }
-  }, [isAuth])
+  }, [isAuth]);
 
   return (
     <Router>
       <div className="App">
-        <AuthContext.Provider value={{isAuth, setIsAuth, authLevel}}>
-          <Switch>
-            {/* <Route exact path='/'/> */}
-            <AuthAdminRoute path="/admin" component={Admin} auth={isAuth} authLevel={authLevel}/>
-            <AuthAdminLoginRoute path="/adminlogin" component={AdminLogin} auth={isAuth}/>
-            <AuthAdminLoginRoute path="/socialsignup" component={AdminSocialSignup} auth={isAuth}/>
-            <AuthAdminLoginRoute path="/signup" component={AdminSignup} auth={isAuth}/>
-            <Route path='/*'>
-              <Redirect to="/adminlogin" />
-            </Route>
-          </Switch>
+        <AuthContext.Provider value={{ isAuth, setIsAuth, authLevel }}>
+          {authLevel >= 1 ? (
+            <AdminFarmContext.Provider
+              value={{
+                farmID,
+                setFarmID,
+                timeChange,
+                setTimeChange,
+                deliveryTime,
+                setDeliveryTime,
+                tab,
+                setTab,
+              }}
+            >
+              <Nav isAuth={isAuth} authLevel={authLevel} />
+            </AdminFarmContext.Provider>
+          ) : (
+            <Nav isAuth={isAuth} authLevel={authLevel} />
+          )}
         </AuthContext.Provider>
       </div>
     </Router>
-
   );
 }
 

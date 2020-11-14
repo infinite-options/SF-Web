@@ -1,18 +1,18 @@
-import React, {Component, useState, useContext, useEffect} from "react";
-import FacebookLogin from "react-facebook-login";
-import GoogleLogin from "react-google-login";
-import Cookies from "js-cookie";
-import axios from "axios";
-import TextField from "@material-ui/core/TextField";
-import {Grid, Paper, Button, Typography} from "@material-ui/core";
-import {withStyles} from "@material-ui/styles";
-import {sizing} from "@material-ui/system";
-import {AuthContext} from "../auth/AuthContext";
-import {withRouter} from "react-router";
-import RevenueHighchart from "./farm/RevenueHighchart";
+import React, { Component, useState, useContext, useEffect } from 'react';
+import FacebookLogin from 'react-facebook-login';
+import GoogleLogin from 'react-google-login';
+import Cookies from 'js-cookie';
+import axios from 'axios';
+import TextField from '@material-ui/core/TextField';
+import { Grid, Paper, Button, Typography } from '@material-ui/core';
+import { withStyles } from '@material-ui/styles';
+import { sizing } from '@material-ui/system';
+import { AuthContext } from '../auth/AuthContext';
+import { withRouter } from 'react-router';
+import RevenueHighchart from './farm/RevenueHighchart';
 
 const API_URL =
-	"https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
+  'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
 
 function AdminLogin(props) {
 	const [emailValue, setEmail] = useState("");
@@ -20,42 +20,30 @@ function AdminLogin(props) {
     const [errorValue, setError] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-	const Auth = useContext(AuthContext);
+  const Auth = useContext(AuthContext);
 
-    useEffect(() => {
-        if(process.env.REACT_APP_APPLE_CLIENT_ID && process.env.REACT_APP_APPLE_REDIRECT_URI){
-            window.AppleID.auth.init({
-                clientId : process.env.REACT_APP_APPLE_CLIENT_ID,
-                scope : 'email',
-                redirectURI : process.env.REACT_APP_APPLE_REDIRECT_URI,
-            });
-        }
-        let queryString = props.location.search;
-        let urlParams = new URLSearchParams(queryString);
-        // Clear Query parameters
-        window.history.pushState({}, document.title, window.location.pathname);
-        // Successful Log in with Apple, set cookies, context, redirect
-        if(urlParams.has('id')) {
-            let customerId = urlParams.get('id');
-            document.cookie = 'customer_uid=' + customerId;
-            Auth.setIsAuth(true);
-            Cookies.set('login-session', 'good');
-            props.history.push("/admin");
-        }
-        // Log which media platform user should have signed in with instead of Apple
-        // May eventually implement to display the message for which platform to Login
-        else if(urlParams.has('media')) {
-            console.log(urlParams.get('media'));
-        }
-    }, []);
-
-    const handleEmailChange = (e) => {
-        // console.log('email is changing')
-        setEmail(e.target.value)
+  useEffect(() => {
+    if (
+      process.env.REACT_APP_APPLE_CLIENT_ID &&
+      process.env.REACT_APP_APPLE_REDIRECT_URI
+    ) {
+      window.AppleID.auth.init({
+        clientId: process.env.REACT_APP_APPLE_CLIENT_ID,
+        scope: 'email',
+        redirectURI: process.env.REACT_APP_APPLE_REDIRECT_URI,
+      });
     }
-    const handlePasswordChange = (e) => {
-        // console.log('password is changing')
-        setPassword(e.target.value)
+    let queryString = props.location.search;
+    let urlParams = new URLSearchParams(queryString);
+    // Clear Query parameters
+    window.history.pushState({}, document.title, window.location.pathname);
+    // Successful Log in with Apple, set cookies, context, redirect
+    if (urlParams.has('id')) {
+      let customerId = urlParams.get('id');
+      document.cookie = 'customer_uid=' + customerId;
+      Auth.setIsAuth(true);
+      Cookies.set('login-session', 'good');
+      props.history.push('/admin');
     }
     const verifyLoginInfo = (e) => {
         //Attempt to login
@@ -165,15 +153,11 @@ function AdminLogin(props) {
                             })
                         })
                     }
-                } else {
-                    // No hash/salt information, probably need to sign in by socail media
-                    console.log('Salt not found')
-                    // Try to login anyway to confirm
-                    let loginObject = {
-                        email: emailValue,
-                        password: 'test',
-                        token: '',
-                        signup_platform: ''
+                  })
+                  .catch((err) => {
+                    // Log error for Login endpoint
+                    if (err.response) {
+                      console.log(err.response);
                     }
                     // console.log(JSON.stringify(loginObject))
                     axios
@@ -223,35 +207,78 @@ function AdminLogin(props) {
             if(err.response) {
                 console.log(err.response)
             }
-            console.log(err);
-        })
-    }
-
-    const responseGoogle = (response) => {
-        console.log(response);
-        if (response.profileObj) {
-            console.log("Google login successful");
-            let email = response.profileObj.email;
-            let accessToken = response.accessToken;
-            let socialId = response.googleId;
-            _socialLoginAttempt(email,accessToken,socialId,'GOOGLE');
+          } else {
+            // No hash/salt information, probably need to sign in by socail media
+            console.log('Salt not found');
+            // Try to login anyway to confirm
+            let loginObject = {
+              email: emailValue,
+              password: 'test',
+              token: '',
+              signup_platform: '',
+            };
+            // console.log(JSON.stringify(loginObject))
+            axios
+              .post(API_URL + 'Login', loginObject, {
+                headers: {
+                  'Content-Type': 'text/plain',
+                },
+              })
+              .then((res) => {
+                console.log(res);
+                if (res.data.code === 401) {
+                  console.log('Need to log in by social media');
+                } else {
+                  console.log('Unknown login error');
+                }
+              })
+              .catch((err) => {
+                // Log error for Login endpoint
+                if (err.response) {
+                  console.log(err.response);
+                }
+                console.log(err);
+              });
+          }
         } else {
-            console.log('Google login unsuccessful')
+          // No information, probably because invalid email
+          console.log('Invalid credentials, Email');
         }
-    }
+      })
+      .catch((err) => {
+        // Log error for account salt endpoint
+        if (err.response) {
+          console.log(err.response);
+        }
+        console.log(err);
+      });
+  };
 
-    const responseFacebook = (response) => {
-        console.log(response);
-        if (response.email) {
-            console.log("Facebook login successful");
-            let email = response.email;
-            let accessToken = response.accessToken;
-            let socialId = response.id;
-            _socialLoginAttempt(email,accessToken,socialId,'FACEBOOK');
-        } else {
-            console.log('Facebook login unsuccessful')
-        }
+  const responseGoogle = (response) => {
+    console.log(response);
+    if (response.profileObj) {
+      console.log('Google login successful');
+      let email = response.profileObj.email;
+      let accessToken = response.accessToken;
+      let socialId = response.googleId;
+      _socialLoginAttempt(email, accessToken, socialId, 'GOOGLE');
+    } else {
+      console.log('Google login unsuccessful');
     }
+  };
+
+  const responseFacebook = (response) => {
+    console.log(response);
+    if (response.email) {
+      console.log('Facebook login successful');
+      let email = response.email;
+      let accessToken = response.accessToken;
+      let socialId = response.id;
+      _socialLoginAttempt(email, accessToken, socialId, 'FACEBOOK');
+    } else {
+      console.log('Facebook login unsuccessful');
+    }
+  };
 
     const _socialLoginAttempt = (email, accessToken, socialId, platform) => {
         axios
@@ -318,10 +345,32 @@ function AdminLogin(props) {
         .catch((err) => {
             if(err.response) {
                 console.log(err.response);
-            }
-            console.log(err);
-        })
-    }
+              }
+              console.log(err);
+            })
+            .finally(() => {
+              console.log(customerInfo);
+              Cookies.set('login-session', 'good');
+              Cookies.set('customer_uid', customerInfo.customer_uid);
+              Auth.setIsAuth(true);
+              // props.history.push("/admin");
+            });
+        } else if (res.data.code === 404) {
+          props.history.push('/socialsignup', {
+            email: email,
+            accessToken: accessToken,
+            socialId: socialId,
+            platform: platform,
+          });
+        }
+      })
+      .catch((err) => {
+        if (err.response) {
+          console.log(err.response);
+        }
+        console.log(err);
+      });
+  };
 
 	const handleSignup = () => {
 		props.history.push("/signup");
@@ -420,14 +469,14 @@ function AdminLogin(props) {
 }
 
 const paperStyle = {
-	height: "700px",
-	width: "80%",
-	maxWidth: "500px",
-	textAlign: "center",
-	display: "inline-block",
-	padding: "10px",
-	marginTop: "50px",
-	backgroundColor: "white",
+  height: '700px',
+  width: '80%',
+  maxWidth: '500px',
+  textAlign: 'center',
+  display: 'inline-block',
+  padding: '10px',
+  marginTop: '50px',
+  backgroundColor: 'white',
 };
 
 export default withRouter(AdminLogin);
