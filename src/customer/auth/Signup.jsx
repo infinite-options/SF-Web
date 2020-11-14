@@ -87,13 +87,16 @@ class Signup extends Component {
               referral_source: 'WEB',
               role: 'CUSTOMER',
               social: 'FALSE',
-              access_token: 'NULL',
-              refresh_token: 'NULL',
+              social_id: 'NULL',
+              user_access_token: 'FALSE',
+              user_refresh_token: 'FALSE',
+              mobile_access_token: 'FALSE',
+              mobile_refresh_token: 'FALSE',
             };
             console.log(JSON.stringify(object));
             axios
               .post(
-                'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/SignUp',
+                'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/createAccount',
                 object,
                 {
                   headers: {
@@ -102,10 +105,28 @@ class Signup extends Component {
                 }
               )
               .then((res) => {
-                // let customerInfo = res.data.result;
-                this.setState({
-                  message: 'success',
-                });
+                let customerInfo = res.data.result;
+                  console.log(customerInfo);
+                  if(res.data.code === 200) {
+                    axios
+                    .post('https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/email_verification',{email: this.state.email,},{
+                      headers: {
+                        'Content-Type': 'text/plain'
+                      }
+                    })
+                    .then((res) => {
+                      this.setState({
+                        message: 'success',
+                      });
+                      console.log(res);
+                    })
+                    .catch((err) => {
+                      if(err.response) {
+                        console.log(err.response);
+                      }
+                      console.log(err)
+                    })
+                  }
               })
               .catch((err) => {
                 console.log(err);
