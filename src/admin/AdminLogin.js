@@ -285,7 +285,20 @@ function AdminLogin(props) {
               Cookies.set('login-session', 'good');
               Cookies.set('customer_uid', customerInfo.customer_uid);
               Auth.setIsAuth(true);
-              // props.history.push("/admin");
+              switch (customerInfo.role) {
+                case 'ADMIN':
+                  Auth.setAuthLevel(2);
+                  props.history.push('/admin');
+                  break;
+                case 'FARMER':
+                  Auth.setAuthLevel(1);
+                  props.history.push('/store');
+                  break;
+                case 'CUSTOMER':
+                  Auth.setAuthLevel(0);
+                  props.history.push('/store');
+                  break;
+              }
             });
         } else if (res.data.code === 404) {
           props.history.push('/socialsignup', {

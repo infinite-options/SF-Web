@@ -13,6 +13,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { withRouter } from 'react-router';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { AuthContext } from '../auth/AuthContext';
 import { AdminFarmContext } from './AdminFarmContext';
@@ -51,13 +52,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AdminNavBar({ tab, setTab, ...props }) {
+function AdminNavBar({ tab, setTab, ...props }) {
   const { farmID, setFarmID } = useContext(AdminFarmContext);
   const Auth = useContext(AuthContext);
   //when admin logs out, remove their login info from cookies
   const handleClickLogOut = () => {
     Auth.setIsAuth(false);
     Cookies.remove('login-session');
+    Cookies.remove('customer_uid');
+    props.history.push('/');
   };
 
   const handleChangeFarm = (event) => {
@@ -167,3 +170,5 @@ export default function AdminNavBar({ tab, setTab, ...props }) {
     </div>
   );
 }
+
+export default withRouter(AdminNavBar)
