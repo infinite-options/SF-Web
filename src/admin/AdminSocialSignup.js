@@ -232,7 +232,7 @@ function AdminSocialSignup(props) {
         }
         console.log(JSON.stringify(object));
         axios
-        .post('https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/SignUp', object,{
+        .post('https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/createAccount', object,{
             headers: {
                 'Content-Type': 'text/plain'
             }
@@ -243,7 +243,7 @@ function AdminSocialSignup(props) {
             Auth.setIsAuth(true);
             Cookies.set('login-session', 'good');
             Cookies.set('customer_uid',customerInfo.customer_uid)
-            props.history.push("/admin");
+            // props.history.push("/admin");
         })
         .catch((err) => {
             // Log error for Login endpoint

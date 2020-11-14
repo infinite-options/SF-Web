@@ -46,9 +46,13 @@ export default function Item(props) {
         updateData(updatedData);
     }
     const handleRefresh = () => {
-        if (props.data.item_status.toLowerCase() !== "hidden") { // Should always be true, but just in case!
-            const newStatus = props.data.item_status.toLowerCase() !== "past" ? "Past" : "Active"; // any status !== "Past" || "Hidden" is assumed "Current"
-            updateStatus(newStatus);
+        if(props.data.item_status) {
+            if (props.data.item_status.toLowerCase() !== "hidden") { // Should always be true, but just in case!
+                const newStatus = props.data.item_status.toLowerCase() !== "past" ? "Past" : "Active"; // any status !== "Past" || "Hidden" is assumed "Current"
+                updateStatus(newStatus);
+            }
+        } else {
+            updateStatus('Active');
         }
     }
     const handleOpenEditModel = () => {

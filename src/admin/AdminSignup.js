@@ -94,17 +94,35 @@ function Signup(props) {
                 }
                 console.log(JSON.stringify(object));
                 axios
-                .post('https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/SignUp',object,{
+                .post('https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/createAccount',object,{
                   headers: {
                     'Content-Type': 'text/plain'
                   }
                 })
                 .then((res) => {
-                  // let customerInfo = res.data.result;
-                  setState(prevState =>({
-                    ...prevState,
-                    message: 'success',
-                  }))
+                  let customerInfo = res.data.result;
+                  console.log(customerInfo);
+                  if(res.data.code === 200) {
+                    axios
+                    .post('https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/email_verification',{email: state.email,},{
+                      headers: {
+                        'Content-Type': 'text/plain'
+                      }
+                    })
+                    .then((res) => {
+                      setState(prevState =>({
+                        ...prevState,
+                        message: 'success',
+                      }))
+                      console.log(res);
+                    })
+                    .catch((err) => {
+                      if(err.response) {
+                        console.log(err.response);
+                      }
+                      console.log(err)
+                    })
+                  }
                 })
                 .catch((err) => {
                   console.log(err);

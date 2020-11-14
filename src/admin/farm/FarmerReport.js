@@ -13,6 +13,7 @@ const BASE_URL = "https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api
 const ORDERS_INFO_URL = BASE_URL + "orders_info";
 const ORDER_ACTIONS_URL = BASE_URL + "order_actions/";
 const INSERT_ORDER_URL = BASE_URL + "purchase_Data_SF";
+const ADMIN_ORDER_URL = BASE_URL + 'admin_report/';
 
 export default function FarmerReport({ farmID, farmName, ...props }) {
     const [responseData, setResponseData] = useState();
@@ -23,43 +24,42 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
     }, [farmID]);
 
     const getFarmOrders = async (hasCopied=false) => {
-        if (responseData && !hasCopied) {
-            updateOrders(responseData.orders/*, responseData.items*/);
-        }
-        else {
-            const resOrders = await axios.get(ORDERS_INFO_URL).catch(err => { console.log(err.response || err) });
-            // const resItems = await axios.get(ORDERS_BY_FARM_URL).catch(err => { console.log(err.response || err) });
+        // if (responseData && !hasCopied) {
+        //     updateOrders(responseData.orders/*, responseData.items*/);
+        // }
+        // else {
+            // const resOrders = await axios.get(ORDERS_INFO_URL).catch(err => { console.log(err.response || err) });
+            // // const resItems = await axios.get(ORDERS_BY_FARM_URL).catch(err => { console.log(err.response || err) });
             
-            if (resOrders/* && resItems*/) {
-                const orders = resOrders.data.result;
-                // const items = resItems.data.result;
-                console.log("All Reports:", orders/*, items*/);
-                setResponseData({ orders/*, items*/ });
-                updateOrders(orders/*, items*/);
+            // if (resOrders/* && resItems*/) {
+            //     const orders = resOrders.data.result;
+            //     // const items = resItems.data.result;
+            //     console.log("All Reports:", orders/*, items*/);
+            //     setResponseData({ orders/*, items*/ });
+            //     updateOrders(orders/*, items*/);
+            // }
+        // }
+        axios
+        .get(ADMIN_ORDER_URL + farmID)
+        .then((res) => {
+            let orders = res.data.result;
+            console.log('All Report', orders)
+            setResponseData(orders);
+            setOrders(orders);
+        })
+        .catch((err) => {
+            if(err.response) {
+                console.log(err.response);
             }
-        }
+            console.log(err);
+        })
     };
 
-    const updateOrders = (orders/*, items*/) => {
-        const items = [];
-        setOrders(() => {
-            // const farmOrders = Array.from(
-            //     orders.filter(order => order.pur_business_uid === farmID),
-            //     order => {
-            //         const itemUIDs = Array.from(JSON.parse(order.items), item => item.item_uid);
-            //         const itemList = items.filter(item => {
-            //             return item.purchase_uid === order.purchase_uid && itemUIDs.includes(item["deconstruct.item_uid"]);
-            //         });
-            //         order.list = itemList;
-            //         return order;
-            //     }
-            // );
-            // console.log(farmOrders);
-            const farmOrders = orders.filter(order => order.pur_business_uid === farmID);
-            // console.log("Reports", farmOrders);
-            return farmOrders;
-        });
-    };
+    // const updateOrders = (orders/*, items*/) => {
+    //     // let farmOrders = orders.filter(order => order.pur_business_uid === farmID);
+    //     // console.log('Farm orders', farmOrders)
+    //     setOrders(orders);
+    // };
 
     const handleShowOrders = (event, order, setHidden) => {
         console.log(JSON.parse(order.items));
