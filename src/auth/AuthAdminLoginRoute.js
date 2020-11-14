@@ -8,10 +8,11 @@ const AuthAdminLoginRoute = ({ auth, component: Component, ...rest }) => {
   return (
     // Show the component only when the user is logged in
     // Otherwise, redirect the user to /adminlogin page
+    // Update 11/14: This is only used to handle Apple Login users
     <Route
       {...rest}
       render={(props) =>
-        context.authLevel >= 1 ? <Component {...props} /> : <Redirect to="/" />
+        context.authLevel >= 1 ? <Component {...props} /> : <Redirect to="/store" />
       }
     />
   );

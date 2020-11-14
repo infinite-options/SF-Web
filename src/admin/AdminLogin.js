@@ -49,6 +49,7 @@ function AdminLogin(props) {
         let urlParams = new URLSearchParams(queryString);
         // Clear Query parameters
         window.history.pushState({}, document.title, window.location.pathname);
+        console.log(props,urlParams)
         // Successful Log in with Apple, set cookies, context, redirect
         if(urlParams.has('id')) {
             let customerId = urlParams.get('id');
