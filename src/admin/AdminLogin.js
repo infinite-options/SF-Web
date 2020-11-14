@@ -413,9 +413,7 @@ function AdminLogin(props) {
                 />
               </Grid>
               <Grid item xs={12}>
-                {errorValue && (
-                  <Typography style={{ color: 'red' }}>Invalid login</Typography>
-                )}
+                {showError()}
               </Grid>
               <Grid item xs={12}>
                 <Box mb={2}>
