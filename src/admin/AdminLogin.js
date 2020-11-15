@@ -439,7 +439,7 @@ function AdminLogin(props) {
               </Grid>
               <Grid item xs={12}>
                 <GoogleLogin
-                  clientId="478982641106-1pq9nhdubrcpnii3ms0rmdpa0kmcjhgj.apps.googleusercontent.com"
+                  clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
                   onSuccess={responseGoogle}
                   onFailure={responseGoogle}
                   isSignedIn={false}
@@ -451,7 +451,7 @@ function AdminLogin(props) {
               </Grid>
               <Grid item xs={12}>
                 <FacebookLogin
-                  appId="257223515515874"
+                  appId={process.env.REACT_APP_FACEBOOK_APP_ID}
                   autoLoad={false}
                   fields="name,email,picture"
                   onClick="return false"
