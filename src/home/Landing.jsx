@@ -60,6 +60,7 @@ const Landing = ({ ...props }) => {
         setIsSignUpShown={setIsSignUpShown}
       />
       <Box display="flex">
+        {/* START: Landing Page Logo */}
         <Box display="flex" width="50%" justifyContent="center">
           <img
             height="300px"
@@ -67,11 +68,14 @@ const Landing = ({ ...props }) => {
             src="./logos/logo_transprarent bg.png"
           />
         </Box>
-        <Box width="50%" justifyContent="center">
+        {/* END: Landing Page Logo */}
+
+        {/* START: Local Produce Search */}
+        <Box mt={10} width="50%" justifyContent="center">
           <h4 style={{ color: appColors.secondary }}>
             Local produce delivered to your doorstop
           </h4>
-          <Box width="500px" display="flex" justifyContent="center">
+          <Box display="flex" justifyContent="center">
             <CssTextField
               className={classes.margin}
               id="input-with-icon-textfield"
@@ -86,22 +90,50 @@ const Landing = ({ ...props }) => {
                   </InputAdornment>
                 ),
               }}
+              style={{ width: '290px' }}
             />
-            <Box width="300px" ml={1}>
-              <Button size="small" variant="contained" color="secondary">
-                Find Local Produce
-              </Button>
+            <Box ml={1} />
+            <Button
+              size="small"
+              variant="contained"
+              color="secondary"
+              style={{ width: '200px' }}
+            >
+              Find Local Produce
+            </Button>
+          </Box>
+        </Box>
+        {/* END: Local Produce Search */}
+
+        {/* START: Login/SignUp Modal */}
+        <Box display="flex" justifyContent="flex-end">
+          {/* Login Modal */}
+          <Box
+            position="absolute"
+            width="50%"
+            display="flex"
+            justifyContent="center"
+          >
+            <Box className={classes.authModal} hidden={!isLoginShown}>
+              <AdminLogin />
+            </Box>
+          </Box>
+
+          {/* Sign Up Modal */}
+          <Box display="flex" justifyContent="flex-end">
+            <Box
+              position="absolute"
+              width="50%"
+              display="flex"
+              justifyContent="center"
+            >
+              <Box className={classes.authModal} hidden={!isSignUpShown}>
+                <Signup />
+              </Box>
             </Box>
           </Box>
         </Box>
-        <Box display="flex" justifyContent="flex-end">
-          <Box mr={15} className={classes.authModal} hidden={!isLoginShown}>
-            <AdminLogin />
-          </Box>
-          <Box className={classes.authModal} hidden={!isSignUpShown}>
-            <Signup />
-          </Box>
-        </Box>
+        {/* END: Login/SignUp Modal */}
       </Box>
     </div>
   );

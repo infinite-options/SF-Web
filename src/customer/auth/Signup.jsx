@@ -210,7 +210,7 @@ class Signup extends Component {
       <Paper
         style={{
           height: 700,
-          width: 350,
+          width: 480,
           padding: 20,
           backgroundColor: appColors.componentBg,
           textAlign: 'center',
@@ -251,7 +251,7 @@ class Signup extends Component {
               fullWidth
             />
           </Box>
-          <Box mb={1}>
+          <Box display="flex" mb={1}>
             <CssTextField
               value={this.state.firstName}
               onChange={this._firstNameChange}
@@ -260,8 +260,7 @@ class Signup extends Component {
               size="small"
               fullWidth
             />
-          </Box>
-          <Box mb={1}>
+            <Box m={0.5} />
             <CssTextField
               value={this.state.lastName}
               onChange={this._lastNameChange}
@@ -291,7 +290,7 @@ class Signup extends Component {
               fullWidth
             />
           </Box>
-          <Box mb={1}>
+          <Box display="flex" mb={1}>
             <CssTextField
               value={this.state.unit}
               onChange={this._unitChange}
@@ -300,8 +299,7 @@ class Signup extends Component {
               size="small"
               fullWidth
             />
-          </Box>
-          <Box mb={1}>
+            <Box m={0.5} />
             <CssTextField
               value={this.state.city}
               onChange={this._cityChange}
@@ -310,8 +308,7 @@ class Signup extends Component {
               size="small"
               fullWidth
             />
-          </Box>
-          <Box mb={1}>
+            <Box m={0.5} />
             <CssTextField
               value={this.state.state}
               onChange={this._stateChange}
