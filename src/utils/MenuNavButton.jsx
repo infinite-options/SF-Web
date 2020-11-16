@@ -27,6 +27,15 @@ export default function MenuListComposition() {
     setOpen((prevOpen) => !prevOpen);
   };
 
+  const handleMenuItem = (event, nav) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+      return;
+    }
+    switch (nav) {
+      case 'days':
+        window.location.replace('/store');
+    }
+  };
   const handleClose = (event) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
@@ -85,9 +94,37 @@ export default function MenuListComposition() {
                     id="menu-list-grow"
                     onKeyDown={handleListKeyDown}
                   >
-                    <MenuItem onClick={handleClose}>Profile</MenuItem>
-                    <MenuItem onClick={handleClose}>My account</MenuItem>
-                    <MenuItem onClick={handleClose}>Logout</MenuItem>
+                    <MenuItem
+                      onClick={(e) => {
+                        handleMenuItem(e, 'days');
+                      }}
+                    >
+                      Days
+                    </MenuItem>
+                    <MenuItem
+                      disabled
+                      onClick={(e) => {
+                        handleMenuItem(e, 'orders');
+                      }}
+                    >
+                      Orders
+                    </MenuItem>
+                    <MenuItem
+                      disabled
+                      onClick={(e) => {
+                        handleMenuItem(e, 'profile');
+                      }}
+                    >
+                      Profile
+                    </MenuItem>
+                    <MenuItem
+                      disabled
+                      onClick={(e) => {
+                        handleMenuItem(e, 'informations');
+                      }}
+                    >
+                      Information
+                    </MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>

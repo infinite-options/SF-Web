@@ -11,6 +11,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import appColors from 'styles/AppColors';
+import MenuNavButton from '../utils/MenuNavButton';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,9 +38,7 @@ export default function StoreNavBar({ tab, setTab, ...props }) {
         }}
       >
         <Toolbar>
-          <IconButton color="inherit" aria-label="menu">
-            <MenuIcon color="secondary" />
-          </IconButton>
+          <MenuNavButton />
           <Box flexGrow={1}></Box>
           <Box display="flex" flexGrow={1}>
             <img

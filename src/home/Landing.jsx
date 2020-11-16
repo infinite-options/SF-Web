@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import GoogleLogin from 'react-google-login';
-import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
+
 import { Box, Button, TextField, InputAdornment } from '@material-ui/core';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
 import Background from '../welcome-bg.png';
 
 import LandingNavBar from './LandingNavBar';
@@ -47,9 +43,16 @@ const useStyles = makeStyles((theme) => ({
 //backgroundImage:`url(${Background})`,
 const Landing = ({ ...props }) => {
   const classes = useStyles();
+
   // Toggles for the login and signup box to be passed in as props to the Landing Nav Bar
   const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
   const [isSignUpShown, setIsSignUpShown] = useState(false);
+
+  const handleClose = () => {
+    console.log('close');
+    setIsLoginShown(false);
+    setIsSignUpShown(false);
+  };
 
   return (
     <div style={{ backgroundImage: `url(${'./welcome-bg.png'})` }}>
