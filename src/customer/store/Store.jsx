@@ -30,6 +30,10 @@ function calTotal() {
 const Store = ({ ...props }) => {
   const Auth = useContext(AuthContext);
 
+  // Toggles for the login and signup box to be passed in as props to the Landing Nav Bar
+  const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
+  const [isSignUpShown, setIsSignUpShown] = useState(false);
+
   // Options for which page is showing
   const [storePage, setStorePage] = useState(
     props.storePage !== undefined ? props.storePage : 0
@@ -151,7 +155,12 @@ const Store = ({ ...props }) => {
         }}
       >
         {Auth.authLevel === 0 ? (
-          <StoreNavBar storePage={storePage} setStorePage={setStorePage} />
+          <StoreNavBar
+            setIsLoginShown={setIsLoginShown}
+            setIsSignUpShown={setIsSignUpShown}
+            storePage={storePage}
+            setStorePage={setStorePage}
+          />
         ) : (
           <></>
         )}

@@ -6,18 +6,23 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import someContexts from './makeContext';
-import { Box, Badge, IconButton } from '@material-ui/core';
+import { Box, Badge, IconButton, Button } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import appColors from 'styles/AppColors';
 import MenuNavButton from '../utils/MenuNavButton';
+import { AuthContext } from 'auth/AuthContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: 'white',
     marginBottom: '20px',
+  },
+  authButton: {
+    color: 'white',
+    marginRight: '10px',
   },
 }));
 
@@ -29,6 +34,16 @@ export default function StoreNavBar({ ...props }) {
 
   const handleCartClick = () => {
     props.setStorePage(props.storePage === 1 ? 0 : 1);
+  };
+
+  const loginClicked = () => {
+    props.setIsSignUpShown(false);
+    props.setIsLoginShown(!props.isLoginShown);
+  };
+
+  const signUpClicked = () => {
+    props.setIsLoginShown(false);
+    props.setIsSignUpShown(!props.isSignUpShown);
   };
 
   return (
@@ -51,6 +66,27 @@ export default function StoreNavBar({ ...props }) {
               src="./logos/sf logo_without text.png"
               alt="logo"
             />
+          </Box>
+          <Box hidden={useContext(AuthContext).isAuth} display="flex">
+            <Button
+              className={classes.authButton}
+              variant="contained"
+              size="small"
+              color="primary"
+              onClick={signUpClicked}
+            >
+              Sign Up
+            </Button>
+            <Box ml={1} />
+            <Button
+              className={classes.authButton}
+              variant="contained"
+              size="small"
+              color="secondary"
+              onClick={loginClicked}
+            >
+              Login
+            </Button>
           </Box>
           <IconButton edge="end" className="link" to="/cart">
             <Badge badgeContent={itemsAmount} color="primary">
