@@ -1,12 +1,15 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import { withRouter } from 'react-router';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import someContexts from './makeContext';
-import { Box, Badge, IconButton } from '@material-ui/core';
+import { AuthContext } from '../auth/AuthContext';
+import { Button, Box, Badge, IconButton } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
@@ -20,11 +23,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function StoreNavBar({ tab, setTab, ...props }) {
+function StoreNavBar({ tab, setTab, ...props }) {
   const classes = useStyles();
 
   const cartContext = useContext(someContexts);
+  const Auth = useContext(AuthContext);
   var itemsAmount = cartContext.cartTotal;
+
+  const handleClickLogOut = () => {
+    Auth.setIsAuth(false);
+    Cookies.remove('login-session');
+    Cookies.remove('customer_uid');
+    props.history.push('/');
+  };
 
   return (
     <div className={classes.root}>
@@ -40,6 +51,9 @@ export default function StoreNavBar({ tab, setTab, ...props }) {
           <IconButton color="inherit" aria-label="menu">
             <MenuIcon color="secondary" />
           </IconButton>
+          <Button size={'small'} onClick={handleClickLogOut}>
+            Logout
+          </Button>
           <Box flexGrow={1}></Box>
           <Box display="flex" flexGrow={1}>
             <img
@@ -59,3 +73,5 @@ export default function StoreNavBar({ tab, setTab, ...props }) {
     </div>
   );
 }
+
+export default withRouter(StoreNavBar)

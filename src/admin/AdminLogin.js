@@ -56,6 +56,32 @@ function AdminLogin(props) {
             document.cookie = 'customer_uid=' + customerId;
             Auth.setIsAuth(true);
             Cookies.set('login-session', 'good');
+            axios
+            .get('https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/Profile/' + customerId)
+            .then((response) => {
+              console.log('Account:', response);
+              let newAccountType = response.data.result[0].role.toLowerCase();
+              switch (newAccountType) {
+                case 'admin':
+                    Auth.setAuthLevel(2);
+                    props.history.push('/admin');
+                    break;
+                case 'farmer':
+                    Auth.setAuthLevel(1);
+                    props.history.push('/store');
+                    break;
+                case 'customer':
+                    Auth.setAuthLevel(0);
+                    props.history.push('/store');
+                    break;
+                default:
+                    Auth.setAuthLevel(0);
+                    props.history.push('/store');
+              }
+            })
+            .catch((err) => {
+              console.log(err.response || err);
+            });
             props.history.push("/admin");
         }
         // Log which media platform user should have signed in with instead of Apple
