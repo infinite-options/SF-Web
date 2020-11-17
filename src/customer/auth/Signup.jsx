@@ -106,14 +106,18 @@ class Signup extends Component {
               )
               .then((res) => {
                 let customerInfo = res.data.result;
-                  console.log(customerInfo);
-                  if(res.data.code === 200) {
-                    axios
-                    .post('https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/email_verification',{email: this.state.email,},{
-                      headers: {
-                        'Content-Type': 'text/plain'
+                console.log(customerInfo);
+                if (res.data.code === 200) {
+                  axios
+                    .post(
+                      'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/email_verification',
+                      { email: this.state.email },
+                      {
+                        headers: {
+                          'Content-Type': 'text/plain',
+                        },
                       }
-                    })
+                    )
                     .then((res) => {
                       this.setState({
                         message: 'success',
@@ -121,12 +125,12 @@ class Signup extends Component {
                       console.log(res);
                     })
                     .catch((err) => {
-                      if(err.response) {
+                      if (err.response) {
                         console.log(err.response);
                       }
-                      console.log(err)
-                    })
-                  }
+                      console.log(err);
+                    });
+                }
               })
               .catch((err) => {
                 console.log(err);
@@ -230,7 +234,6 @@ class Signup extends Component {
     return (
       <Paper
         style={{
-          height: 700,
           width: 480,
           padding: 20,
           backgroundColor: appColors.componentBg,
