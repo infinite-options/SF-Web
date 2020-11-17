@@ -67,6 +67,26 @@ export default function FarmerHome({ farmID, farmName, ...props }) {
         setOpen(false);
     };
     
+    const handleRefreshAll = () => {
+        // let pastProduce = 
+        //     farmData.filter((itemData) => { // display 'past' status items AND items with no status tag
+        //         return (!itemData.item_status || itemData.item_status.toLowerCase() === "past");
+        //     });
+        let refreshedPastProduce = 
+            farmData.map((itemData) => { // display 'past' status items AND items with no status tag
+                if(!itemData.item_status || itemData.item_status.toLowerCase() === "past") {
+                    return {
+                        ...itemData,
+                        item_status: 'Active',
+                    }
+                } else {
+                    return itemData;
+                }
+            });
+        console.log(refreshedPastProduce);
+        setFarmData(refreshedPastProduce);
+        // To Do: put this in database
+    }
     
     //model for when farmer adds new item
     const modelBody = (
@@ -113,7 +133,7 @@ export default function FarmerHome({ farmID, farmName, ...props }) {
                 <h2 className={classes.subHeading}>Past Produce</h2>
             </div>
             <div style={labelStyle}>
-                <ButtonBase> <h2 className={classes.subHeading}> <RefreshIcon /> Renew All Products </h2> </ButtonBase>
+                <ButtonBase onClick={handleRefreshAll}> <h2 className={classes.subHeading}> <RefreshIcon /> Renew All Products </h2> </ButtonBase>
             </div>
             {/* {!farmData.length ? ( */}
                 <Grid container spacing={2}>
