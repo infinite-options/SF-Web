@@ -19,7 +19,7 @@ import FarmerReport from './FarmerReport';
 import FarmerSettings from './FarmerSettings';
 import Chart from './chart';
 import Revenue from './revenue';
-import Store from '../../customer/Store';
+import Store from '../../customer/store/Store';
 import RevenueHighchat from './RevenueHighchart';
 import Notifications from './Notifications';
 // import FarmerNavBar from './FarmerNavBar';

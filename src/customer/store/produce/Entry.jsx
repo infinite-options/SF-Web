@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
-import someContexts from '../makeContext';
+import someContexts from '../../makeContext';
 import { Box, Button } from '@material-ui/core';
-import appColors from '../../styles/AppColors';
+import appColors from '../../../styles/AppColors';
 
 //this function get an array of all items in localstorage
 function itemsCart() {
@@ -89,29 +89,29 @@ function Entry(props) {
             borderRadius: 5,
             border: '1px solid ' + appColors.border,
           }}
-        ></Box>
-        <Box position="relative" zIndex="tooltip" top={-81}>
-          <Box>
+        />
+        <Box position="relative" zIndex="tooltip" top={-91}>
+          <Box mr={-15}>
             <h3>{count}</h3>
           </Box>
-          <Button
-            variant="contained"
-            size="small"
-            color="white"
-            onClick={decrease}
-            style={{ width: '84px' }}
-          >
-            -
-          </Button>
-          <Button
-            variant="contained"
-            size="small"
-            color="white"
-            onClick={increase}
-            style={{ width: '84px' }}
-          >
-            +
-          </Button>
+          <Box display="flex" alignItems="flex-start">
+            <Button
+              variant="contained"
+              size="small"
+              onClick={decrease}
+              style={{ width: '86px', opacity: 0.8 }}
+            >
+              -
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={increase}
+              style={{ width: '86px', opacity: 0.8 }}
+            >
+              +
+            </Button>
+          </Box>
           <Box
             width="168px"
             p={0.1}

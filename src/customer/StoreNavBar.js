@@ -21,20 +21,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function StoreNavBar({ tab, setTab, ...props }) {
+export default function StoreNavBar({ ...props }) {
   const classes = useStyles();
 
-  const cartContext = useContext(someContexts);
-  var itemsAmount = cartContext.cartTotal;
+  const storeContext = useContext(someContexts);
+  var itemsAmount = storeContext.cartTotal;
+
+  const handleCartClick = () => {
+    props.setStorePage(props.storePage === 1 ? 0 : 1);
+  };
 
   return (
     <div className={classes.root}>
       <AppBar
         color="white"
         position="static"
+        elevation={0}
         style={{
           borderBottom: '1px solid ' + appColors.secondary,
-          boxShadow: 0,
         }}
       >
         <Toolbar>
@@ -50,7 +54,10 @@ export default function StoreNavBar({ tab, setTab, ...props }) {
           </Box>
           <IconButton edge="end" className="link" to="/cart">
             <Badge badgeContent={itemsAmount} color="primary">
-              <ShoppingCartIcon />
+              <ShoppingCartIcon
+                color={props.storePage === 1 ? 'primary' : 'default'}
+                onClick={handleCartClick}
+              />
             </Badge>
           </IconButton>
         </Toolbar>

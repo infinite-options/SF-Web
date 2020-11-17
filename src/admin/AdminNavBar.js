@@ -80,9 +80,9 @@ function AdminNavBar({ tab, setTab, ...props }) {
         <AppBar
           color="white"
           position="static"
+          elevation={0}
           style={{
             borderBottom: '1px solid ' + appColors.secondary,
-            boxShadow: 0,
           }}
         >
           <Toolbar>
@@ -171,4 +171,4 @@ function AdminNavBar({ tab, setTab, ...props }) {
   );
 }
 
-export default withRouter(AdminNavBar)
+export default withRouter(AdminNavBar);

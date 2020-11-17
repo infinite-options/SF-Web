@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
-import someContexts from '../makeContext';
-import MarketCard from '../pages/MarketCard';
+import someContexts from '../../makeContext';
+import MarketCard from '../../cards/MarketCard';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Grid } from '@material-ui/core';
 

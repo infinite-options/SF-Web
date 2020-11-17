@@ -47,6 +47,7 @@ function App() {
   const [isUserLoaded, setIsUserLoaded] = useState(false);
 
   const theme = createMuiTheme({
+    shadows: ['none'],
     palette: {
       primary: {
         // light: will be calculated from palette.primary.main,

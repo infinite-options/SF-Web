@@ -40,6 +40,7 @@ export default function LandingNavBar({ ...props }) {
       <AppBar
         color="white"
         position="static"
+        elevation={0}
         style={{
           borderBottom: '1px solid ' + appColors.secondary,
         }}
