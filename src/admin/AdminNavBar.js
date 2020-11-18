@@ -95,24 +95,37 @@ function AdminNavBar({ tab, setTab, ...props }) {
   const classes = useStyles();
 
   const businessList = () => {
+    if(Auth.authLevel >= 2) {
+      // Complete business list for admin roles
+      return (
+        <Select
+          defaultValue={'200-000004'}
+          className={classes.farmSelect}
+          onChange={handleChangeFarm}
+        >
+          {farmList.map((item) => {
+              return (
+                <MenuItem
+                  key={item.business_uid}
+                  value={item.business_uid}
+                > 
+                  {item.business_name}
+                </MenuItem>
+              )
+          })}
+        </Select>
+      )
+    }
+    let ownedFarm = farmList.filter((farm) => farm.business_uid === farmID);
+    ownedFarm = ownedFarm[0];
     return (
-      <Select
-        defaultValue={'200-000004'}
-        className={classes.farmSelect}
-        onChange={handleChangeFarm}
+      <Button
+        size={'small'}
+        className={classes.button}
       >
-        {farmList.map((item) => {
-            return (
-              <MenuItem
-                key={item.business_uid}
-                value={item.business_uid}
-              > 
-                {item.business_name}
-              </MenuItem>
-            )
-        })}
-      </Select>
-    )
+        {ownedFarm.business_name}
+      </Button>
+    );
   }
 
   return (

@@ -45,6 +45,7 @@ function AdminLogin(props) {
                 redirectURI : process.env.REACT_APP_APPLE_REDIRECT_URI,
             });
         }
+        // Note: search query parameters used for Apple Login
         let queryString = props.location.search;
         let urlParams = new URLSearchParams(queryString);
         // Clear Query parameters
@@ -53,9 +54,9 @@ function AdminLogin(props) {
         // Successful Log in with Apple, set cookies, context, redirect
         if(urlParams.has('id')) {
             let customerId = urlParams.get('id');
-            document.cookie = 'customer_uid=' + customerId;
             Auth.setIsAuth(true);
             Cookies.set('login-session', 'good');
+            Cookies.set('customer_uid',customerId)
             axios
             .get('https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/Profile/' + customerId)
             .then((response) => {
@@ -74,9 +75,10 @@ function AdminLogin(props) {
                     Auth.setAuthLevel(0);
                     props.history.push('/store');
                     break;
+                // Farmer roles are moving towared business Id string
                 default:
                     Auth.setAuthLevel(0);
-                    props.history.push('/store');
+                    props.history.push('/admin');
               }
             })
             .catch((err) => {
@@ -110,9 +112,9 @@ function AdminLogin(props) {
     // Successful Log in with Apple, set cookies, context, redirect
     if (urlParams.has('id')) {
       let customerId = urlParams.get('id');
-      document.cookie = 'customer_uid=' + customerId;
       Auth.setIsAuth(true);
       Cookies.set('login-session', 'good');
+      Cookies.set('customer_uid',customerId)
       props.history.push('/admin');
     }
     // Log which media platform user should have signed in with instead of Apple
@@ -197,17 +199,23 @@ function AdminLogin(props) {
                       Auth.setIsAuth(true);
                       Cookies.set('login-session', 'good');
                       Cookies.set('customer_uid', customerInfo.customer_uid);
-                      switch (customerInfo.role) {
-                        case 'ADMIN':
+                      let newAccountType = customerInfo.role.toLowerCase();
+                      switch (newAccountType) {
+                        case 'admin':
                           Auth.setAuthLevel(2);
                           props.history.push('/admin');
                           break;
-                        case 'FARMER':
+                        case 'farmer':
                           Auth.setAuthLevel(1);
                           props.history.push('/store');
                           break;
-                        case 'CUSTOMER':
+                        case 'customer':
                           Auth.setAuthLevel(0);
+                          props.history.push('/store');
+                          break;
+                        // Farmer roles are moving towared business Id string
+                        default:
+                          Auth.setAuthLevel(1);
                           props.history.push('/store');
                           break;
                       }
@@ -388,18 +396,24 @@ function AdminLogin(props) {
               Cookies.set('login-session', 'good');
               Cookies.set('customer_uid', customerInfo.customer_uid);
               Auth.setIsAuth(true);
-              switch (customerInfo.role) {
-                case 'ADMIN':
+              let newAccountType = customerInfo.role.toLowerCase();
+              switch (newAccountType) {
+                case 'admin':
                   Auth.setAuthLevel(2);
                   props.history.push('/admin');
                   break;
-                case 'FARMER':
+                case 'farmer':
                   Auth.setAuthLevel(1);
-                  props.history.push('/store');
+                  props.history.push('/admin');
                   break;
-                case 'CUSTOMER':
+                case 'customer':
                   Auth.setAuthLevel(0);
                   props.history.push('/store');
+                  break;
+                // Farmer roles are moving towared business Id string
+                default:
+                  Auth.setAuthLevel(1);
+                  props.history.push('/admin');
                   break;
               }
             });
