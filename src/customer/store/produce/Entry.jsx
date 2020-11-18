@@ -1,7 +1,18 @@
 import React, { useState, useContext } from 'react';
 import someContexts from '../../makeContext';
 import { Box, Button } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 import appColors from '../../../styles/AppColors';
+
+const useStyles = makeStyles({
+  button: {
+    border: '1px solid' + appColors.componentBg,
+    borderRadius: 5,
+    backgroundColor: 'white',
+    color: appColors.primary,
+    opacity: 0.9,
+  },
+});
 
 //this function get an array of all items in localstorage
 function itemsCart() {
@@ -32,6 +43,8 @@ function calTotal() {
 }
 
 function Entry(props) {
+  const classes = useStyles();
+
   const cartContext = useContext(someContexts);
   var tempName = props.img;
   //It will check the locolStorange every time it render to update state
@@ -91,23 +104,33 @@ function Entry(props) {
           }}
         />
         <Box position="relative" zIndex="tooltip" top={-91}>
-          <Box mr={-15}>
-            <h3>{count}</h3>
+          <Box
+            className={classes.button}
+            width={30}
+            height={30}
+            ml={17.5}
+            mt={-10.1}
+            mb={13.5}
+            lineHeight="30px"
+          >
+            {count}
           </Box>
           <Box display="flex" alignItems="flex-start">
             <Button
+              className={classes.button}
               variant="contained"
               size="small"
               onClick={decrease}
-              style={{ width: '86px', opacity: 0.8 }}
+              style={{ width: '86px' }}
             >
               -
             </Button>
             <Button
+              className={classes.button}
               variant="contained"
               size="small"
               onClick={increase}
-              style={{ width: '86px', opacity: 0.8 }}
+              style={{ width: '86px' }}
             >
               +
             </Button>
@@ -122,7 +145,13 @@ function Entry(props) {
               border: '1px solid ' + appColors.border,
             }}
           >
-            {props.name}${props.price} {props.meaning}
+            <Box display="flex">
+              <Box textAlign="left">{props.name}</Box>
+              <Box flexGrow={1} />
+              <Box textAlign="right">
+                $ {props.price} {props.meaning}
+              </Box>
+            </Box>
           </Box>
         </Box>
       </Box>

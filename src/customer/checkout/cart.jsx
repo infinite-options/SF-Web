@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import HeaderCart from '../HeaderCart';
-import CartItem from '../pages/cartItem';
+import CartItem from './items/cartItem';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import someContexts from '../makeContext';

@@ -7,8 +7,12 @@ export default function Checkout() {
   return (
     <>
       <Box display="flex">
-        <CheckoutLeft />
-        <CheckoutRight />
+        <Box width="45%">
+          <CheckoutLeft />
+        </Box>
+        <Box width="55%">
+          <CheckoutRight />
+        </Box>
       </Box>
     </>
   );
