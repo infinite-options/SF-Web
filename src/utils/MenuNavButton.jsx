@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import Cookies from 'js-cookie';
+import { AuthContext } from '../auth/AuthContext';
+import { withRouter } from 'react-router';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -18,9 +21,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MenuListComposition() {
+function MenuListComposition(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const Auth = useContext(AuthContext);
   const anchorRef = React.useRef(null);
 
   const handleToggle = () => {
@@ -60,6 +64,13 @@ export default function MenuListComposition() {
 
     prevOpen.current = open;
   }, [open]);
+
+  const handleClickLogOut = () => {
+    Auth.setIsAuth(false);
+    Cookies.remove('login-session');
+    Cookies.remove('customer_uid');
+    props.history.push('/');
+  };
 
   return (
     <div className={classes.root}>
@@ -125,6 +136,9 @@ export default function MenuListComposition() {
                     >
                       Information
                     </MenuItem>
+                    <MenuItem onClick={handleClickLogOut}>
+                      Logout
+                    </MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
@@ -135,3 +149,5 @@ export default function MenuListComposition() {
     </div>
   );
 }
+
+export default withRouter(MenuListComposition)

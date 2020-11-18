@@ -112,6 +112,7 @@ function App() {
         console.log('Account:', response);
         let newAccountType = response.data.result[0].role.toLowerCase();
         setAccountType(response.data.result[0].role ? newAccountType : '');
+        // Farmer is now string of businessId
         let newAuthLevel = (() => {
           console.log(newAccountType);
           switch (newAccountType) {
@@ -122,7 +123,7 @@ function App() {
             case 'admin':
               return 2;
             default:
-              return 0;
+              return 1;
           }
         })();
         console.log(newAuthLevel);

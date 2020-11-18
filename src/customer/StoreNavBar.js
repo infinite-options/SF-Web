@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import someContexts from './makeContext';
-import { Box, Badge, IconButton } from '@material-ui/core';
+import { Button, Box, Badge, IconButton } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
@@ -21,11 +21,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function StoreNavBar({ ...props }) {
+export default function StoreNavBar({ tab, setTab, ...props }) {
   const classes = useStyles();
 
-  const storeContext = useContext(someContexts);
-  var itemsAmount = storeContext.cartTotal;
+  const cartContext = useContext(someContexts);
+  var itemsAmount = cartContext.cartTotal;
 
   const handleCartClick = () => {
     props.setStorePage(props.storePage === 1 ? 0 : 1);

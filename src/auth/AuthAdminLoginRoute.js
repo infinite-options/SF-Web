@@ -12,7 +12,7 @@ const AuthAdminLoginRoute = ({ auth, component: Component, ...rest }) => {
     <Route
       {...rest}
       render={(props) =>
-        context.authLevel >= 1 ? <Component {...props} /> : <Redirect to="/store" />
+        context.authLevel >= 1 ? <Component {...props} /> : <Redirect to="/" />
       }
     />
   );

@@ -1,5 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
+import axios from 'axios';
+
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -54,7 +56,24 @@ const useStyles = makeStyles((theme) => ({
 
 function AdminNavBar({ tab, setTab, ...props }) {
   const { farmID, setFarmID } = useContext(AdminFarmContext);
+  const [ farmList, setFarmList ] = useState([])
   const Auth = useContext(AuthContext);
+
+  useEffect(() => {
+    axios
+    .get('https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/all_businesses')
+    .then((res) => {
+      console.log(res)
+      setFarmList(res.data.result)
+    })
+    .catch((err) => {
+      if(err.response) {
+        console.log(err.response)
+      }
+      console.log(err)
+    })
+  },[])
+
   //when admin logs out, remove their login info from cookies
   const handleClickLogOut = () => {
     Auth.setIsAuth(false);
@@ -74,6 +93,41 @@ function AdminNavBar({ tab, setTab, ...props }) {
   };
 
   const classes = useStyles();
+
+  const businessList = () => {
+    if(Auth.authLevel >= 2) {
+      // Complete business list for admin roles
+      return (
+        <Select
+          defaultValue={'200-000004'}
+          className={classes.farmSelect}
+          onChange={handleChangeFarm}
+        >
+          {farmList.map((item) => {
+              return (
+                <MenuItem
+                  key={item.business_uid}
+                  value={item.business_uid}
+                > 
+                  {item.business_name}
+                </MenuItem>
+              )
+          })}
+        </Select>
+      )
+    }
+    let ownedFarm = farmList.filter((farm) => farm.business_uid === farmID);
+    ownedFarm = ownedFarm[0];
+    return (
+      <Button
+        size={'small'}
+        className={classes.button}
+      >
+        {ownedFarm.business_name}
+      </Button>
+    );
+  }
+
   return (
     <div className={classes.root}>
       <ThemeProvider theme={theme}>
@@ -103,14 +157,7 @@ function AdminNavBar({ tab, setTab, ...props }) {
             </Box>
             {Auth.authLevel >= 1 && (
               <React.Fragment>
-                <Select
-                  defaultValue={'200-000003'}
-                  className={classes.farmSelect}
-                  onChange={handleChangeFarm}
-                >
-                  <MenuItem value={'200-000003'}>Esquivel Farm</MenuItem>
-                  <MenuItem value={'200-000004'}>Resendiz Family</MenuItem>
-                </Select>
+                {businessList()}
                 <Button
                   size={'small'}
                   className={classes.button}
