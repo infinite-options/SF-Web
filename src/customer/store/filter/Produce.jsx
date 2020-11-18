@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
-import someContexts from '../makeContext';
+import someContexts from '../../makeContext';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Grid } from '@material-ui/core';
-import iconSizes from '../../styles/IconSizes';
+import iconSizes from '../../../styles/IconSizes';
 
 const useStyles = makeStyles((theme) => ({
   paper: {

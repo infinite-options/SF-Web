@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import Entry from './Entry';
-import Footer from '../Footer';
-import Header from '../Header';
-import someContexts from '../makeContext';
+import Footer from '../../Footer';
+import Header from '../../Header';
+import someContexts from '../../makeContext';
 import { Box } from '@material-ui/core';
-import appColors from '../../styles/AppColors';
+import appColors from '../../../styles/AppColors';
 
 function createProduct2(products) {
   var tryItem = products.item_name.slice(

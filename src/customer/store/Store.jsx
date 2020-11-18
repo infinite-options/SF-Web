@@ -1,15 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
-import someContexts from './makeContext';
-import DisplayProduce from './pages/displayProduct';
-import StoreFilter from './storeFilter';
-import StoreNavBar from './StoreNavBar';
-import { AuthContext } from '../auth/AuthContext';
-import AdminNavBar from '../admin/AdminNavBar';
-import Farmer from '../admin/farm/Farmer';
+import someContexts from '../makeContext';
+import DisplayProduce from './produce/displayProduct';
+import StoreFilter from './filter';
+import StoreNavBar from '../StoreNavBar';
+import { AuthContext } from '../../auth/AuthContext';
 import { Box } from '@material-ui/core';
-import { AdminFarmContext } from '../admin/AdminFarmContext';
 import axios from 'axios';
+import Checkout from '../checkout';
 
 const BASE_URL =
   'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
@@ -31,6 +29,11 @@ function calTotal() {
 
 const Store = ({ ...props }) => {
   const Auth = useContext(AuthContext);
+
+  // Options for which page is showing
+  const [storePage, setStorePage] = useState(
+    props.storePage !== undefined ? props.storePage : 0
+  );
 
   const [cartTotal, setCartTotal] = useState(calTotal());
   const [fruitSort, setValFruit] = useState(true);
@@ -101,27 +104,6 @@ const Store = ({ ...props }) => {
         }
         setMarket(marketFarm);
         setnewBussiness(notMarketFarm);
-
-        // var mainArr =[];
-        // if(marketFarm.length!==0){
-        //   for(var i=0 ; i<marketFarm.length;i++){
-        //     var newArr =[];
-        //     for(var j=0;j<notMarketFarm.length;j++){
-        //       var holdAssociate = notMarketFarm[j].business_association;
-        //       if(holdAssociate !==null){
-        //         holdAssociate = JSON.parse(holdAssociate);
-        //         for(var k=0;k<holdAssociate.length;k++){
-        //           if(holdAssociate[k] === marketFarm.business_uid){
-        //             newArr.push(notMarketFarm[j]);
-        //           }
-        //         }
-        //       }
-        //     }
-        //     var nameAndAssosicateFarms =[marketFarm[i].business_uid,newArr]
-        //     mainArr.push(nameAndAssosicateFarms);
-        //   }
-        // }
-        // console.log(mainArr);
       })
       .catch((er) => {
         setBusError(true);
@@ -168,10 +150,20 @@ const Store = ({ ...props }) => {
           setFarmClicked,
         }}
       >
-        {Auth.authLevel === 0 ? <StoreNavBar /> : <></>}
-        <Box display="flex">
-          <StoreFilter />
-          <DisplayProduce />
+        {Auth.authLevel === 0 ? (
+          <StoreNavBar storePage={storePage} setStorePage={setStorePage} />
+        ) : (
+          <></>
+        )}
+        {console.log('storePage: ', storePage)}
+        <Box hidden={storePage != 0}>
+          <Box display="flex">
+            <StoreFilter />
+            <DisplayProduce />
+          </Box>
+        </Box>
+        <Box hidden={storePage != 1}>
+          <Checkout />
         </Box>
       </someContexts.Provider>
     </div>

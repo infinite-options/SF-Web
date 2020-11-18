@@ -1,8 +1,9 @@
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import DisplayProducts from './customer/pages/displayProduct';
-import Cart from './customer/pages/cart';
-import Store from './customer/Store';
+import DisplayProducts from './customer/store/produce/displayProduct';
+import Cart from './customer/checkout/cart';
+import Checkout from './customer/checkout';
+import Store from './customer/store/Store';
 import FarmGrid from './customer/FarmGrid';
 import Profile from './customer/Profile';
 import Landing from './home/Landing';
@@ -12,7 +13,6 @@ import Login from './customer/auth/Login';
 import History from './customer/pages/history';
 import Refund from './customer/pages/Refund';
 import PayStripe from './customer/pages/stripe';
-import Days from './customer/pages/days';
 import AuthAdminRoute from './auth/AuthAdminRoute';
 import AuthAdminLoginRoute from './auth/AuthAdminLoginRoute';
 import AdminSocialSignup from './admin/AdminSocialSignup';
@@ -35,7 +35,6 @@ function Nav(authLevel, isAuth) {
       <Route path="/stripe" component={PayStripe} />
       <Route path="/history" component={History} />
       <Route path="/refund" component={Refund} />
-      <Route path="/days" component={Days} />
       <Route exact path="/store" component={Store} />
       <Route exact path="/farms" component={FarmGrid} />
       <Route exact path="/profile" component={Profile} />

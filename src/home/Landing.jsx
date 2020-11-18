@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import GoogleLogin from 'react-google-login';
-import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
+
 import { Box, Button, TextField, InputAdornment } from '@material-ui/core';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
 import Background from '../welcome-bg.png';
 
 import LandingNavBar from './LandingNavBar';
@@ -47,9 +43,16 @@ const useStyles = makeStyles((theme) => ({
 //backgroundImage:`url(${Background})`,
 const Landing = ({ ...props }) => {
   const classes = useStyles();
+
   // Toggles for the login and signup box to be passed in as props to the Landing Nav Bar
   const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
   const [isSignUpShown, setIsSignUpShown] = useState(false);
+
+  const handleClose = () => {
+    console.log('close');
+    setIsLoginShown(false);
+    setIsSignUpShown(false);
+  };
 
   return (
     <div style={{ backgroundImage: `url(${'./welcome-bg.png'})` }}>
@@ -60,6 +63,7 @@ const Landing = ({ ...props }) => {
         setIsSignUpShown={setIsSignUpShown}
       />
       <Box display="flex">
+        {/* START: Landing Page Logo */}
         <Box display="flex" width="50%" justifyContent="center">
           <img
             height="300px"
@@ -67,11 +71,14 @@ const Landing = ({ ...props }) => {
             src="./logos/logo_transprarent bg.png"
           />
         </Box>
-        <Box width="50%" justifyContent="center">
+        {/* END: Landing Page Logo */}
+
+        {/* START: Local Produce Search */}
+        <Box mt={10} width="50%" justifyContent="center">
           <h4 style={{ color: appColors.secondary }}>
             Local produce delivered to your doorstop
           </h4>
-          <Box width="500px" display="flex" justifyContent="center">
+          <Box display="flex" justifyContent="center">
             <CssTextField
               className={classes.margin}
               id="input-with-icon-textfield"
@@ -86,22 +93,50 @@ const Landing = ({ ...props }) => {
                   </InputAdornment>
                 ),
               }}
+              style={{ width: '290px' }}
             />
-            <Box width="300px" ml={1}>
-              <Button size="small" variant="contained" color="secondary">
-                Find Local Produce
-              </Button>
+            <Box ml={1} />
+            <Button
+              size="small"
+              variant="contained"
+              color="secondary"
+              style={{ width: '200px' }}
+            >
+              Find Local Produce
+            </Button>
+          </Box>
+        </Box>
+        {/* END: Local Produce Search */}
+
+        {/* START: Login/SignUp Modal */}
+        <Box display="flex" justifyContent="flex-end">
+          {/* Login Modal */}
+          <Box
+            position="absolute"
+            width="50%"
+            display="flex"
+            justifyContent="center"
+          >
+            <Box className={classes.authModal} hidden={!isLoginShown}>
+              <AdminLogin />
+            </Box>
+          </Box>
+
+          {/* Sign Up Modal */}
+          <Box display="flex" justifyContent="flex-end">
+            <Box
+              position="absolute"
+              width="50%"
+              display="flex"
+              justifyContent="center"
+            >
+              <Box className={classes.authModal} hidden={!isSignUpShown}>
+                <Signup />
+              </Box>
             </Box>
           </Box>
         </Box>
-        <Box display="flex" justifyContent="flex-end">
-          <Box mr={15} className={classes.authModal} hidden={!isLoginShown}>
-            <AdminLogin />
-          </Box>
-          <Box className={classes.authModal} hidden={!isSignUpShown}>
-            <Signup />
-          </Box>
-        </Box>
+        {/* END: Login/SignUp Modal */}
       </Box>
     </div>
   );

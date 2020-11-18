@@ -1,19 +1,17 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import Cookies from 'js-cookie';
-import { withRouter } from 'react-router';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import someContexts from './makeContext';
-import { AuthContext } from '../auth/AuthContext';
 import { Button, Box, Badge, IconButton } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import appColors from 'styles/AppColors';
+import MenuNavButton from '../utils/MenuNavButton';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,18 +21,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function StoreNavBar({ tab, setTab, ...props }) {
+export default function StoreNavBar({ tab, setTab, ...props }) {
   const classes = useStyles();
 
   const cartContext = useContext(someContexts);
-  const Auth = useContext(AuthContext);
   var itemsAmount = cartContext.cartTotal;
 
-  const handleClickLogOut = () => {
-    Auth.setIsAuth(false);
-    Cookies.remove('login-session');
-    Cookies.remove('customer_uid');
-    props.history.push('/');
+  const handleCartClick = () => {
+    props.setStorePage(props.storePage === 1 ? 0 : 1);
   };
 
   return (
@@ -42,18 +36,13 @@ function StoreNavBar({ tab, setTab, ...props }) {
       <AppBar
         color="white"
         position="static"
+        elevation={0}
         style={{
           borderBottom: '1px solid ' + appColors.secondary,
-          boxShadow: 0,
         }}
       >
         <Toolbar>
-          <IconButton color="inherit" aria-label="menu">
-            <MenuIcon color="secondary" />
-          </IconButton>
-          <Button size={'small'} onClick={handleClickLogOut}>
-            Logout
-          </Button>
+          <MenuNavButton />
           <Box flexGrow={1}></Box>
           <Box display="flex" flexGrow={1}>
             <img
@@ -65,7 +54,10 @@ function StoreNavBar({ tab, setTab, ...props }) {
           </Box>
           <IconButton edge="end" className="link" to="/cart">
             <Badge badgeContent={itemsAmount} color="primary">
-              <ShoppingCartIcon />
+              <ShoppingCartIcon
+                color={props.storePage === 1 ? 'primary' : 'default'}
+                onClick={handleCartClick}
+              />
             </Badge>
           </IconButton>
         </Toolbar>
@@ -73,5 +65,3 @@ function StoreNavBar({ tab, setTab, ...props }) {
     </div>
   );
 }
-
-export default withRouter(StoreNavBar)

@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
-import someContexts from '../makeContext';
-import FarmCard from '../pages/FarmCard';
+import someContexts from '../../makeContext';
+import FarmCard from '../../cards/FarmCard';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Grid } from '@material-ui/core';
 

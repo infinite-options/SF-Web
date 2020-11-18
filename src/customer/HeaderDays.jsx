@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import someContexts from './makeContext';
 import { Link } from 'react-router-dom';
 // import daysInWeek from "../daysInWeek";
-import DateCard from './pages/DateCard';
+import DateCard from './cards/DateCard';
 
 function createDateCard(props) {
   return (
