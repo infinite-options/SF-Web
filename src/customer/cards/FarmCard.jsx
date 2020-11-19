@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import someContexts from '../makeContext';
+import prodSelectContext from '../prodSelectContext';
 import appColors from '../../styles/AppColors';
 import iconSizes from '../../styles/IconSizes';
 import { Box } from '@material-ui/core';
@@ -9,7 +9,7 @@ function FarmCard(props) {
   // const goToCart = () => history.push("/cart");
   const [isClicked, setClicked] = useState(false);
 
-  const context = useContext(someContexts);
+  const context = useContext(prodSelectContext);
 
   function gotFarmClicked() {
     setClicked(!isClicked);

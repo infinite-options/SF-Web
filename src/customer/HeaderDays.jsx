@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import someContexts from './makeContext';
+import storeContext from './storeContext';
 import { Link } from 'react-router-dom';
 // import daysInWeek from "../daysInWeek";
 import DateCard from './cards/DateCard';
@@ -73,7 +73,7 @@ function makeFilterDay(defaultDay, updateDay) {
 }
 
 function HeaderDays(props) {
-  const cartContext = useContext(someContexts);
+  const cartContext = useContext(storeContext);
   var itemsAmount = cartContext.cartTotal;
   //variable: a set of day need to display
   var allValidDay = createDefault7Day();

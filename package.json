@@ -11,6 +11,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/pickers": "^3.2.10",
+    "@react-google-maps/api": "^1.13.0",
     "@stripe/react-stripe-js": "^1.1.2",
     "@stripe/stripe-js": "^1.11.0",
     "@testing-library/jest-dom": "^4.2.4",
@@ -33,6 +34,7 @@
     "react-google-login": "^5.1.21",
     "react-images-uploading": "^3.1.2",
     "react-number-format": "^4.4.1",
+    "react-payment": "^0.1.8",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.0",
     "universal-cookie": "^4.0.4"

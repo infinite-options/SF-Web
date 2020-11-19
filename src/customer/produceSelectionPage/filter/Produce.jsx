@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import someContexts from '../../makeContext';
+import prodSelectContext from '../../prodSelectContext';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Grid } from '@material-ui/core';
 import iconSizes from '../../../styles/IconSizes';
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 const ProduceCategory = () => {
   const classes = useStyles();
 
-  const cartContext = useContext(someContexts);
+  const cartContext = useContext(prodSelectContext);
   var itemsAmount = cartContext.cartTotal;
   const [fruitClick, set1] = useState(true);
   const [vegeClick, set2] = useState(true);

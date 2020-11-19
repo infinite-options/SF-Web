@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import appColor from '../../styles/AppColors';
+import CheckoutTab from './tabs/CheckoutTab';
+import appColors from '../../styles/AppColors';
+import { Box } from '@material-ui/core';
 
 const useStyles = makeStyles({
   root: {
     flexGrow: 1,
+    backgroundColor: appColors.componentBg,
+    borderTopLeftRadius: 25,
   },
 });
 
@@ -20,7 +24,7 @@ const StyledTabs = withStyles({
     '& > span': {
       maxWidth: 40,
       width: '100%',
-      backgroundColor: appColor.secondary,
+      backgroundColor: appColors.secondary,
     },
   },
 })((props) => <Tabs {...props} TabIndicatorProps={{ children: <span /> }} />);
@@ -28,7 +32,7 @@ const StyledTabs = withStyles({
 const StyledTab = withStyles((theme) => ({
   root: {
     textTransform: 'none',
-    color: appColor.pargraphText,
+    color: appColors.paragraphText,
     fontWeight: theme.typography.fontWeightRegular,
     fontSize: theme.typography.pxToRem(15),
     marginRight: theme.spacing(1),
@@ -38,7 +42,7 @@ const StyledTab = withStyles((theme) => ({
   },
 }))((props) => <Tab disableRipple {...props} />);
 
-export default function CheckoutLeft() {
+export default function CheckoutRight() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
@@ -46,8 +50,19 @@ export default function CheckoutLeft() {
     setValue(newValue);
   };
 
+  const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
+
+  React.useEffect(() => {
+    window.addEventListener('resize', updateWindowHeight);
+    return () => window.removeEventListener('resize', updateWindowHeight);
+  });
+
+  const updateWindowHeight = () => {
+    setWindowHeight(window.innerHeight);
+  };
+
   return (
-    <Paper className={classes.root}>
+    <Paper className={classes.root} style={{ height: windowHeight - 85 }}>
       <StyledTabs
         value={value}
         onChange={handleChange}
@@ -56,10 +71,13 @@ export default function CheckoutLeft() {
         aria-label="styled tabs example"
         centered
       >
-        <StyledTab label="Delivery Info" />
-        <StyledTab label="Rewards" />
-        <StyledTab label="Payment Details" />
+        <StyledTab label="Checkout" />
+        <Box flexGrow={1} />
+        <StyledTab label="History" />
+        <Box flexGrow={1} />
+        <StyledTab label="Refund" />
       </StyledTabs>
+      <CheckoutTab />
     </Paper>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import someContexts from '../makeContext';
+import prodSelectContext from '../prodSelectContext';
 import iconSizes from '../../styles/IconSizes';
 import appColors from '../../styles/AppColors';
 
@@ -10,7 +10,7 @@ function MarketCard(props) {
   // const goToCart = () => history.push("/cart");
   const [isClicked, setClicked] = useState(false);
 
-  const context = useContext(someContexts);
+  const context = useContext(prodSelectContext);
 
   function gotClicked() {
     setClicked(!isClicked);

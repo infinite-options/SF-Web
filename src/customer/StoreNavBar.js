@@ -5,13 +5,15 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import someContexts from './makeContext';
-import { Button, Box, Badge, IconButton } from '@material-ui/core';
+import storeContext from './storeContext';
+import { Box, Badge, IconButton, Button } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import appColors from 'styles/AppColors';
 import MenuNavButton from '../utils/MenuNavButton';
+import { AuthContext } from 'auth/AuthContext';
+import { Pointer } from 'highcharts';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,16 +21,34 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: 'white',
     marginBottom: '20px',
   },
+  authButton: {
+    color: 'white',
+    marginRight: '10px',
+  },
 }));
 
 export default function StoreNavBar({ tab, setTab, ...props }) {
   const classes = useStyles();
 
-  const cartContext = useContext(someContexts);
-  var itemsAmount = cartContext.cartTotal;
+  const store = useContext(storeContext);
+  var itemsAmount = store.cartTotal;
 
   const handleCartClick = () => {
     props.setStorePage(props.storePage === 1 ? 0 : 1);
+  };
+
+  const Logoclick = () => {
+    window.location.href = `${window.location.origin.toString()}/`;
+  };
+
+  const loginClicked = () => {
+    props.setIsSignUpShown(false);
+    props.setIsLoginShown(!props.isLoginShown);
+  };
+
+  const signUpClicked = () => {
+    props.setIsLoginShown(false);
+    props.setIsSignUpShown(!props.isSignUpShown);
   };
 
   return (
@@ -42,19 +62,48 @@ export default function StoreNavBar({ tab, setTab, ...props }) {
         }}
       >
         <Toolbar>
-          <MenuNavButton />
-          <Box flexGrow={1}></Box>
-          <Box display="flex" flexGrow={1}>
+          <Box
+            display="flex"
+            width="98%"
+            position="absolute"
+            justifyContent="center"
+          >
             <img
               width="50"
               height="50"
               src="./logos/sf logo_without text.png"
               alt="logo"
+              onClick={Logoclick}
+              style={{ cursor: 'pointer' }}
             />
           </Box>
+          <MenuNavButton />
+          <Box flexGrow={1}></Box>
+          {/* <Box hidden={useContext(AuthContext).isAuth} display="flex">
+            <Button
+              className={classes.authButton}
+              variant="contained"
+              size="small"
+              color="primary"
+              onClick={signUpClicked}
+            >
+              Sign Up
+            </Button>
+            <Box ml={1} />
+            <Button
+              className={classes.authButton}
+              variant="contained"
+              size="small"
+              color="secondary"
+              onClick={loginClicked}
+            >
+              Login
+            </Button>
+          </Box> */}
           <IconButton edge="end" className="link" to="/cart">
             <Badge badgeContent={itemsAmount} color="primary">
               <ShoppingCartIcon
+                fontSize="large"
                 color={props.storePage === 1 ? 'primary' : 'default'}
                 onClick={handleCartClick}
               />
