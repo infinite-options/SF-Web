@@ -117,15 +117,18 @@ function AdminNavBar({ tab, setTab, ...props }) {
       )
     }
     let ownedFarm = farmList.filter((farm) => farm.business_uid === farmID);
-    ownedFarm = ownedFarm[0];
-    return (
-      <Button
-        size={'small'}
-        className={classes.button}
-      >
-        {ownedFarm.business_name}
-      </Button>
-    );
+    if(ownedFarm.length > 0) {
+      ownedFarm = ownedFarm[0];
+      return (
+        <Button
+          size={'small'}
+          className={classes.button}
+        >
+          {ownedFarm.business_name}
+        </Button>
+      );
+    }
+    return null;
   }
 
   return (
