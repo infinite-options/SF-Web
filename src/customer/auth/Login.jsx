@@ -5,12 +5,10 @@ import TextField from '@material-ui/core/TextField';
 //import MuiThemeProvider from '@material-ui/styles/MuiThemeProvider'
 import Paper from '@material-ui/core/Paper';
 import { Box } from '@material-ui/core';
-import Background from '../../welcome-bg.png';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import { withRouter } from 'react-router';
 import appColors from '../../styles/AppColors';
-import someContexts from '../makeContext';
 import { AuthContext } from '../../auth/AuthContext';
 
 let API_URL =

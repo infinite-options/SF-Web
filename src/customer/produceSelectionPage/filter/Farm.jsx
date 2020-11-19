@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import someContexts from '../../makeContext';
+import prodSelectContext from '../../prodSelectContext';
 import FarmCard from '../../cards/FarmCard';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Grid } from '@material-ui/core';
@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
 
 const FarmCategory = () => {
   const classes = useStyles();
-  const topNode = useContext(someContexts);
+  const topNode = useContext(prodSelectContext);
 
   function createFarmCard(props) {
     return (

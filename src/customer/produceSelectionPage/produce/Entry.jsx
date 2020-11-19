@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import someContexts from '../../makeContext';
+import storeContext from '../../storeContext';
 import { Box, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import appColors from '../../../styles/AppColors';
@@ -45,7 +45,7 @@ function calTotal() {
 function Entry(props) {
   const classes = useStyles();
 
-  const cartContext = useContext(someContexts);
+  const cartContext = useContext(storeContext);
   var tempName = props.img;
   //It will check the locolStorange every time it render to update state
   var holdItems = itemsCart();

@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react';
-import someContexts from './makeContext';
+import storeContext from './storeContext';
 import { Link } from 'react-router-dom';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 
 function Header(props) {
-  const cartContext = useContext(someContexts);
+  const cartContext = useContext(storeContext);
   var itemsAmount = cartContext.cartTotal;
   const [fruitClick, set1] = useState(true);
   const [vegeClick, set2] = useState(true);

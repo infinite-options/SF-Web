@@ -5,7 +5,7 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import someContexts from './makeContext';
+import storeContext from './storeContext';
 import { Box, Badge, IconButton, Button } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 
@@ -13,6 +13,7 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import appColors from 'styles/AppColors';
 import MenuNavButton from '../utils/MenuNavButton';
 import { AuthContext } from 'auth/AuthContext';
+import { Pointer } from 'highcharts';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,11 +30,15 @@ const useStyles = makeStyles((theme) => ({
 export default function StoreNavBar({ ...props }) {
   const classes = useStyles();
 
-  const storeContext = useContext(someContexts);
-  var itemsAmount = storeContext.cartTotal;
+  const store = useContext(storeContext);
+  var itemsAmount = store.cartTotal;
 
   const handleCartClick = () => {
     props.setStorePage(props.storePage === 1 ? 0 : 1);
+  };
+
+  const Logoclick = () => {
+    window.location.href = `${window.location.origin.toString()}/`;
   };
 
   const loginClicked = () => {
@@ -68,6 +73,8 @@ export default function StoreNavBar({ ...props }) {
               height="50"
               src="./logos/sf logo_without text.png"
               alt="logo"
+              onClick={Logoclick}
+              style={{ cursor: 'pointer' }}
             />
           </Box>
           <MenuNavButton />

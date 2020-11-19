@@ -1,10 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
-import someContexts from './makeContext';
 import DisplayProduce from './produceSelectionPage/produce/displayProduct';
 import StoreFilter from './produceSelectionPage/filter';
 import StoreNavBar from './StoreNavBar';
 import { AuthContext } from '../auth/AuthContext';
+import storeContext from './storeContext';
+import prodSelectContext from './prodSelectContext';
 import { Box } from '@material-ui/core';
 import axios from 'axios';
 import CheckoutPage from './checkoutPage';
@@ -28,23 +29,23 @@ function calTotal() {
   return amount;
 }
 
+var profileData = {};
 const AuthMethods = new AuthUtils();
-AuthMethods.getProfile().then((res) => {});
+AuthMethods.getProfile().then((res) => {
+  console.log('User profile was retrieved');
+  profileData = res;
+});
 
 const Store = ({ ...props }) => {
   const Auth = useContext(AuthContext);
 
   const [profile, setProfile] = useState({}); // checks if user is logged in
 
-  //this useEffect fetch the data of all items
   useEffect(() => {
-    console.log('Auth Get Profile Called');
-    const AuthMethods = new AuthUtils();
-    AuthMethods.getProfile().then((res) => {
-      setProfile(res);
-      console.log('res', res);
-    });
-  }, [url]);
+    console.log('profile info changed');
+    setProfile(profileData);
+  }, [profileData]);
+
   // Toggles for the login and signup box to be passed in as props to the Landing Nav Bar
   const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
   const [isSignUpShown, setIsSignUpShown] = useState(false);
@@ -141,55 +142,56 @@ const Store = ({ ...props }) => {
 
   return (
     <div hidden={props.hidden}>
-      <someContexts.Provider
+      <storeContext.Provider
         value={{
           cartTotal,
           setCartTotal,
-          fruitSort,
-          setValFruit,
-          vegeSort,
-          setValVege,
-          dessertSort,
-          setValDessert,
-          othersSort,
-          setValOther,
-          itemsFromFetchTodDisplay,
-          itemError,
-          itemIsLoading,
-          currentFootClick,
-          setFootClick,
-          defaultBussines,
-          busIsLoad,
-          busError,
-          newWeekDay,
-          setWeekDay,
-          market,
-          setMarket,
-          farmClicked,
-          setFarmClicked,
         }}
       >
-        {Auth.authLevel === 0 ? (
-          <StoreNavBar
-            setIsLoginShown={setIsLoginShown}
-            setIsSignUpShown={setIsSignUpShown}
-            storePage={storePage}
-            setStorePage={setStorePage}
-          />
-        ) : (
-          <></>
-        )}
+        <StoreNavBar
+          setIsLoginShown={setIsLoginShown}
+          setIsSignUpShown={setIsSignUpShown}
+          storePage={storePage}
+          setStorePage={setStorePage}
+        />
         {console.log('storePage: ', storePage)}
         <Box hidden={storePage != 0}>
           <Box display="flex">
-            <StoreFilter />
-            <DisplayProduce />
+            <prodSelectContext.Provider
+              value={{
+                fruitSort,
+                setValFruit,
+                vegeSort,
+                setValVege,
+                dessertSort,
+                setValDessert,
+                othersSort,
+                setValOther,
+                itemsFromFetchTodDisplay,
+                itemError,
+                itemIsLoading,
+                currentFootClick,
+                setFootClick,
+                defaultBussines,
+                busIsLoad,
+                busError,
+                newWeekDay,
+                setWeekDay,
+                market,
+                setMarket,
+                farmClicked,
+                setFarmClicked,
+              }}
+            >
+              <StoreFilter />
+              <DisplayProduce />
+            </prodSelectContext.Provider>
           </Box>
         </Box>
         <Box hidden={storePage != 1}>
           <CheckoutPage profile={profile} />
         </Box>
-      </someContexts.Provider>
+      </storeContext.Provider>
     </div>
   );
 };

@@ -4,7 +4,7 @@ import HeaderCart from '../HeaderCart';
 import CartItem from './items/cartItem';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import prodSelectContext from '../prodSelectContext';
+import storeContext from '../storeContext';
 import CouponCard from '../pages/CouponCard';
 
 //imtemsCart() will return an array of all localStorage key that include only products
@@ -81,34 +81,7 @@ function changecp20(flag, hasCp, subTotal) {
   }
 }
 
-function Cart() {
-  function listItem(items) {
-    return (
-      <CartItem
-        name={items.name}
-        price={items.price}
-        img={items.img}
-        meaning={items.meaning}
-        business_uid={items.business_uid}
-        id={items.id}
-        key={items.id}
-      />
-    );
-  }
-
-  function listCoupon(coupon) {
-    return (
-      <CouponCard
-        notes={coupon.notes}
-        discount_percent={coupon.discount_percent}
-        discount_amount={coupon.discount_amount}
-        discount_shipping={coupon.discount_shipping}
-        id={coupon.coupon_uid}
-        key={coupon.coupon_uid}
-      />
-    );
-  }
-
+function placeOrder() {
   const address = '2931 Emerson Way Altadena, CA 91001';
   const deliverTime = 'Wednesday Aug 20, 2020 between 6:00 pm to 8:00 pm';
   const history = useHistory();
@@ -119,7 +92,7 @@ function Cart() {
     'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/purchase_Data_SF';
   const endpoint_Coupon =
     'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/available_Coupons/xyz@gmail.com';
-  const cartContext = useContext(prodSelectContext);
+  const cartContext = useContext(storeContext);
 
   //here is function after click pay with stripe
   //=> create a list of all items in cart and put info in an object to post to host
@@ -192,7 +165,7 @@ function Cart() {
 
   //here is function after click pay with paypal
   //=> create a list of all items in cart and put info in an object to post to host
-  function paypalPay() {
+  function paypalPay(profile, paymentType) {
     var allItemsHolder = products;
     var arrayOfItem = [];
     // var busID = "";
@@ -322,184 +295,6 @@ function Cart() {
   }, [endpoint_Coupon]);
 
   if (couponLoaded && !couponError) {
-    return (
-      <div>
-        <div className="firstBlockDiv">
-          <div className="contentLeft">Delivery Address:</div>
-          <div className="contentRight">{address}</div>
-        </div>
-
-        <div className="eachBlockDiv">
-          <Link to="/cart" className="colorClick contentRight">
-            Change address
-          </Link>
-        </div>
-
-        <hr></hr>
-
-        <div className="eachBlockDiv2">
-          <div className="contentLeft">Expected Delivery:</div>
-          <div className="contentRight">{deliverTime}</div>
-        </div>
-
-        <hr></hr>
-
-        <div className="eachBlockDiv3">
-          <div className="contentLeft">
-            <b>Your order</b>
-          </div>
-          <div className="contentRight">
-            <button className="addMoreBtn" onClick={goToShop}>
-              + Add items
-            </button>
-          </div>
-        </div>
-
-        <hr></hr>
-
-        <div className="">{products.map(listItem)}</div>
-
-        <div className="lineAboveCoupon">
-          Choose one of the eligible promos to apply
-        </div>
-        <div className="scrolling-wrapper">{couponData.map(listCoupon)}</div>
-
-        <hr></hr>
-
-        <div className="eachBlockDiv3">
-          <div className="contentLeft1">Subtotal</div>
-          <div className="priceRight">${subpriceString}</div>
-        </div>
-
-        <hr></hr>
-
-        <div className="eachBlockDiv3 colorPromo">
-          <div className="contentLeft1">Promo applied</div>
-          <div className="priceRight">-${promo}</div>
-        </div>
-
-        <hr></hr>
-
-        <div className="eachBlockDiv3">
-          <div className="contentLeft1">Delivery Fee</div>
-          <div className="priceRight">${shipFee}</div>
-        </div>
-
-        <hr></hr>
-
-        <div className="eachBlockDiv3">
-          <div className="contentLeft1">Taxes</div>
-          <div className="priceRight">${taxValue}</div>
-        </div>
-
-        <hr></hr>
-
-        <div className="eachBlockDiv3">
-          <div className="contentLeft1">
-            <b>Total</b>
-          </div>
-          <div className="priceRight">${finalPrice}</div>
-        </div>
-
-        <div className="justMakeSpace1" onClick={stripePay}>
-          <button className="PayBtn">Checkout with Stripe</button>
-        </div>
-        <div className="justMakeSpace" onClick={paypalPay}>
-          <button className="PayBtn">Checkout with PayPal</button>
-        </div>
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        <div className="firstBlockDiv">
-          <div className="contentLeft">Delivery Address:</div>
-          <div className="contentRight">{address}</div>
-        </div>
-
-        <div className="eachBlockDiv">
-          <Link to="/cart" className="colorClick contentRight">
-            Change address
-          </Link>
-        </div>
-
-        <hr></hr>
-
-        <div className="eachBlockDiv2">
-          <div className="contentLeft">Expected Delivery:</div>
-          <div className="contentRight">{deliverTime}</div>
-        </div>
-
-        <hr></hr>
-
-        <div className="eachBlockDiv3">
-          <div className="contentLeft">
-            <b>Your order</b>
-          </div>
-          <div className="contentRight">
-            <button className="addMoreBtn" onClick={goToShop}>
-              + Add items
-            </button>
-          </div>
-        </div>
-
-        <hr></hr>
-
-        <div className="">{products.map(listItem)}</div>
-
-        {/* codes for scrolling coupon bar */}
-        <div className="lineAboveCoupon">
-          Choose one of the eligible promos to apply
-        </div>
-        <div className="scrolling-wrapper">
-          The Coupon server is loading and finging your available_Coupons
-        </div>
-
-        <hr></hr>
-
-        <div className="eachBlockDiv3">
-          <div className="contentLeft1">Subtotal</div>
-          <div className="priceRight">${subpriceString}</div>
-        </div>
-
-        <hr></hr>
-
-        <div className="eachBlockDiv3 colorPromo">
-          <div className="contentLeft1">Promo applied</div>
-          <div className="priceRight">-${promo}</div>
-        </div>
-
-        <hr></hr>
-
-        <div className="eachBlockDiv3">
-          <div className="contentLeft1">Delivery Fee</div>
-          <div className="priceRight">${shipFee}</div>
-        </div>
-
-        <hr></hr>
-
-        <div className="eachBlockDiv3">
-          <div className="contentLeft1">Taxes</div>
-          <div className="priceRight">${taxValue}</div>
-        </div>
-
-        <hr></hr>
-
-        <div className="eachBlockDiv3">
-          <div className="contentLeft1">
-            <b>Total</b>
-          </div>
-          <div className="priceRight">${finalPrice}</div>
-        </div>
-
-        <div className="justMakeSpace1" onClick={stripePay}>
-          <button className="PayBtn">Checkout with Stripe</button>
-        </div>
-        <div className="justMakeSpace" onClick={paypalPay}>
-          <button className="PayBtn">Checkout with PayPal</button>
-        </div>
-      </div>
-    );
   }
 }
 

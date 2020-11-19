@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import someContexts from '../../makeContext';
+import storeContext from '../../storeContext';
 import { Box, IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
@@ -37,7 +37,7 @@ function calTotal() {
 }
 
 function CartItem(props) {
-  const cartContext = useContext(someContexts);
+  const cartContext = useContext(storeContext);
   var getQuantity = itemsCart(props);
   var totalPrice = props.price * getQuantity;
   const [counter, setCounter] = useState(getQuantity);

@@ -1,9 +1,7 @@
-import React, { useContext, useState } from 'react';
-import someContexts from '../../makeContext';
-import FarmCard from '../../cards/FarmCard';
+import React, { useContext } from 'react';
+import storeContext from '../../storeContext';
+import prodSelectContext from '../../prodSelectContext';
 import { makeStyles } from '@material-ui/core/styles';
-import { Box, Grid } from '@material-ui/core';
-import { Link } from 'react-router-dom';
 // import daysInWeek from "../daysInWeek";
 import DateCard from '../../cards/DateCard';
 
@@ -84,13 +82,15 @@ const DaysCategory = () => {
     return arr.reverse();
   };
 
-  const cartContext = useContext(someContexts);
-  var itemsAmount = cartContext.cartTotal;
+  const prodSelect = useContext(prodSelectContext);
+  const store = useContext(storeContext);
+
+  var itemsAmount = store.cartTotal;
   //variable: a set of day need to display
   var allValidDay = createDefault7Day();
   // console.log(allValidDay);
-  if (cartContext.newWeekDay.length !== 0) {
-    allValidDay = makeFilterDay(allValidDay, cartContext.newWeekDay);
+  if (prodSelect.newWeekDay.length !== 0) {
+    allValidDay = makeFilterDay(allValidDay, prodSelect.newWeekDay);
     // console.log(testUpdateDay);
   }
 

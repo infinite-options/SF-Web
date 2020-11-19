@@ -1,22 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Admin from './admin/Admin';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  Redirect,
-} from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import Cookies from 'universal-cookie';
 import Nav from './Nav';
 import { AdminFarmContext } from './admin/AdminFarmContext';
-import someContexts from './customer/makeContext';
-import AdminLogin from './admin/AdminLogin';
-import FarmerLogin from './farmer/FarmerLogin';
-import FarmerSignUp from './farmer/FarmerSignUp';
+
 import { AuthContext } from './auth/AuthContext';
 import axios from 'axios';
 import appColors from './styles/AppColors';

@@ -6,6 +6,7 @@ import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import appColors from '../../styles/AppColors';
 import DeliveryInfo from './tabs/DeliveryInfoTab';
+import PaymentTab from './tabs/PaymentTab';
 
 const useStyles = makeStyles({
   root: {
@@ -65,7 +66,11 @@ export default function CheckoutLeft({ ...props }) {
         <StyledTab label="Payment Details" />
       </StyledTabs>
       <Box hidden={value != 0}>
-        <DeliveryInfo profile={props.profile} />
+        <DeliveryInfo />
+      </Box>
+      {/* value is 4 because the flex spacing takes up values 1 and 3 */}
+      <Box hidden={value != 4}>
+        <PaymentTab />
       </Box>
     </Paper>
   );

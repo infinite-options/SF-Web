@@ -1,10 +1,8 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { Paper, Box, TextField, Button } from '@material-ui/core';
+import { Box, TextField, Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import appColors from '../../../styles/AppColors';
-import Signup from '../../auth/Signup';
-import someContext from '../../makeContext';
 import CartItem from '../items/cartItem';
 
 const useStyles = makeStyles({
@@ -48,7 +46,6 @@ const CssTextField = withStyles({
 
 export default function CheckoutTab() {
   const classes = useStyles();
-  const storeContext = useContext(someContext);
   const products = itemsCart();
 
   const onSubmit = (event) => {};

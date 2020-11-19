@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import Entry from './Entry';
 import Footer from '../../Footer';
 import Header from '../../Header';
-import someContexts from '../../makeContext';
+import prodSelectContext from '../../prodSelectContext';
 import { Box } from '@material-ui/core';
 import appColors from '../../../styles/AppColors';
 
@@ -59,7 +59,7 @@ function sorting(prodChoice, copyFarm) {
 }
 
 function DisplayProduct() {
-  const prodChoice = useContext(someContexts);
+  const prodChoice = useContext(prodSelectContext);
 
   //because at the start of the fetching, it has nothing and that will cause error
   //with this if condition, we only work if we get the data
@@ -86,7 +86,7 @@ function DisplayProduct() {
           style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
         >
           <Box mb={2}>
-            Produce from farms delivering on {someContexts.newWeekDay}
+            Produce from farms delivering on {prodChoice.newWeekDay}
           </Box>
           <Box display="flex" flexWrap="wrap">
             {copyFarm.map(createProduct2)}

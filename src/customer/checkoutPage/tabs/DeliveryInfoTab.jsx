@@ -5,6 +5,7 @@ import { Paper, Box, TextField, Switch, Button } from '@material-ui/core';
 import appColors from '../../../styles/AppColors';
 import Signup from '../../auth/Signup';
 import { AuthContext } from '../../../auth/AuthContext';
+import CheckoutContext from '../CheckoutContext';
 
 const useStyles = makeStyles({
   root: {
@@ -32,26 +33,10 @@ const CssTextField = withStyles({
   },
 })(TextField);
 
-export default function DeliveryInfoTab({ ...props }) {
+export default function DeliveryInfoTab() {
   const classes = useStyles();
   const Auth = useContext(AuthContext);
-
-  const [userInfo, setUserInfo] = React.useState({});
-  console.log('userInfo: ', userInfo);
-
-  useEffect(() => {
-    setUserInfo({
-      email: props.profile.customer_email,
-      firstName: props.profile.customer_first_name,
-      lastName: props.profile.customer_last_name,
-      phoneNum: props.profile.customer_phone_num,
-      address: props.profile.customer_address,
-      unit: props.profile.customer_unit,
-      city: props.profile.customer_city,
-      state: props.profile.customer_state,
-      zip: props.profile.customer_zip,
-    });
-  }, [props.profile]);
+  const Checkout = useContext(CheckoutContext);
 
   const [map, setMap] = React.useState(null);
 
@@ -68,40 +53,8 @@ export default function DeliveryInfoTab({ ...props }) {
   }, []);
 
   const onFieldChange = (event) => {
-    var newInfo = {};
-    console.log('event.target.name :', event.target.name);
-    switch (event.target.name) {
-      case 'email':
-        newInfo = { ...userInfo, email: event.target.value };
-        break;
-      case 'firstName':
-        newInfo = { ...userInfo, firstName: event.target.value };
-        break;
-      case 'lastName':
-        newInfo = { ...userInfo, lastName: event.target.value };
-        break;
-      case 'phoneNum':
-        newInfo = { ...userInfo, phoneNum: event.target.value };
-        break;
-      case 'address':
-        newInfo = { ...userInfo, address: event.target.value };
-        break;
-      case 'unit':
-        newInfo = { ...userInfo, unit: event.target.value };
-        break;
-      case 'city':
-        newInfo = { ...userInfo, city: event.target.value };
-        break;
-      case 'street':
-        newInfo = { ...userInfo, street: event.target.value };
-        break;
-      case 'zip':
-        newInfo = { ...userInfo, zip: event.target.value };
-        break;
-      default:
-        newInfo = userInfo;
-    }
-    setUserInfo(newInfo);
+    const { name, value } = event.target;
+    Checkout.setUserInfo({ ...Checkout.userInfo, [name]: value });
   };
 
   const PlainTextField = (props) => {
@@ -125,7 +78,7 @@ export default function DeliveryInfoTab({ ...props }) {
     return (
       <>
         {PlainTextField({
-          value: userInfo.email,
+          value: Checkout.userInfo.email,
           name: 'email',
           label: 'Email',
         })}
@@ -150,23 +103,23 @@ export default function DeliveryInfoTab({ ...props }) {
           <Switch />
         </Box>
         {PlainTextField({
-          value: userInfo.firstName,
+          value: Checkout.userInfo.firstName,
           name: 'firstName',
           label: 'First Name',
         })}
         {PlainTextField({
-          value: userInfo.lastName,
+          value: Checkout.userInfo.lastName,
           name: 'lastName',
           label: 'Last Name',
         })}
         {PlainTextField({
-          value: userInfo.phoneNum,
+          value: Checkout.userInfo.phoneNum,
           name: 'phoneNum',
           label: 'Phone Number',
         })}
         <Box display="flex" mb={1}>
           <CssTextField
-            value={userInfo.address}
+            value={Checkout.userInfo.address}
             name="address"
             label="Street Address"
             variant="outlined"
@@ -176,7 +129,7 @@ export default function DeliveryInfoTab({ ...props }) {
           />
           <Box ml={1} width="40%">
             <CssTextField
-              value={userInfo.unit}
+              value={Checkout.userInfo.unit}
               name="unit"
               label="Apt Number"
               variant="outlined"
@@ -189,7 +142,7 @@ export default function DeliveryInfoTab({ ...props }) {
         <Box display="flex" mb={1}>
           <Box width="33.3%">
             <CssTextField
-              value={userInfo.city}
+              value={Checkout.userInfo.city}
               name="city"
               label="City"
               variant="outlined"
@@ -200,7 +153,7 @@ export default function DeliveryInfoTab({ ...props }) {
           </Box>
           <Box width="33.3%" mx={1}>
             <CssTextField
-              value={userInfo.state}
+              value={Checkout.userInfo.state}
               name="state"
               label="State"
               variant="outlined"
@@ -211,7 +164,7 @@ export default function DeliveryInfoTab({ ...props }) {
           </Box>
           <Box width="33.3%">
             <CssTextField
-              value={userInfo.zip}
+              value={Checkout.userInfo.zip}
               name="zip"
               label="Zip Code"
               variant="outlined"
