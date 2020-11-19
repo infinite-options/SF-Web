@@ -1,9 +1,9 @@
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import DisplayProducts from './customer/store/produce/displayProduct';
-import Cart from './customer/checkout/cart';
-import Checkout from './customer/checkout';
-import Store from './customer/store/Store';
+import DisplayProducts from './customer/produceSelectionPage/produce/displayProduct';
+import Cart from './customer/checkoutPage/cart';
+import Checkout from './customer/checkoutPage';
+import Store from './customer/Store';
 import FarmGrid from './customer/FarmGrid';
 import Profile from './customer/Profile';
 import Landing from './home/Landing';

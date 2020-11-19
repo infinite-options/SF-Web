@@ -40,7 +40,7 @@ const StyledTab = withStyles((theme) => ({
   },
 }))((props) => <Tab disableRipple {...props} />);
 
-export default function CheckoutLeft() {
+export default function CheckoutLeft({ ...props }) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
@@ -65,7 +65,7 @@ export default function CheckoutLeft() {
         <StyledTab label="Payment Details" />
       </StyledTabs>
       <Box hidden={value != 0}>
-        <DeliveryInfo />
+        <DeliveryInfo profile={props.profile} />
       </Box>
     </Paper>
   );

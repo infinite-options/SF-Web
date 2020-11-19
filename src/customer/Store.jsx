@@ -1,13 +1,14 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
-import someContexts from '../makeContext';
-import DisplayProduce from './produce/displayProduct';
-import StoreFilter from './filter';
-import StoreNavBar from '../StoreNavBar';
-import { AuthContext } from '../../auth/AuthContext';
+import someContexts from './makeContext';
+import DisplayProduce from './produceSelectionPage/produce/displayProduct';
+import StoreFilter from './produceSelectionPage/filter';
+import StoreNavBar from './StoreNavBar';
+import { AuthContext } from '../auth/AuthContext';
 import { Box } from '@material-ui/core';
 import axios from 'axios';
-import Checkout from '../checkout';
+import CheckoutPage from './checkoutPage';
+import AuthUtils from '../utils/AuthUtils';
 
 const BASE_URL =
   'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
@@ -27,9 +28,23 @@ function calTotal() {
   return amount;
 }
 
+const AuthMethods = new AuthUtils();
+AuthMethods.getProfile().then((res) => {});
+
 const Store = ({ ...props }) => {
   const Auth = useContext(AuthContext);
 
+  const [profile, setProfile] = useState({}); // checks if user is logged in
+
+  //this useEffect fetch the data of all items
+  useEffect(() => {
+    console.log('Auth Get Profile Called');
+    const AuthMethods = new AuthUtils();
+    AuthMethods.getProfile().then((res) => {
+      setProfile(res);
+      console.log('res', res);
+    });
+  }, [url]);
   // Toggles for the login and signup box to be passed in as props to the Landing Nav Bar
   const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
   const [isSignUpShown, setIsSignUpShown] = useState(false);
@@ -172,7 +187,7 @@ const Store = ({ ...props }) => {
           </Box>
         </Box>
         <Box hidden={storePage != 1}>
-          <Checkout />
+          <CheckoutPage profile={profile} />
         </Box>
       </someContexts.Provider>
     </div>

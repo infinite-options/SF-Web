@@ -86,11 +86,21 @@ function CartItem(props) {
           {props.name} {props.meaning}
         </Box>
         <Box width="30%" display="flex" flexGrow={1} justifyContent="center">
-          <RemoveIcon fontSize="small" color="primary" onClick={decrease} />
+          <RemoveIcon
+            fontSize="small"
+            cursor="pointer"
+            color="primary"
+            onClick={decrease}
+          />
           <Box mx={1} color={appColors.primary}>
             {counter}
           </Box>
-          <AddIcon fontSize="small" color="primary" onClick={increase} />
+          <AddIcon
+            fontSize="small"
+            cursor="pointer"
+            color="primary"
+            onClick={increase}
+          />
         </Box>
 
         <Box width="5%">${totalPrice}</Box>

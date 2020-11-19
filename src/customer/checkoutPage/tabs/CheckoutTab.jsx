@@ -16,7 +16,7 @@ const useStyles = makeStyles({
     marginBottom: '10px',
     paddingBottom: '10px',
   },
-  button: { color: appColors.buttonText },
+  button: { color: appColors.buttonText, marginBottom: '10px' },
 });
 
 function itemsCart() {
@@ -70,37 +70,57 @@ export default function CheckoutTab() {
   }
 
   return (
-    <Box px={8}>
-      <Box
-        className={classes.section}
-        height="100px"
-        display="flex"
-        lineHeight="100px"
-      >
-        <Box color={appColors.secondary}>Expected Delivery</Box>
-        <Box flexGrow={1} />
-        <Box>Expected Delivery</Box>
-      </Box>
-      <Box className={classes.section}>
-        <Box display="flex">
-          <Box fontWeight="bold" lineHeight={1.8}>
-            Your Order:
-          </Box>
+    <>
+      <Box px={8}>
+        <Box
+          className={classes.section}
+          height="100px"
+          display="flex"
+          lineHeight="100px"
+        >
+          <Box color={appColors.secondary}>Expected Delivery</Box>
           <Box flexGrow={1} />
+          <Box>Expected Delivery</Box>
+        </Box>
+        <Box className={classes.section}>
+          <Box display="flex">
+            <Box fontWeight="bold" lineHeight={1.8}>
+              Your Order:
+            </Box>
+            <Box flexGrow={1} />
+            <Button
+              className={classes.button}
+              size="small"
+              variant="contained"
+              color="primary"
+            >
+              <AddIcon fontSize="small" />
+              Add Items
+            </Button>
+          </Box>
+          <Box my={1} px={1}>
+            {products.map(listItem)}
+          </Box>
+        </Box>
+        <Box display="flex" flexDirection="column" px="30%">
           <Button
             className={classes.button}
             size="small"
             variant="contained"
             color="primary"
           >
-            <AddIcon fontSize="small" />
-            Add Items
+            Pay with PayPal
+          </Button>
+          <Button
+            className={classes.button}
+            size="small"
+            variant="contained"
+            color="primary"
+          >
+            Pay with Stripe
           </Button>
         </Box>
-        <Box my={1} px={1}>
-          {products.map(listItem)}
-        </Box>
       </Box>
-    </Box>
+    </>
   );
 }

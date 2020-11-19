@@ -57,9 +57,12 @@ export default function StoreNavBar({ ...props }) {
         }}
       >
         <Toolbar>
-          <MenuNavButton />
-          <Box flexGrow={1}></Box>
-          <Box display="flex" flexGrow={1}>
+          <Box
+            display="flex"
+            width="98%"
+            position="absolute"
+            justifyContent="center"
+          >
             <img
               width="50"
               height="50"
@@ -67,7 +70,9 @@ export default function StoreNavBar({ ...props }) {
               alt="logo"
             />
           </Box>
-          <Box hidden={useContext(AuthContext).isAuth} display="flex">
+          <MenuNavButton />
+          <Box flexGrow={1}></Box>
+          {/* <Box hidden={useContext(AuthContext).isAuth} display="flex">
             <Button
               className={classes.authButton}
               variant="contained"
@@ -87,10 +92,11 @@ export default function StoreNavBar({ ...props }) {
             >
               Login
             </Button>
-          </Box>
+          </Box> */}
           <IconButton edge="end" className="link" to="/cart">
             <Badge badgeContent={itemsAmount} color="primary">
               <ShoppingCartIcon
+                fontSize="large"
                 color={props.storePage === 1 ? 'primary' : 'default'}
                 onClick={handleCartClick}
               />

@@ -3,12 +3,12 @@ import { Box } from '@material-ui/core';
 import CheckoutLeft from './CheckoutLeft';
 import CheckoutRight from './CheckoutRight';
 
-export default function Checkout() {
+export default function CheckoutPage({ ...props }) {
   return (
     <>
       <Box display="flex">
         <Box width="45%">
-          <CheckoutLeft />
+          <CheckoutLeft profile={props.profile} />
         </Box>
         <Box width="55%">
           <CheckoutRight />
