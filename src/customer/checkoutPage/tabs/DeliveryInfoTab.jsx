@@ -6,6 +6,7 @@ import appColors from '../../../styles/AppColors';
 import Signup from '../../auth/Signup';
 import { AuthContext } from '../../../auth/AuthContext';
 import CheckoutContext from '../CheckoutContext';
+import CssTextField from '../../../utils/CssTextField';
 
 const useStyles = makeStyles({
   root: {
@@ -19,19 +20,6 @@ const useStyles = makeStyles({
     width: '300px',
   },
 });
-
-const CssTextField = withStyles({
-  root: {
-    '& label.Mui-focused': {
-      color: appColors.secondary,
-    },
-    '& .MuiOutlinedInput-root': {
-      '&.Mui-focused fieldset': {
-        borderColor: appColors.secondary,
-      },
-    },
-  },
-})(TextField);
 
 export default function DeliveryInfoTab() {
   const classes = useStyles();

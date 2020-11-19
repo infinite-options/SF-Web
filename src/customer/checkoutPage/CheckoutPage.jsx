@@ -3,7 +3,11 @@ import { Box } from '@material-ui/core';
 import CheckoutLeft from './CheckoutLeft';
 import CheckoutRight from './CheckoutRight';
 import CheckoutContext from './CheckoutContext';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 
+// Make sure to call `loadStripe` outside of a component’s render to avoid
+// recreating the `Stripe` object on every render.
 export default function CheckoutPage({ ...props }) {
   const [userInfo, setUserInfo] = React.useState({});
   useEffect(() => {
@@ -21,20 +25,24 @@ export default function CheckoutPage({ ...props }) {
   }, [props.profile]);
 
   const [paymentInfo, setPaymentInfo] = useState();
+  const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
+  console.log('stripePromise: ', process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
   return (
     <>
       <CheckoutContext.Provider
         value={{ userInfo, setUserInfo, paymentInfo, setPaymentInfo }}
       >
-        <Box display="flex">
-          <Box width="45%">
-            <CheckoutLeft />
+        <Elements stripe={stripePromise}>
+          <Box display="flex">
+            <Box width="45%">
+              <CheckoutLeft />
+            </Box>
+            <Box width="55%">
+              <CheckoutRight />
+            </Box>
           </Box>
-          <Box width="55%">
-            <CheckoutRight />
-          </Box>
-        </Box>
+        </Elements>
       </CheckoutContext.Provider>
     </>
   );
