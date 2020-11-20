@@ -5,9 +5,6 @@ import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import appColors from '../../../styles/AppColors';
 
-    }
-  }
-  return amount;
 function CartItem(props) {
   const store = useContext(storeContext);
   var totalPrice = props.price * store.cartItems[props.id]['count'];
