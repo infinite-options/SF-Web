@@ -5,61 +5,44 @@ import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import appColors from '../../../styles/AppColors';
 
-// imtemsCart() will return an array of all localStorage key that include only products
-// and already been parse by JSON
-// it will only take product incart that has more than 0 in value
-function itemsCart(cur) {
-  var numOfItem = 0,
-    keys = Object.keys(localStorage),
-    index = keys.length;
-  var item = JSON.stringify(cur);
-  for (var i = 0; i < index; i++) {
-    if (item === keys[i]) {
-      numOfItem = parseInt(window.localStorage.getItem(keys[i]));
-    }
-  }
-  return numOfItem;
-}
-
-//this function calculate the number of items in the cart and set it to global hook context
-function calTotal() {
-  var amount = 0,
-    keys = Object.keys(localStorage),
-    index = keys.length;
-  for (var i = 0; i < index; i++) {
-    if (keys[i].length > 30) {
-      var quantity = window.localStorage.getItem(keys[i]);
-      amount += parseInt(quantity);
-      // arr.push(JSON.parse(keys[i]));
     }
   }
   return amount;
-}
-
 function CartItem(props) {
-  const cartContext = useContext(storeContext);
-  var getQuantity = itemsCart(props);
-  var totalPrice = props.price * getQuantity;
-  const [counter, setCounter] = useState(getQuantity);
+  const store = useContext(storeContext);
+  var totalPrice = props.price * store.cartItems[props.id]['count'];
 
   function decrease() {
-    var holdCount2 = counter - 1;
-    if (holdCount2 >= 0) {
-      setCounter(holdCount2);
-      var holdItem2 = props;
-      window.localStorage.setItem(JSON.stringify(holdItem2), holdCount2);
-      cartContext.setCartTotal(calTotal());
-    } else {
-      console.log("You can't order negative amount of products");
+    if (props.id in store.cartItems) {
+      if (store.cartItems[props.id]['count'] > 0) {
+        if (store.cartItems[props.id]['count'] == 1) {
+          delete store.cartItems[props.id];
+        } else {
+          const item = {
+            ...props,
+            count: store.cartItems[props.id]['count'] - 1,
+          };
+          store.setCartItems({
+            ...store.cartItems,
+            [props.id]: item,
+          });
+        }
+        store.setCartTotal(store.cartTotal - 1);
+      }
     }
   }
 
   function increase() {
-    var holdCount1 = counter + 1;
-    setCounter(holdCount1);
-    var holdItem1 = props;
-    window.localStorage.setItem(JSON.stringify(holdItem1), holdCount1);
-    cartContext.setCartTotal(calTotal());
+    const item =
+      props.id in store.cartItems
+        ? { ...props, count: store.cartItems[props.id]['count'] + 1 }
+        : { ...props, count: 1 };
+
+    store.setCartItems({
+      ...store.cartItems,
+      [props.id]: item,
+    });
+    store.setCartTotal(store.cartTotal + 1);
   }
 
   return (
@@ -93,7 +76,9 @@ function CartItem(props) {
             onClick={decrease}
           />
           <Box mx={1} color={appColors.primary}>
-            {counter}
+            {props.id in store.cartItems
+              ? store.cartItems[props.id]['count']
+              : 0}
           </Box>
           <AddIcon
             fontSize="small"

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import Entry from './Entry';
 import Footer from '../../Footer';
 import Header from '../../Header';
-import prodSelectContext from '../../prodSelectContext';
+import prodSelectContext from '../prodSelectContext';
 import { Box } from '@material-ui/core';
 import appColors from '../../../styles/AppColors';
 
@@ -95,7 +95,16 @@ function DisplayProduct() {
       </>
     );
   } else {
-    return <div>Please wait.. We are loading the products for you..!</div>;
+    return (
+      <Box
+        ml={2}
+        p={2}
+        width="100%"
+        style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
+      >
+        <div>Thank you for waiting, we are loading the products for you.</div>
+      </Box>
+    );
   }
 }
 

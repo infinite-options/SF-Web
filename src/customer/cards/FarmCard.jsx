@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import prodSelectContext from '../prodSelectContext';
+import prodSelectContext from '../produceSelectionPage/prodSelectContext';
 import appColors from '../../styles/AppColors';
 import iconSizes from '../../styles/IconSizes';
 import { Box } from '@material-ui/core';

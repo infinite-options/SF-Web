@@ -1,3 +1,3 @@
-import Store from '../Store.jsx';
+import ProduceSelectionPage from './ProduceSelectionPage.jsx';
 
-export default Store;
+export default ProduceSelectionPage;

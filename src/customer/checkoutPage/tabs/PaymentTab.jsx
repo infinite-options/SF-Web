@@ -14,7 +14,6 @@ const useStyles = makeStyles({
   element: {
     display: 'block',
     margin: '10px 0 20px 0',
-    maxWidth: '500px',
     padding: '10px 14px',
     fontSize: '1em',
     fontFamily: 'Source Code Pro, monospace',
@@ -59,8 +58,6 @@ const PaymentTab = () => {
   const elements = useElements();
   const options = useOptions();
 
-  console.log('stripe, ', 'elements: ', stripe, elements);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -79,7 +76,7 @@ const PaymentTab = () => {
   };
 
   return (
-    <Box p={5}>
+    <Box pt={5} px={10}>
       <form onSubmit={handleSubmit}>
         <label className={classes.label}>Cardholder Name</label>
         <Box mt={1}>

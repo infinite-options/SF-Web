@@ -4,7 +4,7 @@ import HeaderCart from '../HeaderCart';
 import CartItem from './items/cartItem';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import prodSelectContext from '../prodSelectContext';
+import prodSelectContext from '../produceSelectionPage/prodSelectContext';
 import CouponCard from '../pages/CouponCard';
 
 //imtemsCart() will return an array of all localStorage key that include only products
