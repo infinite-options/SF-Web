@@ -96,7 +96,7 @@ class Signup extends Component {
             console.log(JSON.stringify(object));
             axios
               .post(
-                'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/createAccount',
+                process.env.REACT_APP_SERVER_BASE_URI + 'createAccount',
                 object,
                 {
                   headers: {
@@ -110,7 +110,8 @@ class Signup extends Component {
                 if (res.data.code === 200) {
                   axios
                     .post(
-                      'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/email_verification',
+                      process.env.REACT_APP_SERVER_BASE_URI +
+                        'email_verification',
                       { email: this.state.email },
                       {
                         headers: {

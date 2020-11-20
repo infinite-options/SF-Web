@@ -11,8 +11,7 @@ import { withRouter } from 'react-router';
 import appColors from '../../styles/AppColors';
 import { AuthContext } from '../../auth/AuthContext';
 
-let API_URL =
-  'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
+let API_URL = process.env.REACT_APP_SERVER_BASE_URI + '';
 
 const cookies = new Cookies();
 

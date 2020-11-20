@@ -11,8 +11,9 @@ function CartItem(props) {
 
   function decrease() {
     if (props.id in store.cartItems) {
-      if (store.cartItems[props.id]['count'] > 0) {
-        if (store.cartItems[props.id]['count'] == 1) {
+      const itemCount = store.cartItems[props.id]['count'];
+      if (itemCount > 0) {
+        if (itemCount == 1) {
           delete store.cartItems[props.id];
         } else {
           const item = {
@@ -62,7 +63,7 @@ function CartItem(props) {
         }}
       />
       <Box display="flex" flexGrow={1} py={4.5}>
-        <Box width="30%" display="flex" ml={2}>
+        <Box width="30%" display="flex" ml={2} textAlign="start">
           {props.name} {props.meaning}
         </Box>
         <Box width="30%" display="flex" flexGrow={1} justifyContent="center">

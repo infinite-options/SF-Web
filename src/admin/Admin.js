@@ -26,24 +26,28 @@ function Admin() {
   }, [tab]);
 
   useEffect(() => {
-    if(Auth.authLevel >= 2) {
-      setFarmID('200-000004')
+    if (Auth.authLevel >= 2) {
+      setFarmID('200-000004');
     } else {
       axios
-      .get('https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/Profile/' + Cookies.get('customer_uid'))
-      .then((response) => {
-        let customerInfo = response.data.result[0];
-        console.log(customerInfo.role)
-        setFarmID(customerInfo.role)
-      })
-      .catch((err) => {
-        if(err.response) {
-          console.log(err.response)
-        }
-        console.log(err)
-      })
+        .get(
+          process.env.REACT_APP_SERVER_BASE_URI +
+            'Profile/' +
+            Cookies.get('customer_uid')
+        )
+        .then((response) => {
+          let customerInfo = response.data.result[0];
+          console.log(customerInfo.role);
+          setFarmID(customerInfo.role);
+        })
+        .catch((err) => {
+          if (err.response) {
+            console.log(err.response);
+          }
+          console.log(err);
+        });
     }
-  },[])
+  }, []);
 
   return (
     <div>

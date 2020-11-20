@@ -27,10 +27,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function StoreNavBar({ tab, setTab, ...props }) {
+export default function StoreNavBar(props) {
   const classes = useStyles();
-
   const store = useContext(storeContext);
+
   var itemsAmount = store.cartTotal;
 
   const handleCartClick = () => {
@@ -104,6 +104,7 @@ export default function StoreNavBar({ tab, setTab, ...props }) {
             <Badge badgeContent={itemsAmount} color="primary">
               <ShoppingCartIcon
                 fontSize="large"
+                key={props.storePage || ''}
                 color={props.storePage === 1 ? 'primary' : 'default'}
                 onClick={handleCartClick}
               />

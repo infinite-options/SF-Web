@@ -103,6 +103,12 @@ const PaymentTab = () => {
             />
           </label>
         </Box>
+        <Box mt={3}>
+          <label className={classes.label}>Cardholder Zip</label>
+          <Box mt={1}>
+            <CssTextField variant="outlined" size="small" fullWidth />
+          </Box>
+        </Box>
       </form>
     </Box>
   );

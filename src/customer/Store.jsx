@@ -12,23 +12,9 @@ import CheckoutPage from './checkoutPage';
 import ProduceSelectionPage from './produceSelectionPage';
 import AuthUtils from '../utils/AuthUtils';
 
-const BASE_URL =
-  'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
+const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI;
 
 //this function calculate the number of items in the cart and set it to global hook context
-function calTotal() {
-  var amount = 0,
-    keys = Object.keys(localStorage),
-    index = keys.length;
-  for (var i = 0; i < index; i++) {
-    if (keys[i].length > 30) {
-      var quantity = window.localStorage.getItem(keys[i]);
-      amount += parseInt(quantity);
-      // arr.push(JSON.parse(keys[i]));
-    }
-  }
-  return amount;
-}
 
 var profileData = {};
 const AuthMethods = new AuthUtils();
@@ -53,11 +39,23 @@ const Store = ({ ...props }) => {
 
   // Options for which page is showing
   const [storePage, setStorePage] = useState(
-    props.storePage !== undefined ? props.storePage : 0
+    localStorage.getItem('currentStorePage') || 0
   );
 
-  const [cartTotal, setCartTotal] = useState(calTotal());
-  const [cartItems, setCartItems] = useState({});
+  localStorage.setItem('currentStorePage', storePage);
+
+  const [cartTotal, setCartTotal] = useState(
+    parseInt(localStorage.getItem('cartTotal') || '0')
+  );
+  const [cartItems, setCartItems] = useState(
+    JSON.parse(localStorage.getItem('cartItems') || '{}')
+  );
+
+  useEffect(() => {
+    console.log('cartTotal: ', cartTotal);
+    localStorage.setItem('cartTotal', cartTotal);
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  }, [cartTotal, cartItems]);
 
   props.hidden = props.hidden !== null ? props.hidden : false;
 
@@ -77,6 +75,7 @@ const Store = ({ ...props }) => {
           storePage={storePage}
           setStorePage={setStorePage}
         />
+
         {console.log('storePage: ', storePage)}
         <Box hidden={storePage != 0}>
           <Box display="flex">

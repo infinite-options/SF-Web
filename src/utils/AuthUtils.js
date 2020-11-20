@@ -2,8 +2,7 @@ import axios from 'axios';
 import Cookies from 'universal-cookie';
 
 export default class AuthUtils {
-  BASE_URL =
-    'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
+  BASE_URL = process.env.REACT_APP_SERVER_BASE_URI;
   cookies = new Cookies();
 
   getProfile = async function () {

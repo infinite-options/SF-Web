@@ -10,8 +10,7 @@ import { AuthContext } from './auth/AuthContext';
 import axios from 'axios';
 import appColors from './styles/AppColors';
 
-const BASE_URL =
-  'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
+const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI;
 
 const cookies = new Cookies();
 

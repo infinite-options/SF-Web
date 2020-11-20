@@ -2,6 +2,8 @@ import React, { useState, useContext } from 'react';
 import storeContext from '../../storeContext';
 import { Box, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
 import appColors from '../../../styles/AppColors';
 
 const useStyles = makeStyles({
@@ -65,6 +67,8 @@ function Entry(props) {
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',
             borderRadius: 5,
+            borderBottomRightRadius: 10,
+            borderBottomLeftRadius: 10,
             border: '1px solid ' + appColors.border,
           }}
         />
@@ -75,7 +79,7 @@ function Entry(props) {
             height={30}
             ml={17.5}
             mt={-10.1}
-            mb={13.5}
+            mb={13.7}
             lineHeight="30px"
           >
             {props.id in store.cartItems
@@ -88,18 +92,30 @@ function Entry(props) {
               variant="contained"
               size="small"
               onClick={decrease}
-              style={{ width: '86px' }}
+              style={{
+                width: '86px',
+                borderTopLeftRadius: 10,
+                borderBottomLeftRadius: 10,
+                borderTopRightRadius: 0,
+                borderBottomRightRadius: 0,
+              }}
             >
-              -
+              <RemoveIcon fontSize="small" cursor="pointer" color="primary" />
             </Button>
             <Button
               className={classes.button}
               variant="contained"
               size="small"
               onClick={increase}
-              style={{ width: '86px' }}
+              style={{
+                width: '86px',
+                borderTopRightRadius: 10,
+                borderBottomRightRadius: 10,
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0,
+              }}
             >
-              +
+              <AddIcon fontSize="small" cursor="pointer" color="primary" />
             </Button>
           </Box>
           <Box

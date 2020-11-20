@@ -56,23 +56,23 @@ const useStyles = makeStyles((theme) => ({
 
 function AdminNavBar({ tab, setTab, ...props }) {
   const { farmID, setFarmID } = useContext(AdminFarmContext);
-  const [ farmList, setFarmList ] = useState([])
+  const [farmList, setFarmList] = useState([]);
   const Auth = useContext(AuthContext);
 
   useEffect(() => {
     axios
-    .get('https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/all_businesses')
-    .then((res) => {
-      console.log(res)
-      setFarmList(res.data.result)
-    })
-    .catch((err) => {
-      if(err.response) {
-        console.log(err.response)
-      }
-      console.log(err)
-    })
-  },[])
+      .get(process.env.REACT_APP_SERVER_BASE_URI + 'all_businesses')
+      .then((res) => {
+        console.log(res);
+        setFarmList(res.data.result);
+      })
+      .catch((err) => {
+        if (err.response) {
+          console.log(err.response);
+        }
+        console.log(err);
+      });
+  }, []);
 
   //when admin logs out, remove their login info from cookies
   const handleClickLogOut = () => {
@@ -95,7 +95,7 @@ function AdminNavBar({ tab, setTab, ...props }) {
   const classes = useStyles();
 
   const businessList = () => {
-    if(Auth.authLevel >= 2) {
+    if (Auth.authLevel >= 2) {
       // Complete business list for admin roles
       return (
         <Select
@@ -104,32 +104,26 @@ function AdminNavBar({ tab, setTab, ...props }) {
           onChange={handleChangeFarm}
         >
           {farmList.map((item) => {
-              return (
-                <MenuItem
-                  key={item.business_uid}
-                  value={item.business_uid}
-                > 
-                  {item.business_name}
-                </MenuItem>
-              )
+            return (
+              <MenuItem key={item.business_uid} value={item.business_uid}>
+                {item.business_name}
+              </MenuItem>
+            );
           })}
         </Select>
-      )
+      );
     }
     let ownedFarm = farmList.filter((farm) => farm.business_uid === farmID);
-    if(ownedFarm.length > 0) {
+    if (ownedFarm.length > 0) {
       ownedFarm = ownedFarm[0];
       return (
-        <Button
-          size={'small'}
-          className={classes.button}
-        >
+        <Button size={'small'} className={classes.button}>
           {ownedFarm.business_name}
         </Button>
       );
     }
     return null;
-  }
+  };
 
   return (
     <div className={classes.root}>

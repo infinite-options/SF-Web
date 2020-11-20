@@ -116,9 +116,9 @@ function Cart() {
   // const goToPayStripe = () => history.push("/stripe");
   const products = itemsCart();
   const endpoint_API =
-    'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/purchase_Data_SF';
+    process.env.REACT_APP_SERVER_BASE_URI + 'purchase_Data_SF';
   const endpoint_Coupon =
-    'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/available_Coupons/xyz@gmail.com';
+    process.env.REACT_APP_SERVER_BASE_URI + 'available_Coupons/xyz@gmail.com';
   const cartContext = useContext(prodSelectContext);
 
   //here is function after click pay with stripe

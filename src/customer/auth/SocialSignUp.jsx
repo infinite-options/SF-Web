@@ -42,7 +42,8 @@ class Signup extends Component {
       // Using Came from Apple Login
       axios
         .get(
-          'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/Profile/' +
+          process.env.REACT_APP_SERVER_BASE_URI +
+            'Profile/' +
             urlParams.get('id')
         )
         .then((res) => {
@@ -62,7 +63,7 @@ class Signup extends Component {
           }
           console.log(err);
           console.log('Necessary information not received');
-          this.props.history.push("/adminlogin");
+          this.props.history.push('/adminlogin');
         });
     }
     // Check location state for Gogle/Facebook Login
@@ -229,7 +230,7 @@ class Signup extends Component {
           console.log(JSON.stringify(object));
           axios
             .post(
-              'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/createAccount',
+              process.env.REACT_APP_SERVER_BASE_URI + 'createAccount',
               object,
               {
                 headers: {
@@ -240,7 +241,7 @@ class Signup extends Component {
             .then((res) => {
               console.log(res);
               let customerInfo = res.data.result;
-              Cookies.set('customer_uid',customerInfo.customer_uid)
+              Cookies.set('customer_uid', customerInfo.customer_uid);
               this.props.history.push('/store');
             })
             .catch((err) => {

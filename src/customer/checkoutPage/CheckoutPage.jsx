@@ -12,15 +12,18 @@ export default function CheckoutPage({ ...props }) {
   const [userInfo, setUserInfo] = React.useState({});
   useEffect(() => {
     setUserInfo({
-      email: props.profile.customer_email,
-      firstName: props.profile.customer_first_name,
-      lastName: props.profile.customer_last_name,
-      phoneNum: props.profile.customer_phone_num,
-      address: props.profile.customer_address,
-      unit: props.profile.customer_unit,
-      city: props.profile.customer_city,
-      state: props.profile.customer_state,
-      zip: props.profile.customer_zip,
+      email: props.profile.customer_email || '',
+      firstName: props.profile.customer_first_name || '',
+      lastName: props.profile.customer_last_name || '',
+      phoneNum: props.profile.customer_phone_num || '',
+      address: props.profile.customer_address || '',
+      unit: props.profile.customer_unit || '',
+      city: props.profile.customer_city || '',
+      state: props.profile.customer_state || '',
+      zip: props.profile.customer_zip || '',
+      deliveryInstructions: '',
+      latitude: props.profile.customer_lat || '',
+      longitude: props.profile.customer_long || '',
     });
   }, [props.profile]);
 

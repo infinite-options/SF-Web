@@ -47,7 +47,7 @@ export default function DeliveryInfoTab() {
 
   const PlainTextField = (props) => {
     return (
-      <Box mb={1}>
+      <Box mb={props.spacing || 1}>
         <CssTextField
           value={props.value}
           name={props.name}
@@ -194,9 +194,135 @@ export default function DeliveryInfoTab() {
     );
   };
 
+  const noAuthFields = (spacing) => {
+    return (
+      <>
+        <Box mb={spacing} color={appColors.paragraphText} fontSize={20}>
+          <label> Guest Information</label>
+        </Box>
+        {PlainTextField({
+          value: Checkout.userInfo.firstName,
+          name: 'firstName',
+          label: 'First Name',
+          spacing: spacing,
+        })}
+        {PlainTextField({
+          value: Checkout.userInfo.lastName,
+          name: 'lastName',
+          label: 'Last Name',
+          spacing: spacing,
+        })}
+        {PlainTextField({
+          value: Checkout.userInfo.phoneNum,
+          name: 'phoneNum',
+          label: 'Phone Number',
+          spacing: spacing,
+        })}
+        {PlainTextField({
+          value: Checkout.userInfo.email,
+          name: 'email',
+          label: 'Email',
+          spacing: spacing,
+        })}
+        {PlainTextField({ label: 'Delivery Instructions', spacing: spacing })}
+        <Box display="flex" mb={spacing}>
+          <CssTextField
+            value={Checkout.userInfo.address}
+            name="address"
+            label="Street Address"
+            variant="outlined"
+            size="small"
+            fullWidth
+            onChange={onFieldChange}
+          />
+          <Box ml={1} width="40%">
+            <CssTextField
+              value={Checkout.userInfo.unit}
+              name="unit"
+              label="Apt Number"
+              variant="outlined"
+              size="small"
+              fullWidth
+              onChange={onFieldChange}
+            />
+          </Box>
+        </Box>
+        <Box display="flex" mb={spacing + 3}>
+          <Box width="33.3%">
+            <CssTextField
+              value={Checkout.userInfo.city}
+              name="city"
+              label="City"
+              variant="outlined"
+              size="small"
+              fullWidth
+              onChange={onFieldChange}
+            />
+          </Box>
+          <Box width="33.3%" mx={1}>
+            <CssTextField
+              value={Checkout.userInfo.state}
+              name="state"
+              label="State"
+              variant="outlined"
+              size="small"
+              fullWidth
+              onChange={onFieldChange}
+            />
+          </Box>
+          <Box width="33.3%">
+            <CssTextField
+              value={Checkout.userInfo.zip}
+              name="zip"
+              label="Zip Code"
+              variant="outlined"
+              size="small"
+              fullWidth
+              onChange={onFieldChange}
+            />
+          </Box>
+        </Box>
+        {PlainTextField({
+          name: 'password',
+          label: 'Password',
+          type: 'password',
+        })}
+        <Box mt={3}>
+          <Button
+            className={classes.button}
+            variant="outlined"
+            size="small"
+            color="paragraphText"
+          >
+            Sign Up
+          </Button>
+        </Box>
+        {/* <LoadScript googleMapsApiKey={process.env.REACT_APP_BING_LOCATION_KEY}>
+          <GoogleMap
+            mapContainerStyle={{
+              width: '100%',
+              height: '200px',
+            }}
+            center={{
+              lat: -3.745,
+              lng: -38.523,
+            }}
+            zoom={10}
+            onLoad={onLoad}
+            onUnmount={onUnmount}
+          >
+            <></>
+          </GoogleMap>
+        </LoadScript> */}
+      </>
+    );
+  };
+
   return (
     <Paper className={classes.root}>
-      <form onSubmit={onSubmit}>{Auth.isAuth ? authFields() : <></>}</form>
+      <form onSubmit={onSubmit}>
+        {Auth.isAuth ? authFields() : noAuthFields(2)}
+      </form>
     </Paper>
   );
 }

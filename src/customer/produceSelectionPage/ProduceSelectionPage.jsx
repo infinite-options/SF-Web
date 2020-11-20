@@ -5,8 +5,7 @@ import prodSelectContext from './prodSelectContext';
 import axios from 'axios';
 import AuthUtils from '../../utils/AuthUtils';
 
-const BASE_URL =
-  'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
+const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI + '';
 
 //this function calculate the number of items in the cart and set it to global hook context
 function calTotal() {
@@ -79,7 +78,8 @@ const ProduceSelectionPage = ({ ...props }) => {
   const [allMarketFarm, setMarketFarms] = useState([]);
   // console.log(farmClicked);
   var businessURL =
-    'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/Categorical_Options/-121.928472,37.24370';
+    process.env.REACT_APP_SERVER_BASE_URI +
+    'Categorical_Options/-121.928472,37.24370';
 
   useEffect(() => {
     axios
