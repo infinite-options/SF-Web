@@ -59,8 +59,8 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
       obj: event.target.files[0],
       url: URL.createObjectURL(event.target.files[0]),
     });
-    console.log(event.target.files[0]);
-    console.log(event.target.files[0].name);
+    // console.log(event.target.files[0]);
+    // console.log(event.target.files[0].name);
   };
   const insertAPI = process.env.REACT_APP_SERVER_BASE_URI + 'addItems/Insert';
 
@@ -87,14 +87,14 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
       formData.append(entry[0], entry[1]);
     });
 
-    console.log(itemInfo);
+    // console.log(itemInfo);
     axios
       .post(
         insertAPI,
         formData // itemInfo
       )
       .then((response) => {
-        console.log(response);
+        // console.log(response);
 
         // appending new item to the business's items list
         // NOTE: currently getting info by searching through sql string response

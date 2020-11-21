@@ -1,9 +1,11 @@
 import axios from 'axios';
 
+// This is only to keep the information sent in the database, this
+// does not actually pay for the order.
 export default function PlaceOrder(paymentType, paymentInfo) {
   const postInfo = {
     pur_customer_uid: paymentInfo.uid,
-    pur_business_uid: paymentInfo.business_uid,
+    pur_business_uid: null,
     items: paymentInfo.cartItems,
     order_instructions: 'fast',
     delivery_instructions: paymentInfo.deliveryInstructions,

@@ -105,7 +105,7 @@ function Signup(props) {
               )
               .then((res) => {
                 let customerInfo = res.data.result;
-                console.log(customerInfo);
+                // console.log(customerInfo);
                 if (res.data.code === 200) {
                   axios
                     .post(
@@ -123,7 +123,7 @@ function Signup(props) {
                         ...prevState,
                         message: 'success',
                       }));
-                      console.log(res);
+                      // console.log(res);
                     })
                     .catch((err) => {
                       if (err.response) {

@@ -39,8 +39,12 @@ const Store = ({ ...props }) => {
 
   // Options for which page is showing
   const [storePage, setStorePage] = useState(
-    localStorage.getItem('currentStorePage') || 0
+    parseInt(localStorage.getItem('currentStorePage') || '0')
   );
+
+  useEffect(() => {
+    localStorage.setItem('currentStorePage', storePage);
+  }, [storePage]);
 
   localStorage.setItem('currentStorePage', storePage);
 

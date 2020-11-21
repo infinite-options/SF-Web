@@ -252,7 +252,7 @@ function AdminSocialSignup(props) {
               }
             )
             .then((res) => {
-              console.log(res);
+              // console.log(res);
               let customerInfo = res.data.result;
               Auth.setIsAuth(true);
               Cookies.set('login-session', 'good');

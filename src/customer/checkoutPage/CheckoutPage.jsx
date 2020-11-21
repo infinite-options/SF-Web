@@ -8,6 +8,8 @@ import { loadStripe } from '@stripe/stripe-js';
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
+
 export default function CheckoutPage({ ...props }) {
   const [userInfo, setUserInfo] = React.useState({});
   useEffect(() => {
@@ -28,9 +30,6 @@ export default function CheckoutPage({ ...props }) {
   }, [props.profile]);
 
   const [paymentInfo, setPaymentInfo] = useState();
-  const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
-  console.log('stripePromise: ', process.env.REACT_APP_STRIPE_PUBLIC_KEY);
-
   return (
     <>
       <CheckoutContext.Provider
