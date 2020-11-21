@@ -316,10 +316,11 @@ function AdminLogin(props) {
             socialMediaUsed.charAt(0) + socialMediaUsed.slice(1).toLowerCase();
           let newErrorMessage = 'Use ' + socialMediaUsedFormat + ' to login';
           setErrorMessage(newErrorMessage);
-        } else if (res.data.code === 401) {
+        } else if (res.data.code === 404) {
           // No information, probably because invalid email
           console.log('Invalid credentials');
           setError('credential');
+          setErrorMessage('Invalid credentials');
         } else {
           console.log('Unknown log in error');
           setError('Log in failed, try again');

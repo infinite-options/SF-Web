@@ -49,7 +49,7 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 	const [settings, setSettings] = useState({});
 	const [error, setError] = useState(false);
 	const [loaded, setLoaded] = useState(false);
-	var businessID = "200-000004";
+	// var businessID = "200-000004";
 	//use this state below to set up information of middle collumn
 	const [businessAndFarmDetail, setBusFarm] = useState({});
 	const [passwordHere, setPass] = useState("");
@@ -334,44 +334,46 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 	}, [farmID]);
 
 	useEffect(() => {
-		console.log("test log the email: ", settings.business_email);
-		if (settings.business_email === undefined) {
-			console.log("true undifined");
-		}
-		var objEmail = {
-			email: settings.business_email,
-		};
-		objEmail = JSON.stringify(objEmail);
-		axios.post(API_URL + "AccountSalt", objEmail).then((response) => {
-			// console.log(response);
-			// console.log("New Test",response.data.code);
-			if (response.data.code === 280) {
-				let hashAlg = response.data.result[0].password_algorithm;
-				let salt = response.data.result[0].password_salt;
-				if (hashAlg !== null && salt !== null) {
-					if (hashAlg !== "" && salt !== "") {
-						switch (hashAlg) {
-							case "SHA512":
-								hashAlg = "SHA-512";
-								break;
-							default:
-								console.log("display default falling into");
-								break;
+		if(settings){
+			console.log("test log the email: ", settings.business_email);
+			if (settings.business_email === undefined) {
+				console.log("true undifined");
+			}
+			var objEmail = {
+				email: settings.business_email,
+			};
+			objEmail = JSON.stringify(objEmail);
+			axios.post(API_URL + "AccountSalt", objEmail).then((response) => {
+				// console.log(response);
+				// console.log("New Test",response.data.code);
+				if (response.data.code === 280) {
+					let hashAlg = response.data.result[0].password_algorithm;
+					let salt = response.data.result[0].password_salt;
+					if (hashAlg !== null && salt !== null) {
+						if (hashAlg !== "" && salt !== "") {
+							switch (hashAlg) {
+								case "SHA512":
+									hashAlg = "SHA-512";
+									break;
+								default:
+									console.log("display default falling into");
+									break;
+							}
+							let newObj = {
+								hashAlg: hashAlg,
+								salt: salt,
+							};
+							setSaltPack(newObj);
 						}
-						let newObj = {
-							hashAlg: hashAlg,
-							salt: salt,
-						};
-						setSaltPack(newObj);
 					}
 				}
-			}
-		});
+			});
+		}
 	}, [settings]);
 
 	const getFarmSettings = () => {
 		axios
-			.post(BUSINESS_DETAILS_URL + "Get", {business_uid: businessID})
+			.post(BUSINESS_DETAILS_URL + "Get", {business_uid: farmID})
 			.then((response) => {
 				console.log("Settings:", response.data.result[0]);
 				setSettings(response.data.result[0]);
@@ -551,7 +553,9 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 						</Grid>
 					</Grid>
 					<Grid container item lg={4} spacing={2}>
-						<h3>Business Detail</h3>
+						<Grid item xs={12}>
+							<h3>Business Detail</h3>
+						</Grid>
 						<Grid item xs={12}>
 							{/* <hr></hr> */}
 							<div>Business Name</div>
@@ -663,7 +667,7 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 							/>
 						</Grid>
 					</Grid>
-					<Grid container item lg={4} spacing={2}>
+					<Grid item lg={4} spacing={2}>
 						<div className="">
 							<h3>Delivery Strategy</h3>
 							<FormControl component="fieldset">
@@ -773,6 +777,8 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 											dragProps,
 										}) => (
 											<div>
+												{
+												imgs.length > 0 || settings &&
 												<img
 													className="imageSize"
 													src={
@@ -784,7 +790,8 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 													style={isDragging ? {color: "red"} : null}
 													onClick={onImageUpload}
 													{...dragProps}
-												></img>
+												/>
+												}
 												{/* &nbsp; */}
 												<button
 													className="chooseFileBrn"
