@@ -78,7 +78,9 @@ export default function CheckoutTab() {
 
   const [subTotal, setSubTotal] = useState(calculateSubTotal(products));
   const [promoApplied, setPromoApplied] = useState(0);
-  const [deliveryFee, setDeliveryFee] = useState(1.5);
+  const [deliveryFee, setDeliveryFee] = useState(
+    store.cartItems.length > 0 ? 1.5 : 0
+  );
   const [tax, setTax] = useState((subTotal + deliveryFee) * 0.075);
   const [total, setTotal] = useState(subTotal + deliveryFee + tax);
   const [couponData, setCouponData] = useState([
@@ -101,7 +103,7 @@ export default function CheckoutTab() {
 
   useEffect(() => {
     setSubTotal(calculateSubTotal(products));
-    setDeliveryFee(1.5);
+    setDeliveryFee(store.cartItems.length > 0 ? 1.5 : 0);
     setPromoApplied(0);
     setTax((subTotal + deliveryFee) * 0.075);
     setTotal(subTotal + deliveryFee + tax - promoApplied);
@@ -110,6 +112,10 @@ export default function CheckoutTab() {
   useEffect(() => {
     setTotal(subTotal + deliveryFee + tax - promoApplied);
   }, [couponData]);
+
+  useEffect(() => {
+    setTax((subTotal + deliveryFee) * 0.075);
+  }, [subTotal]);
 
   useEffect(() => {
     setCouponData([

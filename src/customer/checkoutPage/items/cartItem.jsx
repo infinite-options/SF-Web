@@ -15,6 +15,7 @@ function CartItem(props) {
       if (itemCount > 0) {
         if (itemCount == 1) {
           delete store.cartItems[props.id];
+          store.setCartItems({});
         } else {
           const item = {
             ...props,
