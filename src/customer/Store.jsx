@@ -11,16 +11,32 @@ import axios from 'axios';
 import CheckoutPage from './checkoutPage';
 import ProduceSelectionPage from './produceSelectionPage';
 import AuthUtils from '../utils/AuthUtils';
+import BusiApiReqs from '../utils/BusiApiReqs';
 
 const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI;
 
 //this function calculate the number of items in the cart and set it to global hook context
 
 var profileData = {};
+var storeItemsRes = [];
 const AuthMethods = new AuthUtils();
-AuthMethods.getProfile().then((res) => {
-  console.log('User profile was retrieved');
-  profileData = res;
+const BusiMethods = new BusiApiReqs();
+AuthMethods.getProfile().then((authRes) => {
+  console.log('User profile and store items were retrieved');
+  profileData = authRes;
+  BusiMethods.getLocationBusinessIds(
+    profileData.customer_long,
+    profileData.customer_lat
+  ).then((busiRes) => {
+    var businessUids = [];
+    for (const business of busiRes) businessUids.push(business.business_uid);
+    BusiMethods.getItems(
+      ['fruit', 'desert', 'vegetable', 'other'],
+      businessUids
+    ).then((itemRes) => {
+      storeItemsRes = itemRes;
+    });
+  });
 });
 
 const Store = ({ ...props }) => {
@@ -32,6 +48,13 @@ const Store = ({ ...props }) => {
     console.log('profile info changed');
     setProfile(profileData);
   }, [profileData]);
+
+  const [storeItems, setStoreItems] = useState(storeItemsRes); // checks if user is logged in
+
+  useEffect(() => {
+    console.log('storeItems changed');
+    setStoreItems(storeItemsRes);
+  }, [storeItemsRes]);
 
   // Toggles for the login and signup box to be passed in as props to the Landing Nav Bar
   const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
@@ -71,6 +94,8 @@ const Store = ({ ...props }) => {
           setCartTotal,
           cartItems,
           setCartItems,
+          profile,
+          storeItems,
         }}
       >
         <StoreNavBar
@@ -87,7 +112,7 @@ const Store = ({ ...props }) => {
           </Box>
         </Box>
         <Box hidden={storePage != 1}>
-          <CheckoutPage profile={profile} />
+          <CheckoutPage />
         </Box>
       </storeContext.Provider>
     </div>

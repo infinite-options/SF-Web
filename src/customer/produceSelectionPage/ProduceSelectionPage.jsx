@@ -3,7 +3,7 @@ import DisplayProduce from './produce/displayProduct';
 import StoreFilter from './filter';
 import prodSelectContext from './prodSelectContext';
 import axios from 'axios';
-import AuthUtils from '../../utils/AuthUtils';
+import storeContext from '../storeContext';
 
 const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI + '';
 
@@ -22,59 +22,39 @@ function calTotal() {
   return amount;
 }
 
-var profileData = {};
-const AuthMethods = new AuthUtils();
-AuthMethods.getProfile().then((res) => {
-  console.log('User profile was retrieved');
-  profileData = res;
-});
-
 const ProduceSelectionPage = ({ ...props }) => {
+  const store = useContext(storeContext);
+  const profile = store.profile;
+
   const [fruitSort, setValFruit] = useState(true);
   const [vegeSort, setValVege] = useState(true);
   const [dessertSort, setValDessert] = useState(true);
   const [othersSort, setValOther] = useState(true);
 
   //this part will work for fatching and displaying the products of all items in shop
-  var url = BASE_URL + 'itemsByBusiness/200-000003';
-  const [itemsFromFetchTodDisplay, SetfetchData] = useState([]);
+  var url =
+    BASE_URL + 'itemsByBusiness/' + profile.longitude + ',' + profile.latitude;
+  const [itemsFromFetchTodDisplay, SetfetchData] = useState(store.storeItems);
+
+  useEffect(() => {
+    SetfetchData(store.storeItems);
+  }, [store.storeItems]);
+  console.log('itemsFromFetchTodDisplay: ', itemsFromFetchTodDisplay);
   const [itemError, setHasError] = useState(false);
   const [itemIsLoading, setIsLoading] = useState(false);
 
-  //this useEffect fetch the data of all items
   useEffect(() => {
-    let flag = false;
-    const fetchData = async () => {
-      try {
-        const response = await fetch(url);
-        const responseData = await response.json();
-        console.log('Got the Data');
-        if (!flag) {
-          // console.log(responseData.result.result);
-          SetfetchData(responseData.result.result);
-        }
-      } catch (err) {
-        setHasError(true);
-      } finally {
-        console.log('finish loading');
-        setIsLoading(true);
-      }
-    };
-    fetchData();
-
-    return () => {
-      flag = true;
-    };
-  }, [url]);
+    setIsLoading(itemsFromFetchTodDisplay.length > 0 ? true : false);
+  }, [itemsFromFetchTodDisplay]);
 
   const [currentFootClick, setFootClick] = useState('days');
   const [defaultBussines, setnewBussiness] = useState([]);
   const [market, setMarket] = useState([]);
   const [busIsLoad, setBusLoading] = useState(false);
   const [busError, setBusError] = useState(false);
-  //this state will notify if one of the farm is clicked or not
+  // this state will notify if one of the farm is clicked or not
   const [farmClicked, setFarmClicked] = useState('');
-  //this is the state of all market's farms
+  // this is the state of all market's farms
   const [allMarketFarm, setMarketFarms] = useState([]);
   // console.log(farmClicked);
   var businessURL =

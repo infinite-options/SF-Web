@@ -342,7 +342,7 @@ export default function CheckoutTab() {
             size="small"
             variant="contained"
             color="primary"
-            onclick={onPayWithClicked('STRIPE')}
+            onClick={onPayWithClicked('STRIPE')}
           >
             Pay with Stripe
           </Button>
