@@ -68,7 +68,7 @@ function DisplayProduct() {
     console.log('holdItem: ', holdItem);
     var copyFarm = holdItem;
     const farmName = 'Resendiz';
-    copyFarm = sorting(prodChoice, copyFarm);
+    // copyFarm = sorting(prodChoice, copyFarm);
     if (
       copyFarm.length === 0 &&
       prodChoice.fruitSort &&

@@ -15,6 +15,7 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+    zIndex: 100,
   },
   paper: {
     marginRight: theme.spacing(2),
@@ -136,9 +137,7 @@ function MenuListComposition(props) {
                     >
                       Information
                     </MenuItem>
-                    <MenuItem onClick={handleClickLogOut}>
-                      Logout
-                    </MenuItem>
+                    <MenuItem onClick={handleClickLogOut}>Logout</MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
@@ -150,4 +149,4 @@ function MenuListComposition(props) {
   );
 }
 
-export default withRouter(MenuListComposition)
+export default withRouter(MenuListComposition);

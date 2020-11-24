@@ -76,6 +76,10 @@ export default function CheckoutTab() {
 
   const products = itemsCart();
 
+  // TODO: Add service fee
+  // TODO: Add Delivery tip
+  // TODO: apply promo to subtotal
+  // TODO: make taxes not applied to the delivery fee
   const [subTotal, setSubTotal] = useState(calculateSubTotal(products));
   const [promoApplied, setPromoApplied] = useState(0);
   const [deliveryFee, setDeliveryFee] = useState(
@@ -83,6 +87,10 @@ export default function CheckoutTab() {
   );
   const [tax, setTax] = useState((subTotal + deliveryFee) * 0.075);
   const [total, setTotal] = useState(subTotal + deliveryFee + tax);
+
+  // TODO:  Coupon properties: Title, Message, expiration
+  // TODO:  Implement and add how much needed (threshold - subtotal): ex.Buy $10 more produce to be eligible
+  // TODO:  Add expiration date
   const [couponData, setCouponData] = useState([
     {
       percentOff: 10,
@@ -103,10 +111,11 @@ export default function CheckoutTab() {
 
   useEffect(() => {
     setSubTotal(calculateSubTotal(products));
-    setDeliveryFee(store.cartItems.length > 0 ? 1.5 : 0);
+    setDeliveryFee(store.cartTotal > 0 ? 1.5 : 0);
     setPromoApplied(0);
     setTax((subTotal + deliveryFee) * 0.075);
     setTotal(subTotal + deliveryFee + tax - promoApplied);
+    console.log('store.cartItems.length: ', store.cartItems);
   }, [store.cartItems]);
 
   useEffect(() => {
@@ -139,6 +148,10 @@ export default function CheckoutTab() {
       },
     ]);
   }, [subTotal]);
+
+  function onAddItemsClicked() {
+    store.setStorePage(0);
+  }
 
   function onPayWithClicked(paymentType) {
     // const paymentInfo = { ...checkoutContext.userInfo };
@@ -275,6 +288,7 @@ export default function CheckoutTab() {
               size="small"
               variant="contained"
               color="primary"
+              onClick={onAddItemsClicked}
             >
               <AddIcon fontSize="small" />
               Add Items

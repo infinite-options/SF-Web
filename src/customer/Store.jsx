@@ -28,14 +28,16 @@ AuthMethods.getProfile().then((authRes) => {
     profileData.customer_long,
     profileData.customer_lat
   ).then((busiRes) => {
-    var businessUids = [];
-    for (const business of busiRes) businessUids.push(business.business_uid);
-    BusiMethods.getItems(
-      ['fruit', 'desert', 'vegetable', 'other'],
-      businessUids
-    ).then((itemRes) => {
-      storeItemsRes = itemRes;
-    });
+    if (busiRes !== undefined) {
+      var businessUids = [];
+      for (const business of busiRes) businessUids.push(business.business_uid);
+      BusiMethods.getItems(
+        ['fruit', 'desert', 'vegetable', 'other'],
+        businessUids
+      ).then((itemRes) => {
+        storeItemsRes = itemRes;
+      });
+    }
   });
 });
 
@@ -96,6 +98,7 @@ const Store = ({ ...props }) => {
           setCartItems,
           profile,
           storeItems,
+          setStorePage,
         }}
       >
         <StoreNavBar
@@ -104,16 +107,13 @@ const Store = ({ ...props }) => {
           storePage={storePage}
           setStorePage={setStorePage}
         />
-
         {console.log('storePage: ', storePage)}
-        <Box hidden={storePage != 0}>
+        {storePage === 0 && (
           <Box display="flex">
             <ProduceSelectionPage />
           </Box>
-        </Box>
-        <Box hidden={storePage != 1}>
-          <CheckoutPage />
-        </Box>
+        )}
+        {storePage === 1 && <CheckoutPage />}
       </storeContext.Provider>
     </div>
   );
