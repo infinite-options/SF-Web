@@ -5,29 +5,31 @@ import CheckoutRight from './CheckoutRight';
 import CheckoutContext from './CheckoutContext';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import storeContext from 'customer/storeContext';
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 export default function CheckoutPage({ ...props }) {
+  const store = useContext(storeContext);
   const [userInfo, setUserInfo] = React.useState({});
   useEffect(() => {
     setUserInfo({
-      email: props.profile.customer_email || '',
-      firstName: props.profile.customer_first_name || '',
-      lastName: props.profile.customer_last_name || '',
-      phoneNum: props.profile.customer_phone_num || '',
-      address: props.profile.customer_address || '',
-      unit: props.profile.customer_unit || '',
-      city: props.profile.customer_city || '',
-      state: props.profile.customer_state || '',
-      zip: props.profile.customer_zip || '',
+      email: store.profile.customer_email || '',
+      firstName: store.profile.customer_first_name || '',
+      lastName: store.profile.customer_last_name || '',
+      phoneNum: store.profile.customer_phone_num || '',
+      address: store.profile.customer_address || '',
+      unit: store.profile.customer_unit || '',
+      city: store.profile.customer_city || '',
+      state: store.profile.customer_state || '',
+      zip: store.profile.customer_zip || '',
       deliveryInstructions: '',
-      latitude: props.profile.customer_lat || '',
-      longitude: props.profile.customer_long || '',
+      latitude: store.profile.customer_lat || '',
+      longitude: store.profile.customer_long || '',
     });
-  }, [props.profile]);
+  }, [store.profile]);
 
   const [paymentInfo, setPaymentInfo] = useState();
   return (

@@ -65,6 +65,7 @@ function DisplayProduct() {
   //with this if condition, we only work if we get the data
   if (prodChoice.itemIsLoading && !prodChoice.itemError) {
     var holdItem = prodChoice.itemsFromFetchTodDisplay;
+    console.log('holdItem: ', holdItem);
     var copyFarm = holdItem;
     const farmName = 'Resendiz';
     copyFarm = sorting(prodChoice, copyFarm);

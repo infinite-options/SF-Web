@@ -5,7 +5,6 @@ import Cart from './customer/checkoutPage/cart';
 import Checkout from './customer/checkoutPage';
 import Store from './customer/Store';
 import FarmGrid from './customer/FarmGrid';
-import Profile from './customer/Profile';
 import Landing from './home/Landing';
 import Signup from './customer/auth/Signup';
 import SocialSignUp from './customer/auth/SocialSignUp';
@@ -37,7 +36,6 @@ function Nav(authLevel, isAuth) {
       <Route path="/refund" component={Refund} />
       <Route exact path="/store" component={Store} />
       <Route exact path="/farms" component={FarmGrid} />
-      <Route exact path="/profile" component={Profile} />
       <AuthAdminRoute
         path="/admin"
         component={Admin}
