@@ -21,6 +21,7 @@ const FarmCategory = () => {
         image={props.image}
         businessName={props.name}
         hour={props.hours}
+        key={props.name}
       />
     );
   }

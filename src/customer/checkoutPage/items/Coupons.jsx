@@ -1,5 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
 import { useElements, CardElement } from '@stripe/react-stripe-js';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Box, TextField, Button, Paper } from '@material-ui/core';
@@ -18,6 +20,27 @@ function calculateSubTotal(items) {
 
   return result;
 }
+
+const responsive = {
+  desktop: {
+    breakpoint: { max: 3000, min: 1370 },
+    items: 3,
+    slidesToSlide: 1, // optional, default to 1.
+    partialVisibilityGutter: 10,
+  },
+  tablet: {
+    breakpoint: { max: 1370, min: 1220 },
+    items: 2,
+    slidesToSlide: 1, // optional, default to 1.
+    partialVisibilityGutter: 70,
+  },
+  mobile: {
+    breakpoint: { max: 1220, min: 0 },
+    items: 1,
+    slidesToSlide: 1, // optional, default to 1.
+    partialVisibilityGutter: 100,
+  },
+};
 
 export default function Coupons(props) {
   const store = useContext(storeContext);
@@ -118,12 +141,9 @@ export default function Coupons(props) {
     }
 
     return (
-      <Box
-        mx={1}
-        style={{ cursor: coupProps.status != 'unavailable' ? 'pointer' : '' }}
-        onClick={onCouponClick}
-      >
+      <Box property="div" mx={1}>
         <Box
+          onClick={onCouponClick}
           style={{
             width: '200px',
             height: '96px',
@@ -133,6 +153,7 @@ export default function Coupons(props) {
             backgroundSize: '100% 100%',
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',
+            cursor: coupProps.status != 'unavailable' ? 'pointer' : '',
           }}
         >
           <Box textlign="left" pl={3} pr={6} pt={2}>
@@ -153,20 +174,16 @@ export default function Coupons(props) {
   };
 
   return (
-    <Paper
-      style={{
-        marginTop: 10,
-        backgroundColor: appColors.componentBg,
-        height: '100px',
-        overflow: 'auto',
-      }}
+    <Carousel
+      arrows={true}
+      swipeable={true}
+      draggable={true}
+      partialVisible={true}
+      showDots={true}
+      responsive={responsive}
     >
-      {/* START: Coupons */}
-      <Box display="flex" justifyContent="center">
-        {avaiCouponData.map(Coupon)}
-        {unavaiCouponData.map(Coupon)}
-      </Box>
-      {/* END: Coupons */}
-    </Paper>
+      {avaiCouponData.map(Coupon)}
+      {unavaiCouponData.map(Coupon)}
+    </Carousel>
   );
 }

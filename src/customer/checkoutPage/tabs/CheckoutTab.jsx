@@ -137,7 +137,7 @@ export default function CheckoutTab() {
         marginTop: 10,
         backgroundColor: appColors.componentBg,
         maxHeight: '92%',
-        overflow: 'auto',
+        overflow: 'scroll',
       }}
     >
       <Box display="flex" flexDirection="column" height="90%" px={8}>
@@ -184,13 +184,11 @@ export default function CheckoutTab() {
           <Box fontWeight="bold" textAlign="left" mb={1} lineHeight={1.8}>
             Choose one of the eligible promos to apply:
           </Box>
-          <Box display="flex" justifyContent="center">
-            <Coupons
-              setDeliveryFee={setDeliveryFee}
-              setPromoApplied={setPromoApplied}
-              subTotal={subTotal}
-            />
-          </Box>
+          <Coupons
+            setDeliveryFee={setDeliveryFee}
+            setPromoApplied={setPromoApplied}
+            subTotal={subTotal}
+          />
         </Box>
 
         {/* END: Coupons */}
