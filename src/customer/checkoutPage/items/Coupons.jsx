@@ -27,36 +27,57 @@ export default function Coupons(props) {
   // TODO:  Grab coupons from backend API
   // TODO:  Implement and add how much needed (threshold - subtotal): ex.Buy $10 more produce to be eligible
   // TODO:  Add expiration date
-  const [couponData, setCouponData] = useState([]);
+  const [avaiCouponData, setAvaiCouponData] = useState([]);
+  const [unavaiCouponData, setUnavaiCouponData] = useState([]);
 
   useEffect(() => {
     if (store.profile.email !== '') {
       console.log('coupons fetched');
       const url =
         process.env.REACT_APP_SERVER_BASE_URI +
-        '/v2/available_Coupons/' +
+        'available_Coupons/' +
         store.profile.email;
       axios
         .get(url)
         .then((res) => {
           const availableCoupons = [];
           const unavailableCoupons = [];
+          const couponsRes = res.data.result;
 
-          for (const coupon in res) {
+          // notes: title
+          // discount_amount: apply first if applicable
+          // discount_percent: apply to subtotal - discount_amount
+          // discount_shipping: apply if applicable
+          // valid: check and show if true
+          // limits:  if num_used < limits show coupon
+          // num_used:  increment by 1 on each order
+          // recurring: is one time use
+          // expired coupons wont send through
+          for (const i in couponsRes) {
             const couponData = {
-              percentOff: coupon.discount_percent,
-              expDate: Date.parse(coupon.expire_date),
+              index: i,
+              title: couponsRes[i].notes,
+              threshold: couponsRes[i].threshold,
+              discountPercent: couponsRes[i].discount_percent,
+              discountAmount: couponsRes[i].discount_amount,
+              discountShipping: couponsRes[i].discount_shipping,
+              expDate: new Date(couponsRes[i].expire_date),
+              status:
+                props.subTotal > couponsRes[i].threshold
+                  ? 'available'
+                  : 'unavailable',
             };
-
-            if (props.subTotal > coupon.threshold) {
-              couponData['status'] = 'available';
+            if (couponData.status === 'available') {
+              availableCoupons.push(couponData);
+            } else {
+              unavailableCoupons.push(couponData);
             }
           }
-          setCouponData(res.result);
+          setAvaiCouponData(availableCoupons);
+          setUnavaiCouponData(unavailableCoupons);
         })
         .catch((e) => {
           console.log('Error getting coupons: ', e);
-          setCouponData([]);
         });
     }
   }, [store.profile.email]);
@@ -64,48 +85,36 @@ export default function Coupons(props) {
   const Coupon = (coupProps) => {
     const isFreeDelivery = coupProps.percentOff == -1;
 
-    const message = isFreeDelivery
-      ? 'Free delivery'
-      : '$' + coupProps.percentOff + ' off';
-    const fontSize = isFreeDelivery ? 20 : 25;
-    const marginBottom = isFreeDelivery ? 0.2 : 0;
-    const marginTop = isFreeDelivery ? 0.5 : 0;
-    const marginLeft = isFreeDelivery ? 2 : 0;
-
     function onCouponClick() {
-      if (coupProps.status !== 'unavailable') {
-        const newCouponData = [];
-        for (const coupon of couponData) {
-          const newCoupon = coupon;
-          if (coupon.index !== coupProps.index) {
-            if (coupon.status !== 'unavailable') {
-              newCoupon.status = 'available';
-              if (coupon.percentOff === -1) props.setDeliveryFee(1.5);
+      const newCouponData = [];
+      for (const coupon of avaiCouponData) {
+        const newCoupon = coupon;
+        if (coupon.index !== coupProps.index) {
+          if (coupon.status !== 'unavailable') {
+            newCoupon.status = 'available';
+            if (coupon.percentOff === -1) props.setDeliveryFee(1.5);
+          }
+        } else {
+          newCoupon.status =
+            coupon.status === 'selected' ? 'available' : 'selected';
+          if (newCoupon.status === 'selected') {
+            if (coupon.percentOff === -1) {
+              props.setDeliveryFee(0);
+              props.setPromoApplied(0);
+            } else {
+              props.setPromoApplied(props.subTotal * (coupon.percentOff / 100));
             }
           } else {
-            newCoupon.status =
-              coupon.status === 'selected' ? 'available' : 'selected';
-            if (newCoupon.status === 'selected') {
-              if (coupon.percentOff === -1) {
-                props.setDeliveryFee(0);
-                props.setPromoApplied(0);
-              } else {
-                props.setPromoApplied(
-                  props.subTotal * (coupon.percentOff / 100)
-                );
-              }
+            if (coupon.percentOff === -1) {
+              props.setDeliveryFee(1.5);
             } else {
-              if (coupon.percentOff === -1) {
-                props.setDeliveryFee(1.5);
-              } else {
-                props.setPromoApplied(0);
-              }
+              props.setPromoApplied(0);
             }
           }
-          newCouponData.push(newCoupon);
         }
-        setCouponData(newCouponData);
+        newCouponData.push(newCoupon);
       }
+      setAvaiCouponData(newCouponData);
     }
 
     return (
@@ -114,33 +123,30 @@ export default function Coupons(props) {
         style={{ cursor: coupProps.status != 'unavailable' ? 'pointer' : '' }}
         onClick={onCouponClick}
       >
-        <Box position="relative" zIndex="tooltip">
-          <img
-            src={'./coupon_img/' + coupProps.status + '.png'}
-            style={{
-              width: '200px',
-              height: '96px',
-            }}
-          />
-        </Box>
         <Box
-          textalign="left"
-          position="relative"
-          zIndex="modal"
-          top={-65}
-          mb={-6}
-          ml={-6}
+          style={{
+            width: '200px',
+            height: '96px',
+            backgroundImage: `url(${
+              './coupon_img/' + coupProps.status + '.png'
+            })`,
+            backgroundSize: '100% 100%',
+            backgroundPosition: 'center center',
+            backgroundRepeat: 'no-repeat',
+          }}
         >
-          <Box
-            fontSize={fontSize}
-            fontWeight="bold"
-            ml={marginLeft}
-            mt={marginTop}
-            mb={marginBottom}
-          >
-            {message}
+          <Box textlign="left" pl={3} pr={6} pt={2}>
+            <Box fontSize={12} fontWeight="bold">
+              {coupProps.title}
+            </Box>
+            <Box fontSize="12px">Any order above ${coupProps.threshold}</Box>
+            <Box fontSize="10px">
+              {/* +1 because JS date object function returns months from 0-11 and similarly for days */}
+              exp: {coupProps.expDate.getDay() + 1}/
+              {coupProps.expDate.getMonth() + 1}/
+              {coupProps.expDate.getFullYear()}
+            </Box>
           </Box>
-          <Box fontSize="12px">On any order above ${coupProps.amount}</Box>
         </Box>
       </Box>
     );
@@ -151,13 +157,14 @@ export default function Coupons(props) {
       style={{
         marginTop: 10,
         backgroundColor: appColors.componentBg,
-        maxHeight: '92%',
+        height: '100px',
         overflow: 'auto',
       }}
     >
       {/* START: Coupons */}
       <Box display="flex" justifyContent="center">
-        {couponData.map(Coupon)}
+        {avaiCouponData.map(Coupon)}
+        {unavaiCouponData.map(Coupon)}
       </Box>
       {/* END: Coupons */}
     </Paper>

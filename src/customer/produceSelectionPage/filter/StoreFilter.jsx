@@ -1,6 +1,5 @@
 import React from 'react';
-import ProduceCategory from './Produce';
-import MarketCategory from './Market';
+import ProductTypeCategory from './ProductType';
 import FarmCategory from './Farm';
 import DaysCategory from './Days';
 import ItemStack from './itemStack';
@@ -13,8 +12,8 @@ const useStyles = makeStyles((theme) => ({
   borderCol: {
     borderRight: '1px solid ' + appColors.secondary,
   },
-  filterLabel: {
-    width: '120px',
+  filterCol: {
+    width: '100px',
     textAlign: 'center',
   },
 }));
@@ -22,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 const StoreFilter = () => {
   const classes = useStyles();
   return (
-    <Box width="350px">
+    <Box width="300px">
       <Box
         display="flex"
         justifyContent="center"
@@ -30,16 +29,15 @@ const StoreFilter = () => {
         mb={1}
         style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
       >
-        <Box className={clsx(classes.borderCol, classes.filterLabel)}>
+        <Box p={1} className={clsx(classes.borderCol, classes.filterCol)}>
           Delivery Days
         </Box>
-        <Box className={clsx(classes.borderCol, classes.filterLabel)}>
-          Farmer's Markets
-        </Box>
-        <Box className={clsx(classes.borderCol, classes.filterLabel)}>
+        <Box p={1} className={clsx(classes.borderCol, classes.filterCol)}>
           Farms
         </Box>
-        <Box className={classes.filterLabel}>Item Category</Box>
+        <Box p={1} className={classes.filterCol}>
+          Item Category
+        </Box>
       </Box>
       <Box
         display="flex"
@@ -47,16 +45,15 @@ const StoreFilter = () => {
         p={1}
         style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
       >
-        <Box className={clsx(classes.borderCol, classes.filterLabel)}>
+        <Box className={clsx(classes.borderCol, classes.filterCol)}>
           {ItemStack(DaysCategory)}
         </Box>
-        <Box className={clsx(classes.borderCol, classes.filterLabel)}>
-          {ItemStack(MarketCategory)}
-        </Box>
-        <Box className={clsx(classes.borderCol, classes.filterLabel)}>
+        <Box className={clsx(classes.borderCol, classes.filterCol)}>
           {ItemStack(FarmCategory)}
         </Box>
-        <Box className={classes.filterLabel}>{ItemStack(ProduceCategory)}</Box>
+        <Box className={classes.filterCol}>
+          {ItemStack(ProductTypeCategory)}
+        </Box>
       </Box>
     </Box>
   );

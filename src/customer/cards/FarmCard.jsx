@@ -16,11 +16,6 @@ function FarmCard(props) {
     //so whenever a farm icon is clicked, this status will change
     //if there is nothing in the click array, it will ad new farm name and only display farms with that name
     //else it will return to normal
-    if (context.farmClicked.length === 0) {
-      context.setFarmClicked(props.businessName);
-    } else {
-      context.setFarmClicked('');
-    }
     // console.log(context.farmClicked);
     if (context.newWeekDay.length === 0) {
       // console.log(context.farmClicked,"inside if");

@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProduceCategory = () => {
+const ProductTypeCategory = () => {
   const classes = useStyles();
 
   const cartContext = useContext(prodSelectContext);
@@ -64,7 +64,7 @@ const ProduceCategory = () => {
     },
   ];
 
-  const produceItem = (props) => (
+  const ProductTypeItem = (props) => (
     <Box mb={1} m={0.5} p={0.5} width="100%">
       <Box
         display="flex"
@@ -85,7 +85,7 @@ const ProduceCategory = () => {
     </Box>
   );
 
-  return <React.Fragment>{categories.map(produceItem)}</React.Fragment>;
+  return <React.Fragment>{categories.map(ProductTypeItem)}</React.Fragment>;
 };
 
-export default ProduceCategory;
+export default ProductTypeCategory;

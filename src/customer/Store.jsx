@@ -37,6 +37,9 @@ const Store = ({ ...props }) => {
   const [products, setProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
 
+  const [deliveryDays, setDeliveryDays] = useState([]);
+  const [farms, setFarms] = useState([]);
+
   useEffect(() => {
     const AuthMethods = new AuthUtils();
     const BusiMethods = new BusiApiReqs();
@@ -60,10 +63,24 @@ const Store = ({ ...props }) => {
         authRes.customer_long,
         authRes.customer_lat
       ).then((busiRes) => {
+        // dictionary: buisness id with delivery days
+        // show all if nothing selected
         if (busiRes !== undefined) {
-          var businessUids = [];
-          for (const business of busiRes)
+          const businessUids = [];
+          const resFarms = [];
+          // get a list of buiness UIDs for the next req and
+          // the farms properties for the filter
+          for (const business of busiRes) {
             businessUids.push(business.business_uid);
+            if (business.business_type !== 'Farmers Market') {
+              resFarms.push({
+                name: business.business_name,
+                image: business.business_image,
+                hours: business.business_hours,
+              });
+            }
+          }
+          setFarms(resFarms);
           BusiMethods.getItems(
             ['fruit', 'desert', 'vegetable', 'other'],
             businessUids
@@ -130,7 +147,7 @@ const Store = ({ ...props }) => {
         {console.log('storePage: ', storePage)}
         <Box hidden={storePage !== 0}>
           <Box display="flex">
-            <ProduceSelectionPage />
+            <ProduceSelectionPage farms={farms} />
           </Box>
         </Box>
         <Box hidden={storePage !== 1}>

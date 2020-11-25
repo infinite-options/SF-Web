@@ -86,10 +86,10 @@ export default function CheckoutTab() {
   const [promoApplied, setPromoApplied] = useState(0);
   const [promoSubTotal, setPromoSubTotal] = useState(subTotal - promoApplied);
   const [deliveryFee, setDeliveryFee] = useState(
-    store.cartItems.length > 0 ? 1.5 : 0
+    store.cartItems.length > 0 ? 5 : 0
   );
   const [serviceFee, setServiceFee] = useState(
-    store.cartItems.length > 0 ? 5 : 0
+    store.cartItems.length > 0 ? 1.5 : 0
   );
   const [driverTip, setDriverTip] = useState(0);
   const [tax, setTax] = useState(subTotal * 0.075);
@@ -185,7 +185,11 @@ export default function CheckoutTab() {
             Choose one of the eligible promos to apply:
           </Box>
           <Box display="flex" justifyContent="center">
-            <Coupons />
+            <Coupons
+              setDeliveryFee={setDeliveryFee}
+              setPromoApplied={setPromoApplied}
+              subTotal={subTotal}
+            />
           </Box>
         </Box>
 
@@ -206,6 +210,18 @@ export default function CheckoutTab() {
           <Box>Delivery Fee</Box>
           <Box flexGrow={1} />
           <Box>${deliveryFee.toFixed(2)}</Box>
+        </Box>
+        <Box className={classes.section} display="flex">
+          <Box>Service Fee</Box>
+          <Box flexGrow={1} />
+          <Box>${serviceFee.toFixed(2)}</Box>
+        </Box>
+        <Box className={classes.section} display="flex">
+          <Box>Driver Tip</Box>
+          <Box flexGrow={1} />$
+          <Box width="50px">
+            <TextField size="small"></TextField>
+          </Box>
         </Box>
         <Box className={classes.section} display="flex">
           <Box>Taxes</Box>
