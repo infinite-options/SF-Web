@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
+import axios from 'axios';
 import { useElements, CardElement } from '@stripe/react-stripe-js';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Box, TextField, Button, Paper } from '@material-ui/core';
@@ -8,6 +9,7 @@ import CartItem from '../items/cartItem';
 import storeContext from '../../storeContext';
 import checkoutContext from '../CheckoutContext';
 import PlaceOrder from '../PlaceOrder';
+import Coupons from '../items/Coupons';
 
 const useStyles = makeStyles({
   root: {
@@ -82,71 +84,30 @@ export default function CheckoutTab() {
   // TODO: make taxes not applied to the delivery fee
   const [subTotal, setSubTotal] = useState(calculateSubTotal(products));
   const [promoApplied, setPromoApplied] = useState(0);
+  const [promoSubTotal, setPromoSubTotal] = useState(subTotal - promoApplied);
   const [deliveryFee, setDeliveryFee] = useState(
     store.cartItems.length > 0 ? 1.5 : 0
   );
-  const [tax, setTax] = useState((subTotal + deliveryFee) * 0.075);
-  const [total, setTotal] = useState(subTotal + deliveryFee + tax);
-
-  // TODO:  Coupon properties: Title, Message, expiration
-  // TODO:  Implement and add how much needed (threshold - subtotal): ex.Buy $10 more produce to be eligible
-  // TODO:  Add expiration date
-  const [couponData, setCouponData] = useState([
-    {
-      percentOff: 10,
-      amount: 60,
-      status: subTotal >= 60 ? 'available' : 'unavailable',
-    },
-    {
-      percentOff: 15,
-      amount: 75,
-      status: subTotal >= 75 ? 'available' : 'unavailable',
-    },
-    {
-      percentOff: -1,
-      amount: 50,
-      status: subTotal >= 50 ? 'available' : 'unavailable',
-    },
-  ]);
+  const [serviceFee, setServiceFee] = useState(
+    store.cartItems.length > 0 ? 5 : 0
+  );
+  const [driverTip, setDriverTip] = useState(0);
+  const [tax, setTax] = useState(subTotal * 0.075);
+  const [total, setTotal] = useState(
+    subTotal + deliveryFee + serviceFee + driverTip + tax
+  );
 
   useEffect(() => {
     setSubTotal(calculateSubTotal(products));
     setDeliveryFee(store.cartTotal > 0 ? 1.5 : 0);
     setPromoApplied(0);
     setTax((subTotal + deliveryFee) * 0.075);
-    setTotal(subTotal + deliveryFee + tax - promoApplied);
+    setTotal(subTotal - promoApplied + deliveryFee + tax);
     console.log('store.cartItems.length: ', store.cartItems);
   }, [store.cartItems]);
 
   useEffect(() => {
-    setTotal(subTotal + deliveryFee + tax - promoApplied);
-  }, [couponData]);
-
-  useEffect(() => {
-    setTax((subTotal + deliveryFee) * 0.075);
-  }, [subTotal]);
-
-  useEffect(() => {
-    setCouponData([
-      {
-        index: 0,
-        percentOff: 10,
-        amount: 60,
-        status: subTotal >= 60 ? 'available' : 'unavailable',
-      },
-      {
-        index: 1,
-        percentOff: 15,
-        amount: 75,
-        status: subTotal >= 75 ? 'available' : 'unavailable',
-      },
-      {
-        index: 2,
-        percentOff: -1,
-        amount: 50,
-        status: subTotal >= 50 ? 'available' : 'unavailable',
-      },
-    ]);
+    setTax(subTotal * 0.075);
   }, [subTotal]);
 
   function onAddItemsClicked() {
@@ -169,89 +130,6 @@ export default function CheckoutTab() {
     //   // using `result.error.message`.
     // }
   }
-
-  const Coupon = (props) => {
-    const isFreeDelivery = props.percentOff == -1;
-
-    const message = isFreeDelivery
-      ? 'Free delivery'
-      : '$' + props.percentOff + ' off';
-    const fontSize = isFreeDelivery ? 20 : 25;
-    const marginBottom = isFreeDelivery ? 0.2 : 0;
-    const marginTop = isFreeDelivery ? 0.5 : 0;
-    const marginLeft = isFreeDelivery ? 2 : 0;
-
-    function onCouponClick() {
-      if (props.status !== 'unavailable') {
-        const newCouponData = [];
-        for (const coupon of couponData) {
-          const newCoupon = coupon;
-          if (coupon.index !== props.index) {
-            if (coupon.status !== 'unavailable') {
-              newCoupon.status = 'available';
-              if (coupon.percentOff === -1) setDeliveryFee(1.5);
-            }
-          } else {
-            newCoupon.status =
-              coupon.status === 'selected' ? 'available' : 'selected';
-            if (newCoupon.status === 'selected') {
-              if (coupon.percentOff === -1) {
-                setDeliveryFee(0);
-                setPromoApplied(0);
-              } else {
-                setPromoApplied(subTotal * (coupon.percentOff / 100));
-              }
-            } else {
-              if (coupon.percentOff === -1) {
-                setDeliveryFee(1.5);
-              } else {
-                setPromoApplied(0);
-              }
-            }
-          }
-          newCouponData.push(newCoupon);
-        }
-        setCouponData(newCouponData);
-      }
-    }
-
-    return (
-      <Box
-        mx={1}
-        style={{ cursor: props.status != 'unavailable' ? 'pointer' : '' }}
-        onClick={onCouponClick}
-      >
-        <Box position="relative" zIndex="tooltip">
-          <img
-            src={'./coupon_img/' + props.status + '.png'}
-            style={{
-              width: '200px',
-              height: '96px',
-            }}
-          />
-        </Box>
-        <Box
-          textalign="left"
-          position="relative"
-          zIndex="modal"
-          top={-65}
-          mb={-6}
-          ml={-6}
-        >
-          <Box
-            fontSize={fontSize}
-            fontWeight="bold"
-            ml={marginLeft}
-            mt={marginTop}
-            mb={marginBottom}
-          >
-            {message}
-          </Box>
-          <Box fontSize="12px">On any order above ${props.amount}</Box>
-        </Box>
-      </Box>
-    );
-  };
 
   return (
     <Paper
@@ -307,7 +185,7 @@ export default function CheckoutTab() {
             Choose one of the eligible promos to apply:
           </Box>
           <Box display="flex" justifyContent="center">
-            {couponData.map(Coupon)}
+            <Coupons />
           </Box>
         </Box>
 

@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Entry from './Entry';
 import Footer from '../../Footer';
 import Header from '../../Header';
 import prodSelectContext from '../prodSelectContext';
+import storeContext from '../../storeContext';
 import { Box } from '@material-ui/core';
 import appColors from '../../../styles/AppColors';
 
@@ -26,58 +27,57 @@ function createProduct2(products) {
   );
 }
 
-function sorting(prodChoice, copyFarm) {
-  var fruitItems = copyFarm,
-    vegeItems = copyFarm,
-    dessertItems = copyFarm,
-    otherItems = copyFarm;
-  if (!prodChoice.fruitSort) {
-    fruitItems = fruitItems.filter((farm) => farm.item_type === 'fruit');
-  } else {
-    fruitItems = [];
-  }
-
-  if (!prodChoice.vegeSort) {
-    vegeItems = vegeItems.filter((farm) => farm.item_type === 'vegetable');
-  } else {
-    vegeItems = [];
-  }
-
-  if (!prodChoice.dessertSort) {
-    dessertItems = dessertItems.filter((farm) => farm.item_type === 'dessert');
-  } else {
-    dessertItems = [];
-  }
-
-  if (!prodChoice.othersSort) {
-    otherItems = otherItems.filter((farm) => farm.item_type === 'other');
-  } else {
-    otherItems = [];
-  }
-
-  return [...fruitItems, ...vegeItems, ...dessertItems, ...otherItems];
-}
-
 function DisplayProduct() {
   const prodChoice = useContext(prodSelectContext);
+  const store = useContext(storeContext);
+  const [productsDisplay, setProductsDisplay] = useState(store.products);
+
+  const [fruits, setFruits] = useState([]);
+  const [vegetables, setVegetables] = useState([]);
+  const [desserts, setDesserts] = useState([]);
+  const [others, setOthers] = useState([]);
+
+  const [isFilter, setIsFilter] = useState(
+    prodChoice.fruitSort ||
+      prodChoice.vegeSort ||
+      prodChoice.dessertSort ||
+      prodChoice.othersSort
+  );
+
+  useEffect(() => {
+    setIsFilter(
+      prodChoice.fruitSort ||
+        prodChoice.vegeSort ||
+        prodChoice.dessertSort ||
+        prodChoice.othersSort
+    );
+  }, [
+    prodChoice.fruitSort,
+    prodChoice.vegeSort,
+    prodChoice.dessertSort,
+    prodChoice.othersSort,
+  ]);
+
+  useEffect(() => {
+    console.log('rerendered products');
+    setProductsDisplay(store.products);
+    setFruits(
+      store.products.filter((product) => product.item_type === 'fruit')
+    );
+    setVegetables(
+      store.products.filter((product) => product.item_type === 'vegetable')
+    );
+    setDesserts(
+      store.products.filter((product) => product.item_type === 'dessert')
+    );
+    setOthers(
+      store.products.filter((product) => product.item_type === 'others')
+    );
+  }, [store.products]);
 
   //because at the start of the fetching, it has nothing and that will cause error
   //with this if condition, we only work if we get the data
-  if (prodChoice.itemIsLoading && !prodChoice.itemError) {
-    var holdItem = prodChoice.itemsFromFetchTodDisplay;
-    console.log('holdItem: ', holdItem);
-    var copyFarm = holdItem;
-    const farmName = 'Resendiz';
-    // copyFarm = sorting(prodChoice, copyFarm);
-    if (
-      copyFarm.length === 0 &&
-      prodChoice.fruitSort &&
-      prodChoice.vegeSort &&
-      prodChoice.dessertSort &&
-      prodChoice.othersSort
-    ) {
-      copyFarm = holdItem;
-    }
+  if (!store.productsLoading && !prodChoice.itemError) {
     return (
       <>
         <Box
@@ -88,9 +88,26 @@ function DisplayProduct() {
         >
           <Box mb={2}>
             Produce from farms delivering on {prodChoice.newWeekDay}
-          </Box>
-          <Box display="flex" flexWrap="wrap">
-            {copyFarm.map(createProduct2)}
+            <Box hidden={!prodChoice.fruitSort && isFilter}>
+              <Box display="flex" flexWrap="wrap">
+                {fruits.map(createProduct2)}
+              </Box>
+            </Box>
+            <Box hidden={!prodChoice.vegeSort && isFilter}>
+              <Box display="flex" flexWrap="wrap">
+                {vegetables.map(createProduct2)}
+              </Box>
+            </Box>
+            <Box hidden={!prodChoice.dessertSort && isFilter}>
+              <Box display="flex" flexWrap="wrap">
+                {desserts.map(createProduct2)}
+              </Box>
+            </Box>
+            <Box hidden={!prodChoice.othersSort && isFilter}>
+              <Box display="flex" flexWrap="wrap">
+                {others.map(createProduct2)}
+              </Box>
+            </Box>
           </Box>
         </Box>
       </>

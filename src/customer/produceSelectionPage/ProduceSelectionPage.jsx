@@ -26,26 +26,13 @@ const ProduceSelectionPage = ({ ...props }) => {
   const store = useContext(storeContext);
   const profile = store.profile;
 
-  const [fruitSort, setValFruit] = useState(true);
-  const [vegeSort, setValVege] = useState(true);
-  const [dessertSort, setValDessert] = useState(true);
-  const [othersSort, setValOther] = useState(true);
+  const [fruitSort, setValFruit] = useState(false);
+  const [vegeSort, setValVege] = useState(false);
+  const [dessertSort, setValDessert] = useState(false);
+  const [othersSort, setValOther] = useState(false);
 
-  //this part will work for fatching and displaying the products of all items in shop
-  var url =
-    BASE_URL + 'itemsByBusiness/' + profile.longitude + ',' + profile.latitude;
-  const [itemsFromFetchTodDisplay, SetfetchData] = useState(store.storeItems);
-
-  useEffect(() => {
-    SetfetchData(store.storeItems);
-  }, [store.storeItems]);
-  console.log('itemsFromFetchTodDisplay: ', itemsFromFetchTodDisplay);
   const [itemError, setHasError] = useState(false);
   const [itemIsLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    setIsLoading(itemsFromFetchTodDisplay.length > 0 ? true : false);
-  }, [itemsFromFetchTodDisplay]);
 
   const [currentFootClick, setFootClick] = useState('days');
   const [defaultBussines, setnewBussiness] = useState([]);
@@ -106,7 +93,6 @@ const ProduceSelectionPage = ({ ...props }) => {
         setValDessert,
         othersSort,
         setValOther,
-        itemsFromFetchTodDisplay,
         itemError,
         itemIsLoading,
         currentFootClick,
