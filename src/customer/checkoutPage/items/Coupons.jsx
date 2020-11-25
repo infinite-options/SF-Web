@@ -86,7 +86,7 @@ export default function Coupons(props) {
               discountShipping: couponsRes[i].discount_shipping,
               expDate: new Date(couponsRes[i].expire_date),
               status:
-                props.subTotal > couponsRes[i].threshold
+                props.subtotal > couponsRes[i].threshold
                   ? 'available'
                   : 'unavailable',
             };
@@ -106,7 +106,7 @@ export default function Coupons(props) {
   }, [store.profile.email]);
 
   const Coupon = (coupProps) => {
-    const isFreeDelivery = coupProps.percentOff == -1;
+    const isFreeDelivery = coupProps.discountPercent > 0;
 
     function onCouponClick() {
       const newCouponData = [];
@@ -115,20 +115,23 @@ export default function Coupons(props) {
         if (coupon.index !== coupProps.index) {
           if (coupon.status !== 'unavailable') {
             newCoupon.status = 'available';
-            if (coupon.percentOff === -1) props.setDeliveryFee(1.5);
+            if (coupon.discountShipping === 0) props.setDeliveryFee(1.5);
           }
         } else {
           newCoupon.status =
             coupon.status === 'selected' ? 'available' : 'selected';
           if (newCoupon.status === 'selected') {
-            if (coupon.percentOff === -1) {
+            if (isFreeDelivery) {
               props.setDeliveryFee(0);
               props.setPromoApplied(0);
             } else {
-              props.setPromoApplied(props.subTotal * (coupon.percentOff / 100));
+              props.setPromoApplied(
+                (props.subtotal - coupon.discountPercent) *
+                  (coupon.discountAmount / 100)
+              );
             }
           } else {
-            if (coupon.percentOff === -1) {
+            if (coupon.discountShipping === 0) {
               props.setDeliveryFee(1.5);
             } else {
               props.setPromoApplied(0);
@@ -174,6 +177,8 @@ export default function Coupons(props) {
   };
 
   return (
+    // if the Carousel view is acting up in localhost, replace this componant with: <></>, save the file,
+    // then undo to original, and save again then it should work as expected
     <Carousel
       arrows={true}
       swipeable={true}

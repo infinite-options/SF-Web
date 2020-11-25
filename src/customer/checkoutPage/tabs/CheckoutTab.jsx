@@ -82,9 +82,9 @@ export default function CheckoutTab() {
   // TODO: Add Delivery tip
   // TODO: apply promo to subtotal
   // TODO: make taxes not applied to the delivery fee
-  const [subTotal, setSubTotal] = useState(calculateSubTotal(products));
+  const [subtotal, setSubTotal] = useState(calculateSubTotal(products));
   const [promoApplied, setPromoApplied] = useState(0);
-  const [promoSubTotal, setPromoSubTotal] = useState(subTotal - promoApplied);
+  const [promoSubTotal, setPromoSubTotal] = useState(subtotal - promoApplied);
   const [deliveryFee, setDeliveryFee] = useState(
     store.cartItems.length > 0 ? 5 : 0
   );
@@ -92,23 +92,23 @@ export default function CheckoutTab() {
     store.cartItems.length > 0 ? 1.5 : 0
   );
   const [driverTip, setDriverTip] = useState(0);
-  const [tax, setTax] = useState(subTotal * 0.075);
+  const [tax, setTax] = useState(subtotal * 0.075);
   const [total, setTotal] = useState(
-    subTotal + deliveryFee + serviceFee + driverTip + tax
+    subtotal + deliveryFee + serviceFee + driverTip + tax
   );
 
   useEffect(() => {
     setSubTotal(calculateSubTotal(products));
     setDeliveryFee(store.cartTotal > 0 ? 1.5 : 0);
     setPromoApplied(0);
-    setTax((subTotal + deliveryFee) * 0.075);
-    setTotal(subTotal - promoApplied + deliveryFee + tax);
+    setTax((subtotal + deliveryFee) * 0.075);
+    setTotal(subtotal - promoApplied + deliveryFee + tax);
     console.log('store.cartItems.length: ', store.cartItems);
   }, [store.cartItems]);
 
   useEffect(() => {
-    setTax(subTotal * 0.075);
-  }, [subTotal]);
+    setTax(subtotal * 0.075);
+  }, [subtotal]);
 
   function onAddItemsClicked() {
     store.setStorePage(0);
@@ -187,7 +187,7 @@ export default function CheckoutTab() {
           <Coupons
             setDeliveryFee={setDeliveryFee}
             setPromoApplied={setPromoApplied}
-            subTotal={subTotal}
+            subtotal={subtotal}
           />
         </Box>
 
@@ -197,7 +197,7 @@ export default function CheckoutTab() {
         <Box className={classes.section} display="flex">
           <Box>Subtotal</Box>
           <Box flexGrow={1} />
-          <Box>${subTotal.toFixed(2)}</Box>
+          <Box>${subtotal.toFixed(2)}</Box>
         </Box>
         <Box className={classes.section} display="flex">
           <Box color={appColors.secondary}>Promo Applied</Box>
