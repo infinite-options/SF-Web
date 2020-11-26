@@ -18,25 +18,17 @@ const FarmCategory = () => {
   function createFarmCard(props) {
     return (
       <FarmCard
-        image={props.business_image}
-        businessName={props.business_name}
-        hour={props.business_hours}
-        id={props.business_uid}
-        key={props.business_uid}
+        image={props.image}
+        businessName={props.name}
+        hour={props.hours}
+        key={props.name}
       />
     );
   }
 
   // const allValidDay = daysInWeek;
-  if (topNode.busIsLoad && !topNode.busError) {
-    var farms = topNode.defaultBussines;
-    var pickedFarm = [];
-    for (var i = 0; i < topNode.market.length; i++) {
-      pickedFarm.push(topNode.defaultBussines[i]);
-    }
-    farms = pickedFarm;
-    return <React.Fragment>{farms.map(createFarmCard)}</React.Fragment>;
-  }
+  var farms = topNode.farms;
+  return <React.Fragment>{farms.map(createFarmCard)}</React.Fragment>;
 
   return (
     <div>

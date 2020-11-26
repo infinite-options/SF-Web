@@ -17,44 +17,81 @@ const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI;
 
 //this function calculate the number of items in the cart and set it to global hook context
 
-var profileData = {};
-var storeItemsRes = [];
-const AuthMethods = new AuthUtils();
-const BusiMethods = new BusiApiReqs();
-AuthMethods.getProfile().then((authRes) => {
-  console.log('User profile and store items were retrieved');
-  profileData = authRes;
-  BusiMethods.getLocationBusinessIds(
-    profileData.customer_long,
-    profileData.customer_lat
-  ).then((busiRes) => {
-    var businessUids = [];
-    for (const business of busiRes) businessUids.push(business.business_uid);
-    BusiMethods.getItems(
-      ['fruit', 'desert', 'vegetable', 'other'],
-      businessUids
-    ).then((itemRes) => {
-      storeItemsRes = itemRes;
-    });
-  });
-});
-
 const Store = ({ ...props }) => {
   const Auth = useContext(AuthContext);
 
-  const [profile, setProfile] = useState({}); // checks if user is logged in
+  const [profile, setProfile] = useState({
+    email: '',
+    firstName: '',
+    lastName: '',
+    phoneNum: '',
+    address: '',
+    unit: '',
+    city: '',
+    state: '',
+    zip: '',
+    deliveryInstructions: '',
+    latitude: '',
+    longitude: '',
+  }); // checks if user is logged in
+  const [products, setProducts] = useState([]);
+  const [productsLoading, setProductsLoading] = useState(true);
+
+  const [deliveryDays, setDeliveryDays] = useState([]);
+  const [farms, setFarms] = useState([]);
 
   useEffect(() => {
-    console.log('profile info changed');
-    setProfile(profileData);
-  }, [profileData]);
-
-  const [storeItems, setStoreItems] = useState(storeItemsRes); // checks if user is logged in
-
-  useEffect(() => {
-    console.log('storeItems changed');
-    setStoreItems(storeItemsRes);
-  }, [storeItemsRes]);
+    const AuthMethods = new AuthUtils();
+    const BusiMethods = new BusiApiReqs();
+    AuthMethods.getProfile().then((authRes) => {
+      console.log('User profile and store items were retrieved');
+      setProfile({
+        email: authRes.customer_email,
+        firstName: authRes.customer_first_name,
+        lastName: authRes.customer_last_name,
+        phoneNum: authRes.customer_phone_num,
+        address: authRes.customer_address,
+        unit: authRes.customer_unit,
+        city: authRes.customer_city,
+        state: authRes.customer_state,
+        zip: authRes.customer_zip,
+        deliveryInstructions: '',
+        latitude: authRes.customer_lat,
+        longitude: authRes.customer_long,
+      });
+      BusiMethods.getLocationBusinessIds(
+        authRes.customer_long,
+        authRes.customer_lat
+      ).then((busiRes) => {
+        // dictionary: buisness id with delivery days
+        // show all if nothing selected
+        if (busiRes !== undefined) {
+          const businessUids = [];
+          const resFarms = [];
+          // get a list of buiness UIDs for the next req and
+          // the farms properties for the filter
+          for (const business of busiRes) {
+            businessUids.push(business.business_uid);
+            if (business.business_type !== 'Farmers Market') {
+              resFarms.push({
+                name: business.business_name,
+                image: business.business_image,
+                hours: business.business_hours,
+              });
+            }
+          }
+          setFarms(resFarms);
+          BusiMethods.getItems(
+            ['fruit', 'desert', 'vegetable', 'other'],
+            businessUids
+          ).then((itemRes) => {
+            setProducts(itemRes);
+            setProductsLoading(false);
+          });
+        }
+      });
+    });
+  }, []);
 
   // Toggles for the login and signup box to be passed in as props to the Landing Nav Bar
   const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
@@ -95,7 +132,10 @@ const Store = ({ ...props }) => {
           cartItems,
           setCartItems,
           profile,
-          storeItems,
+          setProfile,
+          products,
+          productsLoading,
+          setStorePage,
         }}
       >
         <StoreNavBar
@@ -104,14 +144,13 @@ const Store = ({ ...props }) => {
           storePage={storePage}
           setStorePage={setStorePage}
         />
-
         {console.log('storePage: ', storePage)}
-        <Box hidden={storePage != 0}>
+        <Box hidden={storePage !== 0}>
           <Box display="flex">
-            <ProduceSelectionPage />
+            <ProduceSelectionPage farms={farms} />
           </Box>
         </Box>
-        <Box hidden={storePage != 1}>
+        <Box hidden={storePage !== 1}>
           <CheckoutPage />
         </Box>
       </storeContext.Provider>

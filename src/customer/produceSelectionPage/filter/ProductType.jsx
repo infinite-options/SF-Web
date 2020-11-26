@@ -11,69 +11,60 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProduceCategory = () => {
+const ProductTypeCategory = () => {
   const classes = useStyles();
 
   const cartContext = useContext(prodSelectContext);
-  var itemsAmount = cartContext.cartTotal;
-  const [fruitClick, set1] = useState(true);
-  const [vegeClick, set2] = useState(true);
-  const [dessertClick, set3] = useState(true);
-  const [othersClick, set4] = useState(true);
 
   function fruitClicking() {
-    set1(!fruitClick);
-    cartContext.setValFruit(!fruitClick);
+    cartContext.setValFruit(!cartContext.fruitSort);
   }
   function vegeClicking() {
-    set2(!vegeClick);
-    cartContext.setValVege(!vegeClick);
+    cartContext.setValVege(!cartContext.vegeSort);
   }
   function dessertClicking() {
-    set3(!dessertClick);
-    cartContext.setValDessert(!dessertClick);
+    cartContext.setValDessert(!cartContext.dessertSort);
   }
   function othersClicking() {
-    set4(!othersClick);
-    cartContext.setValOther(!othersClick);
+    cartContext.setValOther(!cartContext.othersSort);
   }
 
   const categories = [
     {
       onclick: fruitClicking,
-      itemState: fruitClick,
-      onAsset: '../../footer_icon/Asset 7.png',
-      offAsset: '../../footer_icon/orangeFruit.png',
+      itemState: cartContext.fruitSort,
+      onAsset: '../../footer_icon/orangeFruit.png',
+      offAsset: '../../footer_icon/Asset 7.png',
       altName: 'fruit-img',
       label: 'Fruits',
     },
     {
       onclick: vegeClicking,
-      itemState: vegeClick,
-      onAsset: '../../footer_icon/Asset 4.png',
-      offAsset: '../../footer_icon/orangeVegetable.png',
+      itemState: cartContext.vegeSort,
+      onAsset: '../../footer_icon/orangeVegetable.png',
+      offAsset: '../../footer_icon/Asset 4.png',
       altName: 'vegetable-img',
       label: 'Vegetables',
     },
     {
       onclick: dessertClicking,
-      itemState: dessertClick,
-      onAsset: '../../footer_icon/Asset 6.png',
-      offAsset: '../../footer_icon/orangeDessert.png',
+      itemState: cartContext.dessertSort,
+      onAsset: '../../footer_icon/orangeDessert.png',
+      offAsset: '../../footer_icon/Asset 6.png',
       altName: 'desert-img',
       label: 'Desserts',
     },
     {
       onclick: othersClicking,
-      itemState: othersClick,
-      onAsset: '../../footer_icon/Asset 5.png',
-      offAsset: '../../footer_icon/orangeOthers.png',
+      itemState: cartContext.othersSort,
+      onAsset: '../../footer_icon/orangeOthers.png',
+      offAsset: '../../footer_icon/Asset 5.png',
       altName: 'bread-img',
       label: 'Others',
     },
   ];
 
-  const produceItem = (props) => (
+  const ProductTypeItem = (props) => (
     <Box mb={1} m={0.5} p={0.5} width="100%">
       <Box
         display="flex"
@@ -94,7 +85,7 @@ const ProduceCategory = () => {
     </Box>
   );
 
-  return <React.Fragment>{categories.map(produceItem)}</React.Fragment>;
+  return <React.Fragment>{categories.map(ProductTypeItem)}</React.Fragment>;
 };
 
-export default ProduceCategory;
+export default ProductTypeCategory;

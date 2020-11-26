@@ -51,30 +51,30 @@ function subPrice(items) {
   return total;
 }
 
-function changecp10(flag, hasCp, subTotal) {
-  if (hasCp && flag && subTotal >= 60) {
+function changecp10(flag, hasCp, subtotal) {
+  if (hasCp && flag && subtotal >= 60) {
     return './coupon_img/coupon10Choice.png';
-  } else if (hasCp && subTotal >= 60) {
+  } else if (hasCp && subtotal >= 60) {
     return './coupon_img/coupon10.png';
   } else {
     return './coupon_img/coupon10grey.png';
   }
 }
 
-function changecp15(flag, hasCp, subTotal) {
-  if (hasCp && flag && subTotal >= 75) {
+function changecp15(flag, hasCp, subtotal) {
+  if (hasCp && flag && subtotal >= 75) {
     return './coupon_img/coupon15Choice.png';
-  } else if (hasCp && subTotal >= 75) {
+  } else if (hasCp && subtotal >= 75) {
     return './coupon_img/coupon15.png';
   } else {
     return './coupon_img/coupon15grey.png';
   }
 }
 
-function changecp20(flag, hasCp, subTotal) {
-  if (hasCp && flag && subTotal >= 90) {
+function changecp20(flag, hasCp, subtotal) {
+  if (hasCp && flag && subtotal >= 90) {
     return './coupon_img/coupon20Choice.png';
-  } else if (hasCp && subTotal >= 90) {
+  } else if (hasCp && subtotal >= 90) {
     return './coupon_img/coupon20.png';
   } else {
     return './coupon_img/coupon20grey.png';

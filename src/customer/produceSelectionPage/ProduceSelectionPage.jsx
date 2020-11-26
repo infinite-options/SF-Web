@@ -22,78 +22,33 @@ function calTotal() {
   return amount;
 }
 
-const ProduceSelectionPage = ({ ...props }) => {
+const ProduceSelectionPage = (props) => {
   const store = useContext(storeContext);
   const profile = store.profile;
 
-  const [fruitSort, setValFruit] = useState(true);
-  const [vegeSort, setValVege] = useState(true);
-  const [dessertSort, setValDessert] = useState(true);
-  const [othersSort, setValOther] = useState(true);
+  const [fruitSort, setValFruit] = useState(false);
+  const [vegeSort, setValVege] = useState(false);
+  const [dessertSort, setValDessert] = useState(false);
+  const [othersSort, setValOther] = useState(false);
 
-  //this part will work for fatching and displaying the products of all items in shop
-  var url =
-    BASE_URL + 'itemsByBusiness/' + profile.longitude + ',' + profile.latitude;
-  const [itemsFromFetchTodDisplay, SetfetchData] = useState(store.storeItems);
-
-  useEffect(() => {
-    SetfetchData(store.storeItems);
-  }, [store.storeItems]);
-  console.log('itemsFromFetchTodDisplay: ', itemsFromFetchTodDisplay);
   const [itemError, setHasError] = useState(false);
   const [itemIsLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    setIsLoading(itemsFromFetchTodDisplay.length > 0 ? true : false);
-  }, [itemsFromFetchTodDisplay]);
-
   const [currentFootClick, setFootClick] = useState('days');
-  const [defaultBussines, setnewBussiness] = useState([]);
-  const [market, setMarket] = useState([]);
+  const [farms, setFarms] = useState(props.farms);
+  useEffect(() => {
+    setFarms(props.farms);
+  }, [props.farms]);
+
   const [busIsLoad, setBusLoading] = useState(false);
   const [busError, setBusError] = useState(false);
   // this state will notify if one of the farm is clicked or not
   const [farmClicked, setFarmClicked] = useState('');
   // this is the state of all market's farms
   const [allMarketFarm, setMarketFarms] = useState([]);
-  // console.log(farmClicked);
-  var businessURL =
-    process.env.REACT_APP_SERVER_BASE_URI +
-    'Categorical_Options/-121.928472,37.24370';
-
-  useEffect(() => {
-    axios
-      .get(businessURL)
-      .then((response) => {
-        // console.log(response.data.result);
-        // console.log(response.data.result[3].business_association);
-        var initalBus = response.data.result;
-        var marketFarm = [];
-        var notMarketFarm = [];
-        for (var i = 0; i < initalBus.length; i++) {
-          if (initalBus[i].business_type === 'Farmers Market') {
-            marketFarm.push(initalBus[i]);
-          } else {
-            notMarketFarm.push(initalBus[i]);
-          }
-        }
-        setMarket(marketFarm);
-        setnewBussiness(notMarketFarm);
-      })
-      .catch((er) => {
-        setBusError(true);
-        console.log(er);
-      })
-      .finally(() => {
-        console.log('Business is loaded');
-        setBusLoading(true);
-      });
-  }, [businessURL]);
 
   //if user wants to filtering day
   const [newWeekDay, setWeekDay] = useState([]);
-
-  props.hidden = props.hidden !== null ? props.hidden : false;
 
   return (
     <prodSelectContext.Provider
@@ -106,18 +61,15 @@ const ProduceSelectionPage = ({ ...props }) => {
         setValDessert,
         othersSort,
         setValOther,
-        itemsFromFetchTodDisplay,
         itemError,
         itemIsLoading,
         currentFootClick,
         setFootClick,
-        defaultBussines,
+        farms,
         busIsLoad,
         busError,
         newWeekDay,
         setWeekDay,
-        market,
-        setMarket,
         farmClicked,
         setFarmClicked,
       }}

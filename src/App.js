@@ -30,10 +30,6 @@ function calTotal() {
 }
 
 function App() {
-  const [isAuth, setIsAuth] = useState(false); // checks if user is logged in
-  const [accountType, setAccountType] = useState();
-  const [isUserLoaded, setIsUserLoaded] = useState(false);
-
   const theme = createMuiTheme({
     shadows: ['none'],
     palette: {
@@ -57,6 +53,10 @@ function App() {
       },
     },
   });
+  console.log('app started');
+  const [isAuth, setIsAuth] = useState(false); // checks if user is logged in
+  const [accountType, setAccountType] = useState();
+  const [isUserLoaded, setIsUserLoaded] = useState(false);
 
   let uid =
     cookies.get('customer_uid') == null ? '' : cookies.get('customer_uid');
@@ -66,21 +66,6 @@ function App() {
   // Level  1: User is logged in & is farmer or higher
   // Level  2: User is logged in & is admin
   const [authLevel, setAuthLevel] = useState(0);
-
-  const readCookie = () => {
-    const loggedIn = cookies.get('login-session');
-    // console.log('asduojhfhuasdf');
-    if (loggedIn) {
-      setIsAuth(true);
-      console.log('User is already logged in');
-    }
-  };
-
-  useEffect(() => {
-    console.log('reading cookie...');
-    readCookie();
-  }, []);
-
   const [farmID, setFarmID] = useState('200-000003');
   const [timeChange, setTimeChange] = useState({});
   const [deliveryTime, setDeliveryTime] = useState({});

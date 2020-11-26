@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
+import axios from 'axios';
 import { useElements, CardElement } from '@stripe/react-stripe-js';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Box, TextField, Button, Paper } from '@material-ui/core';
@@ -8,6 +9,7 @@ import CartItem from '../items/cartItem';
 import storeContext from '../../storeContext';
 import checkoutContext from '../CheckoutContext';
 import PlaceOrder from '../PlaceOrder';
+import Coupons from '../items/Coupons';
 
 const useStyles = makeStyles({
   root: {
@@ -44,17 +46,18 @@ function calculateSubTotal(items) {
   return result;
 }
 
-function listItem(items) {
+function listItem(item) {
   return (
     <>
       <CartItem
-        name={items.name}
-        price={items.price}
-        img={items.img}
-        meaning={items.meaning}
-        business_uid={items.business_uid}
-        id={items.id}
-        key={items.id}
+        name={item.name}
+        price={item.price}
+        count={item.count}
+        img={item.img}
+        meaning={item.meaning}
+        business_uid={item.business_uid}
+        id={item.id}
+        key={item.id}
       />
     </>
   );
@@ -66,79 +69,56 @@ export default function CheckoutTab() {
   const elements = useElements();
 
   // Retrieve items from store context
-  function itemsCart() {
+  function getItemsCart() {
     var result = [];
     for (const itemId in store.cartItems) {
       result.push(store.cartItems[itemId]);
     }
     return result;
   }
-
-  const products = itemsCart();
-
-  const [subTotal, setSubTotal] = useState(calculateSubTotal(products));
-  const [promoApplied, setPromoApplied] = useState(0);
-  const [deliveryFee, setDeliveryFee] = useState(
-    store.cartItems.length > 0 ? 1.5 : 0
-  );
-  const [tax, setTax] = useState((subTotal + deliveryFee) * 0.075);
-  const [total, setTotal] = useState(subTotal + deliveryFee + tax);
-  const [couponData, setCouponData] = useState([
-    {
-      percentOff: 10,
-      amount: 60,
-      status: subTotal >= 60 ? 'available' : 'unavailable',
-    },
-    {
-      percentOff: 15,
-      amount: 75,
-      status: subTotal >= 75 ? 'available' : 'unavailable',
-    },
-    {
-      percentOff: -1,
-      amount: 50,
-      status: subTotal >= 50 ? 'available' : 'unavailable',
-    },
-  ]);
+  // cartItems is a dictonary, need to convert it into an array
+  const [products, setProducts] = useState(getItemsCart());
 
   useEffect(() => {
-    setSubTotal(calculateSubTotal(products));
-    setDeliveryFee(store.cartItems.length > 0 ? 1.5 : 0);
-    setPromoApplied(0);
-    setTax((subTotal + deliveryFee) * 0.075);
-    setTotal(subTotal + deliveryFee + tax - promoApplied);
+    setProducts(getItemsCart());
   }, [store.cartItems]);
 
-  useEffect(() => {
-    setTotal(subTotal + deliveryFee + tax - promoApplied);
-  }, [couponData]);
+  // DONE: Add service fee
+  // TODO: Add Delivery tip
+  // TODO: apply promo to subtotal
+  // TODO: make taxes not applied to the delivery fee
+  const [subtotal, setSubtotal] = useState(calculateSubTotal(products));
+  const [promoApplied, setPromoApplied] = useState(0);
+  const [deliveryFee, setDeliveryFee] = useState(
+    store.cartItems.length > 0 ? 5 : 0
+  );
+  const [serviceFee, setServiceFee] = useState(
+    store.cartItems.length > 0 ? 1.5 : 0
+  );
+  const [driverTip, setDriverTip] = useState(0);
+  const [tax, setTax] = useState(subtotal * 0.075);
+  const [total, setTotal] = useState(
+    subtotal + deliveryFee + serviceFee + driverTip + tax
+  );
 
   useEffect(() => {
-    setTax((subTotal + deliveryFee) * 0.075);
-  }, [subTotal]);
+    setTotal(subtotal - promoApplied + deliveryFee + tax);
+  }, [promoApplied, deliveryFee]);
 
   useEffect(() => {
-    setCouponData([
-      {
-        index: 0,
-        percentOff: 10,
-        amount: 60,
-        status: subTotal >= 60 ? 'available' : 'unavailable',
-      },
-      {
-        index: 1,
-        percentOff: 15,
-        amount: 75,
-        status: subTotal >= 75 ? 'available' : 'unavailable',
-      },
-      {
-        index: 2,
-        percentOff: -1,
-        amount: 50,
-        status: subTotal >= 50 ? 'available' : 'unavailable',
-      },
-    ]);
-  }, [subTotal]);
+    setSubtotal(calculateSubTotal(products));
+  }, [products]);
+
+  useEffect(() => {
+    const hasItemsInCart = subtotal > 0;
+    setServiceFee(hasItemsInCart ? 1.5 : 0);
+    setDeliveryFee(hasItemsInCart ? 5 : 0);
+    setTax(subtotal * 0.075);
+  }, [subtotal]);
+
+  function onAddItemsClicked() {
+    store.setStorePage(0);
+  }
 
   function onPayWithClicked(paymentType) {
     // const paymentInfo = { ...checkoutContext.userInfo };
@@ -157,96 +137,13 @@ export default function CheckoutTab() {
     // }
   }
 
-  const Coupon = (props) => {
-    const isFreeDelivery = props.percentOff == -1;
-
-    const message = isFreeDelivery
-      ? 'Free delivery'
-      : '$' + props.percentOff + ' off';
-    const fontSize = isFreeDelivery ? 20 : 25;
-    const marginBottom = isFreeDelivery ? 0.2 : 0;
-    const marginTop = isFreeDelivery ? 0.5 : 0;
-    const marginLeft = isFreeDelivery ? 2 : 0;
-
-    function onCouponClick() {
-      if (props.status !== 'unavailable') {
-        const newCouponData = [];
-        for (const coupon of couponData) {
-          const newCoupon = coupon;
-          if (coupon.index !== props.index) {
-            if (coupon.status !== 'unavailable') {
-              newCoupon.status = 'available';
-              if (coupon.percentOff === -1) setDeliveryFee(1.5);
-            }
-          } else {
-            newCoupon.status =
-              coupon.status === 'selected' ? 'available' : 'selected';
-            if (newCoupon.status === 'selected') {
-              if (coupon.percentOff === -1) {
-                setDeliveryFee(0);
-                setPromoApplied(0);
-              } else {
-                setPromoApplied(subTotal * (coupon.percentOff / 100));
-              }
-            } else {
-              if (coupon.percentOff === -1) {
-                setDeliveryFee(1.5);
-              } else {
-                setPromoApplied(0);
-              }
-            }
-          }
-          newCouponData.push(newCoupon);
-        }
-        setCouponData(newCouponData);
-      }
-    }
-
-    return (
-      <Box
-        mx={1}
-        style={{ cursor: props.status != 'unavailable' ? 'pointer' : '' }}
-        onClick={onCouponClick}
-      >
-        <Box position="relative" zIndex="tooltip">
-          <img
-            src={'./coupon_img/' + props.status + '.png'}
-            style={{
-              width: '200px',
-              height: '96px',
-            }}
-          />
-        </Box>
-        <Box
-          textalign="left"
-          position="relative"
-          zIndex="modal"
-          top={-65}
-          mb={-6}
-          ml={-6}
-        >
-          <Box
-            fontSize={fontSize}
-            fontWeight="bold"
-            ml={marginLeft}
-            mt={marginTop}
-            mb={marginBottom}
-          >
-            {message}
-          </Box>
-          <Box fontSize="12px">On any order above ${props.amount}</Box>
-        </Box>
-      </Box>
-    );
-  };
-
   return (
     <Paper
       style={{
         marginTop: 10,
         backgroundColor: appColors.componentBg,
         maxHeight: '92%',
-        overflow: 'auto',
+        overflow: 'scroll',
       }}
     >
       <Box display="flex" flexDirection="column" height="90%" px={8}>
@@ -275,6 +172,7 @@ export default function CheckoutTab() {
               size="small"
               variant="contained"
               color="primary"
+              onClick={onAddItemsClicked}
             >
               <AddIcon fontSize="small" />
               Add Items
@@ -292,9 +190,12 @@ export default function CheckoutTab() {
           <Box fontWeight="bold" textAlign="left" mb={1} lineHeight={1.8}>
             Choose one of the eligible promos to apply:
           </Box>
-          <Box display="flex" justifyContent="center">
-            {couponData.map(Coupon)}
-          </Box>
+          <Coupons
+            setDeliveryFee={setDeliveryFee}
+            setPromoApplied={setPromoApplied}
+            deliveryFee={deliveryFee}
+            subtotal={subtotal}
+          />
         </Box>
 
         {/* END: Coupons */}
@@ -303,7 +204,7 @@ export default function CheckoutTab() {
         <Box className={classes.section} display="flex">
           <Box>Subtotal</Box>
           <Box flexGrow={1} />
-          <Box>${subTotal.toFixed(2)}</Box>
+          <Box>${subtotal.toFixed(2)}</Box>
         </Box>
         <Box className={classes.section} display="flex">
           <Box color={appColors.secondary}>Promo Applied</Box>
@@ -311,9 +212,21 @@ export default function CheckoutTab() {
           <Box>-${promoApplied.toFixed(2)}</Box>
         </Box>
         <Box className={classes.section} display="flex">
+          <Box>Service Fee</Box>
+          <Box flexGrow={1} />
+          <Box>${serviceFee.toFixed(2)}</Box>
+        </Box>
+        <Box className={classes.section} display="flex">
           <Box>Delivery Fee</Box>
           <Box flexGrow={1} />
           <Box>${deliveryFee.toFixed(2)}</Box>
+        </Box>
+        <Box className={classes.section} display="flex">
+          <Box>Driver Tip</Box>
+          <Box flexGrow={1} />$
+          <Box width="50px">
+            <TextField size="small"></TextField>
+          </Box>
         </Box>
         <Box className={classes.section} display="flex">
           <Box>Taxes</Box>
