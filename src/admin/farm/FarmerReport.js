@@ -7,6 +7,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 
 const BASE_URL = "https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
@@ -15,9 +16,25 @@ const ORDER_ACTIONS_URL = BASE_URL + "order_actions/";
 const INSERT_ORDER_URL = BASE_URL + "purchase_Data_SF";
 const ADMIN_ORDER_URL = BASE_URL + 'admin_report/';
 
+
+const useStyles = makeStyles((theme) => ({
+    // root: {
+    //   flexGrow: 1,
+    //   backgroundColor: 'white',
+    // },
+    reportButtonsSection: {
+        textAlign: 'left',
+    },
+    reportButtons: {
+        marginLeft: theme.spacing(2),
+    }
+}));
+
 export default function FarmerReport({ farmID, farmName, ...props }) {
     const [responseData, setResponseData] = useState();
     const [orders, setOrders] = useState([]);
+
+    const classes = useStyles();
 
     useEffect(() => {
         getFarmOrders();
@@ -190,6 +207,26 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
             <div style={labelStyle}>
                 <h2>Open Orders</h2>
             </div>
+            {/* <div className={classes.reportButtonsSection}>
+                <Button
+                    variant='contained'
+                    className={classes.reportButtons}
+                >
+                    Customers
+                </Button>
+                <Button
+                    variant='contained'
+                    className={classes.reportButtons}
+                >
+                    Pivot
+                </Button>
+                <Button
+                    variant='contained'
+                    className={classes.reportButtons}
+                >
+                    Orders
+                </Button>
+            </div> */}
             <OrdersTable orders={orders} type="open" functions={buttonFunctions} />
             <div style={labelStyle}>
                 <h2>Delivered Orders</h2>

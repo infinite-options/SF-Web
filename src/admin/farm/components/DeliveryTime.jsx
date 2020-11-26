@@ -6,25 +6,19 @@ function DeliveryTime(props) {
   const dayTime = "AM";
   const AfternoonTime = "PM";
   const context = useContext(AdminFarmContext);
-  var currentDeliveryTime = context.deliveryTime;
 
   function handleTimeChange(e) {
     const { value, name, id } = e.target;
-    console.log(value + " " + name + " " + id);
-    for (const object in currentDeliveryTime) {
-      // console.log(object);
-      if (object === name) {
-        var makeTime = value + ":00";
-        console.log(makeTime);
-        if (id === "AM") {
-          currentDeliveryTime[object][0] = makeTime;
-        } else {
-          currentDeliveryTime[object][1] = makeTime;
-        }
-      }
+    // console.log(value + " " + name + " " + id);
+    var currentDeliveryTime = JSON.parse(JSON.stringify(context.deliveryTime));
+    let timeWithSeconds = value + ':00'
+    if(id === 'AM') {
+      currentDeliveryTime[name][0] = timeWithSeconds;
+    } else {
+      currentDeliveryTime[name][1] = timeWithSeconds;
     }
     context.setDeliveryTime(currentDeliveryTime);
-    console.log(currentDeliveryTime);
+    // console.log(currentDeliveryTime);
   }
   return (
     <div className="spaceBetweenTime">
@@ -33,7 +27,7 @@ function DeliveryTime(props) {
         <TextField
           size="small"
           type="time"
-          defaultValue={props.start}
+          value={props.start}
           name={props.weekday}
           id={dayTime}
           style={{ width: "100px" }}
@@ -46,7 +40,7 @@ function DeliveryTime(props) {
         <TextField
           size="small"
           type="time"
-          defaultValue={props.end}
+          value={props.end}
           name={props.weekday}
           id={AfternoonTime}
           style={{ width: "100px" }}
