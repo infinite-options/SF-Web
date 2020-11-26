@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Entry from './Entry';
-import Footer from '../../Footer';
-import Header from '../../Header';
 import prodSelectContext from '../prodSelectContext';
 import storeContext from '../../storeContext';
 import { Box } from '@material-ui/core';

@@ -1,5 +1,4 @@
 import React, { useState, useContext } from 'react';
-import axios from 'axios';
 import storeContext from '../../storeContext';
 import { Box, IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
@@ -34,20 +33,6 @@ function CartItem(props) {
   }
 
   function increase() {
-    axios
-      .get('https://dev.virtualearth.net/REST/v1/Locations/', {
-        params: {
-          CountryRegion: 'US',
-          adminDistrict: 'CA',
-          locality: 'San Jose',
-          postalCode: '95120',
-          addressLine: '6123 Corte de la Riena',
-          key: process.env.REACT_APP_BING_LOCATION_KEY,
-        },
-      })
-      .then((res) => {
-        console.log('geo: ', res);
-      });
     const item =
       props.id in store.cartItems
         ? { ...props, count: store.cartItems[props.id]['count'] + 1 }

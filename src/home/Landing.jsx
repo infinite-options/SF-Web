@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 
-import { Box, Button, TextField, InputAdornment } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  TextField,
+  InputAdornment,
+  FormHelperText,
+} from '@material-ui/core';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -50,6 +56,28 @@ const Landing = ({ ...props }) => {
   const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
   const [isSignUpShown, setIsSignUpShown] = useState(false);
 
+  const [deliverylocation, setDeliverylocation] = useState('');
+  const [errorValue, setError] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const onFieldChange = (event) => {
+    const { value } = event.target;
+    setDeliverylocation(value);
+  };
+
+  const onFindProduceClicked = () => {
+    const locationProps = deliverylocation.split(',');
+    if (locationProps.length !== 3) {
+      setError('Invalid Input');
+      setErrorMessage(
+        'Please use the following format: Address, City, State Zipcode'
+      );
+    } else {
+      setError('');
+      setErrorMessage('');
+    }
+  };
+
   const handleClose = () => {
     console.log('close');
     setIsLoginShown(false);
@@ -80,14 +108,17 @@ const Landing = ({ ...props }) => {
           <h4 style={{ color: appColors.secondary }}>
             Local produce delivered to your doorstop
           </h4>
-          <Box display="flex" justifyContent="center">
+          <Box justifyContent="center">
             <CssTextField
+              error={errorValue}
+              value={deliverylocation}
               className={classes.margin}
               id="input-with-icon-textfield"
               size="small"
               placeholder="Enter Delivery Location"
               variant="outlined"
               fullWidth
+              onChange={onFieldChange}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -95,13 +126,20 @@ const Landing = ({ ...props }) => {
                   </InputAdornment>
                 ),
               }}
-              style={{ width: '290px' }}
+              style={{ width: '500px' }}
             />
-            <Box ml={1} />
+            <Box width="100%" justifyContent="center">
+              <FormHelperText error={true} style={{ textAlign: 'center' }}>
+                {errorMessage}
+              </FormHelperText>
+            </Box>
+          </Box>
+          <Box justifyContent="center" mt={2}>
             <Button
               size="small"
               variant="contained"
               color="secondary"
+              onClick={onFindProduceClicked}
               style={{ width: '200px' }}
             >
               Find Local Produce

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useElements, CardElement } from '@stripe/react-stripe-js';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Box, TextField, Button, Paper } from '@material-ui/core';
+import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import AddIcon from '@material-ui/icons/Add';
 import appColors from '../../../styles/AppColors';
 import CartItem from '../items/cartItem';
@@ -95,24 +96,31 @@ export default function CheckoutTab() {
   const [serviceFee, setServiceFee] = useState(
     store.cartItems.length > 0 ? 1.5 : 0
   );
-  const [driverTip, setDriverTip] = useState(0);
+  const [driverTip, setDriverTip] = useState('');
   const [tax, setTax] = useState(subtotal * 0.075);
   const [total, setTotal] = useState(
-    subtotal + deliveryFee + serviceFee + driverTip + tax
+    subtotal +
+      deliveryFee +
+      serviceFee +
+      parseFloat(driverTip !== '' ? driverTip : 0) +
+      tax
   );
 
   useEffect(() => {
-    setTotal(subtotal - promoApplied + deliveryFee + tax);
-  }, [promoApplied, deliveryFee]);
+    setTotal(
+      subtotal -
+        promoApplied +
+        deliveryFee +
+        tax +
+        parseFloat(driverTip !== '' ? driverTip : 0)
+    );
+  }, [subtotal, promoApplied, deliveryFee, driverTip]);
 
   useEffect(() => {
     setSubtotal(calculateSubTotal(products));
   }, [products]);
 
   useEffect(() => {
-    const hasItemsInCart = subtotal > 0;
-    setServiceFee(hasItemsInCart ? 1.5 : 0);
-    setDeliveryFee(hasItemsInCart ? 5 : 0);
     setTax(subtotal * 0.075);
   }, [subtotal]);
 
@@ -193,8 +201,8 @@ export default function CheckoutTab() {
           <Coupons
             setDeliveryFee={setDeliveryFee}
             setPromoApplied={setPromoApplied}
-            deliveryFee={deliveryFee}
             subtotal={subtotal}
+            originalDeliveryFee={5}
           />
         </Box>
 
@@ -223,9 +231,21 @@ export default function CheckoutTab() {
         </Box>
         <Box className={classes.section} display="flex">
           <Box>Driver Tip</Box>
-          <Box flexGrow={1} />$
-          <Box width="50px">
-            <TextField size="small"></TextField>
+          <Box flexGrow={1} />
+          <Box width="70px">
+            <CurrencyTextField
+              variant="standard"
+              value={driverTip}
+              currencySymbol="$"
+              minimumValue="0"
+              outputFormat="string"
+              decimalCharacter="."
+              digitGroupSeparator=","
+              onChange={(event, value) => {
+                console.log(value);
+                setDriverTip(value);
+              }}
+            ></CurrencyTextField>
           </Box>
         </Box>
         <Box className={classes.section} display="flex">
@@ -236,7 +256,7 @@ export default function CheckoutTab() {
         <Box className={classes.section} fontWeight="bold" display="flex">
           <Box>Total</Box>
           <Box flexGrow={1} />
-          <Box>${total.toFixed(2)}</Box>
+          <Box>{total.toFixed(2)}</Box>
         </Box>
         {/* END: Pricing */}
 

@@ -37,7 +37,6 @@ const Store = ({ ...props }) => {
   const [products, setProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
 
-  const [deliveryDays, setDeliveryDays] = useState([]);
   const [farms, setFarms] = useState([]);
 
   useEffect(() => {
@@ -66,11 +65,14 @@ const Store = ({ ...props }) => {
         // dictionary: buisness id with delivery days
         // show all if nothing selected
         if (busiRes !== undefined) {
+          const businessesRes = busiRes.result;
+          const businessesDaysRes = busiRes.dictionary;
+          const days = [];
           const businessUids = [];
           const resFarms = [];
           // get a list of buiness UIDs for the next req and
           // the farms properties for the filter
-          for (const business of busiRes) {
+          for (const business of businessesRes) {
             businessUids.push(business.business_uid);
             if (business.business_type !== 'Farmers Market') {
               resFarms.push({
@@ -80,6 +82,10 @@ const Store = ({ ...props }) => {
               });
             }
           }
+          for (const business in businessesDaysRes) {
+          }
+          console.log('days: ', days);
+
           setFarms(resFarms);
           BusiMethods.getItems(
             ['fruit', 'desert', 'vegetable', 'other'],

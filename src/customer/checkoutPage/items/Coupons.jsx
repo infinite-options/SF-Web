@@ -113,6 +113,7 @@ export default function Coupons(props) {
           // recurring: is one time use
           // expired coupons wont send through
           for (const i in couponsRes) {
+            // Check if coupon is expired
             const today = new Date();
             const expDate = new Date(couponsRes[i].expire_date);
             if (today <= expDate) {
@@ -165,7 +166,8 @@ export default function Coupons(props) {
         if (coupon.index !== coupProps.index) {
           if (coupon.status !== 'unavailable') {
             newCoupon.status = 'available';
-            if (coupon.discountShipping === 0) props.setDeliveryFee(5);
+            if (coupon.discountShipping === 0)
+              props.setDeliveryFee(props.originalDeliveryFee);
           }
         } else {
           newCoupon.status =
@@ -173,7 +175,7 @@ export default function Coupons(props) {
           if (newCoupon.status === 'selected') {
             ApplySaving(newCoupon);
           } else {
-            props.setDeliveryFee(5);
+            props.setDeliveryFee(props.originalDeliveryFee);
             props.setPromoApplied(0);
           }
         }
@@ -217,9 +219,9 @@ export default function Coupons(props) {
 
   function ApplySaving(coupon) {
     props.setDeliveryFee(
-      props.deliveryFee - coupon.discountShipping < 0
+      props.originalDeliveryFee - coupon.discountShipping < 0
         ? 0
-        : props.deliveryFee - coupon.discountShipping
+        : props.originalDeliveryFee - coupon.discountShipping
     );
     const discountAmountOff = props.subtotal - coupon.discountAmount;
     props.setPromoApplied(

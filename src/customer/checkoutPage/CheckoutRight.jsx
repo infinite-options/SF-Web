@@ -86,6 +86,7 @@ export default function CheckoutRight() {
       <Box hidden={value !== 0}>
         <CheckoutTab />
       </Box>
+      {/* value is 2 because the flex spacing takes up values 1 and 3 */}
       <Box hidden={value !== 2}>
         <div> Hi, this is your History</div>
       </Box>
