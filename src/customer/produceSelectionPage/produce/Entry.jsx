@@ -23,15 +23,22 @@ function Entry(props) {
 
   function decrease() {
     if (props.id in store.cartItems) {
-      if (store.cartItems[props.id]['count'] > 0) {
-        const item = {
-          ...props,
-          count: store.cartItems[props.id]['count'] - 1,
-        };
-        store.setCartItems({
-          ...store.cartItems,
-          [props.id]: item,
-        });
+      const itemCount = store.cartItems[props.id]['count'];
+      if (itemCount > 0) {
+        if (itemCount == 1) {
+          let clone = Object.assign({}, store.cartItems);
+          delete clone[props.id];
+          store.setCartItems(clone);
+        } else {
+          const item = {
+            ...props,
+            count: store.cartItems[props.id]['count'] - 1,
+          };
+          store.setCartItems({
+            ...store.cartItems,
+            [props.id]: item,
+          });
+        }
         store.setCartTotal(store.cartTotal - 1);
       }
     }

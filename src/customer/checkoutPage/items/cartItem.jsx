@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import axios from 'axios';
 import storeContext from '../../storeContext';
 import { Box, IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
@@ -7,15 +8,16 @@ import appColors from '../../../styles/AppColors';
 
 function CartItem(props) {
   const store = useContext(storeContext);
-  var totalPrice = props.price * store.cartItems[props.id]['count'];
+  var totalPrice = props.price * props.count;
 
   function decrease() {
     if (props.id in store.cartItems) {
       const itemCount = store.cartItems[props.id]['count'];
       if (itemCount > 0) {
         if (itemCount == 1) {
-          delete store.cartItems[props.id];
-          store.setCartItems(store.cartItems);
+          let clone = Object.assign({}, store.cartItems);
+          delete clone[props.id];
+          store.setCartItems(clone);
         } else {
           const item = {
             ...props,
@@ -32,6 +34,20 @@ function CartItem(props) {
   }
 
   function increase() {
+    axios
+      .get('https://dev.virtualearth.net/REST/v1/Locations/', {
+        params: {
+          CountryRegion: 'US',
+          adminDistrict: 'CA',
+          locality: 'San Jose',
+          postalCode: '95120',
+          addressLine: '6123 Corte de la Riena',
+          key: process.env.REACT_APP_BING_LOCATION_KEY,
+        },
+      })
+      .then((res) => {
+        console.log('geo: ', res);
+      });
     const item =
       props.id in store.cartItems
         ? { ...props, count: store.cartItems[props.id]['count'] + 1 }

@@ -46,17 +46,18 @@ function calculateSubTotal(items) {
   return result;
 }
 
-function listItem(items) {
+function listItem(item) {
   return (
     <>
       <CartItem
-        name={items.name}
-        price={items.price}
-        img={items.img}
-        meaning={items.meaning}
-        business_uid={items.business_uid}
-        id={items.id}
-        key={items.id}
+        name={item.name}
+        price={item.price}
+        count={item.count}
+        img={item.img}
+        meaning={item.meaning}
+        business_uid={item.business_uid}
+        id={item.id}
+        key={item.id}
       />
     </>
   );
@@ -68,23 +69,26 @@ export default function CheckoutTab() {
   const elements = useElements();
 
   // Retrieve items from store context
-  function itemsCart() {
+  function getItemsCart() {
     var result = [];
     for (const itemId in store.cartItems) {
       result.push(store.cartItems[itemId]);
     }
     return result;
   }
+  // cartItems is a dictonary, need to convert it into an array
+  const [products, setProducts] = useState(getItemsCart());
 
-  const products = itemsCart();
+  useEffect(() => {
+    setProducts(getItemsCart());
+  }, [store.cartItems]);
 
-  // TODO: Add service fee
+  // DONE: Add service fee
   // TODO: Add Delivery tip
   // TODO: apply promo to subtotal
   // TODO: make taxes not applied to the delivery fee
-  const [subtotal, setSubTotal] = useState(calculateSubTotal(products));
+  const [subtotal, setSubtotal] = useState(calculateSubTotal(products));
   const [promoApplied, setPromoApplied] = useState(0);
-  const [promoSubTotal, setPromoSubTotal] = useState(subtotal - promoApplied);
   const [deliveryFee, setDeliveryFee] = useState(
     store.cartItems.length > 0 ? 5 : 0
   );
@@ -98,15 +102,17 @@ export default function CheckoutTab() {
   );
 
   useEffect(() => {
-    setSubTotal(calculateSubTotal(products));
-    setDeliveryFee(store.cartTotal > 0 ? 1.5 : 0);
-    setPromoApplied(0);
-    setTax((subtotal + deliveryFee) * 0.075);
     setTotal(subtotal - promoApplied + deliveryFee + tax);
-    console.log('store.cartItems.length: ', store.cartItems);
-  }, [store.cartItems]);
+  }, [promoApplied, deliveryFee]);
 
   useEffect(() => {
+    setSubtotal(calculateSubTotal(products));
+  }, [products]);
+
+  useEffect(() => {
+    const hasItemsInCart = subtotal > 0;
+    setServiceFee(hasItemsInCart ? 1.5 : 0);
+    setDeliveryFee(hasItemsInCart ? 5 : 0);
     setTax(subtotal * 0.075);
   }, [subtotal]);
 
@@ -187,6 +193,7 @@ export default function CheckoutTab() {
           <Coupons
             setDeliveryFee={setDeliveryFee}
             setPromoApplied={setPromoApplied}
+            deliveryFee={deliveryFee}
             subtotal={subtotal}
           />
         </Box>
@@ -205,14 +212,14 @@ export default function CheckoutTab() {
           <Box>-${promoApplied.toFixed(2)}</Box>
         </Box>
         <Box className={classes.section} display="flex">
-          <Box>Delivery Fee</Box>
-          <Box flexGrow={1} />
-          <Box>${deliveryFee.toFixed(2)}</Box>
-        </Box>
-        <Box className={classes.section} display="flex">
           <Box>Service Fee</Box>
           <Box flexGrow={1} />
           <Box>${serviceFee.toFixed(2)}</Box>
+        </Box>
+        <Box className={classes.section} display="flex">
+          <Box>Delivery Fee</Box>
+          <Box flexGrow={1} />
+          <Box>${deliveryFee.toFixed(2)}</Box>
         </Box>
         <Box className={classes.section} display="flex">
           <Box>Driver Tip</Box>
