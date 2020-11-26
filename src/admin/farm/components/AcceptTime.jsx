@@ -6,25 +6,19 @@ function AcceptTime(props) {
   const dayTime = "AM";
   const AfternoonTime = "PM";
   const context = useContext(AdminFarmContext);
-  var currentAcceptTime = context.timeChange;
 
   function handleTimeChange(e) {
     const { value, name, id } = e.target;
-    console.log(value + " " + name + " " + id);
-    for (const object in currentAcceptTime) {
-      // console.log(object);
-      if (object === name) {
-        var makeTime = value + ":00";
-        console.log(makeTime);
-        if (id === "AM") {
-          currentAcceptTime[object][0] = makeTime;
-        } else {
-          currentAcceptTime[object][1] = makeTime;
-        }
-      }
+    // console.log(value + " " + name + " " + id);
+    var currentAcceptTime = JSON.parse(JSON.stringify(context.timeChange));
+    let timeWithSeconds = value + ':00'
+    if(id === 'AM') {
+      currentAcceptTime[name][0] = timeWithSeconds;
+    } else {
+      currentAcceptTime[name][1] = timeWithSeconds;
     }
     context.setTimeChange(currentAcceptTime);
-    console.log(currentAcceptTime);
+    // console.log(currentAcceptTime);
   }
   return (
     <div className="spaceBetweenTime">
@@ -33,7 +27,7 @@ function AcceptTime(props) {
         <TextField
           size="small"
           type="time"
-          defaultValue={props.start}
+          value={props.start}
           name={props.weekday}
           id={dayTime}
           style={{ width: "100px" }}
@@ -46,7 +40,7 @@ function AcceptTime(props) {
         <TextField
           size="small"
           type="time"
-          defaultValue={props.end}
+          value={props.end}
           name={props.weekday}
           id={AfternoonTime}
           style={{ width: "100px" }}
