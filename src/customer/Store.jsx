@@ -66,7 +66,6 @@ const Store = ({ ...props }) => {
         // show all if nothing selected
         if (busiRes !== undefined) {
           const businessesRes = busiRes.result;
-          const businessesDaysRes = busiRes.dictionary;
           const days = [];
           const businessUids = [];
           const resFarms = [];
@@ -74,15 +73,13 @@ const Store = ({ ...props }) => {
           // the farms properties for the filter
           for (const business of businessesRes) {
             businessUids.push(business.business_uid);
-            if (business.business_type !== 'Farmers Market') {
+            if (business.business_type == 'Farm') {
               resFarms.push({
                 name: business.business_name,
                 image: business.business_image,
-                hours: business.business_hours,
+                // deliveryTime: business.z_delivery_time,
               });
             }
-          }
-          for (const business in businessesDaysRes) {
           }
           console.log('days: ', days);
 
