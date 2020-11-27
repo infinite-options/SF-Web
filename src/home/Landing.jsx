@@ -65,17 +65,33 @@ const Landing = ({ ...props }) => {
     setDeliverylocation(value);
   };
 
+  function createError(message) {
+    setError('Invalid Input');
+    setErrorMessage(message);
+  }
+
   const onFindProduceClicked = () => {
     const locationProps = deliverylocation.split(',');
     if (locationProps.length !== 3) {
-      setError('Invalid Input');
-      setErrorMessage(
+      createError(
         'Please use the following format: Address, City, State Zipcode'
       );
-    } else {
-      setError('');
-      setErrorMessage('');
+      return;
     }
+    const stateZip = locationProps[2].split(' ');
+    if (stateZip.length !== 2) {
+      createError(
+        'Please use the following format: Address, City, State Zipcode'
+      );
+      return;
+    }
+    setError('');
+    setErrorMessage('');
+
+    let address = locationProps[0];
+    let city = locationProps[1];
+    let state = stateZip[0];
+    let zip = stateZip[0];
   };
 
   const handleClose = () => {
