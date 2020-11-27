@@ -211,15 +211,12 @@ export default function Coupons(props) {
   };
 
   function ApplySaving(coupon) {
-    props.setDeliveryFee(
-      props.originalDeliveryFee - coupon.discountShipping < 0
-        ? 0
-        : props.originalDeliveryFee - coupon.discountShipping
-    );
+    const deliveryOff = props.originalDeliveryFee - coupon.discountShipping;
+    props.setDeliveryFee(deliveryOff < 0 ? 0 : deliveryOff);
     const discountAmountOff = props.subtotal - coupon.discountAmount;
     props.setPromoApplied(
       discountAmountOff < 0
-        ? 0
+        ? props.subtotal
         : coupon.discountAmount +
             discountAmountOff * (coupon.discountPercent / 100)
     );

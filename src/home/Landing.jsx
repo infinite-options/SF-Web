@@ -16,6 +16,7 @@ import LandingNavBar from './LandingNavBar';
 import AdminLogin from '../admin/AdminLogin';
 import Signup from '../customer/auth/Signup';
 import appColors from '../styles/AppColors';
+import FindLongLatWithAddr from '../utils/FindLongLatWithAddr';
 
 const CssTextField = withStyles({
   root: {
@@ -88,10 +89,21 @@ const Landing = ({ ...props }) => {
     setError('');
     setErrorMessage('');
 
+    // TODO: Save for guest checkout
     let address = locationProps[0];
     let city = locationProps[1];
     let state = stateZip[0];
-    let zip = stateZip[0];
+    let zip = stateZip[1];
+
+    const { status, long, lat } = FindLongLatWithAddr(
+      address,
+      city,
+      state,
+      zip
+    );
+
+    if (status === 'found') {
+    }
   };
 
   const handleClose = () => {

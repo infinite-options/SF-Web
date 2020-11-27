@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-function FindLongLatWithAddr(address, city, state, zip) {
+export default function FindLongLatWithAddr(address, city, state, zip) {
   axios
     .get('https://dev.virtualearth.net/REST/v1/Locations/', {
       params: {
