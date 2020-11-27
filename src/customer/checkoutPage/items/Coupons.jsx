@@ -18,19 +18,16 @@ const responsive = {
   desktop: {
     breakpoint: { max: 3000, min: 1370 },
     items: 3,
-    slidesToSlide: 1, // optional, default to 1.
     partialVisibilityGutter: 10,
   },
   tablet: {
     breakpoint: { max: 1370, min: 1000 },
     items: 2,
-    slidesToSlide: 1, // optional, default to 1.
     partialVisibilityGutter: 40,
   },
   mobile: {
     breakpoint: { max: 1000, min: 0 },
     items: 1,
-    slidesToSlide: 1, // optional, default to 1.
     partialVisibilityGutter: 100,
   },
 };
@@ -153,28 +150,26 @@ export default function Coupons(props) {
     const isFreeDelivery = coupProps.discountPercent > 0;
 
     function onCouponClick() {
-      const newCouponData = [];
-      for (const coupon of avaiCouponData) {
-        const newCoupon = coupon;
-        if (coupon.index !== coupProps.index) {
-          if (coupon.status !== 'unavailable') {
+      if (coupProps.status !== 'unavailable') {
+        const newCouponData = [];
+        for (const coupon of avaiCouponData) {
+          const newCoupon = coupon;
+          if (coupon.index !== coupProps.index) {
             newCoupon.status = 'available';
-            if (coupon.discountShipping === 0)
-              props.setDeliveryFee(props.originalDeliveryFee);
-          }
-        } else {
-          newCoupon.status =
-            coupon.status === 'selected' ? 'available' : 'selected';
-          if (newCoupon.status === 'selected') {
-            ApplySaving(newCoupon);
           } else {
-            props.setDeliveryFee(props.originalDeliveryFee);
-            props.setPromoApplied(0);
+            newCoupon.status =
+              coupon.status === 'selected' ? 'available' : 'selected';
+            if (newCoupon.status === 'selected') {
+              ApplySaving(newCoupon);
+            } else {
+              props.setDeliveryFee(props.originalDeliveryFee);
+              props.setPromoApplied(0);
+            }
           }
+          newCouponData.push(newCoupon);
         }
-        newCouponData.push(newCoupon);
+        setAvaiCouponData(newCouponData);
       }
-      setAvaiCouponData(newCouponData);
     }
 
     return (
@@ -212,7 +207,9 @@ export default function Coupons(props) {
 
   function ApplySaving(coupon) {
     const deliveryOff = props.originalDeliveryFee - coupon.discountShipping;
-    props.setDeliveryFee(deliveryOff < 0 ? 0 : deliveryOff);
+    console.log('availableCoupons[coupon]: ', coupon);
+    console.log('deliveryOff]: ', deliveryOff);
+    props.setDeliveryFee(deliveryOff <= 0 ? 0 : deliveryOff);
     const discountAmountOff = props.subtotal - coupon.discountAmount;
     props.setPromoApplied(
       discountAmountOff < 0
@@ -256,14 +253,13 @@ export default function Coupons(props) {
       {(avaiCouponData.length > 0 || unavaiCouponData.length > 0) && (
         <Carousel
           arrows={true}
+          partialVisible={true}
           swipeable={true}
           draggable={true}
-          partialVisible={true}
           showDots={true}
           responsive={responsive}
         >
-          {avaiCouponData.map(Coupon)}
-          {unavaiCouponData.map(Coupon)}
+          {avaiCouponData.concat(unavaiCouponData).map(Coupon)}
         </Carousel>
       )}
     </>
