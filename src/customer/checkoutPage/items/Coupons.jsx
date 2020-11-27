@@ -1,15 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
-import { useElements, CardElement } from '@stripe/react-stripe-js';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { Box, TextField, Button, Paper } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import appColors from '../../../styles/AppColors';
-import CartItem from './cartItem';
+import { Box } from '@material-ui/core';
 import storeContext from '../../storeContext';
-import checkoutContext from '../CheckoutContext';
 
 function calculateSubTotal(items) {
   var result = 0;
@@ -262,16 +255,20 @@ export default function Coupons(props) {
   return (
     // if the Carousel view is acting up in localhost, replace this componant with: <></>, save the file,
     // then undo to original, and save again and it should work as expected
-    <Carousel
-      arrows={true}
-      swipeable={true}
-      draggable={true}
-      partialVisible={true}
-      showDots={true}
-      responsive={responsive}
-    >
-      {avaiCouponData.map(Coupon)}
-      {unavaiCouponData.map(Coupon)}
-    </Carousel>
+    <>
+      {(avaiCouponData.length > 0 || unavaiCouponData.length > 0) && (
+        <Carousel
+          arrows={true}
+          swipeable={true}
+          draggable={true}
+          partialVisible={true}
+          showDots={true}
+          responsive={responsive}
+        >
+          {avaiCouponData.map(Coupon)}
+          {unavaiCouponData.map(Coupon)}
+        </Carousel>
+      )}
+    </>
   );
 }

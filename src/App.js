@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import 'react-multi-carousel/lib/styles.css';
 import './App.css';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
