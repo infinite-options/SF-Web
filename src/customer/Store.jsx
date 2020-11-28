@@ -38,8 +38,10 @@ const Store = ({ ...props }) => {
   const [productsLoading, setProductsLoading] = useState(true);
 
   const [farmsList, setFarmsList] = useState([]);
-  const [farmsDict, setFarmsDict] = useState({});
-  const [daysDict, setDaysDict] = useState({});
+  const [numDeliveryTimes, setNumDeliveryTimes] = useState(0);
+  const [dayFarmDict, setDayFarmDict] = useState({});
+  const [dayTimeDict, setDayTimeDict] = useState({});
+  const [farmDayTimeDict, setFarmDayTimeDict] = useState({});
 
   useEffect(() => {
     const AuthMethods = new AuthUtils();
@@ -70,9 +72,11 @@ const Store = ({ ...props }) => {
           console.log('busiRes: ', busiRes);
           const businessesRes = busiRes.result;
           const businessUids = new Set();
+          const deliveryTimesSet = new Set();
           const _farmList = [];
-          const _daysDict = {};
-          const _farmsDict = {};
+          const _dayFarmDict = {};
+          const _dayTimeDict = {};
+          const _farmDayTimeDict = {};
           // get a list of buiness UIDs for the next req and
           // the farms properties for the filter
           for (const business of businessesRes) {
@@ -82,28 +86,29 @@ const Store = ({ ...props }) => {
             const day = business.z_delivery_day;
             const time = business.z_delivery_time;
 
+            deliveryTimesSet.add(day + time);
+
             // Put set of farms into a dictionary with day as key
             // Set for faster lookups when inserting
-            if (day in _daysDict) {
-              if (!_daysDict[day].has(id)) _daysDict[day].add(id);
-            } else {
-              _daysDict[day] = new Set();
-              _daysDict[day].add(id);
+            if (!(day in _dayFarmDict)) {
+              _dayFarmDict[day] = new Set();
             }
+            _dayFarmDict[day].add(id);
+
+            if (!(day in _dayTimeDict)) {
+              _dayTimeDict[day] = new Set();
+            }
+            _dayTimeDict[day].add(time);
 
             // Put (dictionary of day that contains a set of times) into a dictionary with id as key
             // - when clicking farm check id and see if day is a key in dictionary for filter
             // - the day key has a set to account for a farm that has multiple delivery times in a day
             // - if above note is not needed (only one delivery time per day), the set can be changed to one time string
-            console.log('id: ', id);
-            if (id in _farmsDict) {
-              if (day in _farmsDict[id]) {
-                if (!_farmsDict[id][day].has(time))
-                  _farmsDict[id][day].add(time);
-              } else {
-                _farmsDict[id][day] = new Set();
-                _farmsDict[id][day].add(time);
+            if (id in _farmDayTimeDict) {
+              if (!(day in _farmDayTimeDict[id])) {
+                _farmDayTimeDict[id][day] = new Set();
               }
+              _farmDayTimeDict[id][day].add(time);
             } else {
               console.log('name: ', business.business_name);
               _farmList.push({
@@ -111,17 +116,21 @@ const Store = ({ ...props }) => {
                 name: business.business_name,
                 image: business.business_image,
               });
-              _farmsDict[id] = { [day]: new Set() };
-              _farmsDict[id][day].add(time);
+              _farmDayTimeDict[id] = { [day]: new Set() };
             }
+            _farmDayTimeDict[id][day].add(time);
           }
           console.log('_farmList', _farmList);
-          console.log('_farmsDict', _farmsDict);
-          console.log('_daysDict', _daysDict);
-          setFarmsList(_farmList);
-          setFarmsDict(_farmsDict);
-          setDaysDict(_daysDict);
+          console.log('_farmDayTimeDict', _farmDayTimeDict);
+          console.log('_dayFarmDict', _dayFarmDict);
+          console.log('_dayTimeDict', _dayTimeDict);
+          console.log('deliveryTimesSet', deliveryTimesSet);
 
+          setNumDeliveryTimes(deliveryTimesSet.size);
+          setFarmsList(_farmList);
+          setDayFarmDict(_dayFarmDict);
+          setDayTimeDict(_dayTimeDict);
+          setFarmDayTimeDict(_farmDayTimeDict);
           BusiMethods.getItems(
             ['fruit', 'desert', 'vegetable', 'other'],
             Array.from(businessUids)
@@ -177,8 +186,10 @@ const Store = ({ ...props }) => {
           products,
           productsLoading,
           setStorePage,
-          farmsDict,
-          daysDict,
+          numDeliveryTimes,
+          dayFarmDict,
+          dayTimeDict,
+          farmDayTimeDict,
         }}
       >
         <StoreNavBar
@@ -187,7 +198,6 @@ const Store = ({ ...props }) => {
           storePage={storePage}
           setStorePage={setStorePage}
         />
-        {console.log('storePage: ', storePage)}
         <Box hidden={storePage !== 0}>
           <Box display="flex">
             <ProduceSelectionPage farms={farmsList} />

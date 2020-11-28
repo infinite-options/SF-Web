@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import storeContext from '../../storeContext';
 import prodSelectContext from '../ProdSelectContext';
 import { makeStyles } from '@material-ui/core/styles';
@@ -48,16 +48,8 @@ const DaysCategory = (daysProps) => {
   };
 
   var itemsAmount = store.cartTotal;
-  //variable: a set of day need to display
-  var allValidDay = filter.shownDays;
 
-  console.log('allValidDay: ', allValidDay);
-  if (prodSelect.newWeekDay.length !== 0) {
-    allValidDay = makeFilterDay(allValidDay, prodSelect.newWeekDay);
-    // console.log(testUpdateDay);
-  }
-
-  return allValidDay.map(createDateCard);
+  return filter.shownDays.map(createDateCard);
 };
 
 export default DaysCategory;

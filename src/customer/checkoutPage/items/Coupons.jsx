@@ -147,6 +147,20 @@ export default function Coupons(props) {
     }
   }, [store.profile.email]);
 
+  const CreateCouponCard = (coupProps) => {
+    return (
+      <Coupon
+        key={coupProps.index}
+        status={coupProps.status}
+        expDate={coupProps.expDate}
+        title={coupProps.title}
+        discountPercent={coupProps.discountPercent}
+        discountAmount={coupProps.discountAmount}
+        discountShipping={coupProps.discountShipping}
+      />
+    );
+  };
+
   const Coupon = (coupProps) => {
     const isFreeDelivery = coupProps.discountPercent > 0;
 
@@ -174,7 +188,7 @@ export default function Coupons(props) {
     }
 
     return (
-      <Box key={props.title} property="div" mx={1}>
+      <Box key={props.key} property="div" mx={1}>
         <Box
           onClick={onCouponClick}
           style={{
@@ -260,7 +274,7 @@ export default function Coupons(props) {
           showDots={true}
           responsive={responsive}
         >
-          {avaiCouponData.concat(unavaiCouponData).map(Coupon)}
+          {avaiCouponData.concat(unavaiCouponData).map(CreateCouponCard)}
         </Carousel>
       )}
     </>

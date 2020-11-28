@@ -26,6 +26,10 @@ const StoreFilter = () => {
   const store = useContext(storeContext);
   const produceSelect = useContext(ProdSelectContext);
 
+  const [shownDays, setShownDays] = useState([]);
+  const [shownFarms, setShownFarms] = useState([]);
+
+  // TODO: Change to hidden field like how farms is implemented
   const createDefault7Day = () => {
     var days = ['SUN', 'MON', 'TUES', 'WED', 'THUR', 'FRI', 'SAT'];
     var months = [
@@ -54,42 +58,55 @@ const StoreFilter = () => {
 
     var default7Days = [];
     let i = 0;
-    if (Object.keys(store.daysDict).length > 0) {
-      // i < 50 mostly to prevent possible infinite loop and to account for 1 availale day out of the week
+    if (Object.keys(store.dayTimeDict).length > 0) {
       const SelectedFarmDays = new Set();
+      var numSelectedTimes = 0;
 
+      // Get the days of all of the selected farms
+      // produceSelect.farmsClicked is a set
       for (const farm of produceSelect.farmsClicked) {
-        for (const day in store.farmsDict[farm]) {
+        for (const day in store.farmDayTimeDict[farm]) {
+          // find the amount of times with a farm's day using the dictionary
           if (!SelectedFarmDays.has(day)) {
-            SelectedFarmDays.add(day);
+            numSelectedTimes += store.farmDayTimeDict[farm][day].size;
           }
+          SelectedFarmDays.add(day);
         }
       }
 
-      while (default7Days.length < 7 && i < 50) {
+      // If there are no selected farm, just use the number of delivery times within each day
+      const numShowndays =
+        numSelectedTimes > 0 ? numSelectedTimes : store.numDeliveryTimes;
+
+      // i < 30 mostly to prevent possible infinite loop (only likely if there is misspelled weekday name)
+      //
+      // The whole goal is to get all of the days with their times that are available within the customer zone
+      while (default7Days.length < numShowndays && i < 30) {
         var today = new Date();
-        // +1 because date days starts at 0
+        // +1 because getDate() returns the date date number indexing from 0
         today.setDate(today.getDate() + 1 + i);
 
+        // toUpperCase because the dictionary stores in upper case
         const todaysDayUpper = fullDays[today.getDay()].toUpperCase();
-        console.log(
-          'checkdays: ',
-          todaysDayUpper,
-          store.daysDict,
-          SelectedFarmDays
-        );
+
+        // if the iterated day is in within the the dictionary to account for no selected farms
         if (
-          todaysDayUpper in store.daysDict &&
+          todaysDayUpper in store.dayTimeDict &&
           (SelectedFarmDays.has(todaysDayUpper) || SelectedFarmDays.size == 0)
         ) {
-          var newDay = {
-            index: i,
-            weekDay: days[today.getDay()],
-            month: months[today.getMonth()],
-            day: today.getDate(),
-            weekDayFull: fullDays[today.getDay()],
-          };
-          default7Days.push(newDay);
+          for (const time of store.dayTimeDict[todaysDayUpper].entries()) {
+            // IMPORTANT: make sure the index used for mapping a component key is unique,
+            // I ran into rendering issue when they were the same
+            var newDay = {
+              index: todaysDayUpper + time,
+              time: time,
+              weekDay: days[today.getDay()],
+              month: months[today.getMonth()],
+              day: today.getDate(),
+              weekDayFull: fullDays[today.getDay()],
+            };
+            default7Days.push(newDay);
+          }
         }
         i++;
       }
@@ -98,40 +115,37 @@ const StoreFilter = () => {
     return default7Days;
   };
 
-  const [shownDays, setShownDays] = useState([]);
-  const [allDays, setAllDays] = useState([]);
-
+  // For when the URL endpoints have finished loading in all of the information
   useEffect(() => {
     setShownDays(createDefault7Day());
-    console.log('shownDays: ', shownDays);
-  }, [store.daysDict, produceSelect.farmsClicked]);
+  }, [store.dayTimeDict, produceSelect.farmsClicked]);
 
   return (
-    <Box width="300px">
-      <Box
-        display="flex"
-        justifyContent="center"
-        p={1}
-        mb={1}
-        style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
-      >
-        <Box p={1} className={clsx(classes.borderCol, classes.filterCol)}>
-          Delivery Days
+    <FilterContext.Provider value={{ shownDays }}>
+      <Box width="300px">
+        <Box
+          display="flex"
+          justifyContent="center"
+          p={1}
+          mb={1}
+          style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
+        >
+          <Box p={1} className={clsx(classes.borderCol, classes.filterCol)}>
+            Delivery Days
+          </Box>
+          <Box p={1} className={clsx(classes.borderCol, classes.filterCol)}>
+            Farms
+          </Box>
+          <Box p={1} className={classes.filterCol}>
+            Item Category
+          </Box>
         </Box>
-        <Box p={1} className={clsx(classes.borderCol, classes.filterCol)}>
-          Farms
-        </Box>
-        <Box p={1} className={classes.filterCol}>
-          Item Category
-        </Box>
-      </Box>
-      <Box
-        display="flex"
-        justifyContent="center"
-        p={1}
-        style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
-      >
-        <FilterContext.Provider value={{ shownDays }}>
+        <Box
+          display="flex"
+          justifyContent="center"
+          p={1}
+          style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
+        >
           <Box className={clsx(classes.borderCol, classes.filterCol)}>
             {ItemStack(DaysCategory)}
           </Box>
@@ -141,9 +155,9 @@ const StoreFilter = () => {
           <Box className={classes.filterCol}>
             {ItemStack(ProductTypeCategory)}
           </Box>
-        </FilterContext.Provider>
+        </Box>
       </Box>
-    </Box>
+    </FilterContext.Provider>
   );
 };
 

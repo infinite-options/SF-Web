@@ -1,16 +1,21 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import prodSelectContext from '../../ProdSelectContext';
 import appColors from '../../../../styles/AppColors';
 import iconSizes from '../../../../styles/IconSizes';
 import { Box } from '@material-ui/core';
 import FilterContext from '../FilterContext';
+import storeContext from '../../../storeContext';
+import { StrikethroughS } from '@material-ui/icons';
 
 function FarmCard(props) {
   const filter = useContext(FilterContext);
+  const produceSelect = useContext(prodSelectContext);
+  const store = useContext(storeContext);
 
   const [isClicked, setClicked] = useState(false);
-
-  const produceSelect = useContext(prodSelectContext);
+  const [showCard, setShowCard] = useState(
+    produceSelect.daysClicked.size == 0 ? true : false
+  );
 
   function gotFarmClicked() {
     const newFarmsClicked = new Set(produceSelect.farmsClicked);
@@ -23,9 +28,20 @@ function FarmCard(props) {
     produceSelect.setFarmsClicked(newFarmsClicked);
     setClicked(!isClicked);
   }
+  useEffect(() => {
+    setShowCard(produceSelect.daysClicked.size == 0 ? true : false);
+    for (const day in store.farmDayTimeDict[props.id]) {
+      console.log('day: ', day);
+      console.log('produceSelect: ', produceSelect.daysClicked);
 
+      if (produceSelect.daysClicked.has(day)) setShowCard(true);
+    }
+  }, [produceSelect.daysClicked]);
+
+  console.log('showCard: ', showCard);
   return (
     <Box
+      hidden={!showCard}
       mb={1}
       m={0.5}
       p={0.5}

@@ -85,9 +85,9 @@ export default function CheckoutTab() {
   }, [store.cartItems]);
 
   // DONE: Add service fee
-  // TODO: Add Delivery tip
-  // TODO: apply promo to subtotal
-  // TODO: make taxes not applied to the delivery fee
+  // DONE: Add Delivery tip
+  // DONE: apply promo to subtotal
+  // DONE: make taxes not applied to the delivery fee
   const [subtotal, setSubtotal] = useState(calculateSubTotal(products));
   const [promoApplied, setPromoApplied] = useState(0);
   const [deliveryFee, setDeliveryFee] = useState(products.length > 0 ? 5 : 0);

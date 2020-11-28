@@ -34,7 +34,6 @@ const ProduceSelectionPage = (props) => {
   const [itemError, setHasError] = useState(false);
   const [itemIsLoading, setIsLoading] = useState(false);
 
-  const [currentFootClick, setFootClick] = useState('days');
   const [farms, setFarms] = useState(props.farms);
   useEffect(() => {
     setFarms(props.farms);
@@ -44,6 +43,9 @@ const ProduceSelectionPage = (props) => {
   const [busError, setBusError] = useState(false);
   // this state will notify if one of the farm is clicked or not
   const [farmsClicked, setFarmsClicked] = useState(new Set());
+
+  // this state will notify if one of the days is clicked or not
+  const [daysClicked, setDaysClicked] = useState(new Set());
 
   //if user wants to filtering day
   const [newWeekDay, setWeekDay] = useState([]);
@@ -61,8 +63,6 @@ const ProduceSelectionPage = (props) => {
         setValOther,
         itemError,
         itemIsLoading,
-        currentFootClick,
-        setFootClick,
         farms,
         busIsLoad,
         busError,
@@ -70,6 +70,8 @@ const ProduceSelectionPage = (props) => {
         setWeekDay,
         farmsClicked,
         setFarmsClicked,
+        daysClicked,
+        setDaysClicked,
       }}
     >
       <StoreFilter />

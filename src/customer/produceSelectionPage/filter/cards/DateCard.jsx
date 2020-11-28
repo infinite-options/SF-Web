@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import appColors from '../../../../styles/AppColors';
 import { Box } from '@material-ui/core';
+import prodSelectContext from '../../ProdSelectContext';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -25,9 +26,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const DateCard = (props) => {
+  const produceSelect = useContext(prodSelectContext);
+
   const [isClicked, setIsClicked] = useState(false);
 
   const cardClicked = () => {
+    const newDaysClicked = new Set(produceSelect.daysClicked);
+
+    if (isClicked) {
+      newDaysClicked.delete(props.weekDayFull.toUpperCase());
+    } else {
+      newDaysClicked.add(props.weekDayFull.toUpperCase());
+    }
+    produceSelect.setDaysClicked(newDaysClicked);
     setIsClicked(!isClicked);
   };
 
@@ -49,6 +60,8 @@ const DateCard = (props) => {
         >
           {props.month} <br />
           {props.day}
+          <br />
+          {props.time}
         </div>
       </div>
     </Box>
