@@ -1,8 +1,6 @@
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import DisplayProducts from './customer/produceSelectionPage/produce/displayProduct';
-import Cart from './customer/checkoutPage/cart';
-import Checkout from './customer/checkoutPage';
 import Store from './customer/Store';
 import Landing from './home/Landing';
 import Signup from './customer/auth/Signup';
@@ -29,7 +27,6 @@ function Nav(authLevel, isAuth) {
       <Route exact path="/signup" component={Signup} />
       <Route exact path="/socialsignup" component={SocialSignUp} />
       <Route exact path="/products" component={DisplayProducts} />
-      <Route path="/cart" component={Cart} />
       <Route path="/stripe" component={PayStripe} />
       <Route path="/history" component={History} />
       <Route path="/refund" component={Refund} />
