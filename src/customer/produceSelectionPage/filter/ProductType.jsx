@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import prodSelectContext from '../ProdSelectContext';
+import ProdSelectContext from '../ProdSelectContext';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Grid } from '@material-ui/core';
 import iconSizes from '../../../styles/IconSizes';
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 const ProductTypeCategory = () => {
   const classes = useStyles();
 
-  const cartContext = useContext(prodSelectContext);
+  const cartContext = useContext(ProdSelectContext);
 
   function fruitClicking() {
     cartContext.setValFruit(!cartContext.fruitSort);

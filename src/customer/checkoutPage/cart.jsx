@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import CartItem from './items/cartItem';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import prodSelectContext from '../produceSelectionPage/ProdSelectContext';
+import ProdSelectContext from '../produceSelectionPage/ProdSelectContext';
 import CouponCard from '../pages/CouponCard';
 
 //imtemsCart() will return an array of all localStorage key that include only products
@@ -118,7 +118,7 @@ function Cart() {
     process.env.REACT_APP_SERVER_BASE_URI + 'purchase_Data_SF';
   const endpoint_Coupon =
     process.env.REACT_APP_SERVER_BASE_URI + 'available_Coupons/xyz@gmail.com';
-  const cartContext = useContext(prodSelectContext);
+  const cartContext = useContext(ProdSelectContext);
 
   //here is function after click pay with stripe
   //=> create a list of all items in cart and put info in an object to post to host

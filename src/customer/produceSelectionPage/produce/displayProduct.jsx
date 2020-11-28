@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Entry from './Entry';
-import prodSelectContext from '../ProdSelectContext';
+import ProdSelectContext from '../ProdSelectContext';
 import storeContext from '../../storeContext';
 import { Box } from '@material-ui/core';
 import appColors from '../../../styles/AppColors';
@@ -26,7 +26,7 @@ function createProduct2(products) {
 }
 
 function DisplayProduct() {
-  const prodChoice = useContext(prodSelectContext);
+  const prodChoice = useContext(ProdSelectContext);
   const store = useContext(storeContext);
   const [productsDisplay, setProductsDisplay] = useState(store.products);
 

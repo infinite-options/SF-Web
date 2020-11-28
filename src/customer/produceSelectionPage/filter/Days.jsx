@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import storeContext from '../../storeContext';
-import prodSelectContext from '../ProdSelectContext';
+import ProdSelectContext from '../ProdSelectContext';
 import { makeStyles } from '@material-ui/core/styles';
 // import daysInWeek from "../daysInWeek";
 import DateCard from './cards/DateCard';
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
 
 //TODO: Add extra days for multiple times
 const DaysCategory = (daysProps) => {
-  const prodSelect = useContext(prodSelectContext);
+  const prodSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
   const filter = useContext(FilterContext);
 

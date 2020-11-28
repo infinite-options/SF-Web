@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import prodSelectContext from '../../ProdSelectContext';
+import ProdSelectContext from '../../ProdSelectContext';
 import appColors from '../../../../styles/AppColors';
 import iconSizes from '../../../../styles/IconSizes';
 import { Box } from '@material-ui/core';
@@ -9,7 +9,7 @@ import { StrikethroughS } from '@material-ui/icons';
 
 function FarmCard(props) {
   const filter = useContext(FilterContext);
-  const produceSelect = useContext(prodSelectContext);
+  const produceSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
 
   const [isClicked, setClicked] = useState(false);

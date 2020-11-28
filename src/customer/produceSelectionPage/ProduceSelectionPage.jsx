@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import DisplayProduce from './produce/displayProduct';
 import StoreFilter from './filter';
-import prodSelectContext from './ProdSelectContext';
+import ProdSelectContext from './ProdSelectContext';
 import axios from 'axios';
 import storeContext from '../storeContext';
 
@@ -51,7 +51,7 @@ const ProduceSelectionPage = (props) => {
   const [newWeekDay, setWeekDay] = useState([]);
 
   return (
-    <prodSelectContext.Provider
+    <ProdSelectContext.Provider
       value={{
         fruitSort,
         setValFruit,
@@ -76,7 +76,7 @@ const ProduceSelectionPage = (props) => {
     >
       <StoreFilter />
       <DisplayProduce />
-    </prodSelectContext.Provider>
+    </ProdSelectContext.Provider>
   );
 };
 

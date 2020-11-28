@@ -5,7 +5,6 @@ import StoreFilter from './produceSelectionPage/filter';
 import StoreNavBar from './StoreNavBar';
 import { AuthContext } from '../auth/AuthContext';
 import storeContext from './storeContext';
-import prodSelectContext from './produceSelectionPage/ProdSelectContext';
 import { Box } from '@material-ui/core';
 import axios from 'axios';
 import CheckoutPage from './checkoutPage';

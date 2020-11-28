@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import appColors from '../../../../styles/AppColors';
 import { Box } from '@material-ui/core';
-import prodSelectContext from '../../ProdSelectContext';
+import ProdSelectContext from '../../ProdSelectContext';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const DateCard = (props) => {
-  const produceSelect = useContext(prodSelectContext);
+  const produceSelect = useContext(ProdSelectContext);
 
   const [isClicked, setIsClicked] = useState(false);
 
