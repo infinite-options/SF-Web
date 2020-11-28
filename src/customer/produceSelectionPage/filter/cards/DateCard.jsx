@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import appColors from '../../styles/AppColors';
+import appColors from '../../../../styles/AppColors';
 import { Box } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({

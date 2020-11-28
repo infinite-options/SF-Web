@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import DisplayProduce from './produce/displayProduct';
 import StoreFilter from './filter';
-import prodSelectContext from './prodSelectContext';
+import prodSelectContext from './ProdSelectContext';
 import axios from 'axios';
 import storeContext from '../storeContext';
 
@@ -43,9 +43,7 @@ const ProduceSelectionPage = (props) => {
   const [busIsLoad, setBusLoading] = useState(false);
   const [busError, setBusError] = useState(false);
   // this state will notify if one of the farm is clicked or not
-  const [farmClicked, setFarmClicked] = useState('');
-  // this is the state of all market's farms
-  const [allMarketFarm, setMarketFarms] = useState([]);
+  const [farmsClicked, setFarmsClicked] = useState(new Set());
 
   //if user wants to filtering day
   const [newWeekDay, setWeekDay] = useState([]);
@@ -70,8 +68,8 @@ const ProduceSelectionPage = (props) => {
         busError,
         newWeekDay,
         setWeekDay,
-        farmClicked,
-        setFarmClicked,
+        farmsClicked,
+        setFarmsClicked,
       }}
     >
       <StoreFilter />

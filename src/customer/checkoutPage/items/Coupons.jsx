@@ -36,10 +36,11 @@ export default function Coupons(props) {
   const store = useContext(storeContext);
 
   // DONE:  Coupon properties: Title, Message, expiration
-  // TODO:  Sort coupons to be selected, available, unavailable
+  // DONE:  Sort coupons to be selected, available, unavailable
   // DONE:  Grab coupons from backend API
   // TODO:  Implement and add how much needed (threshold - subtotal): ex.Buy $10 more produce to be eligible
-  // TODO:  Add expiration date
+  // TODO:  Add how much saved
+  // DONE:  Add expiration date
   const [avaiCouponData, setAvaiCouponData] = useState([]);
   const [unavaiCouponData, setUnavaiCouponData] = useState([]);
 
@@ -173,7 +174,7 @@ export default function Coupons(props) {
     }
 
     return (
-      <Box property="div" mx={1}>
+      <Box key={props.title} property="div" mx={1}>
         <Box
           onClick={onCouponClick}
           style={{

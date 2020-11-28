@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 
 //backgroundImage:`url(${Background})`,
 
-//TODO: get long and lat for guest with find local produce
+//DONE: get long and lat for guest with find local produce
 const Landing = ({ ...props }) => {
   const classes = useStyles();
 

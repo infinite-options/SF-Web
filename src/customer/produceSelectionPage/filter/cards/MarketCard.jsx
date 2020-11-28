@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
-import prodSelectContext from '../produceSelectionPage/prodSelectContext';
-import iconSizes from '../../styles/IconSizes';
-import appColors from '../../styles/AppColors';
+import prodSelectContext from '../../ProdSelectContext';
+import iconSizes from '../../../../styles/IconSizes';
+import appColors from '../../../../styles/AppColors';
 
 import { Box } from '@material-ui/core';
 

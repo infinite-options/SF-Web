@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Entry from './Entry';
-import prodSelectContext from '../prodSelectContext';
+import prodSelectContext from '../ProdSelectContext';
 import storeContext from '../../storeContext';
 import { Box } from '@material-ui/core';
 import appColors from '../../../styles/AppColors';

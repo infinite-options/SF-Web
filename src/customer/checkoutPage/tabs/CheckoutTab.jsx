@@ -152,7 +152,7 @@ export default function CheckoutTab() {
         marginTop: 10,
         backgroundColor: appColors.componentBg,
         maxHeight: '92%',
-        overflow: 'scroll',
+        overflow: 'auto',
       }}
     >
       <Box display="flex" flexDirection="column" height="90%" px={8}>
