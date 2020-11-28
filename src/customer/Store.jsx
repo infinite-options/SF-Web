@@ -37,7 +37,9 @@ const Store = ({ ...props }) => {
   const [products, setProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
 
-  const [farms, setFarms] = useState([]);
+  const [farmsList, setFarmsList] = useState([]);
+  const [farmsDict, setFarmsDict] = useState({});
+  const [daysDict, setDaysDict] = useState({});
 
   useEffect(() => {
     const AuthMethods = new AuthUtils();
@@ -62,33 +64,65 @@ const Store = ({ ...props }) => {
         authRes.customer_long,
         authRes.customer_lat
       ).then((busiRes) => {
-        // dictionary: buisness id with delivery days
+        // dictionary: business id with delivery days
         // show all if nothing selected
         if (busiRes !== undefined) {
           const businessesRes = busiRes.result;
-          const days = [];
-          const businessUids = [];
-          const resFarms = [];
+          const businessUids = new Set();
+          const _farmList = [];
+          const _daysDict = {};
+          const _farmsDict = {};
           // get a list of buiness UIDs for the next req and
           // the farms properties for the filter
           for (const business of businessesRes) {
-            businessUids.push(business.business_uid);
+            if (!businessUids.has(business.z_biz_id))
+              businessUids.add(business.z_biz_id);
             if (business.business_type == 'Farm') {
-              resFarms.push({
-                name: business.business_name,
-                image: business.business_image,
-                // deliveryTime: business.z_delivery_time,
-              });
+              const id = business.z_biz_id;
+              const day = business.z_delivery_day;
+              const time = business.z_delivery_time;
+
+              // Put set of farms into a dictionary with day as key
+              // Set for faster lookups when inserting
+              if (day in _daysDict) {
+                if (!_daysDict[day].has(id)) _daysDict[day].add(id);
+              } else {
+                _daysDict[day] = new Set();
+                _daysDict[day].add(id);
+              }
+
+              // Put (dictionary of day that contains a set of times) into a dictionary with id as key
+              // - when clicking farm check id and see if day is a key in dictionary for filter
+              // - the day key has a set to account for a farm that has multiple delivery times in a day
+              // - if above note is not needed (only one delivery time per day), the set can be changed to one time string
+              if (id in _farmsDict) {
+                if (day in _farmsDict[id]) {
+                  if (!_farmsDict[id][day].has(time))
+                    _farmsDict[id][day].add(time);
+                } else {
+                  _farmsDict[id][day] = new Set();
+                  _farmsDict[id][day].add(time);
+                }
+              } else {
+                _farmList.push({
+                  id: id,
+                  name: business.business_name,
+                  image: business.business_image,
+                });
+                _farmsDict[id] = { [day]: new Set() };
+                _farmsDict[id][day].add(time);
+              }
             }
           }
-          console.log('days: ', days);
+          setFarmsList(_farmList);
+          setFarmsDict(_farmsDict);
+          setDaysDict(_daysDict);
 
-          setFarms(resFarms);
           BusiMethods.getItems(
             ['fruit', 'desert', 'vegetable', 'other'],
-            businessUids
+            Array.from(businessUids)
           ).then((itemRes) => {
-            setProducts(itemRes);
+            setProducts(itemRes !== undefined ? itemRes : []);
             setProductsLoading(false);
           });
         }
@@ -139,6 +173,8 @@ const Store = ({ ...props }) => {
           products,
           productsLoading,
           setStorePage,
+          farmsDict,
+          daysDict,
         }}
       >
         <StoreNavBar
@@ -150,7 +186,7 @@ const Store = ({ ...props }) => {
         {console.log('storePage: ', storePage)}
         <Box hidden={storePage !== 0}>
           <Box display="flex">
-            <ProduceSelectionPage farms={farms} />
+            <ProduceSelectionPage farms={farmsList} />
           </Box>
         </Box>
         <Box hidden={storePage !== 1}>

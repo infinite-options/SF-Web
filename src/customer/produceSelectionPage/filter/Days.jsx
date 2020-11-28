@@ -14,6 +14,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const DaysCategory = () => {
+  const prodSelect = useContext(prodSelectContext);
+  const store = useContext(storeContext);
+
   const createDateCard = (props) => {
     return (
       <DateCard
@@ -54,17 +57,26 @@ const DaysCategory = () => {
     ];
 
     var default7Days = [];
-    for (var i = 0; i < 7; i++) {
-      var today = new Date();
-      today.setDate(today.getDate() + 1 + i);
-      var newDay = {
-        weekDay: days[today.getDay()],
-        month: months[today.getMonth()],
-        day: today.getDate(),
-        weekDayFull: fullDays[today.getDay()],
-      };
-      default7Days.push(newDay);
+    let i = 0;
+    if (Object.keys(store.daysDict).length > 0) {
+      while (default7Days.length < 7 && i < 50) {
+        var today = new Date();
+        // +1 because date days starts at 0
+        today.setDate(today.getDate() + 1 + i);
+        console.log(fullDays[today.getDay()]);
+        if (fullDays[today.getDay()].toUpperCase() in store.daysDict) {
+          var newDay = {
+            weekDay: days[today.getDay()],
+            month: months[today.getMonth()],
+            day: today.getDate(),
+            weekDayFull: fullDays[today.getDay()],
+          };
+          default7Days.push(newDay);
+        }
+        i++;
+      }
     }
+
     return default7Days;
   };
 
@@ -81,9 +93,6 @@ const DaysCategory = () => {
 
     return arr.reverse();
   };
-
-  const prodSelect = useContext(prodSelectContext);
-  const store = useContext(storeContext);
 
   var itemsAmount = store.cartTotal;
   //variable: a set of day need to display

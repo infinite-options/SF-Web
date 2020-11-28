@@ -7,7 +7,7 @@ export default class BusiApiReqs {
 
   getLocationBusinessIds = async function (long, lat) {
     return await axios
-      .get(this.BASE_URL + 'Categorical_Options/' + long + ',' + lat)
+      .get(this.BASE_URL + 'categoricalOptions/' + long + ',' + lat)
       .then((response) => {
         return Promise.resolve(response.length !== 0 ? response.data : {});
       })

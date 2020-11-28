@@ -20,8 +20,8 @@ const FarmCategory = () => {
       <FarmCard
         image={props.image}
         businessName={props.name}
-        hour={props.hours}
-        key={props.name}
+        key={props.id}
+        id={props.id}
       />
     );
   }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import ProductTypeCategory from './ProductType';
 import FarmCategory from './Farm';
 import DaysCategory from './Days';
@@ -7,6 +7,7 @@ import appColors from '../../../styles/AppColors';
 import { Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
+import storeContext from '../../storeContext';
 
 const useStyles = makeStyles((theme) => ({
   borderCol: {
@@ -20,6 +21,10 @@ const useStyles = makeStyles((theme) => ({
 
 const StoreFilter = () => {
   const classes = useStyles();
+  const store = useContext(storeContext);
+
+  const [shownDays, setShownDays] = useState([]);
+
   return (
     <Box width="300px">
       <Box
