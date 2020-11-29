@@ -31,11 +31,15 @@ function Entry(props) {
     let isInCategory = false;
     for (const day in store.farmDayTimeDict[props.business_uid]) {
       store.farmDayTimeDict[props.business_uid][day].forEach((time) => {
+        if (day == 'FRIDAY') {
+          // console.log(day + time, productSelect.daysClicked);
+        }
         if (productSelect.daysClicked.has(day + time)) isInDay = true;
       });
     }
     if (productSelect.farmsClicked.has(props.business_uid)) isInFarm = true;
     if (productSelect.categoriesClicked.has(props.type)) isInCategory = true;
+
     setIsShown(
       props.id in store.cartItems ||
         (isInDay && isInFarm && isInCategory) ||

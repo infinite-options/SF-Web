@@ -21,6 +21,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// BUG: When all of the days, farms, and items are selected, KEM Farms - Berries produce stays up
+//      It may have to do with the fact that KEM Farms delivers at two times on Friday
+//      To recreate: from Prashant's Lat and Long click on the two Fridays, then click on Royal Greens Farms
+//          - Basically the two fridays, and then a farm that doesn't have those friday to make them disappear
+//          - It has to do with since the two Fridays are disappearing at asynchronously, the clicked state that is passed
+//            through to delete the field is not udated to the other friday's deletion so the latter setCategory include the
+//            other Friday since it didn't know it was deleted
 const StoreFilter = () => {
   const classes = useStyles();
   const store = useContext(storeContext);

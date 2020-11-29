@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
 const DateCard = (props) => {
   const productSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
+  const todaysDayUpper = props.weekDayFull.toUpperCase();
 
   const [isClicked, setIsClicked] = useState(false);
   const [showCard, setShowCard] = useState(
@@ -43,9 +44,9 @@ const DateCard = (props) => {
     const newDaysClicked = new Set(productSelect.daysClicked);
 
     if (isClicked) {
-      newDaysClicked.delete(props.weekDayFull.toUpperCase() + props.time);
+      newDaysClicked.delete(todaysDayUpper + props.time);
     } else {
-      newDaysClicked.add(props.weekDayFull.toUpperCase() + props.time);
+      newDaysClicked.add(todaysDayUpper + props.time);
     }
     productSelect.setDaysClicked(newDaysClicked);
     setIsClicked(!isClicked);
@@ -53,7 +54,6 @@ const DateCard = (props) => {
 
   useEffect(() => {
     let _showCard = productSelect.farmsClicked.size == 0 ? true : false;
-    const todaysDayUpper = props.weekDayFull.toUpperCase();
     productSelect.farmsClicked.forEach((farmId) => {
       if (todaysDayUpper in store.farmDayTimeDict[farmId]) {
         _showCard = true;
@@ -61,7 +61,9 @@ const DateCard = (props) => {
     });
     if (!_showCard && isClicked) {
       const newDaysClicked = new Set(productSelect.daysClicked);
-      newDaysClicked.delete(props.weekDayFull.toUpperCase() + props.time);
+      newDaysClicked.delete(todaysDayUpper + props.time);
+      if (todaysDayUpper == 'FRIDAY') console.log('delete: ', newDaysClicked);
+
       productSelect.setDaysClicked(newDaysClicked);
       setIsClicked(false);
     }
