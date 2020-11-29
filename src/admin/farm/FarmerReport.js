@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -10,20 +10,26 @@ import Paper from '@material-ui/core/Paper';
 import axios from 'axios';
 
 const BASE_URL = "https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
-const ORDERS_INFO_URL = BASE_URL + "orders_info";
+// const ORDERS_INFO_URL = BASE_URL + "orders_info";
 const ORDER_ACTIONS_URL = BASE_URL + "order_actions/";
 const INSERT_ORDER_URL = BASE_URL + "purchase_Data_SF";
 const ADMIN_ORDER_URL = BASE_URL + 'admin_report/';
 
 export default function FarmerReport({ farmID, farmName, ...props }) {
-    const [responseData, setResponseData] = useState();
+    // const [responseData, setResponseData] = useState();
     const [orders, setOrders] = useState([]);
 
+<<<<<<< Updated upstream
     useEffect(() => {
         getFarmOrders();
     }, [farmID]);
 
     const getFarmOrders = async (hasCopied=false) => {
+=======
+    const classes = useStyles();
+
+    const getFarmOrders = useCallback(async (hasCopied=false) => {
+>>>>>>> Stashed changes
         // if (responseData && !hasCopied) {
         //     updateOrders(responseData.orders/*, responseData.items*/);
         // }
@@ -44,7 +50,7 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
         .then((res) => {
             let orders = res.data.result;
             console.log('All Report', orders)
-            setResponseData(orders);
+            // setResponseData(orders);
             setOrders(orders);
         })
         .catch((err) => {
@@ -53,7 +59,11 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
             }
             console.log(err);
         })
-    };
+    },[farmID]);
+
+    useEffect(() => {
+        getFarmOrders();
+    }, [getFarmOrders]);
 
     // const updateOrders = (orders/*, items*/) => {
     //     // let farmOrders = orders.filter(order => order.pur_business_uid === farmID);
@@ -185,11 +195,60 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
         handleCancel, handleCopy, handleDelete, handleItemDelete
     };
 
+    const downloadOpenOrderDetails = () => {
+        let openOrderReports = orders;
+        openOrderReports.filter(order => order.delivery_status === null || order.delivery_status.toLowerCase() === "no");
+        openOrderReports = openOrderReports.map(order => {
+            let orderCopy = {
+                purchase_date: order.purchase_date,
+                delivery_first_name: order.delivery_first_name,
+                delivery_last_name: order.delivery_last_name,
+                delivery_phone_num: order.delivery_phone_num,
+                delivery_email: order.delivery_email,
+                delivery_address: order.delivery_address,
+                delivery_city: order.delivery_city,
+                delivery_state: order.delivery_state,
+                delivery_zip: order.delivery_zip,
+                amount: order.Amount,
+                items: order.items,
+            }
+            if(typeof orderCopy.items === 'string') {
+                orderCopy.items = JSON.parse(order.items)
+            }
+            return orderCopy;
+        })
+        console.log(openOrderReports)
+    }
+
     return (
         <div hidden={props.hidden}>
             <div style={labelStyle}>
                 <h2>Open Orders</h2>
             </div>
+<<<<<<< Updated upstream
+=======
+            <div className={classes.reportButtonsSection}>
+                <Button
+                    variant='contained'
+                    className={classes.reportButtons}
+                    onClick={() => downloadOpenOrderDetails()}
+                >
+                    Order Details
+                </Button>
+                <Button
+                    variant='contained'
+                    className={classes.reportButtons}
+                >
+                    Customer Details
+                </Button>
+                <Button
+                    variant='contained'
+                    className={classes.reportButtons}
+                >
+                    Pivot Table
+                </Button>
+            </div>
+>>>>>>> Stashed changes
             <OrdersTable orders={orders} type="open" functions={buttonFunctions} />
             <div style={labelStyle}>
                 <h2>Delivered Orders</h2>
@@ -233,7 +292,7 @@ function OrdersTable({ orders, type, ...props }) {
                         
                         if (isDisplayed) {
                             return <OrderRow key={idx} index={idx} order={order} type={type} functions={props.functions} />
-                        }
+                        } else { return null;}
                     })}
                 </TableBody>
             </Table>
@@ -245,8 +304,8 @@ function OrderRow({ order, type, ...props }) {
     const [hidden, setHidden] = useState(true);
 
     const address = (() => {
-        return `${order.delivery_address} ` + (order.delivery_unit ? `${order.delivery_unit} ` : "") + 
-            `${order.delivery_city} ` + `${order.delivery_state} ` + `${order.delivery_zip} `;
+        return `${order.delivery_address} ${(order.delivery_unit ? order.delivery_unit : "")}
+            ${order.delivery_city} ${order.delivery_state} ${order.delivery_zip} `;
     })();
     const count = (() => {
         // let result = 0;
@@ -268,7 +327,7 @@ function OrderRow({ order, type, ...props }) {
                 <TableCell>{order.delivery_email}</TableCell>
                 <TableCell>{address}</TableCell>
                 <TableCell>{order.delivery_phone_num}</TableCell>
-                <TableCell>{order.amount_due}</TableCell>
+                <TableCell>{order.Amount}</TableCell>
                 <TableCell>{count}</TableCell>
                 <TableCell>{hasPaid}</TableCell>
                 <TableCell>
