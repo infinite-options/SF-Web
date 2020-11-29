@@ -26,28 +26,13 @@ const DaysCategory = (daysProps) => {
         weekDay={props.weekDay}
         month={props.month}
         day={props.day}
+        time={props.time}
         weekDayFull={props.weekDayFull}
         id={props.weekDay}
         key={props.index}
       />
     );
   };
-
-  const makeFilterDay = (defaultDay, updateDay) => {
-    var arr = [];
-    for (var i = 0; i < updateDay.length; i++) {
-      for (var j = 0; j < defaultDay.length; j++) {
-        if (updateDay[i] === defaultDay[j].weekDayFull) {
-          var holdNewDate = defaultDay[j];
-          arr.push(holdNewDate);
-        }
-      }
-    }
-
-    return arr.reverse();
-  };
-
-  var itemsAmount = store.cartTotal;
 
   return filter.shownDays.map(createDateCard);
 };

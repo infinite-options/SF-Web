@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import DisplayProducts from './customer/produceSelectionPage/produce/displayProduct';
+import DisplayProducts from './customer/productSelectionPage/produce/displayProduct';
 import Store from './customer/Store';
 import Landing from './home/Landing';
 import Signup from './customer/auth/Signup';

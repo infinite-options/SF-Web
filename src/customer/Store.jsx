@@ -1,14 +1,14 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
-import DisplayProduce from './produceSelectionPage/produce/displayProduct';
-import StoreFilter from './produceSelectionPage/filter';
+import DisplayProduce from './productSelectionPage/produce/displayProduct';
+import StoreFilter from './productSelectionPage/filter';
 import StoreNavBar from './StoreNavBar';
 import { AuthContext } from '../auth/AuthContext';
 import storeContext from './storeContext';
 import { Box } from '@material-ui/core';
 import axios from 'axios';
 import CheckoutPage from './checkoutPage';
-import ProduceSelectionPage from './produceSelectionPage';
+import ProductSelectionPage from './productSelectionPage';
 import AuthUtils from '../utils/AuthUtils';
 import BusiApiReqs from '../utils/BusiApiReqs';
 
@@ -199,7 +199,7 @@ const Store = ({ ...props }) => {
         />
         <Box hidden={storePage !== 0}>
           <Box display="flex">
-            <ProduceSelectionPage farms={farmsList} />
+            <ProductSelectionPage farms={farmsList} />
           </Box>
         </Box>
         <Box hidden={storePage !== 1}>
