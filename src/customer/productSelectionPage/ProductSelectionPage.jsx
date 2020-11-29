@@ -22,14 +22,9 @@ function calTotal() {
   return amount;
 }
 
-const ProduceSelectionPage = (props) => {
+const ProductSelectionPage = (props) => {
   const store = useContext(storeContext);
   const profile = store.profile;
-
-  const [fruitSort, setValFruit] = useState(false);
-  const [vegeSort, setValVege] = useState(false);
-  const [dessertSort, setValDessert] = useState(false);
-  const [othersSort, setValOther] = useState(false);
 
   const [itemError, setHasError] = useState(false);
   const [itemIsLoading, setIsLoading] = useState(false);
@@ -47,31 +42,23 @@ const ProduceSelectionPage = (props) => {
   // this state will notify if one of the days is clicked or not
   const [daysClicked, setDaysClicked] = useState(new Set());
 
-  //if user wants to filtering day
-  const [newWeekDay, setWeekDay] = useState([]);
+  // this state will notify if one of the days is clicked or not
+  const [categoriesClicked, setCategoriesClicked] = useState(new Set());
 
   return (
     <ProdSelectContext.Provider
       value={{
-        fruitSort,
-        setValFruit,
-        vegeSort,
-        setValVege,
-        dessertSort,
-        setValDessert,
-        othersSort,
-        setValOther,
         itemError,
         itemIsLoading,
         farms,
         busIsLoad,
         busError,
-        newWeekDay,
-        setWeekDay,
         farmsClicked,
         setFarmsClicked,
         daysClicked,
         setDaysClicked,
+        categoriesClicked,
+        setCategoriesClicked,
       }}
     >
       <StoreFilter />
@@ -80,4 +67,4 @@ const ProduceSelectionPage = (props) => {
   );
 };
 
-export default ProduceSelectionPage;
+export default ProductSelectionPage;

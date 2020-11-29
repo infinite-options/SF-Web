@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import ProductTypeCategory from './ProductType';
+import ItemCategory from './ItemCategory';
 import FarmCategory from './Farm';
 import DaysCategory from './Days';
 import ItemStack from './itemStack';
@@ -24,10 +24,9 @@ const useStyles = makeStyles((theme) => ({
 const StoreFilter = () => {
   const classes = useStyles();
   const store = useContext(storeContext);
-  const produceSelect = useContext(ProdSelectContext);
+  const productSelect = useContext(ProdSelectContext);
 
   const [shownDays, setShownDays] = useState([]);
-  const [shownFarms, setShownFarms] = useState([]);
 
   // TODO: Change to hidden field like how farms is implemented
   const createDefault7Day = () => {
@@ -59,42 +58,20 @@ const StoreFilter = () => {
     var default7Days = [];
     let i = 0;
     if (Object.keys(store.dayTimeDict).length > 0) {
-      const SelectedFarmDays = new Set();
-      var numSelectedTimes = 0;
-
-      // Get the days of all of the selected farms
-      // produceSelect.farmsClicked is a set
-      for (const farm of produceSelect.farmsClicked) {
-        for (const day in store.farmDayTimeDict[farm]) {
-          // find the amount of times with a farm's day using the dictionary
-          if (!SelectedFarmDays.has(day)) {
-            numSelectedTimes += store.farmDayTimeDict[farm][day].size;
-          }
-          SelectedFarmDays.add(day);
-        }
-      }
-
-      // If there are no selected farm, just use the number of delivery times within each day
-      const numShowndays =
-        numSelectedTimes > 0 ? numSelectedTimes : store.numDeliveryTimes;
-
       // i < 30 mostly to prevent possible infinite loop (only likely if there is misspelled weekday name)
       //
       // The whole goal is to get all of the days with their times that are available within the customer zone
-      while (default7Days.length < numShowndays && i < 30) {
+      while (default7Days.length < store.numDeliveryTimes && i < 30) {
         var today = new Date();
-        // +1 because getDate() returns the date date number indexing from 0
+        // +1 to start from tomorrow
         today.setDate(today.getDate() + 1 + i);
 
         // toUpperCase because the dictionary stores in upper case
         const todaysDayUpper = fullDays[today.getDay()].toUpperCase();
 
         // if the iterated day is in within the the dictionary to account for no selected farms
-        if (
-          todaysDayUpper in store.dayTimeDict &&
-          (SelectedFarmDays.has(todaysDayUpper) || SelectedFarmDays.size == 0)
-        ) {
-          for (const time of store.dayTimeDict[todaysDayUpper].entries()) {
+        if (todaysDayUpper in store.dayTimeDict) {
+          store.dayTimeDict[todaysDayUpper].forEach((time) => {
             // IMPORTANT: make sure the index used for mapping a component key is unique,
             // I ran into rendering issue when they were the same
             var newDay = {
@@ -106,7 +83,7 @@ const StoreFilter = () => {
               weekDayFull: fullDays[today.getDay()],
             };
             default7Days.push(newDay);
-          }
+          });
         }
         i++;
       }
@@ -118,7 +95,7 @@ const StoreFilter = () => {
   // For when the URL endpoints have finished loading in all of the information
   useEffect(() => {
     setShownDays(createDefault7Day());
-  }, [store.dayTimeDict, produceSelect.farmsClicked]);
+  }, [store.dayTimeDict]);
 
   return (
     <FilterContext.Provider value={{ shownDays }}>
@@ -152,9 +129,7 @@ const StoreFilter = () => {
           <Box className={clsx(classes.borderCol, classes.filterCol)}>
             {ItemStack(FarmCategory)}
           </Box>
-          <Box className={classes.filterCol}>
-            {ItemStack(ProductTypeCategory)}
-          </Box>
+          <Box className={classes.filterCol}>{ItemStack(ItemCategory)}</Box>
         </Box>
       </Box>
     </FilterContext.Provider>

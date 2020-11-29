@@ -9,36 +9,41 @@ import { StrikethroughS } from '@material-ui/icons';
 
 function FarmCard(props) {
   const filter = useContext(FilterContext);
-  const produceSelect = useContext(ProdSelectContext);
+  const productSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
 
-  const [isClicked, setClicked] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
   const [showCard, setShowCard] = useState(
-    produceSelect.daysClicked.size == 0 ? true : false
+    productSelect.daysClicked.size == 0 ? true : false
   );
 
   function gotFarmClicked() {
-    const newFarmsClicked = new Set(produceSelect.farmsClicked);
+    const newFarmsClicked = new Set(productSelect.farmsClicked);
 
     if (isClicked) {
       newFarmsClicked.delete(props.id);
     } else {
       newFarmsClicked.add(props.id);
     }
-    produceSelect.setFarmsClicked(newFarmsClicked);
-    setClicked(!isClicked);
+    productSelect.setFarmsClicked(newFarmsClicked);
+    setIsClicked(!isClicked);
   }
   useEffect(() => {
-    setShowCard(produceSelect.daysClicked.size == 0 ? true : false);
+    let _showCard = productSelect.daysClicked.size == 0 ? true : false;
     for (const day in store.farmDayTimeDict[props.id]) {
-      console.log('day: ', day);
-      console.log('produceSelect: ', produceSelect.daysClicked);
-
-      if (produceSelect.daysClicked.has(day)) setShowCard(true);
+      store.farmDayTimeDict[props.id][day].forEach((time) => {
+        if (productSelect.daysClicked.has(day + time)) _showCard = true;
+      });
     }
-  }, [produceSelect.daysClicked]);
+    if (!_showCard && isClicked) {
+      const newFarmsClicked = new Set(productSelect.farmsClicked);
+      newFarmsClicked.delete(props.id);
+      productSelect.setFarmsClicked(newFarmsClicked);
+      setIsClicked(false);
+    }
+    setShowCard(true);
+  }, [productSelect.daysClicked]);
 
-  console.log('showCard: ', showCard);
   return (
     <Box
       hidden={!showCard}
