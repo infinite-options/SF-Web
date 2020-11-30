@@ -17,4 +17,8 @@ export default class AuthUtils {
         console.log(err.response || err);
       });
   };
+
+  updateProfile = async function () {
+    return await axios.post(this.BASE_URL + 'update_Profile');
+  };
 }

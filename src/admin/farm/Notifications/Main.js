@@ -232,15 +232,15 @@ function NotificationMain({
                       });
                   } else if (notification === 'Notifications') {
                     // Get comma separated list of emails of customers
-                    let selectedEmails = selectedCustomerInfo
-                      .map((customerInfo) => customerInfo.customer_email)
+                    let selectedUids = selectedCustomerInfo
+                      .map((customerInfo) => customerInfo.customer_uid)
                       .toString();
-                    console.log(selectedEmails);
+                    console.log(selectedUids);
+                    let formData = new FormData();
+                    formData.append('uids',selectedUids)
+                    formData.append('message',message)
                     axios
-                      .post(API_URL + 'Send_notification', {
-                        message: message,
-                        tags: selectedEmails,
-                      })
+                      .post(API_URL + 'Send_Notification/customer', formData)
                       .then((res) => {
                         console.log(res);
                       })

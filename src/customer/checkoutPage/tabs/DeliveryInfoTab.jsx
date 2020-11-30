@@ -1,11 +1,12 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
+import axios from 'axios';
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Paper, Box, TextField, Switch, Button } from '@material-ui/core';
 import appColors from '../../../styles/AppColors';
 import Signup from '../../auth/Signup';
 import { AuthContext } from '../../../auth/AuthContext';
-import CheckoutContext from '../CheckoutContext';
+import StoreContext from '../../storeContext';
 import CssTextField from '../../../utils/CssTextField';
 
 const useStyles = makeStyles({
@@ -24,7 +25,16 @@ const useStyles = makeStyles({
 export default function DeliveryInfoTab() {
   const classes = useStyles();
   const Auth = useContext(AuthContext);
-  const Checkout = useContext(CheckoutContext);
+  const store = useContext(StoreContext);
+
+  // Setting so that the store context isn't constantly re-rendered
+  const [userInfo, setUserInfo] = useState(store.profile);
+
+  useEffect(() => {
+    if (store.profile !== {}) {
+      setUserInfo(store.profile);
+    }
+  }, [store.profile]);
 
   const [map, setMap] = React.useState(null);
 
@@ -42,7 +52,38 @@ export default function DeliveryInfoTab() {
 
   const onFieldChange = (event) => {
     const { name, value } = event.target;
-    Checkout.setUserInfo({ ...Checkout.userInfo, [name]: value });
+    setUserInfo({ ...userInfo, [name]: value });
+  };
+
+  const onCheckAddressClicked = () => {
+    console.log('Verifying longitude and latitude from Delivery Info');
+    axios
+      .get('https://dev.virtualearth.net/REST/v1/Locations/', {
+        params: {
+          CountryRegion: 'US',
+          adminDistrict: userInfo.state,
+          locality: userInfo.city,
+          postalCode: userInfo.zip,
+          addressLine: userInfo.address,
+          key: process.env.REACT_APP_BING_LOCATION_KEY,
+        },
+      })
+      .then((res) => {
+        // console.log(res)
+        let locationApiResult = res.data;
+        if (locationApiResult.statusCode === 200) {
+          let locations = locationApiResult.resourceSets[0].resources;
+          /* Possible improvement: choose better location in case first one not desired
+           */
+          let location = locations[0];
+          let lat = location.geocodePoints[0].coordinates[0];
+          let long = location.geocodePoints[0].coordinates[1];
+          if (location.geocodePoints.length === 2) {
+            lat = location.geocodePoints[1].coordinates[0];
+            long = location.geocodePoints[1].coordinates[1];
+          }
+        }
+      });
   };
 
   const PlainTextField = (props) => {
@@ -66,7 +107,7 @@ export default function DeliveryInfoTab() {
     return (
       <>
         {PlainTextField({
-          value: Checkout.userInfo.email,
+          value: userInfo.email,
           name: 'email',
           label: 'Email',
         })}
@@ -91,23 +132,23 @@ export default function DeliveryInfoTab() {
           <Switch />
         </Box>
         {PlainTextField({
-          value: Checkout.userInfo.firstName,
+          value: userInfo.firstName,
           name: 'firstName',
           label: 'First Name',
         })}
         {PlainTextField({
-          value: Checkout.userInfo.lastName,
+          value: userInfo.lastName,
           name: 'lastName',
           label: 'Last Name',
         })}
         {PlainTextField({
-          value: Checkout.userInfo.phoneNum,
+          value: userInfo.phoneNum,
           name: 'phoneNum',
           label: 'Phone Number',
         })}
         <Box display="flex" mb={1}>
           <CssTextField
-            value={Checkout.userInfo.address}
+            value={userInfo.address}
             name="address"
             label="Street Address"
             variant="outlined"
@@ -117,7 +158,7 @@ export default function DeliveryInfoTab() {
           />
           <Box ml={1} width="40%">
             <CssTextField
-              value={Checkout.userInfo.unit}
+              value={userInfo.unit}
               name="unit"
               label="Apt Number"
               variant="outlined"
@@ -130,7 +171,7 @@ export default function DeliveryInfoTab() {
         <Box display="flex" mb={1}>
           <Box width="33.3%">
             <CssTextField
-              value={Checkout.userInfo.city}
+              value={userInfo.city}
               name="city"
               label="City"
               variant="outlined"
@@ -141,7 +182,7 @@ export default function DeliveryInfoTab() {
           </Box>
           <Box width="33.3%" mx={1}>
             <CssTextField
-              value={Checkout.userInfo.state}
+              value={userInfo.state}
               name="state"
               label="State"
               variant="outlined"
@@ -152,7 +193,7 @@ export default function DeliveryInfoTab() {
           </Box>
           <Box width="33.3%">
             <CssTextField
-              value={Checkout.userInfo.zip}
+              value={userInfo.zip}
               name="zip"
               label="Zip Code"
               variant="outlined"
@@ -201,25 +242,25 @@ export default function DeliveryInfoTab() {
           <label> Guest Information</label>
         </Box>
         {PlainTextField({
-          value: Checkout.userInfo.firstName,
+          value: userInfo.firstName,
           name: 'firstName',
           label: 'First Name',
           spacing: spacing,
         })}
         {PlainTextField({
-          value: Checkout.userInfo.lastName,
+          value: userInfo.lastName,
           name: 'lastName',
           label: 'Last Name',
           spacing: spacing,
         })}
         {PlainTextField({
-          value: Checkout.userInfo.phoneNum,
+          value: userInfo.phoneNum,
           name: 'phoneNum',
           label: 'Phone Number',
           spacing: spacing,
         })}
         {PlainTextField({
-          value: Checkout.userInfo.email,
+          value: userInfo.email,
           name: 'email',
           label: 'Email',
           spacing: spacing,
@@ -227,7 +268,7 @@ export default function DeliveryInfoTab() {
         {PlainTextField({ label: 'Delivery Instructions', spacing: spacing })}
         <Box display="flex" mb={spacing}>
           <CssTextField
-            value={Checkout.userInfo.address}
+            value={userInfo.address}
             name="address"
             label="Street Address"
             variant="outlined"
@@ -237,7 +278,7 @@ export default function DeliveryInfoTab() {
           />
           <Box ml={1} width="40%">
             <CssTextField
-              value={Checkout.userInfo.unit}
+              value={userInfo.unit}
               name="unit"
               label="Apt Number"
               variant="outlined"
@@ -250,7 +291,7 @@ export default function DeliveryInfoTab() {
         <Box display="flex" mb={spacing + 3}>
           <Box width="33.3%">
             <CssTextField
-              value={Checkout.userInfo.city}
+              value={userInfo.city}
               name="city"
               label="City"
               variant="outlined"
@@ -261,7 +302,7 @@ export default function DeliveryInfoTab() {
           </Box>
           <Box width="33.3%" mx={1}>
             <CssTextField
-              value={Checkout.userInfo.state}
+              value={userInfo.state}
               name="state"
               label="State"
               variant="outlined"
@@ -272,7 +313,7 @@ export default function DeliveryInfoTab() {
           </Box>
           <Box width="33.3%">
             <CssTextField
-              value={Checkout.userInfo.zip}
+              value={userInfo.zip}
               name="zip"
               label="Zip Code"
               variant="outlined"

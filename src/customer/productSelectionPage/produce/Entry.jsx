@@ -1,10 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import storeContext from '../../storeContext';
-import { Box, Button } from '@material-ui/core';
+import { Box, Button, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import appColors from '../../../styles/AppColors';
+import ProduceSelectContext from '../ProdSelectContext';
 
 const useStyles = makeStyles({
   button: {
@@ -20,18 +21,59 @@ function Entry(props) {
   const classes = useStyles();
 
   const store = useContext(storeContext);
+  const productSelect = useContext(ProduceSelectContext);
+
+  const [isShown, setIsShown] = useState(false);
+
+  useEffect(() => {
+    let isInDay = false;
+    let isInFarm = false;
+    let isInCategory = false;
+    for (const day in store.farmDayTimeDict[props.business_uid]) {
+      store.farmDayTimeDict[props.business_uid][day].forEach((time) => {
+        if (day == 'FRIDAY') {
+          // console.log(day + time, productSelect.daysClicked);
+        }
+        if (productSelect.daysClicked.has(day + '&' + time)) isInDay = true;
+      });
+    }
+    if (productSelect.farmsClicked.has(props.business_uid)) isInFarm = true;
+    if (productSelect.categoriesClicked.has(props.type)) isInCategory = true;
+
+    setIsShown(
+      props.id in store.cartItems ||
+        (isInDay && isInFarm && isInCategory) ||
+        (isInDay &&
+          productSelect.farmsClicked.size == 0 &&
+          productSelect.categoriesClicked.size == 0) ||
+        (isInDay && productSelect.farmsClicked.size == 0 && isInCategory) ||
+        (isInDay && isInFarm && productSelect.categoriesClicked.size == 0)
+    );
+  }, [
+    productSelect.daysClicked,
+    productSelect.farmsClicked,
+    productSelect.categoriesClicked,
+    store.cartItems,
+  ]);
 
   function decrease() {
     if (props.id in store.cartItems) {
-      if (store.cartItems[props.id]['count'] > 0) {
-        const item = {
-          ...props,
-          count: store.cartItems[props.id]['count'] - 1,
-        };
-        store.setCartItems({
-          ...store.cartItems,
-          [props.id]: item,
-        });
+      const itemCount = store.cartItems[props.id]['count'];
+      if (itemCount > 0) {
+        if (itemCount == 1) {
+          let clone = Object.assign({}, store.cartItems);
+          delete clone[props.id];
+          store.setCartItems(clone);
+        } else {
+          const item = {
+            ...props,
+            count: store.cartItems[props.id]['count'] - 1,
+          };
+          store.setCartItems({
+            ...store.cartItems,
+            [props.id]: item,
+          });
+        }
         store.setCartTotal(store.cartTotal - 1);
       }
     }
@@ -52,7 +94,7 @@ function Entry(props) {
 
   return (
     <>
-      <Box width="170px" flexGrow={1} m={1} mb={-8}>
+      <Grid hidden={!isShown} item>
         <Box
           className="center-cropped"
           display="flex"
@@ -72,7 +114,7 @@ function Entry(props) {
             border: '1px solid ' + appColors.border,
           }}
         />
-        <Box position="relative" zIndex="tooltip" top={-91}>
+        <Box position="relative" zIndex="tooltip" top={-91} height={110}>
           <Box
             className={classes.button}
             width={30}
@@ -137,7 +179,7 @@ function Entry(props) {
             </Box>
           </Box>
         </Box>
-      </Box>
+      </Grid>
     </>
   );
 }

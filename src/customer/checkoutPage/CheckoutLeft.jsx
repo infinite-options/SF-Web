@@ -7,6 +7,7 @@ import Box from '@material-ui/core/Box';
 import appColors from '../../styles/AppColors';
 import DeliveryInfo from './tabs/DeliveryInfoTab';
 import PaymentTab from './tabs/PaymentTab';
+import RewardsTab from './tabs/RewardsTab';
 
 const useStyles = makeStyles({
   root: {
@@ -67,6 +68,10 @@ export default function CheckoutLeft({ ...props }) {
       </StyledTabs>
       <Box hidden={value != 0}>
         <DeliveryInfo />
+      </Box>
+      {/* value is 2 because the flex spacing takes up values 1 and 3 */}
+      <Box hidden={value != 2}>
+        <RewardsTab />
       </Box>
       {/* value is 4 because the flex spacing takes up values 1 and 3 */}
       <Box hidden={value != 4}>

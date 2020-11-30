@@ -1,11 +1,7 @@
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import DisplayProducts from './customer/produceSelectionPage/produce/displayProduct';
-import Cart from './customer/checkoutPage/cart';
-import Checkout from './customer/checkoutPage';
+import DisplayProducts from './customer/productSelectionPage/produce/displayProduct';
 import Store from './customer/Store';
-import FarmGrid from './customer/FarmGrid';
-import Profile from './customer/Profile';
 import Landing from './home/Landing';
 import Signup from './customer/auth/Signup';
 import SocialSignUp from './customer/auth/SocialSignUp';
@@ -31,13 +27,10 @@ function Nav(authLevel, isAuth) {
       <Route exact path="/signup" component={Signup} />
       <Route exact path="/socialsignup" component={SocialSignUp} />
       <Route exact path="/products" component={DisplayProducts} />
-      <Route path="/cart" component={Cart} />
       <Route path="/stripe" component={PayStripe} />
       <Route path="/history" component={History} />
       <Route path="/refund" component={Refund} />
       <Route exact path="/store" component={Store} />
-      <Route exact path="/farms" component={FarmGrid} />
-      <Route exact path="/profile" component={Profile} />
       <AuthAdminRoute
         path="/admin"
         component={Admin}

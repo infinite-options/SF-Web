@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import 'react-multi-carousel/lib/styles.css';
 import './App.css';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
@@ -30,10 +31,6 @@ function calTotal() {
 }
 
 function App() {
-  const [isAuth, setIsAuth] = useState(false); // checks if user is logged in
-  const [accountType, setAccountType] = useState();
-  const [isUserLoaded, setIsUserLoaded] = useState(false);
-
   const theme = createMuiTheme({
     shadows: ['none'],
     palette: {
@@ -57,30 +54,19 @@ function App() {
       },
     },
   });
+  console.log('app started');
 
   let uid =
     cookies.get('customer_uid') == null ? '' : cookies.get('customer_uid');
 
+  const [isAuth, setIsAuth] = useState(uid === '' ? false : true); // checks if user is logged in
+  const [accountType, setAccountType] = useState();
+  const [isUserLoaded, setIsUserLoaded] = useState(false);
   // IF USER IS LOGGED IN, CHECK THEIR ACCOUNT AUTHORITY:
   // Level  0: Lowest level
   // Level  1: User is logged in & is farmer or higher
   // Level  2: User is logged in & is admin
-  const [authLevel, setAuthLevel] = useState(0);
-
-  const readCookie = () => {
-    const loggedIn = cookies.get('login-session');
-    // console.log('asduojhfhuasdf');
-    if (loggedIn) {
-      setIsAuth(true);
-      console.log('User is already logged in');
-    }
-  };
-
-  useEffect(() => {
-    console.log('reading cookie...');
-    readCookie();
-  }, []);
-
+  const [authLevel, setAuthLevel] = useState();
   const [farmID, setFarmID] = useState('200-000003');
   const [timeChange, setTimeChange] = useState({});
   const [deliveryTime, setDeliveryTime] = useState({});

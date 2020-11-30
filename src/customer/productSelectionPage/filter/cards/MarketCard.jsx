@@ -1,29 +1,20 @@
 import React, { useContext, useState } from 'react';
-import prodSelectContext from '../produceSelectionPage/prodSelectContext';
-import appColors from '../../styles/AppColors';
-import iconSizes from '../../styles/IconSizes';
+import ProdSelectContext from '../../ProdSelectContext';
+import iconSizes from '../../../../styles/IconSizes';
+import appColors from '../../../../styles/AppColors';
+
 import { Box } from '@material-ui/core';
 
-function FarmCard(props) {
+function MarketCard(props) {
   // const history = useHistory();
   // const goToCart = () => history.push("/cart");
   const [isClicked, setClicked] = useState(false);
 
-  const context = useContext(prodSelectContext);
+  const context = useContext(ProdSelectContext);
 
-  function gotFarmClicked() {
+  function gotClicked() {
     setClicked(!isClicked);
-    //so whenever a farm icon is clicked, this status will change
-    //if there is nothing in the click array, it will ad new farm name and only display farms with that name
-    //else it will return to normal
-    if (context.farmClicked.length === 0) {
-      context.setFarmClicked(props.businessName);
-    } else {
-      context.setFarmClicked('');
-    }
-    // console.log(context.farmClicked);
     if (context.newWeekDay.length === 0) {
-      // console.log(context.farmClicked,"inside if");
       // console.log(JSON.parse(props.hour),"here");
       var obj = JSON.parse(props.hour);
       var arr = [];
@@ -52,11 +43,11 @@ function FarmCard(props) {
         borderStyle: 'solid',
         borderWidth: '1px',
         borderRadius: '10px',
-        borderColor: !isClicked ? appColors.componentBg : appColors.primary,
+        borderColor: isClicked ? appColors.primary : appColors.componentBg,
         cursor: 'pointer',
       }}
     >
-      <Box display="flex" justifyContent="center" onClick={gotFarmClicked}>
+      <Box display="flex" justifyContent="center" onClick={gotClicked}>
         <img
           width={iconSizes.filter}
           height={iconSizes.filter}
@@ -71,4 +62,4 @@ function FarmCard(props) {
   );
 }
 
-export default FarmCard;
+export default MarketCard;

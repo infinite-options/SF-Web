@@ -7,15 +7,16 @@ import appColors from '../../../styles/AppColors';
 
 function CartItem(props) {
   const store = useContext(storeContext);
-  var totalPrice = props.price * store.cartItems[props.id]['count'];
+  var totalPrice = props.price * props.count;
 
   function decrease() {
     if (props.id in store.cartItems) {
       const itemCount = store.cartItems[props.id]['count'];
       if (itemCount > 0) {
         if (itemCount == 1) {
-          delete store.cartItems[props.id];
-          store.setCartItems({});
+          let clone = Object.assign({}, store.cartItems);
+          delete clone[props.id];
+          store.setCartItems(clone);
         } else {
           const item = {
             ...props,
