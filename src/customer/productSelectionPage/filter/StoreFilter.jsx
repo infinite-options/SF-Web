@@ -35,7 +35,7 @@ const StoreFilter = () => {
 
   const [shownDays, setShownDays] = useState([]);
 
-  // TODO: Change to hidden field like how farms is implemented
+  // DONE: Change to hidden field like how farms is implemented
   const createDefault7Day = () => {
     var days = ['SUN', 'MON', 'TUES', 'WED', 'THUR', 'FRI', 'SAT'];
     var months = [
@@ -71,6 +71,7 @@ const StoreFilter = () => {
       while (default7Days.length < store.numDeliveryTimes && i < 30) {
         var today = new Date();
         // +1 to start from tomorrow
+        // TODO: after 1pm change to + 2
         today.setDate(today.getDate() + 1 + i);
 
         // toUpperCase because the dictionary stores in upper case

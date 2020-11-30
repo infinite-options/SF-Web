@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
   card: {
     backgroundColor: '#e0e6e6',
     width: 70,
-    height: 80,
+    height: 75,
     borderRadius: 10,
     cursor: 'pointer',
   },
@@ -40,17 +40,24 @@ const DateCard = (props) => {
     productSelect.farmsClicked.size == 0 ? true : false
   );
 
+  // FMDF = For Multiple Day Functionality
   const cardClicked = () => {
-    const newDaysClicked = new Set(productSelect.daysClicked);
+    // FMDF: initialize the set with productSelect.daysClicked
+    const newDaysClicked = new Set();
 
-    if (isClicked) {
-      newDaysClicked.delete(todaysDayUpper + '&' + props.time);
-    } else {
+    // FMDF: add on !isClicked and delete on isClicked
+    if (!isClicked) {
       newDaysClicked.add(todaysDayUpper + '&' + props.time);
     }
     productSelect.setDaysClicked(newDaysClicked);
     setIsClicked(!isClicked);
   };
+
+  // FMDF: remove this hook
+  useEffect(() => {
+    if (!productSelect.daysClicked.has(todaysDayUpper + '&' + props.time))
+      setIsClicked(false);
+  }, [productSelect.daysClicked]);
 
   useEffect(() => {
     let _showCard = productSelect.farmsClicked.size == 0 ? true : false;
@@ -76,16 +83,15 @@ const DateCard = (props) => {
       width="100%"
       m={0.5}
       p={0.5}
-      mb={1}
     >
       <div className={classes.card} onClick={cardClicked}>
         <div className={classes.weekDay}>{props.weekDay}</div>
-        <div
+        <Box
+          mt={1}
           className={classes.date}
           style={{ color: isClicked ? appColors.primary : appColors.secondary }}
         >
-          {props.month} <br />
-          {props.day}
+          {props.month} {props.day}
           <br />
           <Box
             className={classes.time}
@@ -95,7 +101,7 @@ const DateCard = (props) => {
           >
             {props.time}
           </Box>
-        </div>
+        </Box>
       </div>
     </Box>
   );

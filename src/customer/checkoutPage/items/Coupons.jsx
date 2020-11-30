@@ -151,6 +151,7 @@ export default function Coupons(props) {
     return (
       <Coupon
         key={coupProps.index}
+        index={coupProps.index}
         status={coupProps.status}
         expDate={coupProps.expDate}
         title={coupProps.title}

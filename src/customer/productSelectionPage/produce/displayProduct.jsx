@@ -2,16 +2,22 @@ import React, { useContext, useEffect, useState } from 'react';
 import Entry from './Entry';
 import ProdSelectContext from '../ProdSelectContext';
 import storeContext from '../../storeContext';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid, Paper } from '@material-ui/core';
 import appColors from '../../../styles/AppColors';
 import { set } from 'js-cookie';
 
 function createProduct2(product) {
-  var tryItem = product.item_name.slice(
-    product.item_name.indexOf('('),
-    product.item_name.indexOf('(') + 11
-  );
-  var itemName = product.item_name.slice(0, product.item_name.indexOf('('));
+  if (product.itm_business_uid == '200-000016')
+    console.log('product: ', product);
+  var tryItem = '';
+  var itemName = product.item_name;
+  if (product.item_name.indexOf('(') !== -1) {
+    tryItem = product.item_name.slice(
+      product.item_name.indexOf('('),
+      product.item_name.indexOf(')') + 1
+    );
+    itemName = product.item_name.slice(0, product.item_name.indexOf('('));
+  }
   return (
     <Entry
       name={itemName}
@@ -30,6 +36,17 @@ function DisplayProduct() {
   const productSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
 
+  const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
+
+  React.useEffect(() => {
+    window.addEventListener('resize', updateWindowHeight);
+    return () => window.removeEventListener('resize', updateWindowHeight);
+  });
+
+  const updateWindowHeight = () => {
+    setWindowHeight(window.innerHeight);
+  };
+
   //because at the start of the fetching, it has nothing and that will cause error
   //with this if condition, we only work if we get the data
   if (!store.productsLoading && !productSelect.itemError) {
@@ -37,24 +54,36 @@ function DisplayProduct() {
       <>
         <Box
           width="100%"
+          height={windowHeight - 165}
           ml={2}
           p={3}
+          pb={5}
           mb={2}
           style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
         >
-          {productSelect.daysClicked.size == 0 &&
-          productSelect.farmsClicked.size == 0
-            ? 'Please select a day or farm.'
-            : ''}
-          <Grid
-            container
-            direction="row"
-            justify="space-between"
-            alignItems="flex-start"
-            spacing={2}
+          {productSelect.daysClicked.size == 0
+            ? store.cartTotal == 0
+              ? 'Please select the day that you want your produce delivered.'
+              : 'Here are the items currently in your cart'
+            : ' '}
+          <Box mt={2} />
+          <Paper
+            style={{
+              backgroundColor: appColors.componentBg,
+              maxHeight: '100%',
+              overflow: 'auto',
+            }}
           >
-            {store.products.map(createProduct2)}
-          </Grid>
+            <Grid
+              container
+              direction="row"
+              justify="space-between"
+              alignItems="flex-start"
+              spacing={2}
+            >
+              {store.products.map(createProduct2)}
+            </Grid>
+          </Paper>
         </Box>
       </>
     );

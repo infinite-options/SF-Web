@@ -46,11 +46,7 @@ function Entry(props) {
         (isInDay &&
           productSelect.farmsClicked.size == 0 &&
           productSelect.categoriesClicked.size == 0) ||
-        (isInFarm &&
-          productSelect.daysClicked.size == 0 &&
-          productSelect.categoriesClicked.size == 0) ||
-        (isInFarm && productSelect.daysClicked.size == 0 && isInCategory) ||
-        (productSelect.farmsClicked.size == 0 && isInDay && isInCategory) ||
+        (isInDay && productSelect.farmsClicked.size == 0 && isInCategory) ||
         (isInDay && isInFarm && productSelect.categoriesClicked.size == 0)
     );
   }, [
