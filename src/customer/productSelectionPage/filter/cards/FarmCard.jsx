@@ -32,16 +32,13 @@ function FarmCard(props) {
     let _showCard = productSelect.daysClicked.size == 0 ? true : false;
     for (const day in store.farmDayTimeDict[props.id]) {
       store.farmDayTimeDict[props.id][day].forEach((time) => {
-        if (productSelect.daysClicked.has(day + time)) _showCard = true;
+        if (productSelect.daysClicked.has(day + '&' + time)) _showCard = true;
       });
     }
     if (!_showCard && isClicked) {
-      const newFarmsClicked = new Set(productSelect.farmsClicked);
-      newFarmsClicked.delete(props.id);
-      productSelect.setFarmsClicked(newFarmsClicked);
       setIsClicked(false);
     }
-    setShowCard(true);
+    setShowCard(_showCard);
   }, [productSelect.daysClicked]);
 
   return (

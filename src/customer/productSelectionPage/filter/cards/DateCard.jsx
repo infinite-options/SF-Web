@@ -44,9 +44,9 @@ const DateCard = (props) => {
     const newDaysClicked = new Set(productSelect.daysClicked);
 
     if (isClicked) {
-      newDaysClicked.delete(todaysDayUpper + props.time);
+      newDaysClicked.delete(todaysDayUpper + '&' + props.time);
     } else {
-      newDaysClicked.add(todaysDayUpper + props.time);
+      newDaysClicked.add(todaysDayUpper + '&' + props.time);
     }
     productSelect.setDaysClicked(newDaysClicked);
     setIsClicked(!isClicked);
@@ -60,11 +60,6 @@ const DateCard = (props) => {
       }
     });
     if (!_showCard && isClicked) {
-      const newDaysClicked = new Set(productSelect.daysClicked);
-      newDaysClicked.delete(todaysDayUpper + props.time);
-      if (todaysDayUpper == 'FRIDAY') console.log('delete: ', newDaysClicked);
-
-      productSelect.setDaysClicked(newDaysClicked);
       setIsClicked(false);
     }
     setShowCard(_showCard);

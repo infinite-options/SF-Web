@@ -34,7 +34,7 @@ function Entry(props) {
         if (day == 'FRIDAY') {
           // console.log(day + time, productSelect.daysClicked);
         }
-        if (productSelect.daysClicked.has(day + time)) isInDay = true;
+        if (productSelect.daysClicked.has(day + '&' + time)) isInDay = true;
       });
     }
     if (productSelect.farmsClicked.has(props.business_uid)) isInFarm = true;
