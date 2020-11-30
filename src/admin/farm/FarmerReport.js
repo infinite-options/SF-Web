@@ -7,6 +7,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 
 const BASE_URL = "https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
@@ -15,21 +16,31 @@ const ORDER_ACTIONS_URL = BASE_URL + "order_actions/";
 const INSERT_ORDER_URL = BASE_URL + "purchase_Data_SF";
 const ADMIN_ORDER_URL = BASE_URL + 'admin_report/';
 
+
+const useStyles = makeStyles((theme) => ({
+    // root: {
+    //   flexGrow: 1,
+    //   backgroundColor: 'white',
+    // },
+    reportButtonsSection: {
+        float: 'left',
+        textAlign: 'left',
+    },
+    reportButtonsRightSection: {
+        float: 'right',
+        textAlign: 'right',
+    },
+    reportButtons: {
+        marginLeft: theme.spacing(2),
+    }
+}));
+
 export default function FarmerReport({ farmID, farmName, ...props }) {
     // const [responseData, setResponseData] = useState();
     const [orders, setOrders] = useState([]);
-
-<<<<<<< Updated upstream
-    useEffect(() => {
-        getFarmOrders();
-    }, [farmID]);
-
-    const getFarmOrders = async (hasCopied=false) => {
-=======
     const classes = useStyles();
 
     const getFarmOrders = useCallback(async (hasCopied=false) => {
->>>>>>> Stashed changes
         // if (responseData && !hasCopied) {
         //     updateOrders(responseData.orders/*, responseData.items*/);
         // }
@@ -195,46 +206,63 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
         handleCancel, handleCopy, handleDelete, handleItemDelete
     };
 
-    const downloadOpenOrderDetails = () => {
-        let openOrderReports = orders;
-        openOrderReports.filter(order => order.delivery_status === null || order.delivery_status.toLowerCase() === "no");
-        openOrderReports = openOrderReports.map(order => {
-            let orderCopy = {
-                purchase_date: order.purchase_date,
-                delivery_first_name: order.delivery_first_name,
-                delivery_last_name: order.delivery_last_name,
-                delivery_phone_num: order.delivery_phone_num,
-                delivery_email: order.delivery_email,
-                delivery_address: order.delivery_address,
-                delivery_city: order.delivery_city,
-                delivery_state: order.delivery_state,
-                delivery_zip: order.delivery_zip,
-                amount: order.Amount,
-                items: order.items,
-            }
-            if(typeof orderCopy.items === 'string') {
-                orderCopy.items = JSON.parse(order.items)
-            }
-            return orderCopy;
-        })
-        console.log(openOrderReports)
-    }
+    // const downloadOpenOrderDetails = () => {
+    //     let openOrderReports = orders;
+    //     openOrderReports.filter(order => order.delivery_status === null || order.delivery_status.toLowerCase() === "no");
+    //     openOrderReports = openOrderReports.map(order => {
+    //         let orderCopy = {
+    //             // 'Purchase': order.purchase_id,
+    //             'Purchase Time': order.purchase_date,
+    //             'First Name': order.delivery_first_name,
+    //             'Last Name': order.delivery_last_name,
+    //             'Phone': order.delivery_phone_num,
+    //             'Email': order.delivery_email,
+    //             'Address': order.delivery_address,
+    //             'City': order.delivery_city,
+    //             'State': order.delivery_state,
+    //             'Zip': order.delivery_zip,
+    //             'Total': order.Amount,
+    //             items: order.items
+    //         }
+    //         if(typeof orderCopy.items === 'string') {
+    //             let orderItems = JSON.parse(order.items)
+    //             orderItems = orderItems.map(item => ({
+    //                 'Item Quantity': item.qty,
+    //                 'Item Price': item.price,
+    //                 'Item Name': item.name,
+    //             }))
+    //             orderCopy.items = orderItems
+    //         }
+    //         return orderCopy;
+    //     })
+    //     let orderReportList = []
+    //     for (const orderReport of openOrderReports) {
+    //         for (const orderItem of orderReport.items) {
+    //             let newReport = {
+    //                 ...orderReport,
+    //                 ...orderItem,
+    //             };
+    //             delete newReport.items;
+    //             orderReportList.push(newReport);
+    //         }
+    //     }
+    //     console.log(orderReportList)
+    // }
 
-    return (
+    return (    
         <div hidden={props.hidden}>
             <div style={labelStyle}>
                 <h2>Open Orders</h2>
             </div>
-<<<<<<< Updated upstream
-=======
             <div className={classes.reportButtonsSection}>
-                <Button
-                    variant='contained'
-                    className={classes.reportButtons}
-                    onClick={() => downloadOpenOrderDetails()}
-                >
-                    Order Details
-                </Button>
+                {/* <a href="http://spatialkeydocs.s3.amazonaws.com/FL_insurance_sample.csv" download="orders.csv"> */}
+                    <Button
+                        variant='contained'
+                        className={classes.reportButtons}
+                    >
+                        Order Details
+                    </Button>
+                {/* </a> */}
                 <Button
                     variant='contained'
                     className={classes.reportButtons}
@@ -248,7 +276,14 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
                     Pivot Table
                 </Button>
             </div>
->>>>>>> Stashed changes
+            <div className={classes.reportButtonsRightSection}>
+                <Button
+                    variant='contained'
+                    className={classes.reportButtons}
+                >
+                    Send Reports
+                </Button>
+            </div>
             <OrdersTable orders={orders} type="open" functions={buttonFunctions} />
             <div style={labelStyle}>
                 <h2>Delivered Orders</h2>
@@ -378,8 +413,6 @@ function OrderItem({ order, item, deleteItem, ...props }) {
                     <p>Revenue: ${(item.price * item.qty).toFixed(2)}</p>
                 </div>
             </TableCell>
-            {/* <TableCell /><TableCell /><TableCell /><TableCell />
-            <TableCell /><TableCell /><TableCell /><TableCell /> */}
         </TableRow>
     );
 };

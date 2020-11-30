@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withStyles } from '@material-ui/styles';
 import TextField from '@material-ui/core/TextField';
 import { Box } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
@@ -7,6 +8,19 @@ import Button from '@material-ui/core/Button';
 import { withRouter } from 'react-router';
 import axios from 'axios';
 import appColors from '../../styles/AppColors';
+
+const CssTextField = withStyles({
+  root: {
+    '& label.Mui-focused': {
+      color: appColors.secondary,
+    },
+    '& .MuiOutlinedInput-root': {
+      '&.Mui-focused fieldset': {
+        borderColor: appColors.secondary,
+      },
+    },
+  },
+})(TextField);
 
 class Signup extends Component {
   constructor(props) {
@@ -73,13 +87,16 @@ class Signup extends Component {
               referral_source: 'WEB',
               role: 'CUSTOMER',
               social: 'FALSE',
-              access_token: 'NULL',
-              refresh_token: 'NULL',
+              social_id: 'NULL',
+              user_access_token: 'FALSE',
+              user_refresh_token: 'FALSE',
+              mobile_access_token: 'FALSE',
+              mobile_refresh_token: 'FALSE',
             };
             console.log(JSON.stringify(object));
             axios
               .post(
-                'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/SignUp',
+                process.env.REACT_APP_SERVER_BASE_URI + 'createAccount',
                 object,
                 {
                   headers: {
@@ -88,10 +105,33 @@ class Signup extends Component {
                 }
               )
               .then((res) => {
-                // let customerInfo = res.data.result;
-                this.setState({
-                  message: 'success',
-                });
+                let customerInfo = res.data.result;
+                console.log(customerInfo);
+                if (res.data.code === 200) {
+                  axios
+                    .post(
+                      process.env.REACT_APP_SERVER_BASE_URI +
+                        'email_verification',
+                      { email: this.state.email },
+                      {
+                        headers: {
+                          'Content-Type': 'text/plain',
+                        },
+                      }
+                    )
+                    .then((res) => {
+                      this.setState({
+                        message: 'success',
+                      });
+                      console.log(res);
+                    })
+                    .catch((err) => {
+                      if (err.response) {
+                        console.log(err.response);
+                      }
+                      console.log(err);
+                    });
+                }
               })
               .catch((err) => {
                 console.log(err);
@@ -195,9 +235,9 @@ class Signup extends Component {
     return (
       <Paper
         style={{
-          height: 700,
-          width: 350,
+          width: 480,
           padding: 20,
+          backgroundColor: appColors.componentBg,
           textAlign: 'center',
           display: 'inline-block',
         }}
@@ -205,7 +245,7 @@ class Signup extends Component {
         <p style={{ color: appColors.secondary }}>SIGN UP</p>
         <form onSubmit={this._onSubmit}>
           <Box mb={1}>
-            <TextField
+            <CssTextField
               value={this.state.email}
               onChange={this._emailChange}
               label="Email"
@@ -215,7 +255,7 @@ class Signup extends Component {
             />
           </Box>
           <Box mb={1}>
-            <TextField
+            <CssTextField
               value={this.state.password}
               onChange={this._passwordChange}
               type="password"
@@ -226,7 +266,7 @@ class Signup extends Component {
             />
           </Box>
           <Box mb={1}>
-            <TextField
+            <CssTextField
               value={this.state.confirmPassword}
               onChange={this._confirmPasswordChange}
               type="password"
@@ -236,8 +276,8 @@ class Signup extends Component {
               fullWidth
             />
           </Box>
-          <Box mb={1}>
-            <TextField
+          <Box display="flex" mb={1}>
+            <CssTextField
               value={this.state.firstName}
               onChange={this._firstNameChange}
               label="First Name"
@@ -245,9 +285,8 @@ class Signup extends Component {
               size="small"
               fullWidth
             />
-          </Box>
-          <Box mb={1}>
-            <TextField
+            <Box m={0.5} />
+            <CssTextField
               value={this.state.lastName}
               onChange={this._lastNameChange}
               label="Last Name"
@@ -257,7 +296,7 @@ class Signup extends Component {
             />
           </Box>
           <Box mb={1}>
-            <TextField
+            <CssTextField
               value={this.state.phone}
               onChange={this._phoneChange}
               label="Phone"
@@ -267,7 +306,7 @@ class Signup extends Component {
             />
           </Box>
           <Box mb={1}>
-            <TextField
+            <CssTextField
               value={this.state.address}
               onChange={this._addressChange}
               label="Address"
@@ -276,8 +315,8 @@ class Signup extends Component {
               fullWidth
             />
           </Box>
-          <Box mb={1}>
-            <TextField
+          <Box display="flex" mb={1}>
+            <CssTextField
               value={this.state.unit}
               onChange={this._unitChange}
               label="Unit"
@@ -285,9 +324,8 @@ class Signup extends Component {
               size="small"
               fullWidth
             />
-          </Box>
-          <Box mb={1}>
-            <TextField
+            <Box m={0.5} />
+            <CssTextField
               value={this.state.city}
               onChange={this._cityChange}
               label="City"
@@ -295,9 +333,8 @@ class Signup extends Component {
               size="small"
               fullWidth
             />
-          </Box>
-          <Box mb={1}>
-            <TextField
+            <Box m={0.5} />
+            <CssTextField
               value={this.state.state}
               onChange={this._stateChange}
               label="State"
@@ -306,7 +343,7 @@ class Signup extends Component {
               fullWidth
             />
           </Box>
-          <TextField
+          <CssTextField
             value={this.state.zip}
             onChange={this._zipChange}
             label="Zip code"

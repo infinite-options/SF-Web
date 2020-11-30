@@ -4,6 +4,7 @@ import { Box } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import Background from '../../welcome-bg.png';
 import Button from '@material-ui/core/Button';
+import Cookies from 'js-cookie';
 
 import axios from 'axios';
 
@@ -17,7 +18,7 @@ class Signup extends Component {
       email: '',
       platform: '',
       accessToken: '',
-      refreshToken: '',
+      socialId: '',
       firstName: '',
       lastName: '',
       phone: '',
@@ -30,7 +31,7 @@ class Signup extends Component {
   }
 
   componentDidMount() {
-    console.log();
+    console.log(this.props.location.state);
     // Check query String for Apple Login
     let queryString = this.props.location.search;
     let urlParams = new URLSearchParams(queryString);
@@ -41,7 +42,8 @@ class Signup extends Component {
       // Using Came from Apple Login
       axios
         .get(
-          'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/Profile/' +
+          process.env.REACT_APP_SERVER_BASE_URI +
+            'Profile/' +
             urlParams.get('id')
         )
         .then((res) => {
@@ -60,20 +62,22 @@ class Signup extends Component {
             console.log(err.response);
           }
           console.log(err);
+          console.log('Necessary information not received');
+          this.props.history.push('/adminlogin');
         });
     }
     // Check location state for Gogle/Facebook Login
     else if (this.props.location.state !== undefined) {
       if (
         this.props.location.state.email &&
-        this.props.location.state.refreshToken &&
+        this.props.location.state.socialId &&
         this.props.location.state.platform
       ) {
         this.setState({
           mounted: true,
           email: this.props.location.state.email,
           platform: this.props.location.state.platform,
-          refreshToken: this.props.location.state.refreshToken,
+          socialId: this.props.location.state.socialId,
           accessToken: this.props.location.state.refreshToken
             ? this.props.location.state.accessToken
             : 'access token',
@@ -191,6 +195,11 @@ class Signup extends Component {
               referral_source: 'Website',
               role: 'customer',
               social: this.state.platform,
+              social_id: this.state.socialId,
+              user_access_token: this.state.accessToken,
+              user_refresh_token: 'FALSE',
+              mobile_access_token: 'FALSE',
+              mobile_refresh_token: 'FALSE',
             };
           } else {
             object = {
@@ -211,12 +220,17 @@ class Signup extends Component {
               referral_source: 'Website',
               role: 'customer',
               social: this.state.platform,
+              social_id: this.state.socialId,
+              user_access_token: this.state.accessToken,
+              user_refresh_token: 'FALSE',
+              mobile_access_token: 'FALSE',
+              mobile_refresh_token: 'FALSE',
             };
           }
           console.log(JSON.stringify(object));
           axios
             .post(
-              'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/SignUp',
+              process.env.REACT_APP_SERVER_BASE_URI + 'createAccount',
               object,
               {
                 headers: {
@@ -227,9 +241,7 @@ class Signup extends Component {
             .then((res) => {
               console.log(res);
               let customerInfo = res.data.result;
-              console.log('cookie', document.cookie);
-              document.cookie = 'customer_uid=' + customerInfo.customer_uid;
-              console.log('cookie', document.cookie);
+              Cookies.set('customer_uid', customerInfo.customer_uid);
               this.props.history.push('/store');
             })
             .catch((err) => {

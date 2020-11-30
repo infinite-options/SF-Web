@@ -1,5 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
+import axios from 'axios';
+
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -13,6 +15,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { withRouter } from 'react-router';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { AuthContext } from '../auth/AuthContext';
 import { AdminFarmContext } from './AdminFarmContext';
@@ -51,13 +54,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AdminNavBar({ tab, setTab, ...props }) {
+function AdminNavBar({ tab, setTab, ...props }) {
   const { farmID, setFarmID } = useContext(AdminFarmContext);
+  const [farmList, setFarmList] = useState([]);
   const Auth = useContext(AuthContext);
+
+  useEffect(() => {
+    axios
+      .get(process.env.REACT_APP_SERVER_BASE_URI + 'all_businesses')
+      .then((res) => {
+        console.log(res);
+        setFarmList(res.data.result);
+      })
+      .catch((err) => {
+        if (err.response) {
+          console.log(err.response);
+        }
+        console.log(err);
+      });
+  }, []);
+
   //when admin logs out, remove their login info from cookies
   const handleClickLogOut = () => {
     Auth.setIsAuth(false);
     Cookies.remove('login-session');
+    Cookies.remove('customer_uid');
+    props.history.push('/');
   };
 
   const handleChangeFarm = (event) => {
@@ -71,15 +93,47 @@ export default function AdminNavBar({ tab, setTab, ...props }) {
   };
 
   const classes = useStyles();
+
+  const businessList = () => {
+    if (Auth.authLevel >= 2) {
+      // Complete business list for admin roles
+      return (
+        <Select
+          defaultValue={'200-000004'}
+          className={classes.farmSelect}
+          onChange={handleChangeFarm}
+        >
+          {farmList.map((item) => {
+            return (
+              <MenuItem key={item.business_uid} value={item.business_uid}>
+                {item.business_name}
+              </MenuItem>
+            );
+          })}
+        </Select>
+      );
+    }
+    let ownedFarm = farmList.filter((farm) => farm.business_uid === farmID);
+    if (ownedFarm.length > 0) {
+      ownedFarm = ownedFarm[0];
+      return (
+        <Button size={'small'} className={classes.button}>
+          {ownedFarm.business_name}
+        </Button>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className={classes.root}>
       <ThemeProvider theme={theme}>
         <AppBar
           color="white"
           position="static"
+          elevation={0}
           style={{
             borderBottom: '1px solid ' + appColors.secondary,
-            boxShadow: 0,
           }}
         >
           <Toolbar>
@@ -92,7 +146,7 @@ export default function AdminNavBar({ tab, setTab, ...props }) {
               <img
                 width="50"
                 height="50"
-                src="./sf logo_without text.png"
+                src="./logos/sf logo_without text.png"
                 alt="logo"
                 onClick={() => setTab(6)}
                 style={{ cursor: 'pointer' }}
@@ -100,14 +154,7 @@ export default function AdminNavBar({ tab, setTab, ...props }) {
             </Box>
             {Auth.authLevel >= 1 && (
               <React.Fragment>
-                <Select
-                  defaultValue={'200-000003'}
-                  className={classes.farmSelect}
-                  onChange={handleChangeFarm}
-                >
-                  <MenuItem value={'200-000003'}>Esquivel Farm</MenuItem>
-                  <MenuItem value={'200-000004'}>Resendiz Family</MenuItem>
-                </Select>
+                {businessList()}
                 <Button
                   size={'small'}
                   className={classes.button}
@@ -167,3 +214,5 @@ export default function AdminNavBar({ tab, setTab, ...props }) {
     </div>
   );
 }
+
+export default withRouter(AdminNavBar);

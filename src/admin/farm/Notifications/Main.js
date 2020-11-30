@@ -1,4 +1,4 @@
-import React, {forwardRef} from 'react';
+import React, { forwardRef } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
@@ -28,19 +28,23 @@ const tableIcons = {
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
   Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
   Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
-  DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+  DetailPanel: forwardRef((props, ref) => (
+    <ChevronRight {...props} ref={ref} />
+  )),
   Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
   Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
   Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
   FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
   LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
   NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-  PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
+  PreviousPage: forwardRef((props, ref) => (
+    <ChevronLeft {...props} ref={ref} />
+  )),
   ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
   Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
   SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
   ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -49,9 +53,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-let API_URL = 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
+let API_URL = process.env.REACT_APP_SERVER_BASE_URI + '';
 
-function NotificationMain({notification, customerList, selectedCustomers, setSelectedCustomers, message, setMessage, ...props }) {
+function NotificationMain({
+  notification,
+  customerList,
+  selectedCustomers,
+  setSelectedCustomers,
+  message,
+  setMessage,
+  ...props
+}) {
   const classes = useStyles();
 
   let numCustomersSelected = selectedCustomers.length;
@@ -60,7 +72,9 @@ function NotificationMain({notification, customerList, selectedCustomers, setSel
   // Function to handle select all customers
   const handleSelectAllCustomersClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = customerList.map((customer) => customer.customer_uid);
+      const newSelecteds = customerList.map(
+        (customer) => customer.customer_uid
+      );
       setSelectedCustomers(newSelecteds);
       return;
     }
@@ -68,7 +82,8 @@ function NotificationMain({notification, customerList, selectedCustomers, setSel
   };
 
   // Function to determine if selected
-  const customerIsSelected = (customer_uid) => selectedCustomers.indexOf(customer_uid) !== -1;
+  const customerIsSelected = (customer_uid) =>
+    selectedCustomers.indexOf(customer_uid) !== -1;
 
   // Function to control selection and store it
   const handleChangeSelection = (event, customer_uid) => {
@@ -87,7 +102,7 @@ function NotificationMain({notification, customerList, selectedCustomers, setSel
       // Remove from middle
       newSelected = newSelected.concat(
         selectedCustomers.slice(0, selectedIndex),
-        selectedCustomers.slice(selectedIndex + 1),
+        selectedCustomers.slice(selectedIndex + 1)
       );
     }
     setSelectedCustomers(newSelected);
@@ -101,50 +116,62 @@ function NotificationMain({notification, customerList, selectedCustomers, setSel
             icons={tableIcons}
             title={notification + ' customers'}
             columns={[
-              { 
-                title: 
+              {
+                title: (
                   <Checkbox
-                    indeterminate={numCustomersSelected > 0 && numCustomersSelected < numCustomers}
-                    checked={numCustomers > 0 && numCustomersSelected === numCustomers}
+                    indeterminate={
+                      numCustomersSelected > 0 &&
+                      numCustomersSelected < numCustomers
+                    }
+                    checked={
+                      numCustomers > 0 && numCustomersSelected === numCustomers
+                    }
                     onChange={handleSelectAllCustomersClick}
                     inputProps={{ 'aria-label': 'Select all customers' }}
                   />
-                ,
+                ),
                 field: 'customer_uid',
                 render: (rowData) => {
                   return (
                     <Checkbox
                       checked={customerIsSelected(rowData.customer_uid)}
-                      onChange={(event) => handleChangeSelection(event, rowData.customer_uid)}
-                      inputProps={{ 'aria-label': 'Select customer id ' + rowData.customer_uid}}
+                      onChange={(event) =>
+                        handleChangeSelection(event, rowData.customer_uid)
+                      }
+                      inputProps={{
+                        'aria-label':
+                          'Select customer id ' + rowData.customer_uid,
+                      }}
                     />
-                  )
-                }
+                  );
+                },
               },
               {
                 title: 'Name',
                 field: 'customer_first_name',
                 render: (rowData) => {
                   return (
-                    rowData.customer_first_name + ' ' + rowData.customer_last_name
-                  )
-                }
+                    rowData.customer_first_name +
+                    ' ' +
+                    rowData.customer_last_name
+                  );
+                },
               },
-              { title: 'Email', field: 'customer_email'},
-              { title: 'Phone', field: 'customer_phone_num'},
-              { title: 'Address', field: 'address'},
-              { title: 'City', field: 'customer_city'},
-              { title: 'Zip', field: 'customer_zip'},
-              { title: 'Business', field: 'business_name'},
-              { title: '# Orders', field: 'number_of_orders'},
-              { title: 'Last Order', field: 'latest_order_date'}
+              { title: 'Email', field: 'customer_email' },
+              { title: 'Phone', field: 'customer_phone_num' },
+              { title: 'Address', field: 'address' },
+              { title: 'City', field: 'customer_city' },
+              { title: 'Zip', field: 'customer_zip' },
+              { title: 'Business', field: 'business_name' },
+              { title: '# Orders', field: 'number_of_orders' },
+              { title: 'Last Order', field: 'latest_order_date' },
             ]}
             data={customerList}
             options={{
               // selection: true,
               pageSize: 10,
               pageSizeOptions: [10],
-              rowStyle: {height: 10},
+              rowStyle: { height: 10 },
               search: true,
             }}
           />
@@ -160,63 +187,71 @@ function NotificationMain({notification, customerList, selectedCustomers, setSel
               shrink: true,
             }}
             onChange={(event) => {
-              setMessage(event.target.value)
+              setMessage(event.target.value);
             }}
             style={{
-              padding: "0 20px"
+              padding: '0 20px',
             }}
           />
           <Grid container className={classes.buttonGroup}>
             <Grid item xs={6}>
               <Button
-              disabled={message === '' || selectedCustomers.length === 0}
+                disabled={message === '' || selectedCustomers.length === 0}
                 variant="contained"
                 onClick={() => {
-                  console.log(notification)
+                  console.log(notification);
                   // console.log(selectedCustomers)
-                  console.log(message)
+                  console.log(message);
                   // Get remaining customer info of selected customers
-                  let selectedCustomerInfo = customerList.filter(customerInfo => selectedCustomers.indexOf(customerInfo.customer_uid) !== -1);
+                  let selectedCustomerInfo = customerList.filter(
+                    (customerInfo) =>
+                      selectedCustomers.indexOf(customerInfo.customer_uid) !==
+                      -1
+                  );
                   console.log(selectedCustomerInfo);
                   // Sending SMS
-                  if(notification === 'SMS') {
+                  if (notification === 'SMS') {
                     // Get comma separated list of phone numbers of customers
-                    let selectedPhoneNumbers = selectedCustomerInfo.map(customerInfo => customerInfo.customer_phone_num).toString();
-                    console.log(selectedPhoneNumbers)
+                    let selectedPhoneNumbers = selectedCustomerInfo
+                      .map((customerInfo) => customerInfo.customer_phone_num)
+                      .toString();
+                    console.log(selectedPhoneNumbers);
                     axios
-                    .post(API_URL + 'Send_Twilio_SMS',{
-                      message: message,
-                      numbers: selectedPhoneNumbers
-                    })
-                    .then((res) => {
-                      console.log(res);
-                    })
-                    .catch((err) => {
-                      if(err.response) {
-                        console.log(err.response);
-                      }
-                      console.log(err);
-                    })
-                  } else if(notification === 'Notifications') {
+                      .post(API_URL + 'Send_Twilio_SMS', {
+                        message: message,
+                        numbers: selectedPhoneNumbers,
+                      })
+                      .then((res) => {
+                        console.log(res);
+                      })
+                      .catch((err) => {
+                        if (err.response) {
+                          console.log(err.response);
+                        }
+                        console.log(err);
+                      });
+                  } else if (notification === 'Notifications') {
                     // Get comma separated list of emails of customers
-                    let selectedEmails = selectedCustomerInfo.map(customerInfo => customerInfo.customer_email).toString();
-                    console.log(selectedEmails);
+                    let selectedUids = selectedCustomerInfo
+                      .map((customerInfo) => customerInfo.customer_uid)
+                      .toString();
+                    console.log(selectedUids);
+                    let formData = new FormData();
+                    formData.append('uids',selectedUids)
+                    formData.append('message',message)
                     axios
-                    .post(API_URL + 'Send_notification',{
-                      message: message,
-                      tags: selectedEmails,
-                    })
-                    .then((res) => {
-                      console.log(res);
-                    })
-                    .catch((err) => {
-                      if(err.response) {
-                        console.log(err.response);
-                      }
-                      console.log(err);
-                    })
+                      .post(API_URL + 'Send_Notification/customer', formData)
+                      .then((res) => {
+                        console.log(res);
+                      })
+                      .catch((err) => {
+                        if (err.response) {
+                          console.log(err.response);
+                        }
+                        console.log(err);
+                      });
                   } else {
-                    console.log('Invalid notification type')
+                    console.log('Invalid notification type');
                   }
                 }}
               >
@@ -228,8 +263,8 @@ function NotificationMain({notification, customerList, selectedCustomers, setSel
                 variant="contained"
                 disabled={message === ''}
                 onClick={() => {
-                  console.log(notification)
-                  console.log(message)
+                  console.log(notification);
+                  console.log(message);
                 }}
               >
                 Send to All
@@ -239,7 +274,7 @@ function NotificationMain({notification, customerList, selectedCustomers, setSel
         </Grid>
       </Grid>
     </div>
-  )
+  );
 }
 
 export default NotificationMain;

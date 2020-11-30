@@ -49,7 +49,7 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 	const [settings, setSettings] = useState({});
 	const [error, setError] = useState(false);
 	const [loaded, setLoaded] = useState(false);
-	var businessID = "200-000004";
+	// var businessID = "200-000004";
 	//use this state below to set up information of middle collumn
 	const [businessAndFarmDetail, setBusFarm] = useState({});
 	const [passwordHere, setPass] = useState("");
@@ -87,13 +87,6 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 
 	async function update() {
 		var tempoData = settings;
-		let hasEnterNewPass = false;
-		let notSameOldPass = false;
-		let doUpdate = false;
-		let saltAlg = saltPack.hashAlg;
-		let salt = saltPack.salt;
-		let saltPassword = confirmPass + salt;
-		const digestHex = await digestMessage(saltPassword, saltAlg);
 
 		var acceptTime = context.timeChange;
 		var deliveryTime = context.deliveryTime;
@@ -113,6 +106,14 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 
 		if (typeof tempoData.business_hours === "string") {
 			tempoData.business_hours = JSON.parse(tempoData.business_hours);
+		}
+
+		if (typeof tempoData.business_accepting_hours === "string") {
+			tempoData.business_accepting_hours = JSON.parse(tempoData.business_accepting_hours);
+		}
+
+		if (typeof tempoData.business_delivery_hours === "string") {
+			tempoData.business_delivery_hours = JSON.parse(tempoData.business_delivery_hours);
 		}
 
 		if (typeof tempoData.business_association === "string") {
@@ -143,67 +144,19 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 			tempoData.can_cancel = "0";
 		}
 
-		//first check if user want to change password
-		if (passwordHere !== "") {
-			hasEnterNewPass = true;
-			//they want to change but then check if they has filled confirm pass field?
-			if (confirmPass === "") {
-				console.log("You need to enter confirm new password field");
-			} else {
-				//they already filled it and want to change password
-				//check if those 2 passwords or the same
-				if (passwordHere !== confirmPass) {
-					// flag= false;
-					console.log("2 password fields are not matched");
-				} else {
-					//same passwword entering
-					console.log("matched password! comparing with the one on server");
-					// wantChangePass=true;
-					if (digestHex === tempoData.business_password) {
-						console.log("You are currently using this password");
-					} else {
-						console.log("hasing new password to store in database");
-						notSameOldPass = true;
-					}
-				}
-			}
-		}
-		//if they want to change pass and the new password and the confirm new password
-		//field are matched, set new password and ready to update new password
-		if (hasEnterNewPass && notSameOldPass) {
-			tempoData.business_password = digestHex;
-			console.log(tempoData);
-			doUpdate = true;
-		}
+		console.log(JSON.stringify(tempoData))
 
-		//at this point, admin only enter confirm password to update
-		if (!hasEnterNewPass) {
-			// console.log("confirmPassTest: ",confirmPass);
-			if (confirmPass === "") {
-				console.log("Password field is empty");
-			} else {
-				if (digestHex === tempoData.business_password) {
-					console.log(tempoData);
-					doUpdate = true;
-				} else {
-					console.log("wrong Password to Update");
-				}
-			}
-		}
-		// do the update if doUpdate=true;
-		if (doUpdate) {
-			axios
-				.post(
-					"https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/business_details_update/Post",
-					tempoData
-				)
-				.then((res) => {
-					console.log("succsess posting check password: ", res);
-				})
-				.catch((err) => {
-					console.log(err);
-				});
-		}
+		axios
+			.post(
+				"https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/business_details_update/Post",
+				tempoData
+			)
+			.then((res) => {
+				console.log("succsess posting check password: ", res);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	}
 
 	// async function changePassToTest(){
@@ -238,14 +191,15 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 
 	const handleChange = (event) => {
 		if (event.target.name === "phone") {
-			var holdNumber = event.target.value;
-			var createCorrectFormat =
-				"(" +
-				holdNumber.slice(0, 3) +
-				") " +
-				holdNumber.slice(3, 6) +
-				"-" +
-				holdNumber.slice(6, 10);
+			let holdNumber = event.target.value;
+			let createCorrectFormat = holdNumber
+			// var createCorrectFormat =
+			// 	"(" +
+			// 	holdNumber.slice(0, 3) +
+			// 	") " +
+			// 	holdNumber.slice(3, 6) +
+			// 	"-" +
+			// 	holdNumber.slice(6, 10);
 			setBusFarm({
 				...businessAndFarmDetail,
 				[event.target.name]: createCorrectFormat,
@@ -334,44 +288,46 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 	}, [farmID]);
 
 	useEffect(() => {
-		console.log("test log the email: ", settings.business_email);
-		if (settings.business_email === undefined) {
-			console.log("true undifined");
-		}
-		var objEmail = {
-			email: settings.business_email,
-		};
-		objEmail = JSON.stringify(objEmail);
-		axios.post(API_URL + "AccountSalt", objEmail).then((response) => {
-			// console.log(response);
-			// console.log("New Test",response.data.code);
-			if (response.data.code === 280) {
-				let hashAlg = response.data.result[0].password_algorithm;
-				let salt = response.data.result[0].password_salt;
-				if (hashAlg !== null && salt !== null) {
-					if (hashAlg !== "" && salt !== "") {
-						switch (hashAlg) {
-							case "SHA512":
-								hashAlg = "SHA-512";
-								break;
-							default:
-								console.log("display default falling into");
-								break;
+		if(settings){
+			console.log("test log the email: ", settings.business_email);
+			if (settings.business_email === undefined) {
+				console.log("true undifined");
+			}
+			var objEmail = {
+				email: settings.business_email,
+			};
+			objEmail = JSON.stringify(objEmail);
+			axios.post(API_URL + "AccountSalt", objEmail).then((response) => {
+				// console.log(response);
+				// console.log("New Test",response.data.code);
+				if (response.data.code === 280) {
+					let hashAlg = response.data.result[0].password_algorithm;
+					let salt = response.data.result[0].password_salt;
+					if (hashAlg !== null && salt !== null) {
+						if (hashAlg !== "" && salt !== "") {
+							switch (hashAlg) {
+								case "SHA512":
+									hashAlg = "SHA-512";
+									break;
+								default:
+									console.log("display default falling into");
+									break;
+							}
+							let newObj = {
+								hashAlg: hashAlg,
+								salt: salt,
+							};
+							setSaltPack(newObj);
 						}
-						let newObj = {
-							hashAlg: hashAlg,
-							salt: salt,
-						};
-						setSaltPack(newObj);
 					}
 				}
-			}
-		});
+			});
+		}
 	}, [settings]);
 
 	const getFarmSettings = () => {
 		axios
-			.post(BUSINESS_DETAILS_URL + "Get", {business_uid: businessID})
+			.post(BUSINESS_DETAILS_URL + "Get", {business_uid: farmID})
 			.then((response) => {
 				console.log("Settings:", response.data.result[0]);
 				setSettings(response.data.result[0]);
@@ -382,6 +338,14 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 					JSON.parse(response.data.result[0].business_delivery_hours)
 				);
 				var holdData = response.data.result[0];
+				// Convert null values to empty string
+				let keys = Object.keys(holdData);
+				for(const key of keys) {
+					if(holdData[key] === null) {
+						holdData[key] = ''
+					}
+				}
+				console.log(holdData)
 				var BusAndFarmObj = {
 					business_name: holdData.business_name,
 					description: holdData.business_desc,
@@ -551,14 +515,16 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 						</Grid>
 					</Grid>
 					<Grid container item lg={4} spacing={2}>
-						<h3>Business Detail</h3>
+						<Grid item xs={12}>
+							<h3>Business Detail</h3>
+						</Grid>
 						<Grid item xs={12}>
 							{/* <hr></hr> */}
 							<div>Business Name</div>
 							<TextField
 								size="small"
 								margin="dense"
-								label={businessAndFarmDetail.business_name}
+								value={businessAndFarmDetail.business_name}
 								variant="outlined"
 								style={{height: "60px"}}
 								name="business_name"
@@ -574,7 +540,7 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 								multiline
 								rows={4}
 								name="description"
-								// label={businessAndFarmDetail.description}
+								value={businessAndFarmDetail.description}
 								// style={{ font-size: "" }}
 								onChange={handleChange}
 							/>
@@ -585,7 +551,7 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 							<TextField
 								size="small"
 								margin="dense"
-								label={businessAndFarmDetail.firstName}
+								value={businessAndFarmDetail.firstName}
 								variant="outlined"
 								name="firstName"
 								onChange={handleChange}
@@ -597,7 +563,7 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 							<TextField
 								size="small"
 								margin="dense"
-								label={businessAndFarmDetail.lastName}
+								value={businessAndFarmDetail.lastName}
 								variant="outlined"
 								name="lastName"
 								onChange={handleChange}
@@ -609,7 +575,7 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 							<TextField
 								size="small"
 								margin="dense"
-								label={businessAndFarmDetail.phone}
+								value={businessAndFarmDetail.phone}
 								variant="outlined"
 								name="phone"
 								onChange={handleChange}
@@ -622,7 +588,7 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 							<TextField
 								size="small"
 								margin="dense"
-								label={businessAndFarmDetail.street}
+								value={businessAndFarmDetail.street}
 								variant="outlined"
 								name="street"
 								onChange={handleChange}
@@ -633,7 +599,7 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 							<TextField
 								size="small"
 								margin="dense"
-								label={businessAndFarmDetail.city}
+								value={businessAndFarmDetail.city}
 								variant="outlined"
 								name="city"
 								onChange={handleChange}
@@ -644,7 +610,7 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 							<TextField
 								size="small"
 								margin="dense"
-								label={businessAndFarmDetail.state}
+								value={businessAndFarmDetail.state}
 								variant="outlined"
 								name="state"
 								onChange={handleChange}
@@ -656,14 +622,14 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 							<TextField
 								size="small"
 								margin="dense"
-								label={businessAndFarmDetail.zip}
+								value={businessAndFarmDetail.zip}
 								variant="outlined"
 								name="zip"
 								onChange={handleChange}
 							/>
 						</Grid>
 					</Grid>
-					<Grid container item lg={4} spacing={2}>
+					<Grid item lg={4} spacing={2}>
 						<div className="">
 							<h3>Delivery Strategy</h3>
 							<FormControl component="fieldset">
@@ -773,6 +739,8 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 											dragProps,
 										}) => (
 											<div>
+												{
+												imgs.length > 0 || settings &&
 												<img
 													className="imageSize"
 													src={
@@ -784,7 +752,8 @@ export default function FarmerSettings({farmID, farmName, ...props}) {
 													style={isDragging ? {color: "red"} : null}
 													onClick={onImageUpload}
 													{...dragProps}
-												></img>
+												/>
+												}
 												{/* &nbsp; */}
 												<button
 													className="chooseFileBrn"

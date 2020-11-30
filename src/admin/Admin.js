@@ -1,6 +1,7 @@
-import React, { Component, useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
-
+import Cookies from 'js-cookie';
+import axios from 'axios';
 import AdminNavBar from './AdminNavBar';
 import Farmer from './farm/Farmer';
 import { AdminFarmContext } from './AdminFarmContext';
@@ -12,7 +13,7 @@ import { AuthContext } from '../auth/AuthContext';
 
 function Admin() {
   const Auth = useContext(AuthContext);
-  const [farmID, setFarmID] = useState('200-000003');
+  const [farmID, setFarmID] = useState('');
   const [timeChange, setTimeChange] = useState({});
   const [deliveryTime, setDeliveryTime] = useState({});
 
@@ -23,6 +24,30 @@ function Admin() {
   useEffect(() => {
     localStorage.setItem('farmerTab', tab);
   }, [tab]);
+
+  useEffect(() => {
+    if (Auth.authLevel >= 2) {
+      setFarmID('200-000004');
+    } else {
+      axios
+        .get(
+          process.env.REACT_APP_SERVER_BASE_URI +
+            'Profile/' +
+            Cookies.get('customer_uid')
+        )
+        .then((response) => {
+          let customerInfo = response.data.result[0];
+          console.log(customerInfo.role);
+          setFarmID(customerInfo.role);
+        })
+        .catch((err) => {
+          if (err.response) {
+            console.log(err.response);
+          }
+          console.log(err);
+        });
+    }
+  }, []);
 
   return (
     <div>

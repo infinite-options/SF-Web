@@ -17,7 +17,7 @@ const AuthAdminRoute = ({auth, component: Component, ...rest}) => {
                 // rest.authLevel >= 1 ? 
                 //     <Component {...props} /> : <Redirect to ="/customer" />
                 <Component {...props} />
-                : <Redirect to="/adminlogin" />
+                : <Redirect to="/" />
         )} />
     );
 };
