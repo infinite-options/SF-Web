@@ -124,14 +124,6 @@ const StoreFilter = () => {
     productSelect.farmsClicked.forEach((farm) => {
       let inDayCount = 0;
       productSelect.daysClicked.forEach((day) => {
-        console.log(
-          'clicked day: ',
-          farm,
-          store.dayFarmDict[day.split('&')[0]],
-          day.split('&')[0],
-          farm in store.dayFarmDict[day.split('&')[0]]
-        );
-
         if (store.dayFarmDict[day.split('&')[0]].has(farm)) ++inDayCount;
       });
       if (inDayCount != productSelect.daysClicked.size) {
