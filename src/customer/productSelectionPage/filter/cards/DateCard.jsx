@@ -1,36 +1,36 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
-import appColors from '../../../../styles/AppColors';
-import { Box } from '@material-ui/core';
-import ProdSelectContext from '../../ProdSelectContext';
-import storeContext from '../../../storeContext';
+import React, {useState, useContext, useEffect} from "react";
+import {useHistory} from "react-router-dom";
+import {makeStyles} from "@material-ui/core/styles";
+import appColors from "../../../../styles/AppColors";
+import {Box} from "@material-ui/core";
+import ProdSelectContext from "../../prodSelectContext";
+import storeContext from "../../../storeContext";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   card: {
-    backgroundColor: '#e0e6e6',
+    backgroundColor: "#e0e6e6",
     width: 70,
     height: 75,
     borderRadius: 10,
-    cursor: 'pointer',
+    cursor: "pointer"
   },
   weekDay: {
     backgroundColor: appColors.secondary,
     borderRadius: 10,
-    color: 'white',
-    textAlign: 'center',
+    color: "white",
+    textAlign: "center"
   },
   date: {
-    textAlign: 'center',
-    fontSize: 16,
+    textAlign: "center",
+    fontSize: 16
   },
   time: {
-    textAlign: 'center',
-    fontSize: 10,
-  },
+    textAlign: "center",
+    fontSize: 10
+  }
 }));
 
-const DateCard = (props) => {
+const DateCard = props => {
   const productSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
   const todaysDayUpper = props.weekDayFull.toUpperCase();
@@ -47,7 +47,7 @@ const DateCard = (props) => {
 
     // FMDF: add on !isClicked and delete on isClicked
     if (!isClicked) {
-      newDaysClicked.add(todaysDayUpper + '&' + props.time);
+      newDaysClicked.add(todaysDayUpper + "&" + props.time);
     }
     productSelect.setDaysClicked(newDaysClicked);
     setIsClicked(!isClicked);
@@ -55,13 +55,13 @@ const DateCard = (props) => {
 
   // FMDF: remove this hook
   useEffect(() => {
-    if (!productSelect.daysClicked.has(todaysDayUpper + '&' + props.time))
+    if (!productSelect.daysClicked.has(todaysDayUpper + "&" + props.time))
       setIsClicked(false);
   }, [productSelect.daysClicked]);
 
   useEffect(() => {
     let _showCard = productSelect.farmsClicked.size == 0 ? true : false;
-    productSelect.farmsClicked.forEach((farmId) => {
+    productSelect.farmsClicked.forEach(farmId => {
       if (todaysDayUpper in store.farmDayTimeDict[farmId]) {
         _showCard = true;
       }
@@ -79,8 +79,8 @@ const DateCard = (props) => {
   return (
     <Box
       hidden={!showCard}
-      justifyContent="center"
-      width="100%"
+      justifyContent='center'
+      width='100%'
       m={0.5}
       p={0.5}
     >
@@ -89,14 +89,14 @@ const DateCard = (props) => {
         <Box
           mt={1}
           className={classes.date}
-          style={{ color: isClicked ? appColors.primary : appColors.secondary }}
+          style={{color: isClicked ? appColors.primary : appColors.secondary}}
         >
           {props.month} {props.day}
           <br />
           <Box
             className={classes.time}
             style={{
-              color: isClicked ? appColors.primary : appColors.secondary,
+              color: isClicked ? appColors.primary : appColors.secondary
             }}
           >
             {props.time}

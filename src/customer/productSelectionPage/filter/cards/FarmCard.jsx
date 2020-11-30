@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
-import ProdSelectContext from '../../ProdSelectContext';
-import appColors from '../../../../styles/AppColors';
-import iconSizes from '../../../../styles/IconSizes';
-import { Box } from '@material-ui/core';
-import FilterContext from '../FilterContext';
-import storeContext from '../../../storeContext';
-import { StrikethroughS } from '@material-ui/icons';
+import React, {useContext, useEffect, useState} from "react";
+import ProdSelectContext from "../../prodSelectContext";
+import appColors from "../../../../styles/AppColors";
+import iconSizes from "../../../../styles/IconSizes";
+import {Box} from "@material-ui/core";
+import FilterContext from "../FilterContext";
+import storeContext from "../../../storeContext";
+import {StrikethroughS} from "@material-ui/icons";
 
 function FarmCard(props) {
   const filter = useContext(FilterContext);
@@ -31,8 +31,8 @@ function FarmCard(props) {
   useEffect(() => {
     let _showCard = productSelect.daysClicked.size == 0 ? true : false;
     for (const day in store.farmDayTimeDict[props.id]) {
-      store.farmDayTimeDict[props.id][day].forEach((time) => {
-        if (productSelect.daysClicked.has(day + '&' + time)) _showCard = true;
+      store.farmDayTimeDict[props.id][day].forEach(time => {
+        if (productSelect.daysClicked.has(day + "&" + time)) _showCard = true;
       });
     }
     if (!_showCard && isClicked) {
@@ -47,25 +47,25 @@ function FarmCard(props) {
       mb={1}
       m={0.5}
       p={0.5}
-      width="100%"
+      width='100%'
       style={{
-        borderStyle: 'solid',
-        borderWidth: '1px',
-        borderRadius: '10px',
+        borderStyle: "solid",
+        borderWidth: "1px",
+        borderRadius: "10px",
         borderColor: !isClicked ? appColors.componentBg : appColors.primary,
-        cursor: 'pointer',
+        cursor: "pointer"
       }}
       onClick={gotFarmClicked}
     >
-      <Box display="flex" justifyContent="center">
+      <Box display='flex' justifyContent='center'>
         <img
           width={iconSizes.filter}
           height={iconSizes.filter}
           src={props.image}
-          alt=""
+          alt=''
         />
       </Box>
-      <div style={{ width: '100%', fontSize: 12, textAlign: 'center' }}>
+      <div style={{width: "100%", fontSize: 12, textAlign: "center"}}>
         {props.businessName}
       </div>
     </Box>

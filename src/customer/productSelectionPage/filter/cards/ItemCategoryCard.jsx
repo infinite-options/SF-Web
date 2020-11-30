@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
-import ProdSelectContext from '../../ProdSelectContext';
-import iconSizes from '../../../../styles/IconSizes';
-import { Box } from '@material-ui/core';
+import React, {useContext, useEffect, useState} from "react";
+import ProdSelectContext from "../../prodSelectContext";
+import iconSizes from "../../../../styles/IconSizes";
+import {Box} from "@material-ui/core";
 
-const ItemCategoryItem = (props) => {
+const ItemCategoryItem = props => {
   const productSelect = useContext(ProdSelectContext);
 
   const [isClicked, setIsClicked] = useState(false);
@@ -19,7 +19,7 @@ const ItemCategoryItem = (props) => {
     } else {
       newCategoriesClicked.add(props.type);
     }
-    console.log('newCategoriesClicked: ', newCategoriesClicked);
+    console.log("newCategoriesClicked: ", newCategoriesClicked);
     productSelect.setCategoriesClicked(newCategoriesClicked);
     setIsClicked(!isClicked);
   }
@@ -31,12 +31,12 @@ const ItemCategoryItem = (props) => {
   }, [productSelect.farmsClicked, productSelect.daysClicked]);
 
   return (
-    <Box hidden={!isShown} mb={1} m={0.5} p={0.5} width="100%">
+    <Box hidden={!isShown} mb={1} m={0.5} p={0.5} width='100%'>
       <Box
-        display="flex"
-        justifyContent="center"
+        display='flex'
+        justifyContent='center'
         onClick={onCategoryClicked}
-        style={{ cursor: 'pointer' }}
+        style={{cursor: "pointer"}}
       >
         <img
           width={iconSizes.filter}
@@ -45,7 +45,7 @@ const ItemCategoryItem = (props) => {
           alt={props.altName}
         />
       </Box>
-      <div style={{ width: '100%', fontSize: 12, textAlign: 'center' }}>
+      <div style={{width: "100%", fontSize: 12, textAlign: "center"}}>
         {props.label}
       </div>
     </Box>
