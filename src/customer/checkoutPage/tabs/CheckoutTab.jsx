@@ -69,6 +69,8 @@ export default function CheckoutTab() {
 
   const elements = useElements();
 
+  const [expectedDelivery, setExpectedDelivery] = useState('');
+
   // Retrieve items from store context
   function getItemsCart() {
     var result = [];
@@ -157,15 +159,18 @@ export default function CheckoutTab() {
     >
       <Box display="flex" flexDirection="column" height="90%" px={8}>
         {/* START: Expected Delivery */}
-        <Box
-          className={classes.section}
-          height="100px"
-          display="flex"
-          lineHeight="100px"
-        >
-          <Box color={appColors.secondary}>Expected Delivery</Box>
-          <Box flexGrow={1} />
-          <Box>Expected Delivery</Box>
+        <Box hidden={store.expectedDelivery !== ''} m={2} />
+        <Box hidden={store.expectedDelivery === ''}>
+          <Box
+            className={classes.section}
+            height="100px"
+            display="flex"
+            lineHeight="100px"
+          >
+            <Box color={appColors.secondary}>Expected Delivery</Box>
+            <Box flexGrow={1} />
+            <Box>{store.expectedDelivery}</Box>
+          </Box>
         </Box>
         {/* END: Expected Delivery */}
 

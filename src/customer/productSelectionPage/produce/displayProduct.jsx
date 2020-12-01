@@ -7,8 +7,6 @@ import appColors from '../../../styles/AppColors';
 import { set } from 'js-cookie';
 
 function createProduct2(product) {
-  if (product.itm_business_uid == '200-000016')
-    console.log('product: ', product);
   var tryItem = '';
   var itemName = product.item_name;
   if (product.item_name.indexOf('(') !== -1) {
@@ -38,7 +36,7 @@ function DisplayProduct() {
 
   const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
 
-  React.useEffect(() => {
+  useEffect(() => {
     window.addEventListener('resize', updateWindowHeight);
     return () => window.removeEventListener('resize', updateWindowHeight);
   });
@@ -46,6 +44,26 @@ function DisplayProduct() {
   const updateWindowHeight = () => {
     setWindowHeight(window.innerHeight);
   };
+
+  const [displayMessage, setDisplayMessage] = useState('');
+
+  useEffect(() => {
+    let message = '';
+    if (productSelect.daysClicked.size == 0) {
+      message = 'Please select the day that you want your produce delivered.';
+
+      if (store.cartTotal > 0) {
+        message = 'Here are the items currently in your cart';
+      }
+      if (!store.productsLoading) {
+        message =
+          'Sorry, we could not find any produce that can be delivered to your provided address';
+      }
+    } else {
+      message = 'Produce being delivered on ';
+    }
+    setDisplayMessage(message);
+  }, [productSelect.daysClicked, store.productsLoading, store.cartTotal]);
 
   //because at the start of the fetching, it has nothing and that will cause error
   //with this if condition, we only work if we get the data
@@ -61,28 +79,23 @@ function DisplayProduct() {
           mb={2}
           style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
         >
-          {productSelect.daysClicked.size == 0
-            ? store.cartTotal == 0
-              ? 'Please select the day that you want your produce delivered.'
-              : 'Here are the items currently in your cart'
-            : ' '}
+          {displayMessage}
+
           <Box mt={2} />
           <Paper
             style={{
               backgroundColor: appColors.componentBg,
               maxHeight: '100%',
+              width: '100%',
               overflow: 'auto',
             }}
           >
-            <Grid
-              container
-              direction="row"
-              justify="space-between"
-              alignItems="flex-start"
-              spacing={2}
-            >
-              {store.products.map(createProduct2)}
-            </Grid>
+            {' '}
+            <Box width="97%" justifyContent="center">
+              <Grid container direction="row" justify="flex-start" spacing={5}>
+                {store.products.map(createProduct2)}
+              </Grid>
+            </Box>
           </Paper>
         </Box>
       </>

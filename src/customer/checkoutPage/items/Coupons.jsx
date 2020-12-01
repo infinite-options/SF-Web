@@ -153,6 +153,7 @@ export default function Coupons(props) {
         key={coupProps.index}
         index={coupProps.index}
         status={coupProps.status}
+        threshold={coupProps.threshold}
         expDate={coupProps.expDate}
         title={coupProps.title}
         discountPercent={coupProps.discountPercent}

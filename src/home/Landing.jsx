@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Cookies from 'universal-cookie';
 
 import {
   Box,
@@ -17,6 +18,8 @@ import AdminLogin from '../admin/AdminLogin';
 import Signup from '../customer/auth/Signup';
 import appColors from '../styles/AppColors';
 import FindLongLatWithAddr from '../utils/FindLongLatWithAddr';
+
+const cookies = new Cookies();
 
 const CssTextField = withStyles({
   root: {
@@ -79,7 +82,7 @@ const Landing = ({ ...props }) => {
       );
       return;
     }
-    const stateZip = locationProps[2].split(' ');
+    const stateZip = locationProps[2].trim().split(' ');
     if (stateZip.length !== 2) {
       createError(
         'Please use the following format: Address, City, State Zipcode'
@@ -95,17 +98,21 @@ const Landing = ({ ...props }) => {
     let state = stateZip[0];
     let zip = stateZip[1];
 
-    const { status, long, lat } = FindLongLatWithAddr(
-      address,
-      city,
-      state,
-      zip
-    );
-
-    if (status === 'found') {
-    }
+    FindLongLatWithAddr(address, city, state, zip).then((res) => {
+      console.log('res: ', res);
+      if (res.status === 'found') {
+        cookies.set('longitude', res.longitude);
+        cookies.set('latitude', res.latitude);
+        cookies.set('address', address);
+        cookies.set('city', city);
+        cookies.set('state', state);
+        cookies.set('zip', zip);
+        window.location.href = `${window.location.origin.toString()}/store`;
+      } else {
+        createError('Sorry, we could not find this location');
+      }
+    });
   };
-
   const handleClose = () => {
     console.log('close');
     setIsLoginShown(false);
