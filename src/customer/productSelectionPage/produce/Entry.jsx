@@ -1,20 +1,20 @@
-import React, { useState, useContext, useEffect } from 'react';
-import storeContext from '../../storeContext';
-import { Box, Button, Grid } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
-import appColors from '../../../styles/AppColors';
-import ProduceSelectContext from '../ProdSelectContext';
+import React, {useState, useContext, useEffect} from "react";
+import storeContext from "../../storeContext";
+import {Box, Button, Grid} from "@material-ui/core";
+import {makeStyles} from "@material-ui/styles";
+import AddIcon from "@material-ui/icons/Add";
+import RemoveIcon from "@material-ui/icons/Remove";
+import appColors from "../../../styles/AppColors";
+import ProduceSelectContext from "../prodSelectContext";
 
 const useStyles = makeStyles({
   button: {
-    border: '1px solid' + appColors.componentBg,
+    border: "1px solid" + appColors.componentBg,
     borderRadius: 5,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     color: appColors.primary,
-    opacity: 0.9,
-  },
+    opacity: 0.9
+  }
 });
 
 function Entry(props) {
@@ -30,11 +30,11 @@ function Entry(props) {
     let isInFarm = false;
     let isInCategory = false;
     for (const day in store.farmDayTimeDict[props.business_uid]) {
-      store.farmDayTimeDict[props.business_uid][day].forEach((time) => {
-        if (day == 'FRIDAY') {
+      store.farmDayTimeDict[props.business_uid][day].forEach(time => {
+        if (day == "FRIDAY") {
           // console.log(day + time, productSelect.daysClicked);
         }
-        if (productSelect.daysClicked.has(day + '&' + time)) isInDay = true;
+        if (productSelect.daysClicked.has(day + "&" + time)) isInDay = true;
       });
     }
     if (productSelect.farmsClicked.has(props.business_uid)) isInFarm = true;
@@ -53,12 +53,12 @@ function Entry(props) {
     productSelect.daysClicked,
     productSelect.farmsClicked,
     productSelect.categoriesClicked,
-    store.cartItems,
+    store.cartItems
   ]);
 
   function decrease() {
     if (props.id in store.cartItems) {
-      const itemCount = store.cartItems[props.id]['count'];
+      const itemCount = store.cartItems[props.id]["count"];
       if (itemCount > 0) {
         if (itemCount == 1) {
           let clone = Object.assign({}, store.cartItems);
@@ -67,11 +67,11 @@ function Entry(props) {
         } else {
           const item = {
             ...props,
-            count: store.cartItems[props.id]['count'] - 1,
+            count: store.cartItems[props.id]["count"] - 1
           };
           store.setCartItems({
             ...store.cartItems,
-            [props.id]: item,
+            [props.id]: item
           });
         }
         store.setCartTotal(store.cartTotal - 1);
@@ -82,12 +82,12 @@ function Entry(props) {
   function increase() {
     const item =
       props.id in store.cartItems
-        ? { ...props, count: store.cartItems[props.id]['count'] + 1 }
-        : { ...props, count: 1 };
+        ? {...props, count: store.cartItems[props.id]["count"] + 1}
+        : {...props, count: 1};
 
     store.setCartItems({
       ...store.cartItems,
-      [props.id]: item,
+      [props.id]: item
     });
     store.setCartTotal(store.cartTotal + 1);
   }
@@ -96,25 +96,25 @@ function Entry(props) {
     <>
       <Grid hidden={!isShown} item>
         <Box
-          className="center-cropped"
-          display="flex"
-          alignItems="flex-start"
-          position="relative"
-          zIndex="modal"
+          className='center-cropped'
+          display='flex'
+          alignItems='flex-start'
+          position='relative'
+          zIndex='modal'
           style={{
-            width: '170px',
-            height: '170px',
+            width: "170px",
+            height: "170px",
             backgroundImage: `url(${props.img})`,
-            backgroundSize: '100% 100%',
-            backgroundPosition: 'center center',
-            backgroundRepeat: 'no-repeat',
+            backgroundSize: "100% 100%",
+            backgroundPosition: "center center",
+            backgroundRepeat: "no-repeat",
             borderRadius: 5,
             borderBottomRightRadius: 10,
             borderBottomLeftRadius: 10,
-            border: '1px solid ' + appColors.border,
+            border: "1px solid " + appColors.border
           }}
         />
-        <Box position="relative" zIndex="tooltip" top={-91} height={110}>
+        <Box position='relative' zIndex='tooltip' top={-91} height={110}>
           <Box
             className={classes.button}
             width={30}
@@ -122,58 +122,58 @@ function Entry(props) {
             ml={17.5}
             mt={-10.1}
             mb={13.7}
-            lineHeight="30px"
+            lineHeight='30px'
           >
             {props.id in store.cartItems
-              ? store.cartItems[props.id]['count']
+              ? store.cartItems[props.id]["count"]
               : 0}
           </Box>
-          <Box display="flex" alignItems="flex-start">
+          <Box display='flex' alignItems='flex-start'>
             <Button
               className={classes.button}
-              variant="contained"
-              size="small"
+              variant='contained'
+              size='small'
               onClick={decrease}
               style={{
-                width: '86px',
+                width: "86px",
                 borderTopLeftRadius: 10,
                 borderBottomLeftRadius: 10,
                 borderTopRightRadius: 0,
-                borderBottomRightRadius: 0,
+                borderBottomRightRadius: 0
               }}
             >
-              <RemoveIcon fontSize="small" cursor="pointer" color="primary" />
+              <RemoveIcon fontSize='small' cursor='pointer' color='primary' />
             </Button>
             <Button
               className={classes.button}
-              variant="contained"
-              size="small"
+              variant='contained'
+              size='small'
               onClick={increase}
               style={{
-                width: '86px',
+                width: "86px",
                 borderTopRightRadius: 10,
                 borderBottomRightRadius: 10,
                 borderTopLeftRadius: 0,
-                borderBottomLeftRadius: 0,
+                borderBottomLeftRadius: 0
               }}
             >
-              <AddIcon fontSize="small" cursor="pointer" color="primary" />
+              <AddIcon fontSize='small' cursor='pointer' color='primary' />
             </Button>
           </Box>
           <Box
-            width="168px"
+            width='168px'
             p={0.1}
             style={{
-              fontSize: '12px',
-              backgroundColor: 'white',
+              fontSize: "12px",
+              backgroundColor: "white",
               borderRadius: 5,
-              border: '1px solid ' + appColors.border,
+              border: "1px solid " + appColors.border
             }}
           >
-            <Box display="flex">
-              <Box textAlign="left">{props.name}</Box>
+            <Box display='flex'>
+              <Box textAlign='left'>{props.name}</Box>
               <Box flexGrow={1} />
-              <Box textAlign="right">
+              <Box textAlign='right'>
                 $ {props.price} {props.meaning}
               </Box>
             </Box>

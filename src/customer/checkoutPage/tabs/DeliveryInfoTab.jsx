@@ -1,25 +1,26 @@
-import React, { useContext, useState, useEffect } from 'react';
-import axios from 'axios';
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { Paper, Box, TextField, Switch, Button } from '@material-ui/core';
-import appColors from '../../../styles/AppColors';
-import Signup from '../../auth/Signup';
-import { AuthContext } from '../../../auth/AuthContext';
-import StoreContext from '../../storeContext';
-import CssTextField from '../../../utils/CssTextField';
+import React, {useContext, useState, useEffect} from "react";
+import axios from "axios";
+import {GoogleMap, LoadScript} from "@react-google-maps/api";
+import {makeStyles, withStyles} from "@material-ui/core/styles";
+import {Paper, Box, TextField, Switch, Button} from "@material-ui/core";
+import appColors from "../../../styles/AppColors";
+import Signup from "../../auth/Signup";
+import {AuthContext} from "../../../auth/AuthContext";
+import StoreContext from "../../storeContext";
+import checkoutContext from "../CheckoutContext";
+import CssTextField from "../../../utils/CssTextField";
 
 const useStyles = makeStyles({
   root: {
     flexGrow: 1,
-    paddingTop: '20px',
-    paddingLeft: '50px',
-    paddingRight: '50px',
+    paddingTop: "20px",
+    paddingLeft: "50px",
+    paddingRight: "50px"
   },
   button: {
     color: appColors.primary,
-    width: '300px',
-  },
+    width: "300px"
+  }
 });
 
 //TODO: implement update profile
@@ -30,6 +31,7 @@ export default function DeliveryInfoTab() {
 
   // Setting so that the store context isn't constantly re-rendered
   const [userInfo, setUserInfo] = useState(store.profile);
+  const {paymentProcessing, setLeftTabChosen} = useContext(checkoutContext);
 
   useEffect(() => {
     if (store.profile !== {}) {
@@ -39,8 +41,14 @@ export default function DeliveryInfoTab() {
 
   const [map, setMap] = React.useState(null);
 
-  const onSubmit = (event) => {};
+  const {setProfile} = store;
 
+  const onSubmit = () => {
+    setProfile({...userInfo});
+  };
+  const onConfirm = () => {
+    setLeftTabChosen(4);
+  };
   const onLoad = React.useCallback(function callback(map) {
     const bounds = new window.google.maps.LatLngBounds();
     map.fitBounds(bounds);
@@ -51,25 +59,25 @@ export default function DeliveryInfoTab() {
     setMap(null);
   }, []);
 
-  const onFieldChange = (event) => {
-    const { name, value } = event.target;
-    setUserInfo({ ...userInfo, [name]: value });
+  const onFieldChange = event => {
+    const {name, value} = event.target;
+    setUserInfo({...userInfo, [name]: value});
   };
 
   const onCheckAddressClicked = () => {
-    console.log('Verifying longitude and latitude from Delivery Info');
+    console.log("Verifying longitude and latitude from Delivery Info");
     axios
-      .get('https://dev.virtualearth.net/REST/v1/Locations/', {
+      .get("https://dev.virtualearth.net/REST/v1/Locations/", {
         params: {
-          CountryRegion: 'US',
+          CountryRegion: "US",
           adminDistrict: userInfo.state,
           locality: userInfo.city,
           postalCode: userInfo.zip,
           addressLine: userInfo.address,
-          key: process.env.REACT_APP_BING_LOCATION_KEY,
-        },
+          key: process.env.REACT_APP_BING_LOCATION_KEY
+        }
       })
-      .then((res) => {
+      .then(res => {
         // console.log(res)
         let locationApiResult = res.data;
         if (locationApiResult.statusCode === 200) {
@@ -87,7 +95,7 @@ export default function DeliveryInfoTab() {
       });
   };
 
-  const PlainTextField = (props) => {
+  const PlainTextField = props => {
     return (
       <Box mb={props.spacing || 1}>
         <CssTextField
@@ -95,8 +103,8 @@ export default function DeliveryInfoTab() {
           name={props.name}
           label={props.label}
           type={props.type}
-          variant="outlined"
-          size="small"
+          variant='outlined'
+          size='small'
           fullWidth
           onChange={onFieldChange}
         />
@@ -109,24 +117,24 @@ export default function DeliveryInfoTab() {
       <>
         {PlainTextField({
           value: userInfo.email,
-          name: 'email',
-          label: 'Email',
+          name: "email",
+          label: "Email"
         })}
         {PlainTextField({
-          name: 'password',
-          label: 'Password',
-          type: 'password',
+          name: "password",
+          label: "Password",
+          type: "password"
         })}
         {PlainTextField({
-          name: 'password',
-          label: 'Password',
-          type: 'password',
+          name: "password",
+          label: "Password",
+          type: "password"
         })}
         <Box
-          display="flex"
+          display='flex'
           my={3}
           px={1.7}
-          style={{ color: appColors.paragraphText, lineHeight: '30px' }}
+          style={{color: appColors.paragraphText, lineHeight: "30px"}}
         >
           Push Notifications
           <Box flexGrow={1} />
@@ -134,86 +142,103 @@ export default function DeliveryInfoTab() {
         </Box>
         {PlainTextField({
           value: userInfo.firstName,
-          name: 'firstName',
-          label: 'First Name',
+          name: "firstName",
+          label: "First Name"
         })}
         {PlainTextField({
           value: userInfo.lastName,
-          name: 'lastName',
-          label: 'Last Name',
+          name: "lastName",
+          label: "Last Name"
         })}
         {PlainTextField({
           value: userInfo.phoneNum,
-          name: 'phoneNum',
-          label: 'Phone Number',
+          name: "phoneNum",
+          label: "Phone Number"
         })}
-        <Box display="flex" mb={1}>
+        <Box display='flex' mb={1}>
           <CssTextField
             value={userInfo.address}
-            name="address"
-            label="Street Address"
-            variant="outlined"
-            size="small"
+            name='address'
+            label='Street Address'
+            variant='outlined'
+            size='small'
             fullWidth
             onChange={onFieldChange}
           />
-          <Box ml={1} width="40%">
+          <Box ml={1} width='40%'>
             <CssTextField
               value={userInfo.unit}
-              name="unit"
-              label="Apt Number"
-              variant="outlined"
-              size="small"
+              name='unit'
+              label='Apt Number'
+              variant='outlined'
+              size='small'
               fullWidth
               onChange={onFieldChange}
             />
           </Box>
         </Box>
-        <Box display="flex" mb={1}>
-          <Box width="33.3%">
+        <Box display='flex' mb={1}>
+          <Box width='33.3%'>
             <CssTextField
               value={userInfo.city}
-              name="city"
-              label="City"
-              variant="outlined"
-              size="small"
+              name='city'
+              label='City'
+              variant='outlined'
+              size='small'
               fullWidth
               onChange={onFieldChange}
             />
           </Box>
-          <Box width="33.3%" mx={1}>
+          <Box width='33.3%' mx={1}>
             <CssTextField
               value={userInfo.state}
-              name="state"
-              label="State"
-              variant="outlined"
-              size="small"
+              name='state'
+              label='State'
+              variant='outlined'
+              size='small'
               fullWidth
               onChange={onFieldChange}
             />
           </Box>
-          <Box width="33.3%">
+          <Box width='33.3%'>
             <CssTextField
               value={userInfo.zip}
-              name="zip"
-              label="Zip Code"
-              variant="outlined"
-              size="small"
+              name='zip'
+              label='Zip Code'
+              variant='outlined'
+              size='small'
               fullWidth
               onChange={onFieldChange}
             />
           </Box>
         </Box>
-        {PlainTextField({ label: 'Delivery Instructions' })}
+        {PlainTextField({
+          label: "Delivery Instructions",
+          name: "deliveryInstructions",
+          value: userInfo.deliveryInstructions
+        })}
         <Box mt={3}>
-          <Button
-            className={classes.button}
-            variant="outlined"
-            size="small"
-            color="paragraphText"
-          >
-            Save Changes
-          </Button>
+          {paymentProcessing ? (
+            <Button
+              className={classes.button}
+              variant='outlined'
+              size='small'
+              color='paragraphText'
+              onClick={onConfirm}
+            >
+              CONFIRM
+            </Button>
+          ) : (
+            <Button
+              className={classes.button}
+              variant='outlined'
+              size='small'
+              color='paragraphText'
+              onClick={onSubmit}
+            >
+              Save Changes
+            </Button>
+          )}
         </Box>
         {/* <LoadScript googleMapsApiKey={process.env.REACT_APP_BING_LOCATION_KEY}>
           <GoogleMap
@@ -236,7 +261,7 @@ export default function DeliveryInfoTab() {
     );
   };
 
-  const noAuthFields = (spacing) => {
+  const noAuthFields = spacing => {
     return (
       <>
         <Box mb={spacing} color={appColors.paragraphText} fontSize={20}>
@@ -244,97 +269,97 @@ export default function DeliveryInfoTab() {
         </Box>
         {PlainTextField({
           value: userInfo.firstName,
-          name: 'firstName',
-          label: 'First Name',
-          spacing: spacing,
+          name: "firstName",
+          label: "First Name",
+          spacing: spacing
         })}
         {PlainTextField({
           value: userInfo.lastName,
-          name: 'lastName',
-          label: 'Last Name',
-          spacing: spacing,
+          name: "lastName",
+          label: "Last Name",
+          spacing: spacing
         })}
         {PlainTextField({
           value: userInfo.phoneNum,
-          name: 'phoneNum',
-          label: 'Phone Number',
-          spacing: spacing,
+          name: "phoneNum",
+          label: "Phone Number",
+          spacing: spacing
         })}
         {PlainTextField({
           value: userInfo.email,
-          name: 'email',
-          label: 'Email',
-          spacing: spacing,
+          name: "email",
+          label: "Email",
+          spacing: spacing
         })}
-        {PlainTextField({ label: 'Delivery Instructions', spacing: spacing })}
-        <Box display="flex" mb={spacing}>
+        {PlainTextField({label: "Delivery Instructions", spacing: spacing})}
+        <Box display='flex' mb={spacing}>
           <CssTextField
             value={userInfo.address}
-            name="address"
-            label="Street Address"
-            variant="outlined"
-            size="small"
+            name='address'
+            label='Street Address'
+            variant='outlined'
+            size='small'
             fullWidth
             onChange={onFieldChange}
           />
-          <Box ml={1} width="40%">
+          <Box ml={1} width='40%'>
             <CssTextField
               value={userInfo.unit}
-              name="unit"
-              label="Apt Number"
-              variant="outlined"
-              size="small"
+              name='unit'
+              label='Apt Number'
+              variant='outlined'
+              size='small'
               fullWidth
               onChange={onFieldChange}
             />
           </Box>
         </Box>
-        <Box display="flex" mb={spacing + 3}>
-          <Box width="33.3%">
+        <Box display='flex' mb={spacing + 3}>
+          <Box width='33.3%'>
             <CssTextField
               value={userInfo.city}
-              name="city"
-              label="City"
-              variant="outlined"
-              size="small"
+              name='city'
+              label='City'
+              variant='outlined'
+              size='small'
               fullWidth
               onChange={onFieldChange}
             />
           </Box>
-          <Box width="33.3%" mx={1}>
+          <Box width='33.3%' mx={1}>
             <CssTextField
               value={userInfo.state}
-              name="state"
-              label="State"
-              variant="outlined"
-              size="small"
+              name='state'
+              label='State'
+              variant='outlined'
+              size='small'
               fullWidth
               onChange={onFieldChange}
             />
           </Box>
-          <Box width="33.3%">
+          <Box width='33.3%'>
             <CssTextField
               value={userInfo.zip}
-              name="zip"
-              label="Zip Code"
-              variant="outlined"
-              size="small"
+              name='zip'
+              label='Zip Code'
+              variant='outlined'
+              size='small'
               fullWidth
               onChange={onFieldChange}
             />
           </Box>
         </Box>
         {PlainTextField({
-          name: 'password',
-          label: 'Password',
-          type: 'password',
+          name: "password",
+          label: "Password",
+          type: "password"
         })}
         <Box mt={3}>
           <Button
             className={classes.button}
-            variant="outlined"
-            size="small"
-            color="paragraphText"
+            variant='outlined'
+            size='small'
+            color='paragraphText'
           >
             Sign Up
           </Button>

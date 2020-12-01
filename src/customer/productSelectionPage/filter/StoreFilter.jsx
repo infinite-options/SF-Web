@@ -1,24 +1,24 @@
-import React, { useState, useContext, useEffect } from 'react';
-import ItemCategory from './ItemCategory';
-import FarmCategory from './Farm';
-import DaysCategory from './Days';
-import ItemStack from './itemStack';
-import appColors from '../../../styles/AppColors';
-import { Box } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import storeContext from '../../storeContext';
-import ProdSelectContext from '../ProdSelectContext';
-import FilterContext from './FilterContext';
+import React, {useState, useContext, useEffect} from "react";
+import ItemCategory from "./ItemCategory";
+import FarmCategory from "./Farm";
+import DaysCategory from "./Days";
+import ItemStack from "./itemStack";
+import appColors from "../../../styles/AppColors";
+import {Box} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
+import clsx from "clsx";
+import storeContext from "../../storeContext";
+import ProdSelectContext from "../prodSelectContext";
+import FilterContext from "./FilterContext";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   borderCol: {
-    borderRight: '1px solid ' + appColors.secondary,
+    borderRight: "1px solid " + appColors.secondary
   },
   filterCol: {
-    width: '100px',
-    textAlign: 'center',
-  },
+    width: "100px",
+    textAlign: "center"
+  }
 }));
 
 // BUG: When all of the days, farms, and items are selected, KEM Farms - Berries produce stays up
@@ -37,29 +37,29 @@ const StoreFilter = () => {
 
   // DONE: Change to hidden field like how farms is implemented
   const createDefault7Day = () => {
-    var days = ['SUN', 'MON', 'TUES', 'WED', 'THUR', 'FRI', 'SAT'];
+    var days = ["SUN", "MON", "TUES", "WED", "THUR", "FRI", "SAT"];
     var months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'June',
-      'July',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "June",
+      "July",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
     ];
     var fullDays = [
-      'Sunday',
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
     ];
 
     var default7Days = [];
@@ -79,7 +79,7 @@ const StoreFilter = () => {
 
         // if the iterated day is in within the the dictionary to account for no selected farms
         if (todaysDayUpper in store.dayTimeDict) {
-          store.dayTimeDict[todaysDayUpper].forEach((time) => {
+          store.dayTimeDict[todaysDayUpper].forEach(time => {
             // IMPORTANT: make sure the index used for mapping a component key is unique,
             // I ran into rendering issue when they were the same
             var newDay = {
@@ -88,7 +88,7 @@ const StoreFilter = () => {
               weekDay: days[today.getDay()],
               month: months[today.getMonth()],
               day: today.getDate(),
-              weekDayFull: fullDays[today.getDay()],
+              weekDayFull: fullDays[today.getDay()]
             };
             default7Days.push(newDay);
           });
@@ -102,10 +102,10 @@ const StoreFilter = () => {
 
   useEffect(() => {
     const deleteDays = [];
-    productSelect.daysClicked.forEach((day) => {
+    productSelect.daysClicked.forEach(day => {
       let inFarmCount = 0;
-      productSelect.farmsClicked.forEach((farm) => {
-        if (day.split('&')[0] in store.farmDayTimeDict[farm]) ++inFarmCount;
+      productSelect.farmsClicked.forEach(farm => {
+        if (day.split("&")[0] in store.farmDayTimeDict[farm]) ++inFarmCount;
       });
       if (inFarmCount != productSelect.farmsClicked.size) {
         deleteDays.push(day);
@@ -122,16 +122,16 @@ const StoreFilter = () => {
 
   useEffect(() => {
     const deleteFarms = [];
-    productSelect.farmsClicked.forEach((farm) => {
+    productSelect.farmsClicked.forEach(farm => {
       let inDayCount = 0;
-      productSelect.daysClicked.forEach((day) => {
-        if (store.dayFarmDict[day.split('&')[0]].has(farm)) ++inDayCount;
+      productSelect.daysClicked.forEach(day => {
+        if (store.dayFarmDict[day.split("&")[0]].has(farm)) ++inDayCount;
       });
       if (inDayCount != productSelect.daysClicked.size) {
         deleteFarms.push(farm);
       }
     });
-    console.log('clicked deleteFarms: ', deleteFarms);
+    console.log("clicked deleteFarms: ", deleteFarms);
     if (deleteFarms.length > 0) {
       const newFarmsClicked = new Set(productSelect.farmsClicked);
       for (const farm of deleteFarms) {
@@ -147,14 +147,14 @@ const StoreFilter = () => {
   }, [store.dayTimeDict]);
 
   return (
-    <FilterContext.Provider value={{ shownDays }}>
-      <Box width="300px">
+    <FilterContext.Provider value={{shownDays}}>
+      <Box width='300px'>
         <Box
-          display="flex"
-          justifyContent="center"
+          display='flex'
+          justifyContent='center'
           p={1}
           mb={1}
-          style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
+          style={{backgroundColor: appColors.componentBg, borderRadius: 10}}
         >
           <Box p={1} className={clsx(classes.borderCol, classes.filterCol)}>
             Delivery Days
@@ -167,10 +167,10 @@ const StoreFilter = () => {
           </Box>
         </Box>
         <Box
-          display="flex"
-          justifyContent="center"
+          display='flex'
+          justifyContent='center'
           p={1}
-          style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
+          style={{backgroundColor: appColors.componentBg, borderRadius: 10}}
         >
           <Box className={clsx(classes.borderCol, classes.filterCol)}>
             {ItemStack(DaysCategory)}

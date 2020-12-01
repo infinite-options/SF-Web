@@ -1,11 +1,11 @@
-import React, { useContext, useState, useEffect } from 'react';
-import DisplayProduce from './produce/displayProduct';
-import StoreFilter from './filter';
-import ProdSelectContext from './ProdSelectContext';
-import axios from 'axios';
-import storeContext from '../storeContext';
+import React, {useContext, useState, useEffect} from "react";
+import DisplayProduce from "./produce/displayProduct";
+import StoreFilter from "./filter";
+import ProdSelectContext from "./prodSelectContext";
+import axios from "axios";
+import storeContext from "../storeContext";
 
-const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI + '';
+const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI + "";
 
 //this function calculate the number of items in the cart and set it to global hook context
 function calTotal() {
@@ -22,7 +22,7 @@ function calTotal() {
   return amount;
 }
 
-const ProductSelectionPage = (props) => {
+const ProductSelectionPage = props => {
   const store = useContext(storeContext);
   const profile = store.profile;
 
@@ -58,7 +58,7 @@ const ProductSelectionPage = (props) => {
         daysClicked,
         setDaysClicked,
         categoriesClicked,
-        setCategoriesClicked,
+        setCategoriesClicked
       }}
     >
       <StoreFilter />
