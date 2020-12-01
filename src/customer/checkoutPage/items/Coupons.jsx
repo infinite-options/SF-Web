@@ -35,7 +35,8 @@ const responsive = {
 export default function Coupons(props) {
   const store = useContext(storeContext);
 
-  // DONE:  Coupon properties: Title, Message, expiration
+  // TODO:  Coupon properties: Title, Message, Expiration, Saving
+  // TODO:  if threshold is 0 "No minimum purchase"
   // DONE:  Sort coupons to be selected, available, unavailable
   // DONE:  Grab coupons from backend API
   // TODO:  Implement and add how much needed (threshold - subtotal): ex.Buy $10 more produce to be eligible
@@ -58,6 +59,11 @@ export default function Coupons(props) {
         discountPercent: coupon.discountPercent,
         discountAmount: coupon.discountAmount,
         discountShipping: coupon.discountShipping,
+        amountSaved: calculateAmountSaved(
+          coupon.discountAmount,
+          coupon.discountPercent,
+          coupon.discountShipping
+        ),
         expDate: coupon.expDate,
         status: props.subtotal > coupon.threshold ? 'available' : 'unavailable',
       };
@@ -69,11 +75,16 @@ export default function Coupons(props) {
     }
 
     // auto select max savings on available coupons
-    const maxIndex = FindMaxSavingCouponsIndex(availableCoupons);
     if (availableCoupons.length > 0) {
+      const maxIndex = FindMaxSavingCouponsIndex(availableCoupons);
       availableCoupons[maxIndex].status = 'selected';
       ApplySaving(availableCoupons[maxIndex]);
       ArrayMove(availableCoupons, maxIndex, 0);
+    } else {
+      props.setDeliveryFee(
+        props.subtotal === 0 ? 0 : props.originalDeliveryFee
+      );
+      props.setPromoApplied(0);
     }
 
     setAvaiCouponData(availableCoupons);
@@ -116,6 +127,11 @@ export default function Coupons(props) {
                 discountAmount: couponsRes[i].discount_amount,
                 discountShipping: couponsRes[i].discount_shipping,
                 expDate: expDate,
+                amountSaved: calculateAmountSaved(
+                  couponsRes[i].discountAmount,
+                  couponsRes[i].discountPercent,
+                  couponsRes[i].discountShipping
+                ),
                 status:
                   props.subtotal > couponsRes[i].threshold
                     ? 'available'
@@ -131,8 +147,8 @@ export default function Coupons(props) {
           }
 
           // auto select max savings on available coupons
-          const maxIndex = FindMaxSavingCouponsIndex(availableCoupons);
           if (availableCoupons.length > 0) {
+            const maxIndex = FindMaxSavingCouponsIndex(availableCoupons);
             availableCoupons[maxIndex].status = 'selected';
             ApplySaving(availableCoupons[maxIndex]);
             ArrayMove(availableCoupons, maxIndex, 0);
@@ -155,6 +171,7 @@ export default function Coupons(props) {
         status={coupProps.status}
         threshold={coupProps.threshold}
         expDate={coupProps.expDate}
+        amountSaved={coupProps.amountSaved}
         title={coupProps.title}
         discountPercent={coupProps.discountPercent}
         discountAmount={coupProps.discountAmount}
@@ -164,8 +181,6 @@ export default function Coupons(props) {
   };
 
   const Coupon = (coupProps) => {
-    const isFreeDelivery = coupProps.discountPercent > 0;
-
     function onCouponClick() {
       if (coupProps.status !== 'unavailable') {
         const newCouponData = [];
@@ -209,12 +224,20 @@ export default function Coupons(props) {
             <Box fontSize={12} fontWeight="bold">
               {coupProps.title}
             </Box>
-            <Box fontSize="12px">Any order above ${coupProps.threshold}</Box>
+            <Box fontSize="12px">
+              {coupProps.threshold === 0
+                ? 'No minimum purchase'
+                : 'Any order above $' + coupProps.threshold}
+            </Box>
             <Box fontSize="10px">
               {/* +1 because JS date object function returns months from 0-11 and similarly for days */}
-              exp: {coupProps.expDate.getDay() + 1}/
+              Exp: {coupProps.expDate.getDay() + 1}/
               {coupProps.expDate.getMonth() + 1}/
               {coupProps.expDate.getFullYear()}
+            </Box>
+            <Box fontSize="10px">
+              {/* +1 because JS date object function returns months from 0-11 and similarly for days */}
+              Amount saved: {coupProps.amountSaved.toFixed(2)}
             </Box>
           </Box>
         </Box>
@@ -236,20 +259,31 @@ export default function Coupons(props) {
     );
   }
 
-  function FindMaxSavingCouponsIndex(coupons) {
+  function FindMaxSavingCouponsIndex(avaiCoupons) {
     let maxIndex = 0;
     let maxSavings = 0;
-    for (const i in coupons) {
-      let savings =
-        coupons[i].discountPercent +
-        coupons[i].discountAmount +
-        coupons[i].discountShipping;
-      if (savings > maxSavings) {
-        maxSavings = savings;
+    for (const i in avaiCoupons) {
+      if (avaiCoupons[i].amountSaved > maxSavings) {
+        maxSavings = avaiCoupons[i].amountSaved;
         maxIndex = i;
       }
     }
     return maxIndex;
+  }
+
+  function calculateAmountSaved(amount, percent, shipping) {
+    const discountOff = props.subtotal - amount;
+    const promoOff =
+      props.subtotal > amount
+        ? amount + discountOff * (percent / 100)
+        : props.subtotal;
+
+    const deliveryOff =
+      props.originalDeliveryFee > shipping
+        ? shipping
+        : props.originalDeliveryFee;
+
+    return promoOff + deliveryOff;
   }
 
   function ArrayMove(arr, old_index, new_index) {

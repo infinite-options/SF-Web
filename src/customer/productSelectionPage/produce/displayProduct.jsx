@@ -47,6 +47,8 @@ function DisplayProduct() {
 
   const [displayMessage, setDisplayMessage] = useState('');
 
+  // TODO: add date to expected delivery
+  // TODO: clear out expected delivery if unclicked
   useEffect(() => {
     let message = '';
     if (productSelect.daysClicked.size == 0) {
@@ -55,18 +57,16 @@ function DisplayProduct() {
       if (store.cartTotal > 0) {
         message = 'Here are the items currently in your cart';
       }
-      if (!store.productsLoading) {
-        message =
-          'Sorry, we could not find any produce that can be delivered to your provided address';
-      }
     } else {
-      message = 'Produce being delivered on ';
+      message = 'Produce available for delivery on ' + store.expectedDelivery;
+    }
+    if (store.products.size == 0 && !store.productsLoading) {
+      message =
+        'Sorry, we could not find any produce that can be delivered to your provided address';
     }
     setDisplayMessage(message);
   }, [productSelect.daysClicked, store.productsLoading, store.cartTotal]);
 
-  //because at the start of the fetching, it has nothing and that will cause error
-  //with this if condition, we only work if we get the data
   if (!store.productsLoading && !productSelect.itemError) {
     return (
       <>

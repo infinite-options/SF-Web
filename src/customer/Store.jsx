@@ -1,8 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
 import Cookies from 'universal-cookie';
-import { Redirect } from 'react-router-dom';
-import DisplayProduce from './productSelectionPage/produce/displayProduct';
-import StoreFilter from './productSelectionPage/filter';
 import StoreNavBar from './StoreNavBar';
 import { AuthContext } from '../auth/AuthContext';
 import storeContext from './storeContext';

@@ -25,9 +25,7 @@ const ItemCategoryItem = (props) => {
   }
 
   useEffect(() => {
-    setIsShown(
-      productSelect.farmsClicked.size > 0 || productSelect.daysClicked.size > 0
-    );
+    setIsShown(productSelect.daysClicked.size > 0);
   }, [productSelect.farmsClicked, productSelect.daysClicked]);
 
   return (

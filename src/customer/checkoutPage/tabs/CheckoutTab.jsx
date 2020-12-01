@@ -95,10 +95,10 @@ export default function CheckoutTab() {
   const [deliveryFee, setDeliveryFee] = useState(products.length > 0 ? 5 : 0);
   const [serviceFee, setServiceFee] = useState(products.length > 0 ? 1.5 : 0);
   const [driverTip, setDriverTip] = useState('');
-  const [tax, setTax] = useState(subtotal * 0.075);
+  const [tax, setTax] = useState(0);
   const [total, setTotal] = useState(
     subtotal -
-      promoApplied +
+      promoApplied.toFixed(2) +
       deliveryFee +
       serviceFee +
       parseFloat(driverTip !== '' ? driverTip : 0) +
@@ -109,7 +109,7 @@ export default function CheckoutTab() {
     setTotal(
       subtotal > 0
         ? subtotal -
-            promoApplied +
+            promoApplied.toFixed(2) +
             deliveryFee +
             serviceFee +
             tax +
@@ -123,7 +123,7 @@ export default function CheckoutTab() {
   }, [products]);
 
   useEffect(() => {
-    setTax(subtotal * 0.075);
+    setTax(0);
     setServiceFee(subtotal > 0 ? 1.5 : 0);
   }, [subtotal]);
 

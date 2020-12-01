@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Cookies from 'universal-cookie';
 
 import {
@@ -18,21 +18,10 @@ import AdminLogin from '../admin/AdminLogin';
 import Signup from '../customer/auth/Signup';
 import appColors from '../styles/AppColors';
 import FindLongLatWithAddr from '../utils/FindLongLatWithAddr';
+import CssTextField from '../utils/CssTextField';
+import { AuthContext } from 'auth/AuthContext';
 
 const cookies = new Cookies();
-
-const CssTextField = withStyles({
-  root: {
-    '& label.Mui-focused': {
-      color: appColors.secondary,
-    },
-    '& .MuiOutlinedInput-root': {
-      '&.Mui-focused fieldset': {
-        borderColor: appColors.secondary,
-      },
-    },
-  },
-})(TextField);
 
 const styles = {
   paddingTop: '70px',
@@ -52,8 +41,9 @@ const useStyles = makeStyles((theme) => ({
 
 //backgroundImage:`url(${Background})`,
 
-//DONE: get long and lat for guest with find local produce
+//TODO:  add Google, Apple, and Facebook login to sign up
 const Landing = ({ ...props }) => {
+  const auth = useContext(AuthContext);
   const classes = useStyles();
 
   // Toggles for the login and signup box to be passed in as props to the Landing Nav Bar
@@ -120,7 +110,13 @@ const Landing = ({ ...props }) => {
   };
 
   return (
-    <div style={{ backgroundImage: `url(${'./welcome-bg.png'})` }}>
+    <Box
+      height={window.innerHeight}
+      style={{
+        backgroundSize: '1000px',
+        backgroundImage: `url(${'transparent-landing-bg.png'})`,
+      }}
+    >
       <LandingNavBar
         isLoginShown={isLoginShown}
         setIsLoginShown={setIsLoginShown}
@@ -184,36 +180,38 @@ const Landing = ({ ...props }) => {
         {/* END: Local Produce Search */}
 
         {/* START: Login/SignUp Modal */}
-        <Box display="flex" justifyContent="flex-end">
-          {/* Login Modal */}
-          <Box
-            position="absolute"
-            width="50%"
-            display="flex"
-            justifyContent="center"
-          >
-            <Box className={classes.authModal} hidden={!isLoginShown}>
-              <AdminLogin />
-            </Box>
-          </Box>
-
-          {/* Sign Up Modal */}
+        <Box hidden={auth.isAuth}>
           <Box display="flex" justifyContent="flex-end">
+            {/* Login Modal */}
             <Box
               position="absolute"
               width="50%"
               display="flex"
               justifyContent="center"
             >
-              <Box className={classes.authModal} hidden={!isSignUpShown}>
-                <Signup />
+              <Box className={classes.authModal} hidden={!isLoginShown}>
+                <AdminLogin />
+              </Box>
+            </Box>
+
+            {/* Sign Up Modal */}
+            <Box display="flex" justifyContent="flex-end">
+              <Box
+                position="absolute"
+                width="50%"
+                display="flex"
+                justifyContent="center"
+              >
+                <Box className={classes.authModal} hidden={!isSignUpShown}>
+                  <Signup />
+                </Box>
               </Box>
             </Box>
           </Box>
         </Box>
         {/* END: Login/SignUp Modal */}
       </Box>
-    </div>
+    </Box>
   );
 };
 
