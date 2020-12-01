@@ -66,9 +66,9 @@ function listItem(item) {
 export default function CheckoutTab() {
   const classes = useStyles();
   const store = useContext(storeContext);
-
+  const checkout = useContext(checkoutContext);
   const elements = useElements();
-
+  const {setPaymentProcessing, setLeftTabChosen} = checkout;
   // Retrieve items from store context
   function getItemsCart() {
     var result = [];
@@ -102,7 +102,7 @@ export default function CheckoutTab() {
       parseFloat(driverTip !== "" ? driverTip : 0) +
       tax
   );
-
+  const {setAmountDue, setAmountPaid, setDiscount} = checkout;
   useEffect(() => {
     setTotal(
       subtotal > 0
@@ -114,10 +114,29 @@ export default function CheckoutTab() {
             parseFloat(driverTip !== "" ? driverTip : 0)
         : 0
     );
+    setAmountPaid(
+      subtotal > 0
+        ? parseFloat(
+            (
+              subtotal -
+              promoApplied +
+              deliveryFee +
+              serviceFee +
+              tax +
+              parseFloat(driverTip !== "" ? driverTip : 0)
+            ).toFixed(2)
+          )
+        : 0
+    );
+    setDiscount(parseFloat(promoApplied.toFixed(2)));
   }, [subtotal, promoApplied, deliveryFee, driverTip]);
 
   useEffect(() => {
     setSubtotal(calculateSubTotal(products));
+    let amountDue = parseFloat(
+      (calculateSubTotal(products) + deliveryFee + serviceFee).toFixed(2)
+    );
+    setAmountDue(amountDue);
   }, [products]);
 
   useEffect(() => {
@@ -144,6 +163,12 @@ export default function CheckoutTab() {
     //   // error, display the localized error message to your customer
     //   // using `result.error.message`.
     // }
+    if (paymentType === "STRIPE") {
+      // let user confirm their info before process
+      console.log("Stripe is clicked");
+      setPaymentProcessing(true);
+      setLeftTabChosen(0);
+    }
   }
 
   return (
@@ -276,7 +301,7 @@ export default function CheckoutTab() {
             size='small'
             variant='contained'
             color='primary'
-            onClick={onPayWithClicked("STRIPE")}
+            onClick={() => onPayWithClicked("STRIPE")}
           >
             Pay with Stripe
           </Button>
