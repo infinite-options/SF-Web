@@ -52,10 +52,20 @@ const DateCard = (props) => {
   const onDenyDayChange = () => {};
   const onConfirmDayChange = () => {
     const newDaysClicked = new Set();
-    if (!isClicked) {
+    if (isClicked) {
+      store.setExpectedDelivery('');
+    } else {
       // FMDF: add on !isClicked and delete on isClicked
       newDaysClicked.add(todaysDayUpper + '&' + props.time);
-      store.setExpectedDelivery(props.weekDayFull + ' from ' + props.time);
+      store.setExpectedDelivery(
+        props.month +
+          ' ' +
+          props.day +
+          ', ' +
+          props.weekDayFull +
+          ' from ' +
+          props.time
+      );
     }
     productSelect.setDaysClicked(newDaysClicked);
   };

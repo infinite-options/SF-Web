@@ -241,6 +241,7 @@ class Signup extends Component {
               }
             )
             .then((res) => {
+              // TODO: save the right content into cookies and set right auth state
               console.log(res);
               let customerInfo = res.data.result;
               Cookies.set('customer_uid', customerInfo.customer_uid);

@@ -52,7 +52,7 @@ function DisplayProduct() {
   useEffect(() => {
     let message = '';
     if (productSelect.daysClicked.size == 0) {
-      message = 'Please select the day that you want your produce delivered.';
+      message = 'Please select a produce delivery date and time.';
 
       if (store.cartTotal > 0) {
         message = 'Here are the items currently in your cart';
