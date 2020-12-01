@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { Box } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
-import Background from '../../welcome-bg.png';
 import Button from '@material-ui/core/Button';
 import Cookies from 'js-cookie';
+import CssTextField from '../../utils/CssTextField';
+import appColors from '../../styles/AppColors';
+import Background from '../../welcome-bg.png';
 
 import axios from 'axios';
 
@@ -268,82 +270,124 @@ class Signup extends Component {
     return (
       <Box
         display="flex"
+        height={window.innerHeight}
         alignItems="center"
         justifyContent="center"
-        style={{ backgroundImage: `url(${Background})` }}
+        style={{ backgroundImage: `url(${'transparent-landing-bg.png'})` }}
       >
         <Paper
           style={{
-            height: 600,
             width: 350,
             margin: 20,
+            padding: 10,
+            borderRadius: 10,
+            backgroundColor: appColors.componentBg,
             textAlign: 'center',
             display: 'inline-block',
           }}
         >
-          <p>SOCIAL SIGN UP</p>
-          <TextField
+          <Box color={appColors.secondary} my={2}>
+            SOCIAL SIGN UP
+          </Box>
+          <CssTextField
+            name="first name"
             value={this.state.firstName}
             onChange={this._firstNameChange}
             label="First Name"
+            size="small"
+            variant="outlined"
+            fullWidth
           />
-          <br />
-          <TextField
+          <Box mt={2} />
+          <CssTextField
             value={this.state.lastName}
             onChange={this._lastNameChange}
+            variant="outlined"
+            size="small"
             label="Last Name"
+            fullWidth
           />
-          <br />
-          <TextField
+          <Box mt={2} />
+          <CssTextField
             value={this.state.phone}
             onChange={this._phoneChange}
+            variant="outlined"
+            size="small"
             label="Phone"
+            fullWidth
           />
-          <br />
-          <TextField
+          <Box mt={2} />
+          <CssTextField
             value={this.state.address}
             onChange={this._addressChange}
+            variant="outlined"
+            size="small"
             label="Address"
+            fullWidth
           />
-          <br />
-          <TextField
+          <Box mt={2} />
+          <CssTextField
             value={this.state.unit}
             onChange={this._unitChange}
+            variant="outlined"
+            size="small"
             label="Unit"
+            fullWidth
           />
-          <br />
-          <TextField
+          <Box mt={2} />
+          <CssTextField
             value={this.state.city}
             onChange={this._cityChange}
+            variant="outlined"
+            size="small"
             label="City"
+            fullWidth
           />
-          <br />
-          <TextField
+          <Box mt={2} />
+          <CssTextField
             value={this.state.state}
             onChange={this._stateChange}
+            variant="outlined"
+            size="small"
             label="State"
+            fullWidth
           />
-          <br />
-          <TextField
+          <Box mt={2} />
+          <CssTextField
             value={this.state.zip}
             onChange={this._zipChange}
+            variant="outlined"
+            size="small"
             label="Zip"
+            fullWidth
           />
           <br />
           <br />
           <div>
-            <Button variant="contained" onClick={this._onSubmit}>
+            <Button
+              variant="contained"
+              style={{
+                backgroundColor: appColors.secondary,
+                color: 'white',
+              }}
+              onClick={this._onSubmit}
+            >
               Submit
             </Button>
             <Button
               variant="contained"
-              style={{ marginLeft: '20px' }}
+              style={{
+                marginLeft: '20px',
+                backgroundColor: appColors.secondary,
+                color: 'white',
+              }}
               type="button"
               onClick={this._onReset}
             >
               Reset
             </Button>
           </div>
+          <Box mt={2} />
         </Paper>
       </Box>
     );

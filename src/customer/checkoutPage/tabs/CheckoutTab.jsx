@@ -69,6 +69,8 @@ export default function CheckoutTab() {
 
   const elements = useElements();
 
+  const [expectedDelivery, setExpectedDelivery] = useState('');
+
   // Retrieve items from store context
   function getItemsCart() {
     var result = [];
@@ -93,10 +95,10 @@ export default function CheckoutTab() {
   const [deliveryFee, setDeliveryFee] = useState(products.length > 0 ? 5 : 0);
   const [serviceFee, setServiceFee] = useState(products.length > 0 ? 1.5 : 0);
   const [driverTip, setDriverTip] = useState('');
-  const [tax, setTax] = useState(subtotal * 0.075);
+  const [tax, setTax] = useState(0);
   const [total, setTotal] = useState(
     subtotal -
-      promoApplied +
+      promoApplied.toFixed(2) +
       deliveryFee +
       serviceFee +
       parseFloat(driverTip !== '' ? driverTip : 0) +
@@ -107,7 +109,7 @@ export default function CheckoutTab() {
     setTotal(
       subtotal > 0
         ? subtotal -
-            promoApplied +
+            promoApplied.toFixed(2) +
             deliveryFee +
             serviceFee +
             tax +
@@ -121,7 +123,7 @@ export default function CheckoutTab() {
   }, [products]);
 
   useEffect(() => {
-    setTax(subtotal * 0.075);
+    setTax(0);
     setServiceFee(subtotal > 0 ? 1.5 : 0);
   }, [subtotal]);
 
@@ -157,15 +159,18 @@ export default function CheckoutTab() {
     >
       <Box display="flex" flexDirection="column" height="90%" px={8}>
         {/* START: Expected Delivery */}
-        <Box
-          className={classes.section}
-          height="100px"
-          display="flex"
-          lineHeight="100px"
-        >
-          <Box color={appColors.secondary}>Expected Delivery</Box>
-          <Box flexGrow={1} />
-          <Box>Expected Delivery</Box>
+        <Box hidden={store.expectedDelivery !== ''} m={2} />
+        <Box hidden={store.expectedDelivery === ''}>
+          <Box
+            className={classes.section}
+            height="100px"
+            display="flex"
+            lineHeight="100px"
+          >
+            <Box color={appColors.secondary}>Expected Delivery</Box>
+            <Box flexGrow={1} />
+            <Box>{store.expectedDelivery}</Box>
+          </Box>
         </Box>
         {/* END: Expected Delivery */}
 

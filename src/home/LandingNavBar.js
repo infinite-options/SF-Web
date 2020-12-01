@@ -9,6 +9,7 @@ import { Box, Button } from '@material-ui/core';
 
 import appColors from 'styles/AppColors';
 import MenuNavButton from '../utils/MenuNavButton';
+import { AuthContext } from '../auth/AuthContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function LandingNavBar({ ...props }) {
   const classes = useStyles();
+  const auth = useContext(AuthContext);
 
   const loginClicked = () => {
     props.setIsSignUpShown(false);
@@ -48,24 +50,26 @@ export default function LandingNavBar({ ...props }) {
         <Toolbar>
           <MenuNavButton />
           <Box flexGrow={1} />
-          <Button
-            className={classes.authButton}
-            variant="contained"
-            size="small"
-            color="primary"
-            onClick={signUpClicked}
-          >
-            Sign Up
-          </Button>
-          <Button
-            className={classes.authButton}
-            variant="contained"
-            size="small"
-            color="secondary"
-            onClick={loginClicked}
-          >
-            Login
-          </Button>
+          <Box hidden={auth.isAuth}>
+            <Button
+              className={classes.authButton}
+              variant="contained"
+              size="small"
+              color="primary"
+              onClick={signUpClicked}
+            >
+              Sign Up
+            </Button>
+            <Button
+              className={classes.authButton}
+              variant="contained"
+              size="small"
+              color="secondary"
+              onClick={loginClicked}
+            >
+              Login
+            </Button>
+          </Box>
         </Toolbar>
       </AppBar>
     </div>

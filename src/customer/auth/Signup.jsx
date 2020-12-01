@@ -1,26 +1,14 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import { withStyles } from '@material-ui/styles';
 import TextField from '@material-ui/core/TextField';
-import { Box } from '@material-ui/core';
+import { Box, Button } from '@material-ui/core';
+import { withRouter } from 'react-router';
 import Paper from '@material-ui/core/Paper';
 import Background from '../../welcome-bg.png';
-import Button from '@material-ui/core/Button';
-import { withRouter } from 'react-router';
-import axios from 'axios';
+import CssTextField from '../../utils/CssTextField';
 import appColors from '../../styles/AppColors';
-
-const CssTextField = withStyles({
-  root: {
-    '& label.Mui-focused': {
-      color: appColors.secondary,
-    },
-    '& .MuiOutlinedInput-root': {
-      '&.Mui-focused fieldset': {
-        borderColor: appColors.secondary,
-      },
-    },
-  },
-})(TextField);
+import SocialLogin from '../../admin/SocialLogin';
 
 class Signup extends Component {
   constructor(props) {
@@ -383,6 +371,10 @@ class Signup extends Component {
               link in your email.
             </div>
           )}
+          <Box my={2}>
+            <Box>or</Box>
+          </Box>
+          <SocialLogin />
         </form>
       </Paper>
     );

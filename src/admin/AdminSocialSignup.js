@@ -6,6 +6,7 @@ import Paper from '@material-ui/core/Paper';
 // import Background from '../welcome-bg.png'
 import Button from '@material-ui/core/Button';
 import Cookies from 'js-cookie';
+import CssTextField from '../utils/CssTextField';
 import { AuthContext } from '../auth/AuthContext';
 
 import axios from 'axios';
@@ -286,7 +287,7 @@ function AdminSocialSignup(props) {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      // style={{ backgroundImage: `url(${Background})` }}
+      style={{ backgroundImage: `url(${'transparent-landing-bg.png'})` }}
     >
       <Paper
         style={{
@@ -298,48 +299,68 @@ function AdminSocialSignup(props) {
         }}
       >
         <p>SOCIAL SIGN UP</p>
-        <TextField
-          value={state.firstName}
-          onChange={_firstNameChange}
-          label="First Name"
-        />
-        <br />
-        <TextField
-          value={state.lastName}
-          onChange={_lastNameChange}
-          label="Last Name"
-        />
-        <br />
-        <TextField value={state.phone} onChange={_phoneChange} label="Phone" />
-        <br />
-        <TextField
-          value={state.address}
-          onChange={_addressChange}
-          label="Address"
-        />
-        <br />
-        <TextField value={state.unit} onChange={_unitChange} label="Unit" />
-        <br />
-        <TextField value={state.city} onChange={_cityChange} label="City" />
-        <br />
-        <TextField value={state.state} onChange={_stateChange} label="State" />
-        <br />
-        <TextField value={state.zip} onChange={_zipChange} label="Zip" />
-        <br />
-        <br />
-        <div>
-          <Button variant="contained" onClick={_onSubmit}>
-            Submit
-          </Button>
-          <Button
+        <form onSubmit={_onSubmit}>
+          <CssTextField
+            value={state.firstName}
+            onChange={_firstNameChange}
             variant="contained"
-            style={{ marginLeft: '20px' }}
-            type="button"
-            onClick={_onReset}
-          >
-            Reset
-          </Button>
-        </div>
+            label="First Name"
+          />
+          <br />
+          <CssTextField
+            value={state.lastName}
+            onChange={_lastNameChange}
+            variant="contained"
+            label="Last Name"
+          />
+          <br />
+          <CssTextField
+            value={state.phone}
+            onChange={_phoneChange}
+            label="Phone"
+          />
+          <br />
+          <CssTextField
+            value={state.address}
+            onChange={_addressChange}
+            label="Address"
+          />
+          <br />
+          <CssTextField
+            value={state.unit}
+            onChange={_unitChange}
+            label="Unit"
+          />
+          <br />
+          <CssTextField
+            value={state.city}
+            onChange={_cityChange}
+            label="City"
+          />
+          <br />
+          <CssTextField
+            value={state.state}
+            onChange={_stateChange}
+            label="State"
+          />
+          <br />
+          <CssTextField value={state.zip} onChange={_zipChange} label="Zip" />
+          <br />
+          <br />
+          <div>
+            <Button variant="contained" onClick={_onSubmit}>
+              Submit
+            </Button>
+            <Button
+              variant="contained"
+              style={{ marginLeft: '20px' }}
+              type="button"
+              onClick={_onReset}
+            >
+              Reset
+            </Button>
+          </div>
+        </form>
       </Paper>
     </Box>
   );
