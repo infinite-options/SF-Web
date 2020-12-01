@@ -67,7 +67,7 @@ export default function CheckoutTab() {
   const classes = useStyles();
   const store = useContext(storeContext);
   const checkout = useContext(checkoutContext);
-  const elements = useElements();
+
   const {setPaymentProcessing, setLeftTabChosen} = checkout;
   // Retrieve items from store context
   function getItemsCart() {
