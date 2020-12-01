@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-
 import {
   Box,
   Button,
@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
 //TODO:  add Google, Apple, and Facebook login to sign up
 const Landing = ({ ...props }) => {
   const auth = useContext(AuthContext);
+  const history = useHistory();
   const classes = useStyles();
 
   // Toggles for the login and signup box to be passed in as props to the Landing Nav Bar
@@ -97,7 +98,7 @@ const Landing = ({ ...props }) => {
         cookies.set('city', city);
         cookies.set('state', state);
         cookies.set('zip', zip);
-        window.location.href = `${window.location.origin.toString()}/store`;
+        history.push('/store');
       } else {
         createError('Sorry, we could not find this location');
       }
@@ -180,31 +181,29 @@ const Landing = ({ ...props }) => {
         {/* END: Local Produce Search */}
 
         {/* START: Login/SignUp Modal */}
-        <Box hidden={auth.isAuth}>
+        <Box display="flex" justifyContent="flex-end">
+          {/* Login Modal */}
+          <Box
+            position="absolute"
+            width="50%"
+            display="flex"
+            justifyContent="center"
+          >
+            <Box className={classes.authModal} hidden={!isLoginShown}>
+              <AdminLogin />
+            </Box>
+          </Box>
+
+          {/* Sign Up Modal */}
           <Box display="flex" justifyContent="flex-end">
-            {/* Login Modal */}
             <Box
               position="absolute"
               width="50%"
               display="flex"
               justifyContent="center"
             >
-              <Box className={classes.authModal} hidden={!isLoginShown}>
-                <AdminLogin />
-              </Box>
-            </Box>
-
-            {/* Sign Up Modal */}
-            <Box display="flex" justifyContent="flex-end">
-              <Box
-                position="absolute"
-                width="50%"
-                display="flex"
-                justifyContent="center"
-              >
-                <Box className={classes.authModal} hidden={!isSignUpShown}>
-                  <Signup />
-                </Box>
+              <Box className={classes.authModal} hidden={!isSignUpShown}>
+                <Signup />
               </Box>
             </Box>
           </Box>

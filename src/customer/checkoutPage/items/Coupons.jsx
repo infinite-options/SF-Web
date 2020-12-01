@@ -35,12 +35,12 @@ const responsive = {
 export default function Coupons(props) {
   const store = useContext(storeContext);
 
-  // TODO:  Coupon properties: Title, Message, Expiration, Saving
-  // TODO:  if threshold is 0 "No minimum purchase"
+  // DONE:  Coupon properties: Title, Message, Expiration, Saving
+  // DONE:  if threshold is 0 "No minimum purchase"
   // DONE:  Sort coupons to be selected, available, unavailable
   // DONE:  Grab coupons from backend API
   // TODO:  Implement and add how much needed (threshold - subtotal): ex.Buy $10 more produce to be eligible
-  // TODO:  Add how much saved
+  // DONE:  Add how much saved
   // DONE:  Add expiration date
   const [avaiCouponData, setAvaiCouponData] = useState([]);
   const [unavaiCouponData, setUnavaiCouponData] = useState([]);
