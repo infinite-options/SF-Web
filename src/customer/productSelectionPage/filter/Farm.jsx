@@ -1,14 +1,14 @@
-import React, {useContext, useState} from "react";
-import ProdSelectContext from "../prodSelectContext";
-import FarmCard from "./cards/FarmCard";
-import {makeStyles} from "@material-ui/core/styles";
-import {Box, Grid} from "@material-ui/core";
+import React, { useContext, useState } from 'react';
+import ProdSelectContext from '../ProdSelectContext';
+import FarmCard from './cards/FarmCard';
+import { makeStyles } from '@material-ui/core/styles';
+import { Box, Grid } from '@material-ui/core';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
-    textAlign: "center",
-    fontSize: 10
-  }
+    textAlign: 'center',
+    fontSize: 10,
+  },
 }));
 
 const FarmCategory = () => {
