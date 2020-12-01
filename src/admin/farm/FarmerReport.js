@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme) => ({
     //   flexGrow: 1,
     //   backgroundColor: 'white',
     // },
+    reportLink: {
+        textDecoration: 'none',
+    },
     reportButtonsSection: {
         float: 'left',
         textAlign: 'left',
@@ -206,75 +209,45 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
         handleCancel, handleCopy, handleDelete, handleItemDelete
     };
 
-    // const downloadOpenOrderDetails = () => {
-    //     let openOrderReports = orders;
-    //     openOrderReports.filter(order => order.delivery_status === null || order.delivery_status.toLowerCase() === "no");
-    //     openOrderReports = openOrderReports.map(order => {
-    //         let orderCopy = {
-    //             // 'Purchase': order.purchase_id,
-    //             'Purchase Time': order.purchase_date,
-    //             'First Name': order.delivery_first_name,
-    //             'Last Name': order.delivery_last_name,
-    //             'Phone': order.delivery_phone_num,
-    //             'Email': order.delivery_email,
-    //             'Address': order.delivery_address,
-    //             'City': order.delivery_city,
-    //             'State': order.delivery_state,
-    //             'Zip': order.delivery_zip,
-    //             'Total': order.Amount,
-    //             items: order.items
-    //         }
-    //         if(typeof orderCopy.items === 'string') {
-    //             let orderItems = JSON.parse(order.items)
-    //             orderItems = orderItems.map(item => ({
-    //                 'Item Quantity': item.qty,
-    //                 'Item Price': item.price,
-    //                 'Item Name': item.name,
-    //             }))
-    //             orderCopy.items = orderItems
-    //         }
-    //         return orderCopy;
-    //     })
-    //     let orderReportList = []
-    //     for (const orderReport of openOrderReports) {
-    //         for (const orderItem of orderReport.items) {
-    //             let newReport = {
-    //                 ...orderReport,
-    //                 ...orderItem,
-    //             };
-    //             delete newReport.items;
-    //             orderReportList.push(newReport);
-    //         }
-    //     }
-    //     console.log(orderReportList)
-    // }
-
     return (    
         <div hidden={props.hidden}>
             <div style={labelStyle}>
                 <h2>Open Orders</h2>
             </div>
             <div className={classes.reportButtonsSection}>
-                {/* <a href="http://spatialkeydocs.s3.amazonaws.com/FL_insurance_sample.csv" download="orders.csv"> */}
+                <a
+                    href={"https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/order," + farmID}
+                    className={classes.reportLink}
+                >
                     <Button
                         variant='contained'
                         className={classes.reportButtons}
                     >
                         Order Details
                     </Button>
-                {/* </a> */}
-                <Button
-                    variant='contained'
-                    className={classes.reportButtons}
+                </a>
+                <a
+                    href={"https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/customer," + farmID}
+                    className={classes.reportLink}
                 >
-                    Customer Details
-                </Button>
-                <Button
-                    variant='contained'
-                    className={classes.reportButtons}
+                    <Button
+                        variant='contained'
+                        className={classes.reportButtons}
+                    >
+                        Customer Details
+                    </Button>
+                </a>
+                <a
+                    href={"https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/pivot," + farmID}
+                    className={classes.reportLink}
                 >
-                    Pivot Table
-                </Button>
+                    <Button
+                        variant='contained'
+                        className={classes.reportButtons}
+                    >
+                        Pivot Table
+                    </Button>
+                </a>
             </div>
             <div className={classes.reportButtonsRightSection}>
                 <Button
