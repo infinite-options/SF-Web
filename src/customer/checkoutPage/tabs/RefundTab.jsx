@@ -74,7 +74,7 @@ const useStyles = makeStyles({
   },
 });
 
-//TODO: reformat and fix spelling
+// TODO: reformat and fix spelling
 const RefundTab = () => {
   const { profile } = useContext(storeContext);
   const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);

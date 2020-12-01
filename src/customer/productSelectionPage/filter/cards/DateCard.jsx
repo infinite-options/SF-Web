@@ -79,6 +79,7 @@ const DateCard = (props) => {
     }
   }, [productSelect.daysClicked]);
 
+  // TODO: figure out a whether to do || or && for farms
   useEffect(() => {
     let _showCard = productSelect.farmsClicked.size == 0 ? true : false;
     productSelect.farmsClicked.forEach((farmId) => {

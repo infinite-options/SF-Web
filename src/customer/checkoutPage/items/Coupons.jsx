@@ -40,6 +40,7 @@ export default function Coupons(props) {
   // DONE:  Sort coupons to be selected, available, unavailable
   // DONE:  Grab coupons from backend API
   // TODO:  Implement and add how much needed (threshold - subtotal): ex.Buy $10 more produce to be eligible
+  // TODO:  change saving with subtotal
   // DONE:  Add how much saved
   // DONE:  Add expiration date
   const [avaiCouponData, setAvaiCouponData] = useState([]);
