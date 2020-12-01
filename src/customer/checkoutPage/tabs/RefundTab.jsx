@@ -74,6 +74,7 @@ const useStyles = makeStyles({
   },
 });
 
+//TODO: reformat and fix spelling
 const RefundTab = () => {
   const { profile } = useContext(storeContext);
   const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
@@ -148,7 +149,7 @@ const RefundTab = () => {
             Easy Peasy Return Instructions
           </h3>
           <p>1. Take a picture of what you want to return.</p>
-          <p>2. Enter your email address and a not (required)</p>
+          <p>2. Enter your email address and a note (required)</p>
           <p>3. Press send</p>
           <p>
             We'll either add your items to our next delivery or issue you a

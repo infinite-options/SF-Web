@@ -4,6 +4,7 @@ import appColors from '../styles/AppColors';
 
 const CssTextField = withStyles({
   root: {
+    backgroundColor: '#fcfcfb',
     '& label.Mui-focused': {
       color: appColors.secondary,
     },
@@ -11,6 +12,12 @@ const CssTextField = withStyles({
       '&.Mui-focused fieldset': {
         borderColor: appColors.secondary,
       },
+    },
+    '&:hover': {
+      backgroundColor: '#fff',
+    },
+    '&$focused': {
+      backgroundColor: '#fff',
     },
   },
 })(TextField);

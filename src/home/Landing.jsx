@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-
+import React, { useContext, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import Cookies from 'universal-cookie';
 import {
   Box,
   Button,
@@ -17,19 +18,10 @@ import AdminLogin from '../admin/AdminLogin';
 import Signup from '../customer/auth/Signup';
 import appColors from '../styles/AppColors';
 import FindLongLatWithAddr from '../utils/FindLongLatWithAddr';
+import CssTextField from '../utils/CssTextField';
+import { AuthContext } from 'auth/AuthContext';
 
-const CssTextField = withStyles({
-  root: {
-    '& label.Mui-focused': {
-      color: appColors.secondary,
-    },
-    '& .MuiOutlinedInput-root': {
-      '&.Mui-focused fieldset': {
-        borderColor: appColors.secondary,
-      },
-    },
-  },
-})(TextField);
+const cookies = new Cookies();
 
 const styles = {
   paddingTop: '70px',
@@ -49,8 +41,10 @@ const useStyles = makeStyles((theme) => ({
 
 //backgroundImage:`url(${Background})`,
 
-//DONE: get long and lat for guest with find local produce
+//TODO:  add Google, Apple, and Facebook login to sign up
 const Landing = ({ ...props }) => {
+  const auth = useContext(AuthContext);
+  const history = useHistory();
   const classes = useStyles();
 
   // Toggles for the login and signup box to be passed in as props to the Landing Nav Bar
@@ -79,7 +73,7 @@ const Landing = ({ ...props }) => {
       );
       return;
     }
-    const stateZip = locationProps[2].split(' ');
+    const stateZip = locationProps[2].trim().split(' ');
     if (stateZip.length !== 2) {
       createError(
         'Please use the following format: Address, City, State Zipcode'
@@ -95,17 +89,21 @@ const Landing = ({ ...props }) => {
     let state = stateZip[0];
     let zip = stateZip[1];
 
-    const { status, long, lat } = FindLongLatWithAddr(
-      address,
-      city,
-      state,
-      zip
-    );
-
-    if (status === 'found') {
-    }
+    FindLongLatWithAddr(address, city, state, zip).then((res) => {
+      console.log('res: ', res);
+      if (res.status === 'found') {
+        cookies.set('longitude', res.longitude);
+        cookies.set('latitude', res.latitude);
+        cookies.set('address', address);
+        cookies.set('city', city);
+        cookies.set('state', state);
+        cookies.set('zip', zip);
+        history.push('/store');
+      } else {
+        createError('Sorry, we could not find this location');
+      }
+    });
   };
-
   const handleClose = () => {
     console.log('close');
     setIsLoginShown(false);
@@ -113,7 +111,13 @@ const Landing = ({ ...props }) => {
   };
 
   return (
-    <div style={{ backgroundImage: `url(${'./welcome-bg.png'})` }}>
+    <Box
+      height={window.innerHeight}
+      style={{
+        backgroundSize: '1000px',
+        backgroundImage: `url(${'transparent-landing-bg.png'})`,
+      }}
+    >
       <LandingNavBar
         isLoginShown={isLoginShown}
         setIsLoginShown={setIsLoginShown}
@@ -206,7 +210,7 @@ const Landing = ({ ...props }) => {
         </Box>
         {/* END: Login/SignUp Modal */}
       </Box>
-    </div>
+    </Box>
   );
 };
 
