@@ -48,9 +48,9 @@ export default function Coupons(props) {
   // TODO testing:  change saving with need to be eligible
   // DONE:  Add how much saved
   // DONE:  Add expiration date
-  // TODO:  See if dots in carosel view can move down
+  // DONE:  See if dots in carosel view can move down
   // BUG:   amountSaved is the same on every coupon on first
-  //
+  // TODO:  take out spend $0 on free coupon
   const [avaiCouponData, setAvaiCouponData] = useState([]);
   const [unavaiCouponData, setUnavaiCouponData] = useState([]);
 

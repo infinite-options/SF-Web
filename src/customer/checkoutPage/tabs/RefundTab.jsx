@@ -58,7 +58,7 @@ const useStyles = makeStyles({
   },
 });
 
-// TODO: reformat and fix spelling
+// TODO: check auto-load email
 const RefundTab = () => {
   const { profile } = useContext(storeContext);
   const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
@@ -142,12 +142,15 @@ const RefundTab = () => {
           <h3 style={{ textAlign: 'center' }}>
             Easy Peasy Return Instructions
           </h3>
-          <p>1. Take a picture of what you want to return.</p>
-          <p>2. Enter your email address and a note (required)</p>
+          <p>
+            1. Take a picture of what you want to return (not required for
+            missing items)
+          </p>
+          <p>2. Enter your email address and a short note (required)</p>
           <p>3. Press send</p>
           <p>
             We'll either add your items to our next delivery or issue you a
-            coupon code for your nex order! Tell us if you have a preference.
+            coupon code for your next order! Tell us if you have a preference.
             Easy peasy!
           </p>
         </div>
