@@ -30,7 +30,7 @@ export default function LandingNavBar({ ...props }) {
   const auth = useContext(AuthContext);
   const history = useHistory();
 
-  const badgeContent = localStorage.getItem('cartTotal') || 0;
+  const badgeContent = parseInt(localStorage.getItem('cartTotal') || '0');
   console.log('badgeContent: ' + badgeContent);
 
   const loginClicked = () => {
