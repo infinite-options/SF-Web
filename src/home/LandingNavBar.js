@@ -1,11 +1,13 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import StorefrontIcon from '@material-ui/icons/Storefront';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import { Box, Button } from '@material-ui/core';
+import { Box, Button, IconButton, Badge } from '@material-ui/core';
 
 import appColors from 'styles/AppColors';
 import MenuNavButton from '../utils/MenuNavButton';
@@ -26,7 +28,10 @@ const useStyles = makeStyles((theme) => ({
 export default function LandingNavBar({ ...props }) {
   const classes = useStyles();
   const auth = useContext(AuthContext);
+  const history = useHistory();
 
+  const badgeContent = localStorage.getItem('cartTotal') || 0;
+  console.log('badgeContent: ' + badgeContent);
   const loginClicked = () => {
     props.setIsSignUpShown(false);
     props.setIsLoginShown(!props.isLoginShown);
@@ -36,6 +41,15 @@ export default function LandingNavBar({ ...props }) {
     props.setIsLoginShown(false);
     props.setIsSignUpShown(!props.isSignUpShown);
   };
+
+  function handleStoreClick() {
+    localStorage.setItem('currentStorePage', 1);
+    history.push('/store');
+  }
+  function handleCartClick() {
+    localStorage.setItem('currentStorePage', 0);
+    history.push('/store');
+  }
 
   return (
     <div className={classes.root}>
@@ -50,6 +64,24 @@ export default function LandingNavBar({ ...props }) {
         <Toolbar>
           <MenuNavButton />
           <Box flexGrow={1} />
+          <Box hidden={!auth.isAuth}>
+            <IconButton edge="end" className="link">
+              <StorefrontIcon
+                fontSize="large"
+                color={'default'}
+                onClick={handleCartClick}
+              />
+            </IconButton>
+            <IconButton edge="end" className="link">
+              <Badge badgeContent={badgeContent} color="primary">
+                <ShoppingCartIcon
+                  fontSize="large"
+                  color={'default'}
+                  onClick={handleStoreClick}
+                />
+              </Badge>
+            </IconButton>
+          </Box>
           <Box hidden={auth.isAuth}>
             <Button
               className={classes.authButton}

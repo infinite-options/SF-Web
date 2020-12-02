@@ -29,7 +29,12 @@ function createProduct2(product) {
     />
   );
 }
+// TODO: Duplicate items with manually set prices will be sent over
+//       depending on the day and/or farms selected, choose the farm
+//       that has the lowest price associated with that product and set
+//       the farm's buisness_id to be associated with the product in payment json
 
+// TODO: check to majke sure product status === 'Active'
 function DisplayProduct() {
   const productSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);

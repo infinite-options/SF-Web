@@ -125,7 +125,7 @@ const RefundTab = () => {
           style={{
             borderColor: appColors.border,
             backgroundColor: 'white',
-            width: '600px',
+            width: '300px',
           }}
         >
           Upload File

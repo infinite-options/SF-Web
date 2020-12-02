@@ -15,6 +15,11 @@ function calculateSubTotal(items) {
 }
 
 const responsive = {
+  superLargeDesktop: {
+    breakpoint: { max: 3000, min: 1370 },
+    items: 4,
+    partialVisibilityGutter: 10,
+  },
   desktop: {
     breakpoint: { max: 3000, min: 1370 },
     items: 3,
@@ -45,6 +50,7 @@ export default function Coupons(props) {
   // DONE:  Add expiration date
   // TODO:  See if dots in carosel view can move down
   // BUG:   amountSaved is the same on every coupon on first
+  //
   const [avaiCouponData, setAvaiCouponData] = useState([]);
   const [unavaiCouponData, setUnavaiCouponData] = useState([]);
 
@@ -211,7 +217,7 @@ export default function Coupons(props) {
     }
 
     return (
-      <Box key={props.key} property="div" mx={1}>
+      <Box key={props.key} height="115px" mt={2} property="div" mx={1}>
         <Box
           onClick={onCouponClick}
           style={{
@@ -237,7 +243,7 @@ export default function Coupons(props) {
             </Box>
             <Box fontSize="10px">
               {/* +1 because JS date object function returns months from 0-11 and similarly for days */}
-              Exp: {coupProps.expDate.getDay() + 1}/
+              Expires: {coupProps.expDate.getDay() + 1}/
               {coupProps.expDate.getMonth() + 1}/
               {coupProps.expDate.getFullYear()}
             </Box>
@@ -247,7 +253,7 @@ export default function Coupons(props) {
               fontStyle="oblique"
             >
               {/* +1 because JS date object function returns months from 0-11 and similarly for days */}
-              Spend at least ${coupProps.amountNeeded.toFixed(2)} to be eligible
+              Spend ${coupProps.amountNeeded.toFixed(2)} to activate
             </Box>
             <Box
               hidden={coupProps.status === 'unavailable'}

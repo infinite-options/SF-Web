@@ -100,7 +100,7 @@ export default function StoreNavBar(props) {
               Login
             </Button>
           </Box> */}
-          <IconButton edge="end" className="link" to="/cart">
+          <IconButton edge="end" className="link">
             <Badge badgeContent={itemsAmount} color="primary">
               <ShoppingCartIcon
                 fontSize="large"
