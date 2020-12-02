@@ -42,15 +42,16 @@ export default function Coupons(props) {
 
   // DONE:  Coupon properties: Title, Message, Expiration, Saving
   // DONE:  if threshold is 0 "No minimum purchase"
+  // TODO:  if amountNeeded is 0 take out needed message
   // DONE:  Sort coupons to be selected, available, unavailable
   // DONE:  Grab coupons from backend API
   // DONE:  Implement and add how much needed (threshold - subtotal): ex.Buy $10 more produce to be eligible
   // TODO testing:  change saving with need to be eligible
   // DONE:  Add how much saved
   // DONE:  Add expiration date
-  // DONE:  See if dots in carosel view can move down
+  // TODO:  See if dots in carosel view can move down
   // BUG:   amountSaved is the same on every coupon on first
-  // TODO:  take out spend $0 on free coupon
+  //
   const [avaiCouponData, setAvaiCouponData] = useState([]);
   const [unavaiCouponData, setUnavaiCouponData] = useState([]);
 
@@ -75,7 +76,8 @@ export default function Coupons(props) {
         ),
         amountNeeded: coupon.threshold - props.subtotal,
         expDate: coupon.expDate,
-        status: props.subtotal > coupon.threshold ? 'available' : 'unavailable',
+        status:
+          props.subtotal >= coupon.threshold ? 'available' : 'unavailable',
       };
       if (couponData.status === 'available') {
         availableCoupons.push(couponData);
@@ -144,7 +146,7 @@ export default function Coupons(props) {
                 ),
                 amountNeeded: couponsRes[i].threshold - props.subtotal,
                 status:
-                  props.subtotal > couponsRes[i].threshold
+                  props.subtotal >= couponsRes[i].threshold
                     ? 'available'
                     : 'unavailable',
               };
