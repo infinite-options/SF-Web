@@ -10,6 +10,7 @@ import CartItem from '../items/cartItem';
 import storeContext from '../../storeContext';
 import checkoutContext from '../CheckoutContext';
 import PlaceOrder from '../PlaceOrder';
+import PayPal from './Paypal';
 import Coupons from '../items/Coupons';
 
 const useStyles = makeStyles({
@@ -66,11 +67,12 @@ function listItem(item) {
 export default function CheckoutTab() {
   const classes = useStyles();
   const store = useContext(storeContext);
-
+  const checkout = useContext(checkoutContext);
+  const [paypal, setPaypal] = useState(false);
   const elements = useElements();
 
   const [expectedDelivery, setExpectedDelivery] = useState('');
-
+  const { setPaymentProcessing, setLeftTabChosen } = checkout;
   // Retrieve items from store context
   function getItemsCart() {
     var result = [];
@@ -104,7 +106,7 @@ export default function CheckoutTab() {
       parseFloat(driverTip !== '' ? driverTip : 0) +
       tax
   );
-
+  const { setAmountDue, setAmountPaid, setDiscount } = checkout;
   useEffect(() => {
     setTotal(
       subtotal > 0
@@ -116,10 +118,29 @@ export default function CheckoutTab() {
             parseFloat(driverTip !== '' ? driverTip : 0)
         : 0
     );
+    setAmountPaid(
+      subtotal > 0
+        ? parseFloat(
+            (
+              subtotal -
+              promoApplied +
+              deliveryFee +
+              serviceFee +
+              tax +
+              parseFloat(driverTip !== '' ? driverTip : 0)
+            ).toFixed(2)
+          )
+        : 0
+    );
+    setDiscount(parseFloat(promoApplied.toFixed(2)));
   }, [subtotal, promoApplied, deliveryFee, driverTip]);
 
   useEffect(() => {
     setSubtotal(calculateSubTotal(products));
+    let amountDue = parseFloat(
+      (calculateSubTotal(products) + deliveryFee + serviceFee).toFixed(2)
+    );
+    setAmountDue(amountDue);
   }, [products]);
 
   useEffect(() => {
@@ -146,6 +167,15 @@ export default function CheckoutTab() {
     //   // error, display the localized error message to your customer
     //   // using `result.error.message`.
     // }
+    if (paymentType === 'STRIPE') {
+      // let user confirm their info before process
+      console.log('Stripe is clicked');
+      setPaymentProcessing(true);
+      setLeftTabChosen(0);
+    } else if (paymentType === 'PAYPAL') {
+      console.log('Paypal is loading');
+      setPaypal(true);
+    }
   }
 
   return (
@@ -258,26 +288,36 @@ export default function CheckoutTab() {
       </Box>
       {/* END: Pricing */}
 
-      {/* START: Payment Buttons */}
-      <Box display="flex" flexDirection="column" px="30%">
-        <Button
-          className={classes.button}
-          size="small"
-          variant="contained"
-          color="primary"
-        >
-          Pay with PayPal
-        </Button>
-        <Button
-          className={classes.button}
-          size="small"
-          variant="contained"
-          color="primary"
-          onClick={onPayWithClicked('STRIPE')}
-        >
-          Pay with Stripe
-        </Button>
-        {/* END: Payment Buttons */}
+        {/* START: Payment Buttons */}
+        {!paypal ? (
+          <Box display="flex" flexDirection="column" px="30%">
+            <Button
+              className={classes.button}
+              size="small"
+              variant="contained"
+              color="primary"
+              onClick={() => onPayWithClicked('PAYPAL')}
+            >
+              Pay with PayPal
+            </Button>
+            <Button
+              className={classes.button}
+              size="small"
+              variant="contained"
+              color="primary"
+              onClick={() => onPayWithClicked('STRIPE')}
+            >
+              Pay with Stripe
+            </Button>
+            {/* END: Payment Buttons */}
+          </Box>
+        ) : (
+          <PayPal
+            value={total}
+            setPaypal={setPaypal}
+            setCartItems={store.setCartItems}
+          />
+        )}
       </Box>
     </Box>
   );

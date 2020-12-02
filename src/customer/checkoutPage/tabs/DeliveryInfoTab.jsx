@@ -7,6 +7,7 @@ import appColors from "../../../styles/AppColors";
 import Signup from "../../auth/Signup";
 import {AuthContext} from "../../../auth/AuthContext";
 import StoreContext from "../../storeContext";
+import checkoutContext from "../CheckoutContext";
 import CssTextField from "../../../utils/CssTextField";
 
 const useStyles = makeStyles({
@@ -30,6 +31,7 @@ export default function DeliveryInfoTab() {
 
   // Setting so that the store context isn't constantly re-rendered
   const [userInfo, setUserInfo] = useState(store.profile);
+  const {paymentProcessing, setLeftTabChosen} = useContext(checkoutContext);
 
   useEffect(() => {
     if (store.profile !== {}) {
@@ -44,7 +46,9 @@ export default function DeliveryInfoTab() {
   const onSubmit = () => {
     setProfile({...userInfo});
   };
-
+  const onConfirm = () => {
+    setLeftTabChosen(4);
+  };
   const onLoad = React.useCallback(function callback(map) {
     const bounds = new window.google.maps.LatLngBounds();
     map.fitBounds(bounds);
@@ -214,15 +218,27 @@ export default function DeliveryInfoTab() {
           value: userInfo.deliveryInstructions
         })}
         <Box mt={3}>
-          <Button
-            className={classes.button}
-            variant='outlined'
-            size='small'
-            color='paragraphText'
-            onClick={onSubmit}
-          >
-            Save Changes
-          </Button>
+          {paymentProcessing ? (
+            <Button
+              className={classes.button}
+              variant='outlined'
+              size='small'
+              color='paragraphText'
+              onClick={onConfirm}
+            >
+              CONFIRM
+            </Button>
+          ) : (
+            <Button
+              className={classes.button}
+              variant='outlined'
+              size='small'
+              color='paragraphText'
+              onClick={onSubmit}
+            >
+              Save Changes
+            </Button>
+          )}
         </Box>
         {/* <LoadScript googleMapsApiKey={process.env.REACT_APP_BING_LOCATION_KEY}>
           <GoogleMap
