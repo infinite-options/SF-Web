@@ -69,7 +69,7 @@ const PaymentTab = () => {
   const elements = useElements();
   const stripe = useStripe();
   const options = useOptions();
-  const { profile, cartItems } = useContext(storeContext);
+  const { profile, cartItems, setCartItems } = useContext(storeContext);
 
   const { amountPaid, amountDue, discount } = useContext(checkoutContext);
 
@@ -154,8 +154,12 @@ const PaymentTab = () => {
       };
 
       console.log('data sending: ', data);
-      let res = await axios.post('http://127.0.0.1:4000/api/v2/checkout', data);
+      let res = await axios.post(
+        'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/checkout',
+        data
+      );
       cardElement.clear();
+      setCartItems({});
     } catch (err) {
       console.log('error happened while posting to Stripe_Intent api', err);
     }
