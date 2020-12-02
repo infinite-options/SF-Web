@@ -2,13 +2,14 @@ import React, { useState, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import appColors from '../../../styles/AppColors';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Button';
 import blankImg from '../../../images/blank_img.svg';
 import storeContext from '../../storeContext';
 import axios from 'axios';
 //this part for Material UI
 const useStyles = makeStyles({
   root: {
-    flexGrow: 1,
     backgroundColor: appColors.componentBg,
     borderTopLeftRadius: 25,
   },
@@ -24,20 +25,6 @@ const useStyles = makeStyles({
     width: '100%',
     height: '100%',
     display: 'block',
-  },
-  uploadBtn: {
-    width: '70%',
-    height: '40px',
-    backgroundColor: 'white',
-    color: '#FF8500',
-    fontWeight: 'bold',
-    border: '1px solid #E5E5E5',
-    borderRadius: '10px',
-    textAlign: 'center',
-    margin: '50px auto 20px auto ',
-    alignSelf: 'center',
-    verticalAlign: 'center',
-    overflow: 'hidden',
   },
   upload_btn_wrapper: {
     position: 'relative',
@@ -69,12 +56,9 @@ const useStyles = makeStyles({
     fontSize: '20px',
     textAlign: 'center',
   },
-  ml: {
-    marginLeft: '20px',
-  },
 });
 
-//TODO: reformat and fix spelling
+// TODO: reformat and fix spelling
 const RefundTab = () => {
   const { profile } = useContext(storeContext);
   const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
@@ -131,18 +115,28 @@ const RefundTab = () => {
           alt="Please choose a image"
         />
       </div>
-      {/* <div class='upload-btn-wrapper'>
-        <button class='btn'>Upload a file</button>
-        <input type='file' name='imageUpload' onChange={handleImgChange} />
-      </div> */}
-      <div className={classes.uploadBtn}>
-        Choose a Photo from Gallery
-        <input
-          type="file"
+      <Box my={4}>
+        <Button
           onChange={handleImgChange}
-          className={classes.chooseImg}
-        />
-      </div>
+          variant="outlined"
+          color="primary"
+          component="label"
+          fullWidth
+          style={{
+            borderColor: appColors.border,
+            backgroundColor: 'white',
+            width: '300px',
+          }}
+        >
+          Upload File
+          <input
+            onChange={handleImgChange}
+            type="file"
+            accept="image/*"
+            hidden
+          />
+        </Button>
+      </Box>
       <div>
         <div className={classes.easyPeasy}>
           <h3 style={{ textAlign: 'center' }}>
@@ -171,6 +165,7 @@ const RefundTab = () => {
             placeholder="Return Description"
             value={returnDesc}
             onChange={(e) => setReturnDesc(e.target.value)}
+            style={{ fontFamily: 'Arial', resize: 'vertical' }}
           />
           <button
             className={classes.sendEmail + ' ' + classes.sendBtn}

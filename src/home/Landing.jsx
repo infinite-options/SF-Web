@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 
 //backgroundImage:`url(${Background})`,
 
-//TODO:  add Google, Apple, and Facebook login to sign up
+//DONE:  add Google, Apple, and Facebook login to sign up
 const Landing = ({ ...props }) => {
   const auth = useContext(AuthContext);
   const history = useHistory();
@@ -83,7 +83,7 @@ const Landing = ({ ...props }) => {
     setError('');
     setErrorMessage('');
 
-    // TODO: Save for guest checkout
+    // DONE: Save for guest checkout
     let address = locationProps[0];
     let city = locationProps[1];
     let state = stateZip[0];

@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import CssTextField from '../../utils/CssTextField';
 import appColors from '../../styles/AppColors';
 import Background from '../../welcome-bg.png';
+import { AuthContext } from '../../auth/AuthContext';
 
 import axios from 'axios';
 
@@ -154,6 +155,7 @@ class Signup extends Component {
   };
 
   _onSubmit = () => {
+    const auth = this.context;
     axios
       .get('https://dev.virtualearth.net/REST/v1/Locations/', {
         params: {
@@ -241,9 +243,12 @@ class Signup extends Component {
               }
             )
             .then((res) => {
+              // TODO: save the right content into cookies and set right auth state
               console.log(res);
               let customerInfo = res.data.result;
               Cookies.set('customer_uid', customerInfo.customer_uid);
+              auth.setIsAuth(true);
+              auth.setAuthLevel(0);
               this.props.history.push('/store');
             })
             .catch((err) => {
@@ -393,5 +398,7 @@ class Signup extends Component {
     );
   }
 }
+
+Signup.contextType = AuthContext;
 
 export default Signup;

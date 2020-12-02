@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-// BUG: When all of the days, farms, and items are selected, KEM Farms - Berries produce stays up
+// Fixed: When all of the days, farms, and items are selected, KEM Farms - Berries produce stays up
 //      It may have to do with the fact that KEM Farms delivers at two times on Friday
 //      To recreate: from Prashant's Lat and Long click on the two Fridays, then click on Royal Greens Farms
 //          - Basically the two fridays, and then a farm that doesn't have those friday to make them disappear
@@ -70,9 +70,13 @@ const StoreFilter = () => {
       // The whole goal is to get all of the days with their times that are available within the customer zone
       while (default7Days.length < store.numDeliveryTimes && i < 30) {
         var today = new Date();
+        var onePm = new Date(0, 0, 0, 13, 0, 0, 0);
         // +1 to start from tomorrow
-        // TODO: after 1pm change to + 2
-        today.setDate(today.getDate() + 1 + i);
+        // DONE, needs testing: after 1pm change to + 2
+
+        today.setDate(
+          today.getDate() + (today.getHours() < onePm.getHours() ? 1 : 2) + i
+        );
 
         // toUpperCase because the dictionary stores in upper case
         const todaysDayUpper = fullDays[today.getDay()].toUpperCase();

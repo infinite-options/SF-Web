@@ -6,6 +6,7 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import Cookies from 'universal-cookie';
 import Nav from './Nav';
 import { AdminFarmContext } from './admin/AdminFarmContext';
+import { ConfirmationServiceProvider } from './services/ConfirmationService';
 
 import { AuthContext } from './auth/AuthContext';
 import axios from 'axios';
@@ -111,30 +112,32 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <ThemeProvider theme={theme}>
-          <AuthContext.Provider
-            value={{ isAuth, setIsAuth, authLevel, setAuthLevel }}
-          >
-            {authLevel >= 1 ? (
-              <AdminFarmContext.Provider
-                value={{
-                  farmID,
-                  setFarmID,
-                  timeChange,
-                  setTimeChange,
-                  deliveryTime,
-                  setDeliveryTime,
-                  tab,
-                  setTab,
-                }}
-              >
+        <ConfirmationServiceProvider>
+          <ThemeProvider theme={theme}>
+            <AuthContext.Provider
+              value={{ isAuth, setIsAuth, authLevel, setAuthLevel }}
+            >
+              {authLevel >= 1 ? (
+                <AdminFarmContext.Provider
+                  value={{
+                    farmID,
+                    setFarmID,
+                    timeChange,
+                    setTimeChange,
+                    deliveryTime,
+                    setDeliveryTime,
+                    tab,
+                    setTab,
+                  }}
+                >
+                  <Nav isAuth={isAuth} authLevel={authLevel} />
+                </AdminFarmContext.Provider>
+              ) : (
                 <Nav isAuth={isAuth} authLevel={authLevel} />
-              </AdminFarmContext.Provider>
-            ) : (
-              <Nav isAuth={isAuth} authLevel={authLevel} />
-            )}
-          </AuthContext.Provider>
-        </ThemeProvider>
+              )}
+            </AuthContext.Provider>
+          </ThemeProvider>
+        </ConfirmationServiceProvider>
       </div>
     </Router>
   );
