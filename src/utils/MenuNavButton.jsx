@@ -68,6 +68,11 @@ function MenuListComposition(props) {
 
   const handleClickLogOut = () => {
     Auth.setIsAuth(false);
+    Auth.setAuthLevel(0);
+
+    localStorage.removeItem('currentStorePage');
+    localStorage.removeItem('cartTotal');
+    localStorage.removeItem('cartItems');
     Cookies.remove('login-session');
     Cookies.remove('customer_uid');
     props.history.push('/');

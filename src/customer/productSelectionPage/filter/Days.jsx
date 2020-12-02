@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // DONE: Add extra days for multiple times
-// TODO: If date is unselected, clear the cart and give warning
+// TODO testing: If date is unselected, clear the cart and give warning
 // DONE: Make day exclusive
 const DaysCategory = (daysProps) => {
   const prodSelect = useContext(ProdSelectContext);

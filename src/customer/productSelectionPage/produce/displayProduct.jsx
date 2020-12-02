@@ -47,12 +47,12 @@ function DisplayProduct() {
 
   const [displayMessage, setDisplayMessage] = useState('');
 
-  // TODO: add date to expected delivery
-  // TODO: clear out expected delivery if unclicked
+  // DONE: add date to expected delivery
+  // DONE: clear out expected delivery if unclicked
   useEffect(() => {
     let message = '';
     if (productSelect.daysClicked.size == 0) {
-      message = 'Please select a produce delivery date and time.';
+      message = 'Please select one produce delivery date and time.';
 
       if (store.cartTotal > 0) {
         message = 'Here are the items currently in your cart';
@@ -60,7 +60,7 @@ function DisplayProduct() {
     } else {
       message = 'Produce available for delivery on ' + store.expectedDelivery;
     }
-    if (store.products.size == 0 && !store.productsLoading) {
+    if (store.products.length == 0 && !store.productsLoading) {
       message =
         'Sorry, we could not find any produce that can be delivered to your provided address';
     }
@@ -80,7 +80,6 @@ function DisplayProduct() {
           style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
         >
           {displayMessage}
-
           <Box mt={2} />
           <Paper
             style={{
@@ -90,7 +89,6 @@ function DisplayProduct() {
               overflow: 'auto',
             }}
           >
-            {' '}
             <Box width="97%" justifyContent="center">
               <Grid container direction="row" justify="flex-start" spacing={5}>
                 {store.products.map(createProduct2)}
