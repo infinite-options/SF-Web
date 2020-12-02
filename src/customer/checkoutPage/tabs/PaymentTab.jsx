@@ -1,9 +1,9 @@
-import React, {useMemo, useContext} from 'react';
-import {useElements, useStripe, CardElement} from '@stripe/react-stripe-js';
+import React, { useMemo, useContext } from 'react';
+import { useElements, useStripe, CardElement } from '@stripe/react-stripe-js';
 // import {loadStripe} from "@stripe/stripe-js";
 import Box from '@material-ui/core/Box';
-import {makeStyles} from '@material-ui/core/styles';
-import {Button} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { Button } from '@material-ui/core';
 import appColors from '../../../styles/AppColors';
 import useResponsiveFontSize from '../../../utils/useResponsiveFontSize';
 import CssTextField from '../../../utils/CssTextField';
@@ -69,9 +69,9 @@ const PaymentTab = () => {
   const elements = useElements();
   const stripe = useStripe();
   const options = useOptions();
-  const {profile, cartItems} = useContext(storeContext);
+  const { profile, cartItems } = useContext(storeContext);
 
-  const {amountPaid, amountDue, discount} = useContext(checkoutContext);
+  const { amountPaid, amountDue, discount } = useContext(checkoutContext);
 
   const onPay = async event => {
     event.preventDefault();
@@ -90,9 +90,9 @@ const PaymentTab = () => {
     formSending.append('amount', amountPaid);
     try {
       const {
-        data: {client_secret},
+        data: { client_secret },
       } = await axios.post(
-        'http://127.0.0.1:4000/api/v2/Stripe_Intent',
+        'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/Stripe_Intent',
         formSending,
         {
           headers: {

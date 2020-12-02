@@ -10,6 +10,7 @@ import CartItem from '../items/cartItem';
 import storeContext from '../../storeContext';
 import checkoutContext from '../CheckoutContext';
 import PlaceOrder from '../PlaceOrder';
+import PayPal from './Paypal';
 import Coupons from '../items/Coupons';
 
 const useStyles = makeStyles({
@@ -67,7 +68,7 @@ export default function CheckoutTab() {
   const classes = useStyles();
   const store = useContext(storeContext);
   const checkout = useContext(checkoutContext);
-
+  const [paypal, setPaypal] = useState(false);
   const elements = useElements();
 
   const [expectedDelivery, setExpectedDelivery] = useState('');
@@ -171,6 +172,9 @@ export default function CheckoutTab() {
       console.log('Stripe is clicked');
       setPaymentProcessing(true);
       setLeftTabChosen(0);
+    } else if (paymentType === 'PAYPAL') {
+      console.log('Paypal is loading');
+      setPaypal(true);
     }
   }
 
@@ -293,26 +297,35 @@ export default function CheckoutTab() {
         {/* END: Pricing */}
 
         {/* START: Payment Buttons */}
-        <Box display="flex" flexDirection="column" px="30%">
-          <Button
-            className={classes.button}
-            size="small"
-            variant="contained"
-            color="primary"
-          >
-            Pay with PayPal
-          </Button>
-          <Button
-            className={classes.button}
-            size="small"
-            variant="contained"
-            color="primary"
-            onClick={() => onPayWithClicked('STRIPE')}
-          >
-            Pay with Stripe
-          </Button>
-          {/* END: Payment Buttons */}
-        </Box>
+        {!paypal ? (
+          <Box display="flex" flexDirection="column" px="30%">
+            <Button
+              className={classes.button}
+              size="small"
+              variant="contained"
+              color="primary"
+              onClick={() => onPayWithClicked('PAYPAL')}
+            >
+              Pay with PayPal
+            </Button>
+            <Button
+              className={classes.button}
+              size="small"
+              variant="contained"
+              color="primary"
+              onClick={() => onPayWithClicked('STRIPE')}
+            >
+              Pay with Stripe
+            </Button>
+            {/* END: Payment Buttons */}
+          </Box>
+        ) : (
+          <PayPal
+            value={total}
+            setPaypal={setPaypal}
+            setCartItems={store.setCartItems}
+          />
+        )}
       </Box>
     </Paper>
   );
