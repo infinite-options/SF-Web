@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import appColors from '../../../../styles/AppColors';
 import { Box } from '@material-ui/core';
-import ProdSelectContext from '../../prodSelectContext';
+import ProdSelectContext from '../../ProdSelectContext';
 
 const useStyles = makeStyles((theme) => ({
   card: {

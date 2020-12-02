@@ -32,6 +32,7 @@ export default function LandingNavBar({ ...props }) {
 
   const badgeContent = localStorage.getItem('cartTotal') || 0;
   console.log('badgeContent: ' + badgeContent);
+
   const loginClicked = () => {
     props.setIsSignUpShown(false);
     props.setIsLoginShown(!props.isLoginShown);

@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import DisplayProduce from './produce/displayProduct';
 import StoreFilter from './filter';
-import ProdSelectContext from './prodSelectContext';
+import ProdSelectContext from './ProdSelectContext';
 import axios from 'axios';
 import storeContext from '../storeContext';
 

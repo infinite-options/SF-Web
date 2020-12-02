@@ -288,37 +288,36 @@ export default function CheckoutTab() {
       </Box>
       {/* END: Pricing */}
 
-        {/* START: Payment Buttons */}
-        {!paypal ? (
-          <Box display="flex" flexDirection="column" px="30%">
-            <Button
-              className={classes.button}
-              size="small"
-              variant="contained"
-              color="primary"
-              onClick={() => onPayWithClicked('PAYPAL')}
-            >
-              Pay with PayPal
-            </Button>
-            <Button
-              className={classes.button}
-              size="small"
-              variant="contained"
-              color="primary"
-              onClick={() => onPayWithClicked('STRIPE')}
-            >
-              Pay with Stripe
-            </Button>
-            {/* END: Payment Buttons */}
-          </Box>
-        ) : (
-          <PayPal
-            value={total}
-            setPaypal={setPaypal}
-            setCartItems={store.setCartItems}
-          />
-        )}
-      </Box>
+      {/* START: Payment Buttons */}
+      {!paypal ? (
+        <Box display="flex" flexDirection="column" px="30%">
+          <Button
+            className={classes.button}
+            size="small"
+            variant="contained"
+            color="primary"
+            onClick={() => onPayWithClicked('PAYPAL')}
+          >
+            Pay with PayPal
+          </Button>
+          <Button
+            className={classes.button}
+            size="small"
+            variant="contained"
+            color="primary"
+            onClick={() => onPayWithClicked('STRIPE')}
+          >
+            Pay with Stripe
+          </Button>
+          {/* END: Payment Buttons */}
+        </Box>
+      ) : (
+        <PayPal
+          value={total}
+          setPaypal={setPaypal}
+          setCartItems={store.setCartItems}
+        />
+      )}
     </Box>
   );
 }

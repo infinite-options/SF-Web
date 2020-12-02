@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import storeContext from '../../storeContext';
-import ProdSelectContext from '../prodSelectContext';
+import ProdSelectContext from '../ProdSelectContext';
 import { makeStyles } from '@material-ui/core/styles';
 // import daysInWeek from "../daysInWeek";
 import DateCard from './cards/DateCard';

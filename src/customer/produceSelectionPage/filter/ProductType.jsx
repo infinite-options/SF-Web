@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import ProdSelectContext from '../prodSelectContext';
+import ProdSelectContext from '../ProdSelectContext';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Grid } from '@material-ui/core';
 import iconSizes from '../../../styles/IconSizes';
