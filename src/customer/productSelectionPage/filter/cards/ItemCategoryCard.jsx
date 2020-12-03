@@ -25,7 +25,7 @@ const ItemCategoryItem = (props) => {
   }
 
   useEffect(() => {
-    setIsShown(productSelect.dayClicked === 0);
+    setIsShown(productSelect.dayClicked !== '');
   }, [productSelect.farmsClicked, productSelect.dayClicked]);
 
   return (

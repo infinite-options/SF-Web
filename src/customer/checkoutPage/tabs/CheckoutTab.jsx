@@ -58,8 +58,8 @@ function listItem(item) {
         img={item.img}
         meaning={item.meaning}
         business_uid={item.business_uid}
-        id={item.item_uid}
-        key={item.item_uid}
+        id={item.id}
+        key={item.id}
       />
     </>
   );
@@ -152,25 +152,11 @@ export default function CheckoutTab() {
   }
 
   function onPayWithClicked(paymentType) {
-    // const paymentInfo = { ...checkoutContext.userInfo };
-    // // Get Stripe.js instance
-    // // Call your backend to create the Checkout Session
-    // const response = await fetch('/create-checkout-session', { method: 'POST' });
-    // const session = await response.json();
-    // // When the customer clicks on the button, redirect them to Checkout.
-    // const result = await stripe.redirectToCheckout({
-    //   sessionId: session.id,
-    // });
-    // if (result.error) {
-    //   // If `redirectToCheckout` fails due to a browser or network
-    //   // error, display the localized error message to your customer
-    //   // using `result.error.message`.
-    // }
     if (paymentType === 'STRIPE') {
       // let user confirm their info before process
       console.log('Stripe is clicked');
       setPaymentProcessing(true);
-      setLeftTabChosen(0);
+      setLeftTabChosen(4);
     } else if (paymentType === 'PAYPAL') {
       console.log('Paypal is loading');
       setPaypal(true);

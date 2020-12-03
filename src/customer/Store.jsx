@@ -124,6 +124,7 @@ const Store = ({ ...props }) => {
           email: authRes.customer_email,
           firstName: authRes.customer_first_name,
           lastName: authRes.customer_last_name,
+          pushNotifications: authRes.customer_last_name,
           phoneNum: authRes.customer_phone_num,
           address: authRes.customer_address,
           unit: authRes.customer_unit,
