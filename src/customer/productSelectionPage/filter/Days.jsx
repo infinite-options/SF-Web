@@ -15,11 +15,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // DONE: Add extra days for multiple times
-// TODO: If date is unselected, clear the cart and give warning
+// TODO testing: If date is unselected, clear the cart and give warning
+// BUG: day is indicated a unselected when it is active
 // DONE: Make day exclusive
-const DaysCategory = (daysProps) => {
-  const prodSelect = useContext(ProdSelectContext);
-  const store = useContext(storeContext);
+const DaysCategory = () => {
   const filter = useContext(FilterContext);
 
   const createDateCard = (props) => {
@@ -30,7 +29,8 @@ const DaysCategory = (daysProps) => {
         day={props.day}
         time={props.time}
         weekDayFull={props.weekDayFull}
-        id={props.weekDay}
+        weekDayFullUpper={props.weekDayFullUpper}
+        id={props.index}
         key={props.index}
       />
     );

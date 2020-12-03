@@ -6,6 +6,7 @@ import { Box, Grid, Paper } from '@material-ui/core';
 import appColors from '../../../styles/AppColors';
 import { set } from 'js-cookie';
 
+// TODO: add unit, each is as is, anything else is '/' or 'per'
 function createProduct2(product) {
   var tryItem = '';
   var itemName = product.item_name;
@@ -18,7 +19,7 @@ function createProduct2(product) {
   }
   return (
     <Entry
-      name={itemName}
+      name={product.item_name}
       price={product.item_price}
       img={product.item_photo}
       type={product.item_type}
@@ -29,7 +30,12 @@ function createProduct2(product) {
     />
   );
 }
+// TODO: Duplicate items with manually set prices will be sent over
+//       depending on the day and/or farms selected, choose the farm
+//       that has the lowest price associated with that product and set
+//       the farm's buisness_id to be associated with the product in payment json
 
+// TODO: check to majke sure product status === 'Active'
 function DisplayProduct() {
   const productSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
@@ -47,12 +53,12 @@ function DisplayProduct() {
 
   const [displayMessage, setDisplayMessage] = useState('');
 
-  // TODO: add date to expected delivery
-  // TODO: clear out expected delivery if unclicked
+  // DONE: add date to expected delivery
+  // DONE: clear out expected delivery if unclicked
   useEffect(() => {
     let message = '';
-    if (productSelect.daysClicked.size == 0) {
-      message = 'Please select a produce delivery date and time.';
+    if (productSelect.dayClicked === '') {
+      message = 'Please select one produce delivery date and time.';
 
       if (store.cartTotal > 0) {
         message = 'Here are the items currently in your cart';
@@ -60,12 +66,12 @@ function DisplayProduct() {
     } else {
       message = 'Produce available for delivery on ' + store.expectedDelivery;
     }
-    if (store.products.size == 0 && !store.productsLoading) {
+    if (store.products.length == 0 && !store.productsLoading) {
       message =
         'Sorry, we could not find any produce that can be delivered to your provided address';
     }
     setDisplayMessage(message);
-  }, [productSelect.daysClicked, store.productsLoading, store.cartTotal]);
+  }, [productSelect.dayClicked, store.productsLoading, store.cartTotal]);
 
   if (!store.productsLoading && !productSelect.itemError) {
     return (
@@ -80,7 +86,6 @@ function DisplayProduct() {
           style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
         >
           {displayMessage}
-
           <Box mt={2} />
           <Paper
             style={{
@@ -90,7 +95,6 @@ function DisplayProduct() {
               overflow: 'auto',
             }}
           >
-            {' '}
             <Box width="97%" justifyContent="center">
               <Grid container direction="row" justify="flex-start" spacing={5}>
                 {store.products.map(createProduct2)}

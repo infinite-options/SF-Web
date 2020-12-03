@@ -29,7 +29,7 @@ const useStyles = makeStyles({
   },
 });
 
-//TODO: implement update profile
+//TODO verification: implement update profile
 export default function DeliveryInfoTab() {
   const classes = useStyles();
   const Auth = useContext(AuthContext);

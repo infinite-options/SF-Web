@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -11,7 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 
 const BASE_URL = "https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/";
-const ORDERS_INFO_URL = BASE_URL + "orders_info";
+// const ORDERS_INFO_URL = BASE_URL + "orders_info";
 const ORDER_ACTIONS_URL = BASE_URL + "order_actions/";
 const INSERT_ORDER_URL = BASE_URL + "purchase_Data_SF";
 const ADMIN_ORDER_URL = BASE_URL + 'admin_report/';
@@ -22,8 +22,16 @@ const useStyles = makeStyles((theme) => ({
     //   flexGrow: 1,
     //   backgroundColor: 'white',
     // },
+    reportLink: {
+        textDecoration: 'none',
+    },
     reportButtonsSection: {
+        float: 'left',
         textAlign: 'left',
+    },
+    reportButtonsRightSection: {
+        float: 'right',
+        textAlign: 'right',
     },
     reportButtons: {
         marginLeft: theme.spacing(2),
@@ -31,16 +39,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function FarmerReport({ farmID, farmName, ...props }) {
-    const [responseData, setResponseData] = useState();
+    // const [responseData, setResponseData] = useState();
     const [orders, setOrders] = useState([]);
-
     const classes = useStyles();
 
-    useEffect(() => {
-        getFarmOrders();
-    }, [farmID]);
-
-    const getFarmOrders = async (hasCopied=false) => {
+    const getFarmOrders = useCallback(async (hasCopied=false) => {
         // if (responseData && !hasCopied) {
         //     updateOrders(responseData.orders/*, responseData.items*/);
         // }
@@ -61,7 +64,7 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
         .then((res) => {
             let orders = res.data.result;
             console.log('All Report', orders)
-            setResponseData(orders);
+            // setResponseData(orders);
             setOrders(orders);
         })
         .catch((err) => {
@@ -70,7 +73,11 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
             }
             console.log(err);
         })
-    };
+    },[farmID]);
+
+    useEffect(() => {
+        getFarmOrders();
+    }, [getFarmOrders]);
 
     // const updateOrders = (orders/*, items*/) => {
     //     // let farmOrders = orders.filter(order => order.pur_business_uid === farmID);
@@ -202,31 +209,54 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
         handleCancel, handleCopy, handleDelete, handleItemDelete
     };
 
-    return (
+    return (    
         <div hidden={props.hidden}>
             <div style={labelStyle}>
                 <h2>Open Orders</h2>
             </div>
-            {/* <div className={classes.reportButtonsSection}>
+            <div className={classes.reportButtonsSection}>
+                <a
+                    href={"https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/order," + farmID}
+                    className={classes.reportLink}
+                >
+                    <Button
+                        variant='contained'
+                        className={classes.reportButtons}
+                    >
+                        Order Details
+                    </Button>
+                </a>
+                <a
+                    href={"https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/customer," + farmID}
+                    className={classes.reportLink}
+                >
+                    <Button
+                        variant='contained'
+                        className={classes.reportButtons}
+                    >
+                        Customer Details
+                    </Button>
+                </a>
+                <a
+                    href={"https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/pivot," + farmID}
+                    className={classes.reportLink}
+                >
+                    <Button
+                        variant='contained'
+                        className={classes.reportButtons}
+                    >
+                        Pivot Table
+                    </Button>
+                </a>
+            </div>
+            <div className={classes.reportButtonsRightSection}>
                 <Button
                     variant='contained'
                     className={classes.reportButtons}
                 >
-                    Customers
+                    Send Reports
                 </Button>
-                <Button
-                    variant='contained'
-                    className={classes.reportButtons}
-                >
-                    Pivot
-                </Button>
-                <Button
-                    variant='contained'
-                    className={classes.reportButtons}
-                >
-                    Orders
-                </Button>
-            </div> */}
+            </div>
             <OrdersTable orders={orders} type="open" functions={buttonFunctions} />
             <div style={labelStyle}>
                 <h2>Delivered Orders</h2>
@@ -270,7 +300,7 @@ function OrdersTable({ orders, type, ...props }) {
                         
                         if (isDisplayed) {
                             return <OrderRow key={idx} index={idx} order={order} type={type} functions={props.functions} />
-                        }
+                        } else { return null;}
                     })}
                 </TableBody>
             </Table>
@@ -282,8 +312,8 @@ function OrderRow({ order, type, ...props }) {
     const [hidden, setHidden] = useState(true);
 
     const address = (() => {
-        return `${order.delivery_address} ` + (order.delivery_unit ? `${order.delivery_unit} ` : "") + 
-            `${order.delivery_city} ` + `${order.delivery_state} ` + `${order.delivery_zip} `;
+        return `${order.delivery_address} ${(order.delivery_unit ? order.delivery_unit : "")}
+            ${order.delivery_city} ${order.delivery_state} ${order.delivery_zip} `;
     })();
     const count = (() => {
         // let result = 0;
@@ -305,7 +335,7 @@ function OrderRow({ order, type, ...props }) {
                 <TableCell>{order.delivery_email}</TableCell>
                 <TableCell>{address}</TableCell>
                 <TableCell>{order.delivery_phone_num}</TableCell>
-                <TableCell>{order.amount_due}</TableCell>
+                <TableCell>{order.Amount}</TableCell>
                 <TableCell>{count}</TableCell>
                 <TableCell>{hasPaid}</TableCell>
                 <TableCell>
@@ -356,8 +386,6 @@ function OrderItem({ order, item, deleteItem, ...props }) {
                     <p>Revenue: ${(item.price * item.qty).toFixed(2)}</p>
                 </div>
             </TableCell>
-            {/* <TableCell /><TableCell /><TableCell /><TableCell />
-            <TableCell /><TableCell /><TableCell /><TableCell /> */}
         </TableRow>
     );
 };

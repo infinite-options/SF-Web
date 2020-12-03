@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box } from '@material-ui/core';
+import { useConfirmation } from '../../../../services/ConfirmationService';
 import appColors from '../../../../styles/AppColors';
 import AlertDialog from '../../../../utils/dialog';
 import ProdSelectContext from '../../ProdSelectContext';
@@ -34,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 const DateCard = (props) => {
   const productSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
+  const confirm = useConfirmation();
   const todaysDayUpper = props.weekDayFull.toUpperCase();
 
   const [isClicked, setIsClicked] = useState(false);
@@ -41,22 +43,79 @@ const DateCard = (props) => {
     productSelect.farmsClicked.size == 0 ? true : false
   );
 
-  // FMDF = For Multiple Day Functionality
   const cardClicked = () => {
-    // FMDF: initialize the set with productSelect.daysClicked
     onConfirmDayChange();
-
-    setIsClicked(!isClicked);
   };
 
-  const onDenyDayChange = () => {};
   const onConfirmDayChange = () => {
-    const newDaysClicked = new Set();
+    localStorage.removeItem('selectedDay');
     if (isClicked) {
-      store.setExpectedDelivery('');
+      if (store.cartTotal !== 0) {
+        displayDialog(clearCartAndDay);
+      } else {
+        clearCartAndDay();
+      }
     } else {
-      // FMDF: add on !isClicked and delete on isClicked
-      newDaysClicked.add(todaysDayUpper + '&' + props.time);
+      console.log('store.cartTotal: ', store.cartTotal);
+      if (productSelect.dayClicked != '' && store.cartTotal !== 0) {
+        displayDialog(changeDay);
+      } else {
+        changeDay();
+      }
+    }
+  };
+
+  function displayDialog(action) {
+    confirm({
+      variant: 'danger',
+      catchOnCancel: true,
+      title: 'About to Clear Cart',
+      description:
+        'If you change or deselect your delivery day your cart will be cleared. Would you like to proceed?',
+    })
+      .then(() => {
+        action();
+      })
+      .catch(() => {});
+  }
+
+  function clearCartAndDay() {
+    store.setExpectedDelivery('');
+    productSelect.setDayClicked('');
+    store.setCartTotal(0);
+    store.setCartItems({});
+    setIsClicked(false);
+  }
+
+  function changeDay() {
+    productSelect.setDayClicked(props.id);
+    setIsClicked(true);
+    store.setExpectedDelivery(
+      props.month +
+        ' ' +
+        props.day +
+        ', ' +
+        props.weekDayFull +
+        ' from ' +
+        props.time
+    );
+    store.setCartTotal(0);
+    store.setCartItems({});
+    localStorage.setItem('selectedDay', props.id);
+  }
+
+  useEffect(() => {
+    const selectedDay = localStorage.getItem('selectedDay');
+    console.log(
+      'selectedDay: ',
+      selectedDay,
+      props.id,
+      productSelect.dayClicked
+    );
+    if (props.id !== productSelect.dayClicked) {
+      setIsClicked(false);
+    } else {
+      setIsClicked(true);
       store.setExpectedDelivery(
         props.month +
           ' ' +
@@ -67,28 +126,19 @@ const DateCard = (props) => {
           props.time
       );
     }
-    productSelect.setDaysClicked(newDaysClicked);
-  };
+  }, [productSelect.dayClicked]);
 
-  // FMDF: remove this hook
-  useEffect(() => {
-    if (!productSelect.daysClicked.has(todaysDayUpper + '&' + props.time)) {
-      setIsClicked(false);
-      store.setCartItems({});
-      store.setCartTotal(0);
-    }
-  }, [productSelect.daysClicked]);
-
+  // TODO testing: figure out a whether to do || or && for farms
   useEffect(() => {
     let _showCard = productSelect.farmsClicked.size == 0 ? true : false;
+    let showCount = 0;
     productSelect.farmsClicked.forEach((farmId) => {
-      if (todaysDayUpper in store.farmDayTimeDict[farmId]) {
-        _showCard = true;
+      const daytime = props.weekDayFullUpper + '&' + props.time;
+      if (store.farmDaytimeDict[farmId].has(daytime)) {
+        showCount += 1;
       }
     });
-    if (!_showCard && isClicked) {
-      setIsClicked(false);
-    }
+    _showCard = showCount === productSelect.farmsClicked.size;
     setShowCard(_showCard);
   }, [productSelect.farmsClicked]);
   const classes = useStyles();
