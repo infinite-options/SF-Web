@@ -32,6 +32,7 @@ const Store = ({ ...props }) => {
     deliveryInstructions: '',
     latitude: '',
     longitude: '',
+    zone: '',
   }); // checks if user is logged in
   const [products, setProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
@@ -44,9 +45,9 @@ const Store = ({ ...props }) => {
   const [startDeliveryDate, setStartDeliveryDate] = useState('');
   const [expectedDelivery, setExpectedDelivery] = useState('');
 
-  function getBuisnesses(long, lat) {
+  function getBuisnesses(long, lat, updatedProfile) {
     const BusiMethods = new BusiApiReqs();
-    BusiMethods.getLocationBusinessIds(long, lat).then(busiRes => {
+    BusiMethods.getLocationBusinessIds(long, lat).then((busiRes) => {
       // dictionary: business id with delivery days
       // show all if nothing selected
       if (busiRes == undefined) {
@@ -96,7 +97,9 @@ const Store = ({ ...props }) => {
             id: id,
             name: business.business_name,
             image: business.business_image,
+            zone: business.zone,
           });
+          updatedProfile.zone = business.zone;
         }
         _farmDaytimeDict[id].add(daytime);
       }
@@ -106,10 +109,13 @@ const Store = ({ ...props }) => {
       setDayTimeDict(_dayTimeDict);
       setDaytimeFarmDict(_daytimeFarmDict);
       setFarmDaytimeDict(_farmDaytimeDict);
+      if (_farmList.length > 0) setProfile(updatedProfile);
+
+      console.log('profile: ', profile);
       BusiMethods.getItems(
         ['fruit', 'desert', 'vegetable', 'other'],
         Array.from(businessUids)
-      ).then(itemRes => {
+      ).then((itemRes) => {
         setProducts(itemRes !== undefined ? itemRes : []);
         setProductsLoading(false);
       });
@@ -119,10 +125,10 @@ const Store = ({ ...props }) => {
   useEffect(() => {
     if (Auth.isAuth) {
       const AuthMethods = new AuthUtils();
-      AuthMethods.getProfile().then(authRes => {
+      AuthMethods.getProfile().then((authRes) => {
         console.log('User profile and store items were retrieved');
         console.log('authRes: ', authRes);
-        setProfile({
+        const updatedProfile = {
           customer_uid: authRes.customer_uid,
           email: authRes.customer_email,
           firstName: authRes.customer_first_name,
@@ -137,13 +143,19 @@ const Store = ({ ...props }) => {
           deliveryInstructions: '',
           latitude: authRes.customer_lat,
           longitude: authRes.customer_long,
-        });
-        getBuisnesses(authRes.customer_long, authRes.customer_lat);
+          zone: '',
+        };
+        setProfile(updatedProfile);
+        getBuisnesses(
+          authRes.customer_long,
+          authRes.customer_lat,
+          updatedProfile
+        );
       });
     } else {
       const long = cookies.get('longitude');
       const lat = cookies.get('latitude');
-      setProfile({
+      const updatedProfile = {
         email: '',
         firstName: '',
         lastName: '',
@@ -156,12 +168,14 @@ const Store = ({ ...props }) => {
         deliveryInstructions: '',
         latitude: lat,
         longitude: long,
-      });
+        zone: '',
+      };
+      setProfile(updatedProfile);
 
       console.log('long: ', long);
       console.log('lat: ', lat);
       if (long != undefined && lat != undefined) {
-        getBuisnesses(long, lat);
+        getBuisnesses(long, lat, updatedProfile);
       } else {
         window.location.href = `${window.location.origin.toString()}/`;
       }

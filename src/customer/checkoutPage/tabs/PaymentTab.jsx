@@ -35,12 +35,12 @@ const useStyles = makeStyles({
     background: 'white',
   },
   section: {
+    textAlign: 'left',
     borderBottom: '1px solid' + appColors.checkoutSectionBorder,
     marginBottom: '10px',
     paddingBottom: '10px',
   },
   info: {
-    textAlign: 'left',
     width: '400px',
   },
   delivInstr: {
@@ -287,19 +287,25 @@ const PaymentTab = () => {
         </p>
       )}
       <Box className={classes.section} display="flex">
-        <Box className={classes.label}>Contact Name:</Box>
+        <Box width="200px" className={classes.label}>
+          Contact Name:
+        </Box>
         <Box flexGrow={1} />
         <Box className={classes.info}>
           {userInfo.firstName} {userInfo.lastName}
         </Box>
       </Box>
       <Box className={classes.section} display="flex">
-        <Box className={classes.label}>Contact Phone:</Box>
+        <Box width="200px" className={classes.label}>
+          Contact Phone:
+        </Box>
         <Box flexGrow={1} />
         <Box className={classes.info}>{userInfo.phoneNum}</Box>
       </Box>
       <Box className={classes.section} display="flex">
-        <Box className={classes.label}>Delivery Address:</Box>
+        <Box width="200px" className={classes.label}>
+          Delivery Address:
+        </Box>
         <Box flexGrow={1} />
         <Box
           className={classes.info}
@@ -316,17 +322,19 @@ const PaymentTab = () => {
           {userInfo.unit}, {userInfo.city}, {userInfo.state} {userInfo.zip}
         </Box>
       </Box>
-      <label className={classes.label}>Delivery Instructions</label>
+      <label className={classes.label}>
+        Enter Delivery Instructions Below:
+      </label>
       <Box mb={1} mt={0.5} justifyContent="center">
         <textarea className={classes.delivInstr} type="" />
       </Box>
-      <label className={classes.label}>Cardholder Name</label>
+      <label className={classes.label}>Enter Cardholder Name Below:</label>
       <Box mt={1}>
         <CssTextField variant="outlined" size="small" fullWidth />
       </Box>
       <Box mt={1}>
         <label className={classes.label}>
-          Card details
+          Enter Card details Below:
           <CardElement className={classes.element} options={options} />
         </label>
       </Box>

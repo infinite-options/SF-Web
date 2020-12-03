@@ -7,7 +7,7 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
   const { amountPaid, amountDue, discount } = useContext(checkoutContext);
   const { profile, startDeliveryDate, cartItems } = useContext(storeContext);
   let paypalRef = useRef();
-  const items = Object.values(cartItems).map(item => item);
+  const items = Object.values(cartItems).map((item) => item);
 
   const CLIENT = {
     sandbox: process.env.REACT_APP_PAYPAL_CLIENT_ID_TESTING,
@@ -20,7 +20,7 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
   useEffect(() => {
     const script = document.createElement('script');
 
-    script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=USD`;
+    script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT.sandbox}&currency=USD`;
     script.addEventListener('load', () => setLoaded(true));
     document.body.appendChild(script);
 
@@ -92,7 +92,7 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
   });
   return (
     <div>
-      <div ref={v => (paypalRef = v)} />
+      <div ref={(v) => (paypalRef = v)} />
     </div>
   );
 };
