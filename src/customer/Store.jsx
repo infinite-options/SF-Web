@@ -40,12 +40,12 @@ const Store = ({ ...props }) => {
   const [numDeliveryTimes, setNumDeliveryTimes] = useState(0);
   const [daytimeFarmDict, setDaytimeFarmDict] = useState({});
   const [farmDaytimeDict, setFarmDaytimeDict] = useState({});
-
+  const [startDeliveryDate, setStartDeliveryDate] = useState('');
   const [expectedDelivery, setExpectedDelivery] = useState('');
 
   function getBuisnesses(long, lat) {
     const BusiMethods = new BusiApiReqs();
-    BusiMethods.getLocationBusinessIds(long, lat).then((busiRes) => {
+    BusiMethods.getLocationBusinessIds(long, lat).then(busiRes => {
       // dictionary: business id with delivery days
       // show all if nothing selected
       if (busiRes == undefined) {
@@ -108,7 +108,7 @@ const Store = ({ ...props }) => {
       BusiMethods.getItems(
         ['fruit', 'desert', 'vegetable', 'other'],
         Array.from(businessUids)
-      ).then((itemRes) => {
+      ).then(itemRes => {
         setProducts(itemRes !== undefined ? itemRes : []);
         setProductsLoading(false);
       });
@@ -118,7 +118,7 @@ const Store = ({ ...props }) => {
   useEffect(() => {
     if (Auth.isAuth) {
       const AuthMethods = new AuthUtils();
-      AuthMethods.getProfile().then((authRes) => {
+      AuthMethods.getProfile().then(authRes => {
         console.log('User profile and store items were retrieved');
         setProfile({
           email: authRes.customer_email,
@@ -213,6 +213,8 @@ const Store = ({ ...props }) => {
           farmDaytimeDict,
           expectedDelivery,
           setExpectedDelivery,
+          startDeliveryDate,
+          setStartDeliveryDate,
         }}
       >
         <StoreNavBar

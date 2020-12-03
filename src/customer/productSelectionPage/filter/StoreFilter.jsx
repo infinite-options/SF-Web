@@ -11,7 +11,7 @@ import storeContext from '../../storeContext';
 import ProdSelectContext from '../ProdSelectContext';
 import FilterContext from './FilterContext';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   borderCol: {
     borderRight: '1px solid ' + appColors.secondary,
   },
@@ -83,7 +83,7 @@ const StoreFilter = () => {
 
         // if the iterated day is in within the the dictionary to account for no selected farms
         if (todaysDayUpper in store.dayTimeDict) {
-          store.dayTimeDict[todaysDayUpper].forEach((time) => {
+          store.dayTimeDict[todaysDayUpper].forEach(time => {
             // IMPORTANT: make sure the index used for mapping a component key is unique,
             // I ran into rendering issue when they were the same
             var newDay = {
@@ -92,6 +92,9 @@ const StoreFilter = () => {
               weekDay: days[today.getDay()],
               month: months[today.getMonth()],
               day: today.getDate(),
+              year: today.getFullYear(),
+              monthInNumber: today.getMonth() + 1,
+              date: today.getDate(),
               weekDayFull: fullDays[today.getDay()],
               weekDayFullUpper: todaysDayUpper,
             };

@@ -75,7 +75,7 @@ const PaymentTab = () => {
   const stripe = useStripe();
   const options = useOptions();
   const [processing, setProcessing] = useState('false');
-  const { profile, cartItems, setCartItems, expectedDelivery } = useContext(
+  const { profile, cartItems, setCartItems, startDeliveryDate } = useContext(
     storeContext
   );
 
@@ -84,7 +84,6 @@ const PaymentTab = () => {
   );
   useEffect(() => {
     setProcessing(false);
-    console.log('expected Delivery: ', expectedDelivery);
   }, []);
 
   const onPay = async event => {
@@ -132,12 +131,7 @@ const PaymentTab = () => {
       console.log('confirmed Card Paid: ', confirmed);
       //gathering data to send back our server
       //set start_delivery_date
-      let start_delivery_date = '';
-      if (expectedDelivery !== '') {
-        start_delivery_date = new Date(
-          expectedDelivery.split(',')[0] + ', 2020 00:00:00'
-        );
-      }
+
       const data = {
         pur_customer_uid: '100-000009',
         pur_business_uid: '200-000001',
@@ -157,7 +151,7 @@ const PaymentTab = () => {
         delivery_latitude: profile.latitude,
         delivery_longitude: profile.longitude,
         purchase_notes: 'purchase_notes',
-        start_delivery_date: '2021-02-01',
+        start_delivery_date: startDeliveryDate,
         pay_coupon_id: '',
         amount_due: amountDue,
         amount_discount: discount,

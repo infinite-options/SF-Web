@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import DateCard from './cards/DateCard';
 import FilterContext from './FilterContext';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   paper: {
     padding: theme.spacing(1),
     textAlign: 'center',
@@ -21,13 +21,16 @@ const useStyles = makeStyles((theme) => ({
 const DaysCategory = () => {
   const filter = useContext(FilterContext);
 
-  const createDateCard = (props) => {
+  const createDateCard = props => {
     return (
       <DateCard
         weekDay={props.weekDay}
         month={props.month}
         day={props.day}
         time={props.time}
+        monthInNumber={props.monthInNumber}
+        date={props.date}
+        year={props.year}
         weekDayFull={props.weekDayFull}
         weekDayFullUpper={props.weekDayFullUpper}
         id={props.index}

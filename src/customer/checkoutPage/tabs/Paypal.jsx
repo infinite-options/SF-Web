@@ -15,7 +15,7 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
   useEffect(() => {
     const script = document.createElement('script');
 
-    script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT.production}&currency=USD`;
+    script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=USD`;
     script.addEventListener('load', () => setLoaded(true));
     document.body.appendChild(script);
 
