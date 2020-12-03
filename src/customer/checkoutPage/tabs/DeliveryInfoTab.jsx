@@ -105,6 +105,7 @@ export default function DeliveryInfoTab() {
     setMap(null);
   }, []);
 
+  //TODO: refresh on farms when address is validated
   const onCheckAddressClicked = () => {
     console.log('Verifying longitude and latitude from Delivery Info');
     FindLongLatWithAddr(
