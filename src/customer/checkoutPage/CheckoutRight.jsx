@@ -63,7 +63,7 @@ export default function CheckoutRight() {
   };
 
   return (
-    <Paper className={classes.root} style={{ height: windowHeight - 85 }}>
+    <Paper className={classes.root} style={{ height: windowHeight - 95 }}>
       <StyledTabs
         value={value}
         onChange={handleChange}

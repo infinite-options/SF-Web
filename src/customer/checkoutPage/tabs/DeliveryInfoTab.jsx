@@ -2,8 +2,18 @@ import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { Paper, Box, TextField, Switch, Button } from '@material-ui/core';
+import {
+  Paper,
+  Box,
+  TextField,
+  Switch,
+  Button,
+  FormHelperText,
+} from '@material-ui/core';
+import { useConfirmation } from '../../../services/ConfirmationService';
 import FindLongLatWithAddr from '../../../utils/FindLongLatWithAddr';
+import AuthUtils from '../../../utils/AuthUtils';
+import BusiApiReqs from '../../../utils/AuthUtils';
 import appColors from '../../../styles/AppColors';
 import Signup from '../../auth/Signup';
 import { AuthContext } from '../../../auth/AuthContext';
@@ -34,11 +44,22 @@ const useStyles = makeStyles({
 export default function DeliveryInfoTab() {
   const classes = useStyles();
   const Auth = useContext(AuthContext);
+  const confirm = useConfirmation();
   const store = useContext(StoreContext);
+  const AuthMethods = new AuthUtils();
+  const BusiApiMethods = new BusiApiReqs();
 
   // Setting so that the store context isn't constantly re-rendered
   const [userInfo, setUserInfo] = useState(store.profile);
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
+
+  const [locError, setLocError] = useState('');
+  const [locErrorMessage, setLocErrorMessage] = useState('');
+
+  function createLocError(message) {
+    setLocError('Invalid Input');
+    setLocErrorMessage(message);
+  }
 
   const { paymentProcessing, setLeftTabChosen } = useContext(checkoutContext);
 
@@ -75,8 +96,38 @@ export default function DeliveryInfoTab() {
       userInfo.zip
     ).then((res) => {
       if (res.status === 'found') {
-        setIsAddressConfirmed(true);
-        store.setProfile(userInfo);
+        BusiApiMethods.getLocationBusinessIds(res.longitude, res.latitude).then(
+          (busiRes) => {
+            if (busiRes.result.length > 0) {
+              if (busiRes.result[0].zone === store.profile.zone) {
+                setIsAddressConfirmed(true);
+                store.setProfile(userInfo);
+                setLocError('');
+                setLocErrorMessage('');
+              } else {
+                confirm({
+                  variant: 'danger',
+                  catchOnCancel: true,
+                  title: 'About to Clear Cart',
+                  description: 'This address . Would you like to proceed?',
+                })
+                  .then(() => {
+                    setIsAddressConfirmed(true);
+                    store.setProfile(userInfo);
+                    setLocError('');
+                    setLocErrorMessage('');
+                  })
+                  .catch(() => {});
+              }
+            } else {
+              createLocError(
+                'Sorry, there are no farms that are delivering to this address'
+              );
+            }
+          }
+        );
+      } else {
+        createLocError('Sorry, we could not find this Address');
       }
     });
   };
@@ -162,6 +213,7 @@ export default function DeliveryInfoTab() {
         })}
         <Box display="flex" mb={1}>
           <CssTextField
+            error={locError}
             value={userInfo.address}
             name="address"
             label="Street Address"
@@ -172,6 +224,7 @@ export default function DeliveryInfoTab() {
           />
           <Box ml={1} width="40%">
             <CssTextField
+              error={locError}
               value={userInfo.unit}
               name="unit"
               label="Apt Number"
@@ -185,6 +238,7 @@ export default function DeliveryInfoTab() {
         <Box display="flex" mb={1}>
           <Box width="33.3%">
             <CssTextField
+              error={locError}
               value={userInfo.city}
               name="city"
               label="City"
@@ -196,6 +250,7 @@ export default function DeliveryInfoTab() {
           </Box>
           <Box width="33.3%" mx={1}>
             <CssTextField
+              error={locError}
               value={userInfo.state}
               name="state"
               label="State"
@@ -207,6 +262,7 @@ export default function DeliveryInfoTab() {
           </Box>
           <Box width="33.3%">
             <CssTextField
+              error={locError}
               value={userInfo.zip}
               name="zip"
               label="Zip Code"
@@ -217,6 +273,9 @@ export default function DeliveryInfoTab() {
             />
           </Box>
         </Box>
+        <FormHelperText error={true} style={{ textAlign: 'center' }}>
+          {locErrorMessage}
+        </FormHelperText>
         <Box hidden={isAddressConfirmed} mb={3}>
           <Button
             className={classes.button}
