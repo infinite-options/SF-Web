@@ -77,9 +77,13 @@ const PaymentTab = () => {
   const stripe = useStripe();
   const options = useOptions();
   const [processing, setProcessing] = useState('false');
-  const { profile, cartItems, setCartItems, startDeliveryDate } = useContext(
-    storeContext
-  );
+  const {
+    profile,
+    cartItems,
+    setCartItems,
+    startDeliveryDate,
+    setCartTotal,
+  } = useContext(storeContext);
 
   const {
     amountPaid,
@@ -95,7 +99,11 @@ const PaymentTab = () => {
 
   const [userInfo, setUserInfo] = useState(store.profile);
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
-
+  const card_element = elements?.getElement(CardElement);
+  const card = {};
+  card_element?.on('change', e => {
+    console.log('event : ', e);
+  });
   useEffect(() => {
     if (store.profile !== {}) {
       setUserInfo(store.profile);
@@ -111,7 +119,7 @@ const PaymentTab = () => {
     );
   }, [userInfo]);
 
-  const onPay = async (event) => {
+  const onPay = async event => {
     event.preventDefault();
 
     setProcessing(true);
@@ -140,16 +148,15 @@ const PaymentTab = () => {
           },
         }
       );
-      const items = Object.values(cartItems).map((item) => item);
+      const items = Object.values(cartItems).map(item => item);
       const cardElement = await elements.getElement(CardElement);
 
       const paymentMethod = await stripe.createPaymentMethod({
         type: 'card',
         card: cardElement,
-        // billing_details: billingDetails,
+        billing_details: billingDetails,
       });
-      console.log('billing_detail: ', billingDetails);
-      console.log('payment_method: ', paymentMethod);
+
       const confirmed = await stripe.confirmCardPayment(client_secret, {
         payment_method: paymentMethod.paymentMethod.id,
       });
@@ -202,6 +209,10 @@ const PaymentTab = () => {
       );
       cardElement.clear();
       setCartItems({});
+      setCartTotal(0);
+      if (localStorage.getItem('cartTotal')) {
+        localStorage.setItem('cartTotal', 0);
+      }
       setProcessing(false);
       setPaymentProcessing(false);
     } catch (err) {
@@ -225,7 +236,7 @@ const PaymentTab = () => {
       userInfo.city,
       userInfo.state,
       userInfo.zip
-    ).then((res) => {
+    ).then(res => {
       if (res.status === 'found') {
         setIsAddressConfirmed(true);
         store.setProfile(userInfo);
@@ -233,12 +244,12 @@ const PaymentTab = () => {
     });
   };
 
-  const onFieldChange = (event) => {
+  const onFieldChange = event => {
     const { name, value } = event.target;
     setUserInfo({ ...userInfo, [name]: value });
   };
 
-  const PlainTextField = (props) => {
+  const PlainTextField = props => {
     return (
       <Box mb={props.spacing || 1}>
         <CssTextField

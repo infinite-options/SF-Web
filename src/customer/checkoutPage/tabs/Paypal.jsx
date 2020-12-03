@@ -5,7 +5,9 @@ import axios from 'axios';
 const PayPal = ({ value, setPaypal, setCartItems }) => {
   const [loaded, setLoaded] = useState(false);
   const { amountPaid, amountDue, discount } = useContext(checkoutContext);
-  const { profile, startDeliveryDate, cartItems } = useContext(storeContext);
+  const { profile, startDeliveryDate, cartItems, setCartTotal } = useContext(
+    storeContext
+  );
   let paypalRef = useRef();
   const items = Object.values(cartItems).map(item => item);
 
@@ -84,6 +86,10 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
               );
               setPaypal(false);
               setCartItems({});
+              setCartTotal(0);
+              if (localStorage.getItem('cartTotal')) {
+                localStorage.setItem('cartTotal', 0);
+              }
             },
           })
           .render(paypalRef)
