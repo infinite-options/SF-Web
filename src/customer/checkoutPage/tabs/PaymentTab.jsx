@@ -87,6 +87,7 @@ const PaymentTab = () => {
     discount,
     paymentProcessing,
     setPaymentProcessing,
+    setLeftTabChosen,
   } = useContext(checkoutContext);
   useEffect(() => {
     setProcessing(false);
@@ -94,8 +95,6 @@ const PaymentTab = () => {
 
   const [userInfo, setUserInfo] = useState(store.profile);
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
-
-  const { paymentProcessing, setLeftTabChosen } = useContext(checkoutContext);
 
   useEffect(() => {
     if (store.profile !== {}) {
