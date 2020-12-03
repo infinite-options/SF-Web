@@ -10,10 +10,11 @@ import {
   Button,
   FormHelperText,
 } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 import { useConfirmation } from '../../../services/ConfirmationService';
 import FindLongLatWithAddr from '../../../utils/FindLongLatWithAddr';
 import AuthUtils from '../../../utils/AuthUtils';
-import BusiApiReqs from '../../../utils/AuthUtils';
+import BusiApiReqs from '../../../utils/BusiApiReqs';
 import appColors from '../../../styles/AppColors';
 import Signup from '../../auth/Signup';
 import { AuthContext } from '../../../auth/AuthContext';
@@ -21,6 +22,7 @@ import StoreContext from '../../storeContext';
 import checkoutContext from '../CheckoutContext';
 import CssTextField from '../../../utils/CssTextField';
 import { mergeClasses } from '@material-ui/styles';
+import { Axis } from 'highcharts';
 
 const useStyles = makeStyles({
   root: {
@@ -43,9 +45,10 @@ const useStyles = makeStyles({
 //TODO verification: implement update profile
 export default function DeliveryInfoTab() {
   const classes = useStyles();
-  const Auth = useContext(AuthContext);
-  const confirm = useConfirmation();
   const store = useContext(StoreContext);
+  const Auth = useContext(AuthContext);
+  const history = useHistory();
+  const confirm = useConfirmation();
   const AuthMethods = new AuthUtils();
   const BusiApiMethods = new BusiApiReqs();
 
@@ -74,7 +77,22 @@ export default function DeliveryInfoTab() {
   const { setProfile } = store;
 
   const onSubmit = () => {
-    setProfile({ ...userInfo });
+    if (isAddressConfirmed) {
+      AuthMethods.updateProfile(userInfo).then((res) => {
+        console.log('(res.code === 200): ', res);
+        if (res.code === 200) {
+          setProfile({ ...userInfo });
+        } else {
+          setLocErrorMessage(
+            'There was an issue updating your profile, please try again later'
+          );
+        }
+      });
+    } else {
+      createLocError(
+        'Your address Had not been validated, please validate before saving changes.'
+      );
+    }
   };
 
   const onLoad = React.useCallback(function callback(map) {
@@ -96,33 +114,36 @@ export default function DeliveryInfoTab() {
       userInfo.zip
     ).then((res) => {
       if (res.status === 'found') {
-        BusiApiMethods.getLocationBusinessIds(res.longitude, res.latitude).then(
+        BusiApiMethods.getLocationBusinessIds(res.latitude, res.longitude).then(
           (busiRes) => {
-            if (busiRes.result.length > 0) {
+            if (busiRes.result && busiRes.result.length > 0) {
               if (busiRes.result[0].zone === store.profile.zone) {
-                setIsAddressConfirmed(true);
-                store.setProfile(userInfo);
-                setLocError('');
-                setLocErrorMessage('');
+                updateProfile(false, res.latitude, res.longitude);
               } else {
                 confirm({
                   variant: 'danger',
                   catchOnCancel: true,
                   title: 'About to Clear Cart',
-                  description: 'This address . Would you like to proceed?',
+                  description:
+                    "Thanks for updating your address. Please note if you click 'Yes' your cart will be cleared. Would you like to proceed?",
                 })
                   .then(() => {
-                    setIsAddressConfirmed(true);
-                    store.setProfile(userInfo);
-                    setLocError('');
-                    setLocErrorMessage('');
+                    updateProfile(true, res.latitude, res.longitude);
                   })
                   .catch(() => {});
               }
             } else {
-              createLocError(
-                'Sorry, there are no farms that are delivering to this address'
-              );
+              confirm({
+                variant: 'danger',
+                catchOnCancel: true,
+                title: 'Address Notification',
+                description:
+                  "We're happy to save your address. But please note, we are current not delivering to this address. Would you like to proceed?",
+              })
+                .then(() => {
+                  updateProfile(true, res.latitude, res.longitude);
+                })
+                .catch(() => {});
             }
           }
         );
@@ -131,6 +152,26 @@ export default function DeliveryInfoTab() {
       }
     });
   };
+
+  // 1445 Koch Ln, San Jose, CA 95125
+  function updateProfile(isZoneUpdated, lat, long) {
+    const _userInfo = { ...userInfo };
+    _userInfo.latitude = lat.toString();
+    _userInfo.longitude = long.toString();
+    setIsAddressConfirmed(true);
+    store.setProfile(_userInfo);
+    setLocError('');
+    setLocErrorMessage('');
+    if (isZoneUpdated) {
+      localStorage.setItem('isProfileUpdated', store.profile.zone);
+      console.log('Zone should be updated');
+      store.setFarmsClicked(new Set());
+      store.setDayClicked('');
+      localStorage.removeItem('selectedDay');
+      localStorage.removeItem('cartTotal');
+      localStorage.removeItem('cartItems');
+    }
+  }
 
   const onFieldChange = (event) => {
     const { name, value } = event.target;

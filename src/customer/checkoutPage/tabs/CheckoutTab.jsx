@@ -64,6 +64,8 @@ function listItem(item) {
     </>
   );
 }
+
+// TODO: Order confirmation for completed purchase
 export default function CheckoutTab() {
   const classes = useStyles();
   const store = useContext(storeContext);

@@ -45,6 +45,15 @@ const Store = ({ ...props }) => {
   const [startDeliveryDate, setStartDeliveryDate] = useState('');
   const [expectedDelivery, setExpectedDelivery] = useState('');
 
+  const [farmsClicked, setFarmsClicked] = useState(new Set());
+  const [dayClicked, setDayClicked] = useState(
+    localStorage.getItem('selectedDay') || ''
+  );
+
+  useEffect(() => {
+    localStorage.setItem('selectedDay', dayClicked);
+  }, [dayClicked]);
+
   function getBuisnesses(long, lat, updatedProfile) {
     const BusiMethods = new BusiApiReqs();
     BusiMethods.getLocationBusinessIds(long, lat).then((busiRes) => {
@@ -233,6 +242,10 @@ const Store = ({ ...props }) => {
           setExpectedDelivery,
           startDeliveryDate,
           setStartDeliveryDate,
+          farmsClicked,
+          setFarmsClicked,
+          dayClicked,
+          setDayClicked,
         }}
       >
         <StoreNavBar

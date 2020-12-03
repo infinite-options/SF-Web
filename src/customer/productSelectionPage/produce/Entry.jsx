@@ -9,7 +9,7 @@ import ProduceSelectContext from '../ProdSelectContext';
 
 const useStyles = makeStyles({
   button: {
-    border: '1px solid' + appColors.componentBg,
+    border: '1px solid' + appColors.border,
     borderRadius: 5,
     backgroundColor: 'white',
     color: appColors.primary,
