@@ -116,7 +116,7 @@ const PaymentTab = () => {
         }
       );
       const items = Object.values(cartItems).map(item => item);
-      console.log(items);
+
       const cardElement = await elements.getElement(CardElement);
 
       const paymentMethod = await stripe.createPaymentMethod({
@@ -133,8 +133,8 @@ const PaymentTab = () => {
       //set start_delivery_date
 
       const data = {
-        pur_customer_uid: '100-000009',
-        pur_business_uid: '200-000001',
+        pur_customer_uid: profile.customer_uid,
+        pur_business_uid: cartItems[Object.keys(cartItems)[0]].business_uid,
         items,
         order_instructions: 'fast',
         delivery_instructions: 'Keep Fresh',

@@ -1,8 +1,13 @@
-import React, { useRef, useEffect, useState } from 'react';
-
+import React, { useRef, useEffect, useState, useContext } from 'react';
+import checkoutContext from '../CheckoutContext';
+import storeContext from '../../storeContext';
+import axios from 'axios';
 const PayPal = ({ value, setPaypal, setCartItems }) => {
   const [loaded, setLoaded] = useState(false);
+  const { amountPaid, amountDue, discount } = useContext(checkoutContext);
+  const { profile, startDeliveryDate, cartItems } = useContext(storeContext);
   let paypalRef = useRef();
+  const items = Object.values(cartItems).map(item => item);
 
   const CLIENT = {
     sandbox: process.env.REACT_APP_PAYPAL_CLIENT_ID_TESTING,
@@ -37,12 +42,48 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
               });
             },
             onApprove: async (data, actions) => {
-              const order = await actions.order.capture();
+              await actions.order.capture();
+              // sending the request to write everything to database
+              const dataSending = {
+                pur_customer_uid: profile.customer_uid,
+                pur_business_uid:
+                  cartItems[Object.keys(cartItems)[0]].business_uid,
+                items,
+                order_instructions: 'fast',
+                delivery_instructions: 'Keep Fresh',
+                order_type: 'meal',
+                delivery_first_name: profile.firstName,
+                delivery_last_name: profile.lastName,
+                delivery_phone_num: profile.phoneNum,
+                delivery_email: profile.email,
+                delivery_address: profile.address,
+                delivery_unit: profile.unit,
+                delivery_city: profile.city,
+                delivery_state: profile.state,
+                delivery_zip: profile.zip,
+                delivery_latitude: profile.latitude,
+                delivery_longitude: profile.longitude,
+                purchase_notes: 'purchase_notes',
+                start_delivery_date: startDeliveryDate,
+                pay_coupon_id: '',
+                amount_due: amountDue,
+                amount_discount: discount,
+                amount_paid: amountPaid,
+                info_is_Addon: 'FALSE',
+                cc_num: 'NULL',
+                cc_exp_date: 'NULL',
+                cc_cvv: 'NULL',
+                cc_zip: 'NULL',
+                charge_id: 'NULL',
+                payment_type: 'PAYPAL',
+              };
+              console.log('data sending: ', dataSending);
+              await axios.post(
+                'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/checkout',
+                dataSending
+              );
               setPaypal(false);
               setCartItems({});
-              // sending the request to write everything to database
-
-              console.log('order: ', order);
             },
           })
           .render(paypalRef)

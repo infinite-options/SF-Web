@@ -19,6 +19,7 @@ const Store = ({ ...props }) => {
   const Auth = useContext(AuthContext);
 
   const [profile, setProfile] = useState({
+    customer_uid: '',
     email: '',
     firstName: '',
     lastName: '',
@@ -120,7 +121,9 @@ const Store = ({ ...props }) => {
       const AuthMethods = new AuthUtils();
       AuthMethods.getProfile().then(authRes => {
         console.log('User profile and store items were retrieved');
+        console.log('authRes: ', authRes);
         setProfile({
+          customer_uid: authRes.customer_uid,
           email: authRes.customer_email,
           firstName: authRes.customer_first_name,
           lastName: authRes.customer_last_name,
