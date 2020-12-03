@@ -126,13 +126,15 @@ const PaymentTab = () => {
       const paymentMethod = await stripe.createPaymentMethod({
         type: 'card',
         card: cardElement,
-        billing_details: billingDetails,
+        // billing_details: billingDetails,
       });
-
+      console.log('billing_detail: ', billingDetails);
+      console.log('payment_method: ', paymentMethod);
       const confirmed = await stripe.confirmCardPayment(client_secret, {
         payment_method: paymentMethod.paymentMethod.id,
       });
 
+      console.log('confirm Paid: ', confirmed);
       //gathering data to send back our server
       //set start_delivery_date
 
