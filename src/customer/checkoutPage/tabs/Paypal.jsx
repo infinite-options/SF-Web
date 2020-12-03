@@ -15,7 +15,7 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
   useEffect(() => {
     const script = document.createElement('script');
 
-    script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT.sandbox}&currency=USD`;
+    script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT.production}&currency=USD`;
     script.addEventListener('load', () => setLoaded(true));
     document.body.appendChild(script);
 
@@ -40,6 +40,8 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
               const order = await actions.order.capture();
               setPaypal(false);
               setCartItems({});
+              // sending the request to write everything to database
+
               console.log('order: ', order);
             },
           })

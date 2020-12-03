@@ -1,4 +1,4 @@
-import React, { useMemo, useContext } from 'react';
+import React, { useMemo, useContext, useState, useEffect } from 'react';
 import { useElements, useStripe, CardElement } from '@stripe/react-stripe-js';
 // import {loadStripe} from "@stripe/stripe-js";
 import Box from '@material-ui/core/Box';
@@ -36,6 +36,11 @@ const useStyles = makeStyles({
     color: appColors.primary,
     width: '300px',
   },
+  notify: {
+    fontSize: '18px',
+    color: '#fc6f03',
+    fontWeight: 'bold',
+  },
 });
 
 const useOptions = () => {
@@ -69,13 +74,24 @@ const PaymentTab = () => {
   const elements = useElements();
   const stripe = useStripe();
   const options = useOptions();
-  const { profile, cartItems, setCartItems } = useContext(storeContext);
+  const [processing, setProcessing] = useState('false');
+  const { profile, cartItems, setCartItems, expectedDelivery } = useContext(
+    storeContext
+  );
 
-  const { amountPaid, amountDue, discount } = useContext(checkoutContext);
+  const { amountPaid, amountDue, discount, paymentProcessing } = useContext(
+    checkoutContext
+  );
+  useEffect(() => {
+    setProcessing(false);
+    console.log('expected Delivery: ', expectedDelivery);
+  }, []);
 
   const onPay = async event => {
     event.preventDefault();
 
+    setProcessing(true);
+    console.log('processing: ', processing);
     const billingDetails = {
       name: profile.firstName + ' ' + profile.lastName,
       email: profile.email,
@@ -115,7 +131,13 @@ const PaymentTab = () => {
       });
       console.log('confirmed Card Paid: ', confirmed);
       //gathering data to send back our server
-
+      //set start_delivery_date
+      let start_delivery_date = '';
+      if (expectedDelivery !== '') {
+        start_delivery_date = new Date(
+          expectedDelivery.split(',')[0] + ', 2020 00:00:00'
+        );
+      }
       const data = {
         pur_customer_uid: '100-000009',
         pur_business_uid: '200-000001',
@@ -160,6 +182,7 @@ const PaymentTab = () => {
       );
       cardElement.clear();
       setCartItems({});
+      setProcessing(false);
     } catch (err) {
       console.log('error happened while posting to Stripe_Intent api', err);
     }
@@ -167,6 +190,11 @@ const PaymentTab = () => {
 
   return (
     <Box pt={5} px={10}>
+      {paymentProcessing && (
+        <p className={classes.notify}>
+          Please Enter Your Credit Card Information.
+        </p>
+      )}
       <label className={classes.label}>Cardholder Name</label>
       <Box mt={1}>
         <CssTextField variant="outlined" size="small" fullWidth />
@@ -183,6 +211,7 @@ const PaymentTab = () => {
         size="small"
         color="paragraphText"
         onClick={onPay}
+        disabled={processing}
       >
         PAY
       </Button>

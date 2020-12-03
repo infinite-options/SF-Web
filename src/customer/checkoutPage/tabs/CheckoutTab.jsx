@@ -85,6 +85,7 @@ export default function CheckoutTab() {
   const [products, setProducts] = useState(getItemsCart());
 
   useEffect(() => {
+    setPaymentProcessing(false);
     setProducts(getItemsCart());
   }, [store.cartItems]);
 
@@ -167,14 +168,18 @@ export default function CheckoutTab() {
     //   // error, display the localized error message to your customer
     //   // using `result.error.message`.
     // }
-    if (paymentType === 'STRIPE') {
-      // let user confirm their info before process
-      console.log('Stripe is clicked');
-      setPaymentProcessing(true);
-      setLeftTabChosen(0);
-    } else if (paymentType === 'PAYPAL') {
-      console.log('Paypal is loading');
-      setPaypal(true);
+    if (subtotal > 0) {
+      if (paymentType === 'STRIPE') {
+        // let user confirm their info before process
+        console.log('Stripe is clicked');
+        setPaymentProcessing(true);
+        setLeftTabChosen(0);
+      } else if (paymentType === 'PAYPAL') {
+        console.log('Paypal is loading');
+        setPaypal(true);
+      }
+    } else {
+      alert('Please add items to your card before processing payment');
     }
   }
 
