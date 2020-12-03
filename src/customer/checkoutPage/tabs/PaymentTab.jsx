@@ -4,6 +4,7 @@ import { useElements, useStripe, CardElement } from '@stripe/react-stripe-js';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
+import clsx from 'clsx';
 import appColors from '../../../styles/AppColors';
 import useResponsiveFontSize from '../../../utils/useResponsiveFontSize';
 import CssTextField from '../../../utils/CssTextField';
@@ -32,6 +33,29 @@ const useStyles = makeStyles({
     outline: 0,
     borderRadius: '4px',
     background: 'white',
+  },
+  section: {
+    borderBottom: '1px solid' + appColors.checkoutSectionBorder,
+    marginBottom: '10px',
+    paddingBottom: '10px',
+  },
+  info: {
+    textAlign: 'left',
+    width: '400px',
+  },
+  delivInstr: {
+    width: '100%',
+    minHeight: '40px',
+    maxHeight: '150px',
+    backgroundColor: 'white',
+    color: 'black',
+    fontSize: '15px',
+    border: '1px solid ' + appColors.paragraphText,
+    outline: appColors.secondary + ' !important',
+    borderRadius: '10px',
+    textAlign: 'left',
+    fontFamily: 'Arial',
+    resize: 'vertical',
   },
   button: {
     color: appColors.primary,
@@ -262,31 +286,39 @@ const PaymentTab = () => {
           Please Enter Your Credit Card Information.
         </p>
       )}
-      <Box>
-        {userInfo.firstName} {userInfo.lastName}
-      </Box>{' '}
-      <Box>{userInfo.phoneNum}</Box>
-      <label className={classes.label}>Delivery Address</label>
-      <Box>
-        {userInfo.address}
-        {userInfo.unit === '' ? ' ' : ''}
-        {userInfo.unit}, {userInfo.city}, {userInfo.state} {userInfo.zip}
+      <Box className={classes.section} display="flex">
+        <Box className={classes.label}>Contact Name:</Box>
+        <Box flexGrow={1} />
+        <Box className={classes.info}>
+          {userInfo.firstName} {userInfo.lastName}
+        </Box>
       </Box>
-      {PlainTextField({
-        label: 'Delivery Instructions',
-        name: 'deliveryInstructions',
-        value: userInfo.deliveryInstructions,
-      })}
-      <Box mb={1}>
-        <Button
-          className={classes.button}
-          variant="outlined"
-          size="small"
-          color="paragraphText"
-          onClick={onSubmit}
+      <Box className={classes.section} display="flex">
+        <Box className={classes.label}>Contact Phone:</Box>
+        <Box flexGrow={1} />
+        <Box className={classes.info}>{userInfo.phoneNum}</Box>
+      </Box>
+      <Box className={classes.section} display="flex">
+        <Box className={classes.label}>Delivery Address:</Box>
+        <Box flexGrow={1} />
+        <Box
+          className={classes.info}
+          hidden={
+            userInfo.address == '' &&
+            userInfo.unit == '' &&
+            userInfo.city == '' &&
+            userInfo.state == '' &&
+            userInfo.zip == ''
+          }
         >
-          Save Changes
-        </Button>
+          {userInfo.address}
+          {userInfo.unit === '' ? ' ' : ''}
+          {userInfo.unit}, {userInfo.city}, {userInfo.state} {userInfo.zip}
+        </Box>
+      </Box>
+      <label className={classes.label}>Delivery Instructions</label>
+      <Box mb={1} mt={0.5} justifyContent="center">
+        <textarea className={classes.delivInstr} type="" />
       </Box>
       <label className={classes.label}>Cardholder Name</label>
       <Box mt={1}>

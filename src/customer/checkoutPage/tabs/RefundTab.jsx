@@ -49,6 +49,8 @@ const useStyles = makeStyles({
     textAlign: 'left',
     margin: '5px',
     textIndent: '10px',
+    fontFamily: 'Arial',
+    resize: 'vertical',
   },
   sendBtn: {
     backgroundColor: '#FF8500',
@@ -168,7 +170,6 @@ const RefundTab = () => {
             placeholder="Return Description"
             value={returnDesc}
             onChange={(e) => setReturnDesc(e.target.value)}
-            style={{ fontFamily: 'Arial', resize: 'vertical' }}
           />
           <button
             className={classes.sendEmail + ' ' + classes.sendBtn}
