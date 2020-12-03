@@ -79,9 +79,13 @@ const PaymentTab = () => {
     storeContext
   );
 
-  const { amountPaid, amountDue, discount, paymentProcessing } = useContext(
-    checkoutContext
-  );
+  const {
+    amountPaid,
+    amountDue,
+    discount,
+    paymentProcessing,
+    setPaymentProcessing,
+  } = useContext(checkoutContext);
   useEffect(() => {
     setProcessing(false);
   }, []);
@@ -90,7 +94,7 @@ const PaymentTab = () => {
     event.preventDefault();
 
     setProcessing(true);
-    console.log('processing: ', processing);
+
     const billingDetails = {
       name: profile.firstName + ' ' + profile.lastName,
       email: profile.email,
@@ -124,11 +128,11 @@ const PaymentTab = () => {
         card: cardElement,
         billing_details: billingDetails,
       });
-      console.log('paymentMethod: ', paymentMethod);
+
       const confirmed = await stripe.confirmCardPayment(client_secret, {
         payment_method: paymentMethod.paymentMethod.id,
       });
-      console.log('confirmed Card Paid: ', confirmed);
+
       //gathering data to send back our server
       //set start_delivery_date
 
@@ -177,6 +181,7 @@ const PaymentTab = () => {
       cardElement.clear();
       setCartItems({});
       setProcessing(false);
+      setPaymentProcessing(false);
     } catch (err) {
       console.log('error happened while posting to Stripe_Intent api', err);
     }
