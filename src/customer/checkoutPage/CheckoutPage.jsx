@@ -1,10 +1,10 @@
-import React, {useContext, useState, useEffect} from "react";
-import {Box} from "@material-ui/core";
-import CheckoutLeft from "./CheckoutLeft";
-import CheckoutRight from "./CheckoutRight";
-import CheckoutContext from "./CheckoutContext";
-import {Elements, CardElement, useStripe} from "@stripe/react-stripe-js";
-import {loadStripe} from "@stripe/stripe-js";
+import React, { useContext, useState, useEffect } from 'react';
+import { Box } from '@material-ui/core';
+import CheckoutLeft from './CheckoutLeft';
+import CheckoutRight from './CheckoutRight';
+import CheckoutContext from './CheckoutContext';
+import { Elements, CardElement, useStripe } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 // import storeContext from "customer/storeContext";
 // import axios from "axios";
 
@@ -17,7 +17,7 @@ export default function CheckoutPage() {
   const [discount, setDiscount] = useState(0);
 
   const [paymentProcessing, setPaymentProcessing] = useState(false);
-  const [leftTabChosen, setLeftTabChosen] = useState(0);
+  const [leftTabChosen, setLeftTabChosen] = useState(4);
 
   return (
     <>
@@ -32,15 +32,15 @@ export default function CheckoutPage() {
           setAmountDue,
           setDiscount,
           leftTabChosen,
-          setLeftTabChosen
+          setLeftTabChosen,
         }}
       >
         <Elements stripe={stripePromise}>
-          <Box display='flex'>
-            <Box width='45%'>
+          <Box display="flex">
+            <Box width="45%">
               <CheckoutLeft />
             </Box>
-            <Box width='55%'>
+            <Box width="55%">
               <CheckoutRight />
             </Box>
           </Box>

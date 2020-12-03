@@ -4,6 +4,7 @@ import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import CheckoutTab from './tabs/CheckoutTab';
+import HistoryTab from './tabs/HistoryTab';
 import RefundTab from './tabs/RefundTab';
 import appColors from '../../styles/AppColors';
 import { Box } from '@material-ui/core';
@@ -97,7 +98,7 @@ export default function CheckoutRight() {
         </Box>
         {/* value is 2 because the flex spacing takes up values 1 and 3 */}
         <Box hidden={value !== 2}>
-          <div> Hi, this is your History</div>
+          <HistoryTab />
         </Box>
         <Box hidden={value !== 4}>
           <RefundTab />

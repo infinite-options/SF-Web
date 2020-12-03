@@ -3,6 +3,7 @@ import axios from 'axios';
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Paper, Box, TextField, Switch, Button } from '@material-ui/core';
+import FindLongLatWithAddr from '../../../utils/FindLongLatWithAddr';
 import appColors from '../../../styles/AppColors';
 import Signup from '../../auth/Signup';
 import { AuthContext } from '../../../auth/AuthContext';
@@ -37,6 +38,8 @@ export default function DeliveryInfoTab() {
 
   // Setting so that the store context isn't constantly re-rendered
   const [userInfo, setUserInfo] = useState(store.profile);
+  const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
+
   const { paymentProcessing, setLeftTabChosen } = useContext(checkoutContext);
 
   useEffect(() => {
@@ -52,9 +55,7 @@ export default function DeliveryInfoTab() {
   const onSubmit = () => {
     setProfile({ ...userInfo });
   };
-  const onConfirm = () => {
-    setLeftTabChosen(4);
-  };
+
   const onLoad = React.useCallback(function callback(map) {
     const bounds = new window.google.maps.LatLngBounds();
     map.fitBounds(bounds);
@@ -65,43 +66,36 @@ export default function DeliveryInfoTab() {
     setMap(null);
   }, []);
 
-  const onFieldChange = event => {
+  const onCheckAddressClicked = () => {
+    console.log('Verifying longitude and latitude from Delivery Info');
+    FindLongLatWithAddr(
+      userInfo.address,
+      userInfo.city,
+      userInfo.state,
+      userInfo.zip
+    ).then((res) => {
+      if (res.status === 'found') {
+        setIsAddressConfirmed(true);
+        store.setProfile(userInfo);
+      }
+    });
+  };
+
+  const onFieldChange = (event) => {
     const { name, value } = event.target;
     setUserInfo({ ...userInfo, [name]: value });
   };
 
-  const onCheckAddressClicked = () => {
-    console.log('Verifying longitude and latitude from Delivery Info');
-    axios
-      .get('https://dev.virtualearth.net/REST/v1/Locations/', {
-        params: {
-          CountryRegion: 'US',
-          adminDistrict: userInfo.state,
-          locality: userInfo.city,
-          postalCode: userInfo.zip,
-          addressLine: userInfo.address,
-          key: process.env.REACT_APP_BING_LOCATION_KEY,
-        },
-      })
-      .then(res => {
-        // console.log(res)
-        let locationApiResult = res.data;
-        if (locationApiResult.statusCode === 200) {
-          let locations = locationApiResult.resourceSets[0].resources;
-          /* Possible improvement: choose better location in case first one not desired
-           */
-          let location = locations[0];
-          let lat = location.geocodePoints[0].coordinates[0];
-          let long = location.geocodePoints[0].coordinates[1];
-          if (location.geocodePoints.length === 2) {
-            lat = location.geocodePoints[1].coordinates[0];
-            long = location.geocodePoints[1].coordinates[1];
-          }
-        }
-      });
-  };
+  useEffect(() => {
+    setIsAddressConfirmed(
+      userInfo.address === store.profile.address &&
+        userInfo.city === store.profile.city &&
+        userInfo.zip === store.profile.zip &&
+        userInfo.state === store.profile.state
+    );
+  }, [userInfo]);
 
-  const PlainTextField = props => {
+  const PlainTextField = (props) => {
     return (
       <Box mb={props.spacing || 1}>
         <CssTextField
@@ -223,33 +217,27 @@ export default function DeliveryInfoTab() {
             />
           </Box>
         </Box>
-        {PlainTextField({
-          label: 'Delivery Instructions',
-          name: 'deliveryInstructions',
-          value: userInfo.deliveryInstructions,
-        })}
+        <Box hidden={isAddressConfirmed} mb={3}>
+          <Button
+            className={classes.button}
+            variant="outlined"
+            size="small"
+            color="paragraphText"
+            onClick={onCheckAddressClicked}
+          >
+            Verify Address
+          </Button>
+        </Box>
         <Box mt={3}>
-          {paymentProcessing ? (
-            <Button
-              className={classes.button}
-              variant="outlined"
-              size="small"
-              color="paragraphText"
-              onClick={onConfirm}
-            >
-              CONFIRM
-            </Button>
-          ) : (
-            <Button
-              className={classes.button}
-              variant="outlined"
-              size="small"
-              color="paragraphText"
-              onClick={onSubmit}
-            >
-              Save Changes
-            </Button>
-          )}
+          <Button
+            className={classes.button}
+            variant="outlined"
+            size="small"
+            color="paragraphText"
+            onClick={onSubmit}
+          >
+            Save Changes
+          </Button>
         </Box>
         {/* <LoadScript googleMapsApiKey={process.env.REACT_APP_BING_LOCATION_KEY}>
           <GoogleMap
@@ -272,7 +260,7 @@ export default function DeliveryInfoTab() {
     );
   };
 
-  const noAuthFields = spacing => {
+  const noAuthFields = (spacing) => {
     return (
       <>
         <Box mb={spacing} color={appColors.paragraphText} fontSize={20}>

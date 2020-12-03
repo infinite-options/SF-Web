@@ -19,6 +19,12 @@ export default class AuthUtils {
   };
 
   updateProfile = async function () {
-    return await axios.post(this.BASE_URL + 'update_Profile');
+    return await axios
+      .post(this.BASE_URL + 'update_Profile')
+      .then((response) => {
+        if (response.data.result.length !== 0)
+          return Promise.resolve(response.data.result[0]);
+        else return Promise.resolve({});
+      });
   };
 }

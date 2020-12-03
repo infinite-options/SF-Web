@@ -27,9 +27,9 @@ const StyledTabs = withStyles({
       backgroundColor: appColors.secondary,
     },
   },
-})(props => <Tabs {...props} TabIndicatorProps={{ children: <span /> }} />);
+})((props) => <Tabs {...props} TabIndicatorProps={{ children: <span /> }} />);
 
-const StyledTab = withStyles(theme => ({
+const StyledTab = withStyles((theme) => ({
   root: {
     textTransform: 'none',
     color: appColors.paragraphText,
@@ -40,7 +40,7 @@ const StyledTab = withStyles(theme => ({
       opacity: 1,
     },
   },
-}))(props => <Tab disableRipple {...props} />);
+}))((props) => <Tab disableRipple {...props} />);
 
 export default function CheckoutLeft({ ...props }) {
   const classes = useStyles();
@@ -60,7 +60,7 @@ export default function CheckoutLeft({ ...props }) {
         aria-label="styled tabs example"
         centered
       >
-        <StyledTab label="Delivery Info" />
+        <StyledTab label="Profile Info" />
         <Box flexGrow={1} />
         <StyledTab label="Rewards" />
         <Box flexGrow={1} />

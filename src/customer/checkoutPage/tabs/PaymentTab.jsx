@@ -7,6 +7,7 @@ import { Button } from '@material-ui/core';
 import appColors from '../../../styles/AppColors';
 import useResponsiveFontSize from '../../../utils/useResponsiveFontSize';
 import CssTextField from '../../../utils/CssTextField';
+import FindLongLatWithAddr from '../../../utils/FindLongLatWithAddr';
 
 import axios from 'axios';
 
@@ -15,7 +16,7 @@ import storeContext from '../../storeContext';
 
 const useStyles = makeStyles({
   label: {
-    color: '#6b7c93',
+    color: appColors.paragraphText,
     fontWeight: 300,
     letterSpacing: '0.025em',
   },
@@ -50,7 +51,7 @@ const useOptions = () => {
       style: {
         base: {
           fontSize,
-          color: '#424770',
+          color: appColors.paragraphText,
           letterSpacing: '0.025em',
           fontFamily: 'Source Code Pro, monospace',
           '::placeholder': {
@@ -70,6 +71,7 @@ const useOptions = () => {
 
 const PaymentTab = () => {
   const classes = useStyles();
+  const store = useContext(storeContext);
 
   const elements = useElements();
   const stripe = useStripe();
@@ -90,7 +92,27 @@ const PaymentTab = () => {
     setProcessing(false);
   }, []);
 
-  const onPay = async event => {
+  const [userInfo, setUserInfo] = useState(store.profile);
+  const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
+
+  const { paymentProcessing, setLeftTabChosen } = useContext(checkoutContext);
+
+  useEffect(() => {
+    if (store.profile !== {}) {
+      setUserInfo(store.profile);
+    }
+  }, [store.profile]);
+
+  useEffect(() => {
+    setIsAddressConfirmed(
+      userInfo.address === store.profile.address &&
+        userInfo.city === store.profile.city &&
+        userInfo.zip === store.profile.zip &&
+        userInfo.state === store.profile.state
+    );
+  }, [userInfo]);
+
+  const onPay = async (event) => {
     event.preventDefault();
 
     setProcessing(true);
@@ -119,8 +141,7 @@ const PaymentTab = () => {
           },
         }
       );
-      const items = Object.values(cartItems).map(item => item);
-
+      const items = Object.values(cartItems).map((item) => item);
       const cardElement = await elements.getElement(CardElement);
 
       const paymentMethod = await stripe.createPaymentMethod({
@@ -189,18 +210,90 @@ const PaymentTab = () => {
     }
   };
 
+  const onSubmit = () => {
+    if (isAddressConfirmed) {
+      store.setProfile({ ...userInfo });
+    }
+  };
+  const onConfirm = () => {
+    setLeftTabChosen(4);
+  };
+
+  const onCheckAddressClicked = () => {
+    console.log('Verifying longitude and latitude from Delivery Info');
+    FindLongLatWithAddr(
+      userInfo.address,
+      userInfo.city,
+      userInfo.state,
+      userInfo.zip
+    ).then((res) => {
+      if (res.status === 'found') {
+        setIsAddressConfirmed(true);
+        store.setProfile(userInfo);
+      }
+    });
+  };
+
+  const onFieldChange = (event) => {
+    const { name, value } = event.target;
+    setUserInfo({ ...userInfo, [name]: value });
+  };
+
+  const PlainTextField = (props) => {
+    return (
+      <Box mb={props.spacing || 1}>
+        <CssTextField
+          value={props.value}
+          name={props.name}
+          label={props.label}
+          type={props.type}
+          variant="outlined"
+          size="small"
+          fullWidth
+          onChange={onFieldChange}
+        />
+      </Box>
+    );
+  };
+
   return (
-    <Box pt={5} px={10}>
+    <Box pt={3} px={10}>
       {paymentProcessing && (
         <p className={classes.notify}>
           Please Enter Your Credit Card Information.
         </p>
       )}
+      <Box>
+        {userInfo.firstName} {userInfo.lastName}
+      </Box>{' '}
+      <Box>{userInfo.phoneNum}</Box>
+      <label className={classes.label}>Delivery Address</label>
+      <Box>
+        {userInfo.address}
+        {userInfo.unit === '' ? ' ' : ''}
+        {userInfo.unit}, {userInfo.city}, {userInfo.state} {userInfo.zip}
+      </Box>
+      {PlainTextField({
+        label: 'Delivery Instructions',
+        name: 'deliveryInstructions',
+        value: userInfo.deliveryInstructions,
+      })}
+      <Box mb={1}>
+        <Button
+          className={classes.button}
+          variant="outlined"
+          size="small"
+          color="paragraphText"
+          onClick={onSubmit}
+        >
+          Save Changes
+        </Button>
+      </Box>
       <label className={classes.label}>Cardholder Name</label>
       <Box mt={1}>
         <CssTextField variant="outlined" size="small" fullWidth />
       </Box>
-      <Box mt={3}>
+      <Box mt={1}>
         <label className={classes.label}>
           Card details
           <CardElement className={classes.element} options={options} />

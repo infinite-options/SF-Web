@@ -58,8 +58,8 @@ function listItem(item) {
         img={item.img}
         meaning={item.meaning}
         business_uid={item.business_uid}
-        id={item.item_uid}
-        key={item.item_uid}
+        id={item.id}
+        key={item.id}
       />
     </>
   );
@@ -171,7 +171,7 @@ export default function CheckoutTab() {
         // let user confirm their info before process
         console.log('Stripe is clicked');
         setPaymentProcessing(true);
-        setLeftTabChosen(0);
+        setLeftTabChosen(4);
       } else if (paymentType === 'PAYPAL') {
         console.log('Paypal is loading');
         setPaypal(true);

@@ -77,11 +77,11 @@ export default function Coupons(props) {
         amountNeeded: coupon.threshold - props.subtotal,
         expDate: coupon.expDate,
         status:
-          props.subtotal >= props.subTotal > 0 && coupon.threshold
+          props.subtotal > 0 && props.subtotal >= coupon.threshold
             ? 'available'
             : 'unavailable',
       };
-      if (couponData.status === 'available' && props.subTotal > 0) {
+      if (couponData.status === 'available') {
         availableCoupons.push(couponData);
       } else {
         unavailableCoupons.push(couponData);
@@ -148,7 +148,7 @@ export default function Coupons(props) {
                 ),
                 amountNeeded: couponsRes[i].threshold - props.subtotal,
                 status:
-                  props.subTotal > 0 &&
+                  props.subtotal > 0 &&
                   props.subtotal >= couponsRes[i].threshold
                     ? 'available'
                     : 'unavailable',
@@ -242,15 +242,13 @@ export default function Coupons(props) {
               {coupProps.title}
             </Box>
             <Box fontSize="12px">
-              {coupProps.threshold === 0
-                ? 'No minimum purchase'
-                : 'Any order above $' + coupProps.threshold}
+              {coupProps.threshold === 0 ? 'No' : '$' + coupProps.threshold}{' '}
+              minimum purchase
             </Box>
             <Box fontSize="10px">
               {/* +1 because JS date object function returns months from 0-11 and similarly for days */}
-              Expires: {coupProps.expDate.getDay() + 1}/
-              {coupProps.expDate.getMonth() + 1}/
-              {coupProps.expDate.getFullYear()}
+              Expires: {coupProps.expDate.getMonth() + 1}/
+              {coupProps.expDate.getDay() + 1}/{coupProps.expDate.getFullYear()}
             </Box>
             <Box
               hidden={
@@ -260,7 +258,7 @@ export default function Coupons(props) {
               fontStyle="oblique"
             >
               {/* +1 because JS date object function returns months from 0-11 and similarly for days */}
-              Spend ${coupProps.amountNeeded.toFixed(2)} to activate
+              Spend ${coupProps.amountNeeded.toFixed(2)} more to use
             </Box>
             <Box
               hidden={coupProps.status === 'unavailable'}
@@ -268,7 +266,7 @@ export default function Coupons(props) {
               fontStyle="oblique"
             >
               {/* +1 because JS date object function returns months from 0-11 and similarly for days */}
-              Amount saved: ${coupProps.amountSaved.toFixed(2)}
+              You saved: ${coupProps.amountSaved.toFixed(2)}
             </Box>
           </Box>
         </Box>
