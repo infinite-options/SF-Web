@@ -6,6 +6,7 @@ import { Box, Grid, Paper } from '@material-ui/core';
 import appColors from '../../../styles/AppColors';
 import { set } from 'js-cookie';
 
+// TODO: add unit, each is as is, anything else is '/' or 'per'
 function createProduct2(product) {
   var tryItem = '';
   var itemName = product.item_name;
@@ -18,7 +19,7 @@ function createProduct2(product) {
   }
   return (
     <Entry
-      name={itemName}
+      name={product.item_name}
       price={product.item_price}
       img={product.item_photo}
       type={product.item_type}
@@ -56,7 +57,7 @@ function DisplayProduct() {
   // DONE: clear out expected delivery if unclicked
   useEffect(() => {
     let message = '';
-    if (productSelect.daysClicked.size == 0) {
+    if (productSelect.dayClicked === '') {
       message = 'Please select one produce delivery date and time.';
 
       if (store.cartTotal > 0) {
@@ -70,7 +71,7 @@ function DisplayProduct() {
         'Sorry, we could not find any produce that can be delivered to your provided address';
     }
     setDisplayMessage(message);
-  }, [productSelect.daysClicked, store.productsLoading, store.cartTotal]);
+  }, [productSelect.dayClicked, store.productsLoading, store.cartTotal]);
 
   if (!store.productsLoading && !productSelect.itemError) {
     return (

@@ -40,7 +40,13 @@ const ProductSelectionPage = (props) => {
   const [farmsClicked, setFarmsClicked] = useState(new Set());
 
   // this state will notify if one of the days is clicked or not
-  const [daysClicked, setDaysClicked] = useState(new Set());
+  const [dayClicked, setDayClicked] = useState(
+    localStorage.getItem('selectedDay') || ''
+  );
+
+  useEffect(() => {
+    localStorage.setItem('selectedDay', dayClicked);
+  }, [dayClicked]);
 
   // this state will notify if one of the days is clicked or not
   const [categoriesClicked, setCategoriesClicked] = useState(new Set());
@@ -55,8 +61,8 @@ const ProductSelectionPage = (props) => {
         busError,
         farmsClicked,
         setFarmsClicked,
-        daysClicked,
-        setDaysClicked,
+        dayClicked,
+        setDayClicked,
         categoriesClicked,
         setCategoriesClicked,
       }}

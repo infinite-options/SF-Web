@@ -58,8 +58,8 @@ function listItem(item) {
         img={item.img}
         meaning={item.meaning}
         business_uid={item.business_uid}
-        id={item.id}
-        key={item.id}
+        id={item.item_uid}
+        key={item.item_uid}
       />
     </>
   );
@@ -71,7 +71,6 @@ export default function CheckoutTab() {
   const [paypal, setPaypal] = useState(false);
   const elements = useElements();
 
-  const [expectedDelivery, setExpectedDelivery] = useState('');
   const { setPaymentProcessing, setLeftTabChosen } = checkout;
   // Retrieve items from store context
   function getItemsCart() {
@@ -82,20 +81,20 @@ export default function CheckoutTab() {
     return result;
   }
   // cartItems is a dictonary, need to convert it into an array
-  const [products, setProducts] = useState(getItemsCart());
+  const [cartItems, setCartItems] = useState(getItemsCart());
 
   useEffect(() => {
-    setProducts(getItemsCart());
+    setCartItems(getItemsCart());
   }, [store.cartItems]);
 
   // DONE: Add service fee
   // DONE: Add Delivery tip
   // DONE: apply promo to subtotal
   // DONE: make taxes not applied to the delivery fee
-  const [subtotal, setSubtotal] = useState(calculateSubTotal(products));
+  const [subtotal, setSubtotal] = useState(calculateSubTotal(cartItems));
   const [promoApplied, setPromoApplied] = useState(0);
-  const [deliveryFee, setDeliveryFee] = useState(products.length > 0 ? 5 : 0);
-  const [serviceFee, setServiceFee] = useState(products.length > 0 ? 1.5 : 0);
+  const [deliveryFee, setDeliveryFee] = useState(cartItems.length > 0 ? 5 : 0);
+  const [serviceFee, setServiceFee] = useState(cartItems.length > 0 ? 1.5 : 0);
   const [driverTip, setDriverTip] = useState('');
   const [tax, setTax] = useState(0);
   const [total, setTotal] = useState(
@@ -136,12 +135,12 @@ export default function CheckoutTab() {
   }, [subtotal, promoApplied, deliveryFee, driverTip]);
 
   useEffect(() => {
-    setSubtotal(calculateSubTotal(products));
+    setSubtotal(calculateSubTotal(cartItems));
     let amountDue = parseFloat(
-      (calculateSubTotal(products) + deliveryFee + serviceFee).toFixed(2)
+      (calculateSubTotal(cartItems) + deliveryFee + serviceFee).toFixed(2)
     );
     setAmountDue(amountDue);
-  }, [products]);
+  }, [cartItems]);
 
   useEffect(() => {
     setTax(0);
@@ -215,7 +214,7 @@ export default function CheckoutTab() {
           </Button>
         </Box>
         <Box my={1} px={1}>
-          {products.map(listItem)}
+          {cartItems.map(listItem)}
         </Box>
       </Box>
       <Box flexGrow={1} />

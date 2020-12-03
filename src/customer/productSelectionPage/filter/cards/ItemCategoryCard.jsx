@@ -8,7 +8,7 @@ const ItemCategoryItem = (props) => {
 
   const [isClicked, setIsClicked] = useState(false);
   const [isShown, setIsShown] = useState(
-    productSelect.farmsClicked.size > 0 || productSelect.daysClicked.size > 0
+    productSelect.farmsClicked.size > 0 || productSelect.dayClicked === ''
   );
 
   function onCategoryClicked() {
@@ -25,8 +25,8 @@ const ItemCategoryItem = (props) => {
   }
 
   useEffect(() => {
-    setIsShown(productSelect.daysClicked.size > 0);
-  }, [productSelect.farmsClicked, productSelect.daysClicked]);
+    setIsShown(productSelect.dayClicked === 0);
+  }, [productSelect.farmsClicked, productSelect.dayClicked]);
 
   return (
     <Box hidden={!isShown} mb={1} m={0.5} p={0.5} width="100%">

@@ -10,6 +10,7 @@ import ProductSelectionPage from './productSelectionPage';
 import AuthUtils from '../utils/AuthUtils';
 import BusiApiReqs from '../utils/BusiApiReqs';
 import AlertDialog from '../utils/dialog';
+import { set } from 'js-cookie';
 
 const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI;
 const cookies = new Cookies();
@@ -35,10 +36,10 @@ const Store = ({ ...props }) => {
   const [productsLoading, setProductsLoading] = useState(true);
 
   const [farmsList, setFarmsList] = useState([]);
-  const [numDeliveryTimes, setNumDeliveryTimes] = useState(0);
-  const [dayFarmDict, setDayFarmDict] = useState({});
   const [dayTimeDict, setDayTimeDict] = useState({});
-  const [farmDayTimeDict, setFarmDayTimeDict] = useState({});
+  const [numDeliveryTimes, setNumDeliveryTimes] = useState(0);
+  const [daytimeFarmDict, setDaytimeFarmDict] = useState({});
+  const [farmDaytimeDict, setFarmDaytimeDict] = useState({});
 
   const [expectedDelivery, setExpectedDelivery] = useState('');
 
@@ -58,11 +59,10 @@ const Store = ({ ...props }) => {
       console.log('busiRes: ', busiRes);
       const businessesRes = busiRes.result;
       const businessUids = new Set();
-      const deliveryTimesSet = new Set();
       const _farmList = [];
-      const _dayFarmDict = {};
       const _dayTimeDict = {};
-      const _farmDayTimeDict = {};
+      const _daytimeFarmDict = {};
+      const _farmDaytimeDict = {};
       // get a list of buiness UIDs for the next req and
       // the farms properties for the filter
       for (const business of businessesRes) {
@@ -71,15 +71,14 @@ const Store = ({ ...props }) => {
         const id = business.z_biz_id;
         const day = business.z_delivery_day;
         const time = business.z_delivery_time;
-
-        deliveryTimesSet.add(day + time);
+        const daytime = day + '&' + time;
 
         // Put set of farms into a dictionary with day as key
         // Set for faster lookups when inserting
-        if (!(day in _dayFarmDict)) {
-          _dayFarmDict[day] = new Set();
+        if (!(daytime in _daytimeFarmDict)) {
+          _daytimeFarmDict[daytime] = new Set();
         }
-        _dayFarmDict[day].add(id);
+        _daytimeFarmDict[daytime].add(id);
 
         if (!(day in _dayTimeDict)) {
           _dayTimeDict[day] = new Set();
@@ -90,33 +89,22 @@ const Store = ({ ...props }) => {
         // - when clicking farm check id and see if day is a key in dictionary for filter
         // - the day key has a set to account for a farm that has multiple delivery times in a day
         // - if above note is not needed (only one delivery time per day), the set can be changed to one time string
-        if (id in _farmDayTimeDict) {
-          if (!(day in _farmDayTimeDict[id])) {
-            _farmDayTimeDict[id][day] = new Set();
-          }
-          _farmDayTimeDict[id][day].add(time);
-        } else {
-          console.log('name: ', business.business_name);
+        if (!(id in _farmDaytimeDict)) {
+          _farmDaytimeDict[id] = new Set();
           _farmList.push({
             id: id,
             name: business.business_name,
             image: business.business_image,
           });
-          _farmDayTimeDict[id] = { [day]: new Set() };
         }
-        _farmDayTimeDict[id][day].add(time);
+        _farmDaytimeDict[id].add(daytime);
       }
-      console.log('_farmList', _farmList);
-      console.log('_farmDayTimeDict', _farmDayTimeDict);
-      console.log('_dayFarmDict', _dayFarmDict);
-      console.log('_dayTimeDict', _dayTimeDict);
-      console.log('deliveryTimesSet', deliveryTimesSet);
 
-      setNumDeliveryTimes(deliveryTimesSet.size);
+      setNumDeliveryTimes(Object.keys(_daytimeFarmDict).length);
       setFarmsList(_farmList);
-      setDayFarmDict(_dayFarmDict);
       setDayTimeDict(_dayTimeDict);
-      setFarmDayTimeDict(_farmDayTimeDict);
+      setDaytimeFarmDict(_daytimeFarmDict);
+      setFarmDaytimeDict(_farmDaytimeDict);
       BusiMethods.getItems(
         ['fruit', 'desert', 'vegetable', 'other'],
         Array.from(businessUids)
@@ -220,9 +208,9 @@ const Store = ({ ...props }) => {
           productsLoading,
           setStorePage,
           numDeliveryTimes,
-          dayFarmDict,
           dayTimeDict,
-          farmDayTimeDict,
+          daytimeFarmDict,
+          farmDaytimeDict,
           expectedDelivery,
           setExpectedDelivery,
         }}

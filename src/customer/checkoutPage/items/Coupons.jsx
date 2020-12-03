@@ -42,14 +42,14 @@ export default function Coupons(props) {
 
   // DONE:  Coupon properties: Title, Message, Expiration, Saving
   // DONE:  if threshold is 0 "No minimum purchase"
-  // TODO:  if amountNeeded is 0 take out needed message
+  // DONE:  if amountNeeded is 0 take out needed message
   // DONE:  Sort coupons to be selected, available, unavailable
   // DONE:  Grab coupons from backend API
   // DONE:  Implement and add how much needed (threshold - subtotal): ex.Buy $10 more produce to be eligible
   // TODO testing:  change saving with need to be eligible
   // DONE:  Add how much saved
   // DONE:  Add expiration date
-  // TODO:  See if dots in carosel view can move down
+  // DONE:  See if dots in carosel view can move down
   // BUG:   amountSaved is the same on every coupon on first
   //
   const [avaiCouponData, setAvaiCouponData] = useState([]);
@@ -77,9 +77,11 @@ export default function Coupons(props) {
         amountNeeded: coupon.threshold - props.subtotal,
         expDate: coupon.expDate,
         status:
-          props.subtotal >= coupon.threshold ? 'available' : 'unavailable',
+          props.subtotal >= props.subTotal > 0 && coupon.threshold
+            ? 'available'
+            : 'unavailable',
       };
-      if (couponData.status === 'available') {
+      if (couponData.status === 'available' && props.subTotal > 0) {
         availableCoupons.push(couponData);
       } else {
         unavailableCoupons.push(couponData);
@@ -146,6 +148,7 @@ export default function Coupons(props) {
                 ),
                 amountNeeded: couponsRes[i].threshold - props.subtotal,
                 status:
+                  props.subTotal > 0 &&
                   props.subtotal >= couponsRes[i].threshold
                     ? 'available'
                     : 'unavailable',
@@ -234,8 +237,8 @@ export default function Coupons(props) {
             cursor: coupProps.status != 'unavailable' ? 'pointer' : '',
           }}
         >
-          <Box textlign="left" pl={3} pr={6} pt={1}>
-            <Box fontSize={12} fontWeight="bold">
+          <Box textlign="left" pl={2.5} pr={6} pt={1.5}>
+            <Box fontSize={12} height="30px" fontWeight="bold">
               {coupProps.title}
             </Box>
             <Box fontSize="12px">
@@ -250,7 +253,9 @@ export default function Coupons(props) {
               {coupProps.expDate.getFullYear()}
             </Box>
             <Box
-              hidden={coupProps.status !== 'unavailable'}
+              hidden={
+                coupProps.status !== 'unavailable' || coupProps.threshold === 0
+              }
               fontSize="10px"
               fontStyle="oblique"
             >

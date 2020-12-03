@@ -14,7 +14,7 @@ function FarmCard(props) {
 
   const [isClicked, setIsClicked] = useState(false);
   const [showCard, setShowCard] = useState(
-    productSelect.daysClicked.size == 0 ? true : false
+    productSelect.dayClicked === '' ? true : false
   );
 
   function gotFarmClicked() {
@@ -29,17 +29,17 @@ function FarmCard(props) {
     setIsClicked(!isClicked);
   }
   useEffect(() => {
-    let _showCard = productSelect.daysClicked.size == 0 ? true : false;
-    for (const day in store.farmDayTimeDict[props.id]) {
-      store.farmDayTimeDict[props.id][day].forEach((time) => {
-        if (productSelect.daysClicked.has(day + '&' + time)) _showCard = true;
+    let _showCard = productSelect.dayClicked === '' ? true : false;
+    console.log(
+      'productSelect.dayClicked === daytime: ',
+      productSelect.dayClicked
+    );
+    if (props.id in store.farmDaytimeDict)
+      store.farmDaytimeDict[props.id].forEach((daytime) => {
+        if (productSelect.dayClicked === daytime) _showCard = true;
       });
-    }
-    if (!_showCard && isClicked) {
-      setIsClicked(false);
-    }
     setShowCard(_showCard);
-  }, [productSelect.daysClicked]);
+  }, [productSelect.dayClicked]);
 
   return (
     <Box

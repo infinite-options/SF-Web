@@ -43,52 +43,53 @@ const DateCard = (props) => {
     productSelect.farmsClicked.size == 0 ? true : false
   );
 
-  // FMDF = For Multiple Day Functionality
   const cardClicked = () => {
-    // FMDF: initialize the set with productSelect.daysClicked
     onConfirmDayChange();
   };
 
   const onConfirmDayChange = () => {
-    const newDaysClicked = new Set();
     localStorage.removeItem('selectedDay');
     if (isClicked) {
-      confirm({
-        variant: 'danger',
-        catchOnCancel: true,
-        title: 'About to Clear Cart',
-        description:
-          'If you change or deselect your delivery day your cart will be cleared. Would you like to proceed?',
-      })
-        .then(() => {
-          store.setExpectedDelivery('');
-          setIsClicked(false);
-          productSelect.setDaysClicked(newDaysClicked);
-        })
-        .catch(() => {});
-    } else {
-      if (productSelect.daysClicked.size !== 0) {
-        confirm({
-          variant: 'danger',
-          catchOnCancel: true,
-          title: 'About to Clear Cart',
-          description:
-            'If you change or deselect your delivery day your cart will be cleared. Would you like to proceed?',
-        })
-          .then(() => {
-            changeDay(newDaysClicked);
-          })
-          .catch(() => {});
+      if (store.cartTotal !== 0) {
+        displayDialog(clearCartAndDay);
       } else {
-        changeDay(newDaysClicked);
+        clearCartAndDay();
+      }
+    } else {
+      console.log('store.cartTotal: ', store.cartTotal);
+      if (productSelect.dayClicked != '' && store.cartTotal !== 0) {
+        displayDialog(changeDay);
+      } else {
+        changeDay();
       }
     }
   };
 
-  function changeDay(newDaysClicked) {
-    // FMDF: add on !isClicked and delete on isClicked
-    const dayTime = todaysDayUpper + '&' + props.time;
-    newDaysClicked.add(todaysDayUpper + '&' + props.time);
+  function displayDialog(action) {
+    confirm({
+      variant: 'danger',
+      catchOnCancel: true,
+      title: 'About to Clear Cart',
+      description:
+        'If you change or deselect your delivery day your cart will be cleared. Would you like to proceed?',
+    })
+      .then(() => {
+        action();
+      })
+      .catch(() => {});
+  }
+
+  function clearCartAndDay() {
+    store.setExpectedDelivery('');
+    productSelect.setDayClicked('');
+    store.setCartTotal(0);
+    store.setCartItems({});
+    setIsClicked(false);
+  }
+
+  function changeDay() {
+    productSelect.setDayClicked(props.id);
+    setIsClicked(true);
     store.setExpectedDelivery(
       props.month +
         ' ' +
@@ -98,52 +99,47 @@ const DateCard = (props) => {
         ' from ' +
         props.time
     );
-
-    productSelect.setDaysClicked(newDaysClicked);
-    setIsClicked(!isClicked);
-    localStorage.setItem('selectedDay', dayTime);
+    store.setCartTotal(0);
+    store.setCartItems({});
+    localStorage.setItem('selectedDay', props.id);
   }
 
-  // FMDF: remove this hook
   useEffect(() => {
     const selectedDay = localStorage.getItem('selectedDay');
     console.log(
       'selectedDay: ',
       selectedDay,
-      todaysDayUpper + '&' + props.time,
-      productSelect.daysClicked
+      props.id,
+      productSelect.dayClicked
     );
-    if (selectedDay === null) {
-      if (!productSelect.daysClicked.has(todaysDayUpper + '&' + props.time)) {
-        setIsClicked(false);
-        store.setCartItems({});
-        store.setCartTotal(0);
-      }
+    if (props.id !== productSelect.dayClicked) {
+      setIsClicked(false);
     } else {
-      if (productSelect.daysClicked.size === 0) {
-        const newDaysClicked = new Set();
-        newDaysClicked.add(selectedDay);
-        productSelect.setDaysClicked(newDaysClicked);
-      }
-      if (selectedDay === todaysDayUpper + '&' + props.time) {
-        setIsClicked(true);
-      }
+      setIsClicked(true);
+      store.setExpectedDelivery(
+        props.month +
+          ' ' +
+          props.day +
+          ', ' +
+          props.weekDayFull +
+          ' from ' +
+          props.time
+      );
     }
-  }, [productSelect.daysClicked]);
+  }, [productSelect.dayClicked]);
 
   // TODO testing: figure out a whether to do || or && for farms
   useEffect(() => {
     let _showCard = productSelect.farmsClicked.size == 0 ? true : false;
     let showCount = 0;
     productSelect.farmsClicked.forEach((farmId) => {
-      if (todaysDayUpper in store.farmDayTimeDict[farmId]) {
+      const daytime = props.weekDayFullUpper + '&' + props.time;
+      if (store.farmDaytimeDict[farmId].has(daytime)) {
         showCount += 1;
       }
     });
     _showCard = showCount === productSelect.farmsClicked.size;
-    if (_showCard && isClicked) {
-      setIsClicked(false);
-    } else setShowCard(_showCard);
+    setShowCard(_showCard);
   }, [productSelect.farmsClicked]);
   const classes = useStyles();
 

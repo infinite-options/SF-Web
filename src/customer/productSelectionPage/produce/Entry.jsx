@@ -29,14 +29,9 @@ function Entry(props) {
     let isInDay = false;
     let isInFarm = false;
     let isInCategory = false;
-    for (const day in store.farmDayTimeDict[props.business_uid]) {
-      store.farmDayTimeDict[props.business_uid][day].forEach((time) => {
-        if (day == 'FRIDAY') {
-          // console.log(day + time, productSelect.daysClicked);
-        }
-        if (productSelect.daysClicked.has(day + '&' + time)) isInDay = true;
-      });
-    }
+    store.farmDaytimeDict[props.business_uid].forEach((daytime) => {
+      if (productSelect.dayClicked === daytime) isInDay = true;
+    });
     if (productSelect.farmsClicked.has(props.business_uid)) isInFarm = true;
     if (productSelect.categoriesClicked.has(props.type)) isInCategory = true;
 
@@ -50,7 +45,7 @@ function Entry(props) {
         (isInDay && isInFarm && productSelect.categoriesClicked.size == 0)
     );
   }, [
-    productSelect.daysClicked,
+    productSelect.dayClicked,
     productSelect.farmsClicked,
     productSelect.categoriesClicked,
     store.cartItems,

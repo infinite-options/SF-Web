@@ -87,12 +87,13 @@ const StoreFilter = () => {
             // IMPORTANT: make sure the index used for mapping a component key is unique,
             // I ran into rendering issue when they were the same
             var newDay = {
-              index: todaysDayUpper + time,
+              index: todaysDayUpper + '&' + time,
               time: time,
               weekDay: days[today.getDay()],
               month: months[today.getMonth()],
               day: today.getDate(),
               weekDayFull: fullDays[today.getDay()],
+              weekDayFullUpper: todaysDayUpper,
             };
             default7Days.push(newDay);
           });
@@ -104,49 +105,11 @@ const StoreFilter = () => {
     return default7Days;
   };
 
-  useEffect(() => {
-    const deleteDays = [];
-    productSelect.daysClicked.forEach((day) => {
-      let inFarmCount = 0;
-      productSelect.farmsClicked.forEach((farm) => {
-        if (day.split('&')[0] in store.farmDayTimeDict[farm]) ++inFarmCount;
-      });
-      if (inFarmCount != productSelect.farmsClicked.size) {
-        deleteDays.push(day);
-      }
-    });
-    if (deleteDays.length > 0) {
-      const newDaysClicked = new Set(productSelect.daysClicked);
-      for (const day of deleteDays) {
-        newDaysClicked.delete(day);
-      }
-      productSelect.setDaysClicked(newDaysClicked);
-    }
-  }, [productSelect.farmsClicked]);
-
-  useEffect(() => {
-    const deleteFarms = [];
-    productSelect.farmsClicked.forEach((farm) => {
-      let inDayCount = 0;
-      productSelect.daysClicked.forEach((day) => {
-        if (store.dayFarmDict[day.split('&')[0]].has(farm)) ++inDayCount;
-      });
-      if (inDayCount != productSelect.daysClicked.size) {
-        deleteFarms.push(farm);
-      }
-    });
-    console.log('clicked deleteFarms: ', deleteFarms);
-    if (deleteFarms.length > 0) {
-      const newFarmsClicked = new Set(productSelect.farmsClicked);
-      for (const farm of deleteFarms) {
-        newFarmsClicked.delete(farm);
-      }
-      productSelect.setFarmsClicked(newFarmsClicked);
-    }
-  }, [productSelect.daysClicked]);
+  // If the decision changes to make an 'or' for shown days on farms clicked refer to to a commit before 12/02/20
 
   // For when the URL endpoints have finished loading in all of the information
   useEffect(() => {
+    console.log('saytimedics');
     setShownDays(createDefault7Day());
   }, [store.dayTimeDict]);
 
