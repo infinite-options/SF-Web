@@ -1,7 +1,9 @@
 export function onPurchaseComplete(props) {
   props.store.setCartItems({});
   props.store.setCartTotal(0);
+  localStorage.removeItem('selectedDay');
   props.store.setDayClicked('');
+  props.store.setFarmsClicked(new Set());
   localStorage.removeItem('cartTotal');
   localStorage.removeItem('cartItems');
 
@@ -15,6 +17,8 @@ export function onPurchaseComplete(props) {
         props.store.expectedDelivery +
         '.',
     })
-    .then(() => {})
+    .then(() => {
+      props.store.setExpectedDelivery('');
+    })
     .catch(() => {});
 }

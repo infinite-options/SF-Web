@@ -237,7 +237,7 @@ export default function Coupons(props) {
           }}
         >
           <Box textlign="left" pl={2} pr={6} pt={1.5}>
-            <Box fontSize={12} height="30px" fontWeight="bold">
+            <Box fontSize={12} pr={1} height="30px" fontWeight="bold">
               {coupProps.title}
             </Box>
             <Box fontSize="12px">
@@ -340,7 +340,6 @@ export default function Coupons(props) {
             partialVisible={true}
             draggable={true}
             showDots={true}
-            focusOnSelect={true}
             responsive={responsive}
           >
             {avaiCouponData.concat(unavaiCouponData).map(CreateCouponCard)}

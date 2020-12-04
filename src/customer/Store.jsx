@@ -103,10 +103,8 @@ const Store = ({ ...props }) => {
         }
         _dayTimeDict[day].add(time);
 
-        // Put (dictionary of day that contains a set of times) into a dictionary with id as key
-        // - when clicking farm check id and see if day is a key in dictionary for filter
-        // - the day key has a set to account for a farm that has multiple delivery times in a day
-        // - if above note is not needed (only one delivery time per day), the set can be changed to one time string
+        // Put set of days into a dictionary with farm id as key
+        // Set for faster lookups when inserting
         if (!(id in _farmDaytimeDict)) {
           _farmDaytimeDict[id] = new Set();
           _farmList.push({
@@ -136,16 +134,55 @@ const Store = ({ ...props }) => {
         const itemDict = {};
         if (itemRes !== undefined) {
           setAllProducts(itemRes);
+
+          // DONE: set the business id of a duplicate item to be the business ID with the lowest BUSINESS price NOT ITEM price
+          // TODO: configure date to be added to the same buisness id
           for (const item of itemRes) {
-            const namePrice = item.item_name + item.item_price;
-            if (namePrice in itemDict) {
-              _products[itemDict[namePrice]].business_uids[
-                [item.itm_business_uid]
-              ] = item.item_price;
-            } else {
-              itemDict[namePrice] = _products.length;
-              item.business_uids = { [item.itm_business_uid]: item.item_price };
-              _products.push(item);
+            try {
+              if (item.item_status === 'Active') {
+                const namePriceDesc =
+                  item.item_name + item.item_price + item.item_desc;
+                // Business Price
+                const bPrice = item.business_price;
+
+                // if we've seen the the item before, check its business pricing and, if needed, creation date to take the lowest business price
+                if (namePriceDesc in itemDict) {
+                  const itemIdx = itemDict[namePriceDesc];
+
+                  // keeps a list of the items business_uid(s) with the business' associated pricing
+                  _products[itemIdx].business_uids[item.itm_business_uid] =
+                    item.item_price;
+
+                  // checks for if the current iterated business has a lower price than the one previously seen
+                  if (bPrice < _products[itemIdx].lowest_price) {
+                    _products[itemIdx].lowest_price = bPrice;
+                    _products[itemIdx].lowest_price_business_uid =
+                      item.itm_business_uid;
+                  }
+
+                  // If the price is the same, take the one that was created first
+                  if (
+                    bPrice === _products[itemIdx].lowest_price &&
+                    new Date(item.created_at) <
+                      new Date(_products[itemIdx].created_at)
+                  )
+                    _products[itemIdx].lowest_price_business_uid =
+                      item.itm_business_uid;
+                } else {
+                  // If we haven't seen it push it into the dictionary just in case we see it again
+                  itemDict[namePriceDesc] = _products.length;
+                  item.business_uids = {
+                    [item.itm_business_uid]: item.item_price,
+                  };
+                  item.lowest_price_business_uid = item.itm_business_uid;
+                  item.lowest_price = bPrice;
+
+                  // Push to products to have distinct products
+                  _products.push(item);
+                }
+              }
+            } catch (error) {
+              console.error(error);
             }
           }
         }

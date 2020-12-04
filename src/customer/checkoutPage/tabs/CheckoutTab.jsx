@@ -299,6 +299,17 @@ export default function CheckoutTab() {
       {/* END: Pricing */}
 
       {/* START: Payment Buttons */}
+      <Box display="flex" flexDirection="column" px="30%">
+        <Button
+          className={classes.button}
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={() => onPayWithClicked('STRIPE')}
+        >
+          Pay with Stripe
+        </Button>
+      </Box>
       {!paypal ? (
         <Box display="flex" flexDirection="column" px="30%">
           <Button
@@ -310,16 +321,6 @@ export default function CheckoutTab() {
           >
             Pay with PayPal
           </Button>
-          <Button
-            className={classes.button}
-            size="small"
-            variant="contained"
-            color="primary"
-            onClick={() => onPayWithClicked('STRIPE')}
-          >
-            Pay with Stripe
-          </Button>
-          {/* END: Payment Buttons */}
         </Box>
       ) : (
         <PayPal
@@ -328,6 +329,7 @@ export default function CheckoutTab() {
           setCartItems={store.setCartItems}
         />
       )}
+      {/* END: Payment Buttons */}
     </Box>
   );
 }

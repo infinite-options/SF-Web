@@ -43,6 +43,10 @@ const ProductSelectionPage = (props) => {
   const [dayClicked, setDayClicked] = useState(store.dayClicked);
 
   useEffect(() => {
+    setFarmsClicked(store.farmsClicked);
+  }, [store.farmsClicked]);
+
+  useEffect(() => {
     setDayClicked(store.dayClicked);
   }, [store.dayClicked]);
 

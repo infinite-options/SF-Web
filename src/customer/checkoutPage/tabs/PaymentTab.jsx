@@ -166,7 +166,7 @@ const PaymentTab = () => {
       const {
         data: { client_secret },
       } = await axios.post(
-        'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/Stripe_Intent',
+        process.env.REACT_APP_SERVER_BASE_URI + 'Stripe_Intent',
         formSending,
         {
           headers: {
@@ -238,42 +238,19 @@ const PaymentTab = () => {
       };
 
       console.log('data sending: ', data);
-      let res = await axios.post(
-        'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/checkout',
-        data
-      );
-      cardElement.clear();
+      let res = axios
+        .post(process.env.REACT_APP_SERVER_BASE_URI + 'checkout', data)
+        .then((res) => {
+          cardElement.clear();
+          setProcessing(false);
+          setPaymentProcessing(false);
+          onPurchaseComplete({ store: store, confirm: confirm });
+        });
+    } catch (err) {
       setProcessing(false);
       setPaymentProcessing(false);
-
-      onPurchaseComplete({ store: store, confirm: confirm });
-    } catch (err) {
       console.log('error happened while posting to Stripe_Intent api', err);
     }
-  };
-
-  const onSubmit = () => {
-    if (isAddressConfirmed) {
-      store.setProfile({ ...userInfo });
-    }
-  };
-  const onConfirm = () => {
-    setLeftTabChosen(4);
-  };
-
-  const onCheckAddressClicked = () => {
-    console.log('Verifying longitude and latitude from Delivery Info');
-    FindLongLatWithAddr(
-      userInfo.address,
-      userInfo.city,
-      userInfo.state,
-      userInfo.zip
-    ).then((res) => {
-      if (res.status === 'found') {
-        setIsAddressConfirmed(true);
-        store.setProfile(userInfo);
-      }
-    });
   };
 
   const onFieldChange = (event) => {

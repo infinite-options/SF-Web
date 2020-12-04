@@ -96,7 +96,7 @@ const RefundTab = () => {
       formUpload.append('item_photo', imageUpload.file);
       try {
         let res = await axios.post(
-          'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/Refund',
+          process.env.REACT_APP_SERVER_BASE_URI + 'Refund',
           formUpload,
           {
             headers: {

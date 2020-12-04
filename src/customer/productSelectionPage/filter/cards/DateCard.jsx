@@ -114,13 +114,6 @@ const DateCard = (props) => {
   }
 
   useEffect(() => {
-    const selectedDay = localStorage.getItem('selectedDay');
-    console.log(
-      'selectedDay: ',
-      selectedDay,
-      props.id,
-      productSelect.dayClicked
-    );
     if (props.id !== productSelect.dayClicked) {
       setIsClicked(false);
     } else {

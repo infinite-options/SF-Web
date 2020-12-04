@@ -22,15 +22,17 @@ function FarmCard(props) {
 
   function gotFarmClicked() {
     const newFarmsClicked = new Set(productSelect.farmsClicked);
-
     if (isClicked) {
       newFarmsClicked.delete(props.id);
     } else {
       newFarmsClicked.add(props.id);
     }
     productSelect.setFarmsClicked(newFarmsClicked);
-    setIsClicked(!isClicked);
   }
+
+  useEffect(() => {
+    setIsClicked(productSelect.farmsClicked.has(props.id));
+  }, [productSelect.farmsClicked]);
 
   // TODO texting: disappearing farm bug
   // TODO testing: day click will reset farms
@@ -50,7 +52,7 @@ function FarmCard(props) {
         if (productSelect.dayClicked === daytime) _showCard = true;
       });
     setShowCard(_showCard);
-  }, [productSelect.dayClicked]);
+  }, [productSelect.dayClicked, store.farmDaytimeDict]);
 
   return (
     <Box
