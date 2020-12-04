@@ -16,24 +16,23 @@ function calculateSubTotal(items) {
 
 const responsive = {
   superLargeDesktop: {
-    breakpoint: { max: 3000, min: 1370 },
-    items: 4,
-    partialVisibilityGutter: 10,
+    breakpoint: { max: 3000, min: 1650 },
+    items: 3,
+    partialVisibilityGutter: 30,
   },
   desktop: {
-    breakpoint: { max: 3000, min: 1370 },
-    items: 3,
-    partialVisibilityGutter: 10,
+    breakpoint: { max: 1650, min: 1400 },
+    items: 2,
+    partialVisibilityGutter: 90,
   },
   tablet: {
-    breakpoint: { max: 1370, min: 1000 },
-    items: 2,
-    partialVisibilityGutter: 40,
+    breakpoint: { max: 1400, min: 1250 },
+    items: 1,
+    partialVisibilityGutter: 330,
   },
   mobile: {
-    breakpoint: { max: 1000, min: 0 },
-    items: 1,
-    partialVisibilityGutter: 100,
+    breakpoint: { max: 1250, min: 0 },
+    partialVisibilityGutter: 150,
   },
 };
 
@@ -226,7 +225,7 @@ export default function Coupons(props) {
         <Box
           onClick={onCouponClick}
           style={{
-            width: '200px',
+            width: '220px',
             height: '96px',
             backgroundImage: `url(${
               './coupon_img/' + coupProps.status + '.png'
@@ -237,7 +236,7 @@ export default function Coupons(props) {
             cursor: coupProps.status != 'unavailable' ? 'pointer' : '',
           }}
         >
-          <Box textlign="left" pl={2.5} pr={6} pt={1.5}>
+          <Box textlign="left" pl={2} pr={6} pt={1.5}>
             <Box fontSize={12} height="30px" fontWeight="bold">
               {coupProps.title}
             </Box>
@@ -331,16 +330,22 @@ export default function Coupons(props) {
     // then undo to original, and save again and it should work as expected
     <>
       {(avaiCouponData.length > 0 || unavaiCouponData.length > 0) && (
-        <Carousel
-          arrows={true}
-          partialVisible={true}
-          swipeable={true}
-          draggable={true}
-          showDots={true}
-          responsive={responsive}
-        >
-          {avaiCouponData.concat(unavaiCouponData).map(CreateCouponCard)}
-        </Carousel>
+        <Box className={props.classes.section}>
+          <Box fontWeight="bold" textAlign="left" mb={1} lineHeight={1.8}>
+            Choose one of the eligible promos to apply:
+          </Box>
+          <Carousel
+            arrows={true}
+            swipeable={true}
+            partialVisible={true}
+            draggable={true}
+            showDots={true}
+            focusOnSelect={true}
+            responsive={responsive}
+          >
+            {avaiCouponData.concat(unavaiCouponData).map(CreateCouponCard)}
+          </Carousel>
+        </Box>
       )}
     </>
   );

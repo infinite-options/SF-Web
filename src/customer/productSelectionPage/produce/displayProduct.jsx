@@ -24,7 +24,7 @@ function createProduct2(product) {
       img={product.item_photo}
       type={product.item_type}
       meaning={tryItem}
-      business_uid={product.itm_business_uid}
+      business_uids={product.business_uids} // this is NOT from the database, it is parsed in store within the last part of the getBusinesses method
       id={product.item_uid}
       key={product.item_uid}
     />
@@ -33,7 +33,7 @@ function createProduct2(product) {
 // TODO: Duplicate items with manually set prices will be sent over
 //       depending on the day and/or farms selected, choose the farm
 //       that has the lowest price associated with that product and set
-//       the farm's buisness_id to be associated with the product in payment json
+//       the farm's business_id to be associated with the product in payment json
 
 // TODO: check to majke sure product status === 'Active'
 function DisplayProduct() {
@@ -66,12 +66,17 @@ function DisplayProduct() {
     } else {
       message = 'Produce available for delivery on ' + store.expectedDelivery;
     }
-    if (store.products.length == 0 && !store.productsLoading) {
+    if (store.products.length === 0 && !store.productsLoading) {
       message =
         'Sorry, we could not find any produce that can be delivered to your provided address';
     }
     setDisplayMessage(message);
-  }, [productSelect.dayClicked, store.productsLoading, store.cartTotal]);
+  }, [
+    productSelect.dayClicked,
+    store.products,
+    store.productsLoading,
+    store.cartTotal,
+  ]);
 
   if (!store.productsLoading && !productSelect.itemError) {
     return (

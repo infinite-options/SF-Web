@@ -1,10 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react';
+import axios from 'axios';
 import Cookies from 'universal-cookie';
 import StoreNavBar from './StoreNavBar';
 import { AuthContext } from '../auth/AuthContext';
 import storeContext from './storeContext';
 import { Box } from '@material-ui/core';
-import axios from 'axios';
+
 import CheckoutPage from './checkoutPage';
 import ProductSelectionPage from './productSelectionPage';
 import AuthUtils from '../utils/AuthUtils';
@@ -35,6 +36,7 @@ const Store = ({ ...props }) => {
     zone: '',
   }); // checks if user is logged in
   const [products, setProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
 
   const [farmsList, setFarmsList] = useState([]);
@@ -54,7 +56,12 @@ const Store = ({ ...props }) => {
     localStorage.setItem('selectedDay', dayClicked);
   }, [dayClicked]);
 
-  function getBuisnesses(long, lat, updatedProfile) {
+  useEffect(() => {
+    console.log('profile updated: ', profile.latitude);
+    getBusinesses(profile.longitude, profile.latitude, { ...profile });
+  }, [profile.latitude]);
+
+  function getBusinesses(long, lat, updatedProfile) {
     const BusiMethods = new BusiApiReqs();
     BusiMethods.getLocationBusinessIds(long, lat).then((busiRes) => {
       // dictionary: business id with delivery days
@@ -125,7 +132,24 @@ const Store = ({ ...props }) => {
         ['fruit', 'desert', 'vegetable', 'other'],
         Array.from(businessUids)
       ).then((itemRes) => {
-        setProducts(itemRes !== undefined ? itemRes : []);
+        const _products = [];
+        const itemDict = {};
+        if (itemRes !== undefined) {
+          setAllProducts(itemRes);
+          for (const item of itemRes) {
+            const namePrice = item.item_name + item.item_price;
+            if (namePrice in itemDict) {
+              _products[itemDict[namePrice]].business_uids[
+                [item.itm_business_uid]
+              ] = item.item_price;
+            } else {
+              itemDict[namePrice] = _products.length;
+              item.business_uids = { [item.itm_business_uid]: item.item_price };
+              _products.push(item);
+            }
+          }
+        }
+        setProducts(_products);
         setProductsLoading(false);
       });
     });
@@ -155,11 +179,6 @@ const Store = ({ ...props }) => {
           zone: '',
         };
         setProfile(updatedProfile);
-        getBuisnesses(
-          authRes.customer_long,
-          authRes.customer_lat,
-          updatedProfile
-        );
       });
     } else {
       const long = cookies.get('longitude');
@@ -183,9 +202,7 @@ const Store = ({ ...props }) => {
 
       console.log('long: ', long);
       console.log('lat: ', lat);
-      if (long != undefined && lat != undefined) {
-        getBuisnesses(long, lat, updatedProfile);
-      } else {
+      if (long == undefined || lat == undefined) {
         window.location.href = `${window.location.origin.toString()}/`;
       }
     }

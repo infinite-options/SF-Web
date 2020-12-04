@@ -13,6 +13,9 @@ function FarmCard(props) {
   const store = useContext(storeContext);
 
   const [isClicked, setIsClicked] = useState(false);
+  const [isClearFarmClicks, setIsClearFarmClicks] = useState(
+    productSelect.dayClicked === '' ? true : false
+  );
   const [showCard, setShowCard] = useState(
     productSelect.dayClicked === '' ? true : false
   );
@@ -28,12 +31,20 @@ function FarmCard(props) {
     productSelect.setFarmsClicked(newFarmsClicked);
     setIsClicked(!isClicked);
   }
+
+  // TODO texting: disappearing farm bug
+  // TODO testing: day click will reset farms
   useEffect(() => {
-    let _showCard = productSelect.dayClicked === '' ? true : false;
-    console.log(
-      'productSelect.dayClicked === daytime: ',
-      productSelect.dayClicked
-    );
+    const isNoDayClicked = productSelect.dayClicked === '';
+    let _showCard = isNoDayClicked ? true : false;
+    setIsClearFarmClicks(isNoDayClicked ? true : false);
+
+    if (!isNoDayClicked && isClearFarmClicks) {
+      productSelect.setFarmsClicked(new Set());
+      setIsClicked(false);
+      setIsClearFarmClicks(true);
+    }
+
     if (props.id in store.farmDaytimeDict)
       store.farmDaytimeDict[props.id].forEach((daytime) => {
         if (productSelect.dayClicked === daytime) _showCard = true;

@@ -1,15 +1,30 @@
 import React, { useRef, useEffect, useState, useContext } from 'react';
+import axios from 'axios';
+import { useConfirmation } from '../../../services/ConfirmationService';
+import { onPurchaseComplete } from '../utils/onPurchaseComplete';
 import checkoutContext from '../CheckoutContext';
 import storeContext from '../../storeContext';
-import axios from 'axios';
+
 const PayPal = ({ value, setPaypal, setCartItems }) => {
+  const store = useContext(storeContext);
+  const confirm = useConfirmation();
+
   const [loaded, setLoaded] = useState(false);
   const { amountPaid, amountDue, discount } = useContext(checkoutContext);
   const { profile, startDeliveryDate, cartItems, setCartTotal } = useContext(
     storeContext
   );
   let paypalRef = useRef();
-  const items = Object.values(cartItems).map((item) => item);
+  //[{"qty": "3", "name": "Opo Gourd", "price": "0.5", "item_uid": "310-000087", "itm_business_uid": "200-000005"}]
+  const items = Object.values(cartItems).map((item) => {
+    return {
+      qty: item.count,
+      name: item.name,
+      price: item.price,
+      item_uid: item.id,
+      itm_business_uid: item.business_uid,
+    };
+  });
 
   const CLIENT = {
     sandbox: process.env.REACT_APP_PAYPAL_CLIENT_ID_TESTING,
@@ -46,6 +61,7 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
             onApprove: async (data, actions) => {
               await actions.order.capture();
               // sending the request to write everything to database
+
               const dataSending = {
                 pur_customer_uid: profile.customer_uid,
                 pur_business_uid:
@@ -84,12 +100,7 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
                 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/checkout',
                 dataSending
               );
-              setPaypal(false);
-              setCartItems({});
-              setCartTotal(0);
-              if (localStorage.getItem('cartTotal')) {
-                localStorage.setItem('cartTotal', 0);
-              }
+              onPurchaseComplete({ store: store, confirm: confirm });
             },
           })
           .render(paypalRef)

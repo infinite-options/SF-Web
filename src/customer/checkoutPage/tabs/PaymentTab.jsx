@@ -1,17 +1,18 @@
 import React, { useMemo, useContext, useState, useEffect } from 'react';
 import { useElements, useStripe, CardElement } from '@stripe/react-stripe-js';
+import axios from 'axios';
 // import {loadStripe} from "@stripe/stripe-js";
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 import clsx from 'clsx';
+import { useConfirmation } from '../../../services/ConfirmationService';
 import appColors from '../../../styles/AppColors';
 import useResponsiveFontSize from '../../../utils/useResponsiveFontSize';
 import CssTextField from '../../../utils/CssTextField';
 import FindLongLatWithAddr from '../../../utils/FindLongLatWithAddr';
 
-import axios from 'axios';
-
+import { onPurchaseComplete } from '../utils/onPurchaseComplete';
 import checkoutContext from '../CheckoutContext';
 import storeContext from '../../storeContext';
 
@@ -96,6 +97,7 @@ const useOptions = () => {
 const PaymentTab = () => {
   const classes = useStyles();
   const store = useContext(storeContext);
+  const confirm = useConfirmation();
 
   const elements = useElements();
   const stripe = useStripe();
@@ -125,7 +127,7 @@ const PaymentTab = () => {
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
   const card_element = elements?.getElement(CardElement);
   const card = {};
-  card_element?.on('change', e => {
+  card_element?.on('change', (e) => {
     console.log('event : ', e);
   });
   useEffect(() => {
@@ -143,7 +145,7 @@ const PaymentTab = () => {
     );
   }, [userInfo]);
 
-  const onPay = async event => {
+  const onPay = async (event) => {
     event.preventDefault();
 
     setProcessing(true);
@@ -172,7 +174,16 @@ const PaymentTab = () => {
           },
         }
       );
-      const items = Object.values(cartItems).map(item => item);
+      const items = Object.values(cartItems).map((item) => {
+        return {
+          qty: item.count,
+          name: item.name,
+          price: item.price,
+          item_uid: item.id,
+          itm_business_uid: item.business_uid,
+        };
+      });
+
       const cardElement = await elements.getElement(CardElement);
 
       const paymentMethod = await stripe.createPaymentMethod({
@@ -232,13 +243,10 @@ const PaymentTab = () => {
         data
       );
       cardElement.clear();
-      setCartItems({});
-      setCartTotal(0);
-      if (localStorage.getItem('cartTotal')) {
-        localStorage.setItem('cartTotal', 0);
-      }
       setProcessing(false);
       setPaymentProcessing(false);
+
+      onPurchaseComplete({ store: store, confirm: confirm });
     } catch (err) {
       console.log('error happened while posting to Stripe_Intent api', err);
     }
@@ -260,7 +268,7 @@ const PaymentTab = () => {
       userInfo.city,
       userInfo.state,
       userInfo.zip
-    ).then(res => {
+    ).then((res) => {
       if (res.status === 'found') {
         setIsAddressConfirmed(true);
         store.setProfile(userInfo);
@@ -268,12 +276,12 @@ const PaymentTab = () => {
     });
   };
 
-  const onFieldChange = event => {
+  const onFieldChange = (event) => {
     const { name, value } = event.target;
     setUserInfo({ ...userInfo, [name]: value });
   };
 
-  const PlainTextField = props => {
+  const PlainTextField = (props) => {
     return (
       <Box mb={props.spacing || 1}>
         <CssTextField

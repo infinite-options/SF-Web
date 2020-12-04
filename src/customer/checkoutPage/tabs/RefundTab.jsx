@@ -15,7 +15,7 @@ const useStyles = makeStyles({
   },
   imageContainer: {
     width: '80%',
-    height: '50%',
+    height: '30%',
     margin: 'auto',
     display: 'flex',
     alignItems: 'center',
@@ -60,7 +60,7 @@ const useStyles = makeStyles({
   },
 });
 
-// TODO: check auto-load email
+// DONE: check auto-load email
 const RefundTab = () => {
   const { profile } = useContext(storeContext);
   const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
@@ -72,6 +72,9 @@ const RefundTab = () => {
   const [returnDesc, setReturnDesc] = useState('');
   const classes = useStyles();
 
+  React.useEffect(() => {
+    setUserEmail(profile.email);
+  }, [profile.email]);
   const handleImgChange = (e) => {
     setImageUpload({
       file: e.target.files[0],
@@ -109,7 +112,7 @@ const RefundTab = () => {
     }
   };
   return (
-    <Paper className={classes.root} style={{ height: windowHeight + 100 }}>
+    <>
       <div className={classes.imageContainer}>
         <img
           className={classes.image}
@@ -179,7 +182,7 @@ const RefundTab = () => {
           </button>
         </div>
       </div>
-    </Paper>
+    </>
   );
 };
 
