@@ -37,7 +37,7 @@ const theme = createMuiTheme({
     },
   },
 });
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
     backgroundColor: 'white',
@@ -55,23 +55,28 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function AdminNavBar({ tab, setTab, ...props }) {
-  const { farmID, setFarmID } = useContext(AdminFarmContext);
-  const [farmList, setFarmList] = useState([]);
-  const Auth = useContext(AuthContext);
+  const {
+    farmID,
+    setFarmID,
+    farmList,
+    setFarmList,
+    handleChangeFarm,
+  } = useContext(AdminFarmContext);
 
+  const Auth = useContext(AuthContext);
   useEffect(() => {
-    axios
-      .get(process.env.REACT_APP_SERVER_BASE_URI + 'all_businesses')
-      .then((res) => {
-        console.log(res);
-        setFarmList(res.data.result);
-      })
-      .catch((err) => {
-        if (err.response) {
-          console.log(err.response);
-        }
-        console.log(err);
-      });
+    // axios
+    //   .get(process.env.REACT_APP_SERVER_BASE_URI + 'all_businesses')
+    //   .then((res) => {
+    //     console.log(res);
+    //     setFarmList(res.data.result);
+    //   })
+    //   .catch((err) => {
+    //     if (err.response) {
+    //       console.log(err.response);
+    //     }
+    //     console.log(err);
+    //   });
   }, []);
 
   //when admin logs out, remove their login info from cookies
@@ -87,12 +92,7 @@ function AdminNavBar({ tab, setTab, ...props }) {
     props.history.push('/');
   };
 
-  const handleChangeFarm = (event) => {
-    console.log(event.target.value);
-    setFarmID(event.target.value);
-  };
-
-  const handleLogoClick = (event) => {
+  const handleLogoClick = event => {
     console.log(event.target.value);
     // props.history.push('/store');
   };
@@ -102,15 +102,16 @@ function AdminNavBar({ tab, setTab, ...props }) {
   const businessList = () => {
     if (Auth.authLevel >= 2) {
       // Complete business list for admin roles
+
       return (
         <Select
-          defaultValue={'200-000004'}
+          defaultValue={'200-000001'}
           className={classes.farmSelect}
           onChange={handleChangeFarm}
         >
-          {farmList.map((item) => {
+          {farmList.map((item, index) => {
             return (
-              <MenuItem key={item.business_uid} value={item.business_uid}>
+              <MenuItem key={index} value={item.business_uid}>
                 {item.business_name}
               </MenuItem>
             );
@@ -118,7 +119,9 @@ function AdminNavBar({ tab, setTab, ...props }) {
         </Select>
       );
     }
-    let ownedFarm = farmList.filter((farm) => farm.business_uid === farmID);
+
+    let ownedFarm = farmList.filter(farm => farm.business_uid === farmID);
+
     if (ownedFarm.length > 0) {
       ownedFarm = ownedFarm[0];
       return (

@@ -14,6 +14,7 @@ import { AuthContext } from '../auth/AuthContext';
 function Admin() {
   const Auth = useContext(AuthContext);
   const [farmID, setFarmID] = useState('');
+  const [farmList, setFarmList] = useState([]);
   const [timeChange, setTimeChange] = useState({});
   const [deliveryTime, setDeliveryTime] = useState({});
 
@@ -27,28 +28,49 @@ function Admin() {
 
   useEffect(() => {
     if (Auth.authLevel >= 2) {
-      setFarmID('200-000004');
+      axios
+        .get(process.env.REACT_APP_SERVER_BASE_URI + 'all_businesses')
+        .then(res => {
+          setFarmList(res.data.result);
+          setFarmID(res.data.result[0].business_uid);
+        })
+        .catch(err => {
+          if (err.response) {
+            console.log(err.response);
+          }
+          console.log(err);
+        });
     } else {
+      axios
+        .get(process.env.REACT_APP_SERVER_BASE_URI + 'all_businesses')
+        .then(res => {
+          setFarmList(res.data.result);
+        })
+        .catch(err => {
+          if (err.response) {
+            console.log(err.response);
+          }
+          console.log(err);
+        });
       axios
         .get(
           process.env.REACT_APP_SERVER_BASE_URI +
             'Profile/' +
             Cookies.get('customer_uid')
         )
-        .then((response) => {
+        .then(response => {
           let customerInfo = response.data.result[0];
-          console.log(customerInfo.role);
           setFarmID(customerInfo.role);
         })
-        .catch((err) => {
-          if (err.response) {
-            console.log(err.response);
-          }
+        .catch(err => {
           console.log(err);
         });
     }
   }, []);
 
+  const handleChangeFarm = event => {
+    setFarmID(event.target.value);
+  };
   return (
     <div>
       <AdminFarmContext.Provider
@@ -59,10 +81,13 @@ function Admin() {
           setTimeChange,
           deliveryTime,
           setDeliveryTime,
+          farmList,
+          setFarmList,
+          handleChangeFarm,
         }}
       >
         <AdminNavBar tab={tab} setTab={setTab} />
-        {Auth.authLevel >= 1 ? <Farmer tab={tab} /> : <Redirect to="/" />}
+        {Auth.authLevel >= 1 && <Farmer tab={tab} />}
       </AdminFarmContext.Provider>
     </div>
   );

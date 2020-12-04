@@ -1,4 +1,5 @@
 import React, { useMemo, useContext, useState, useEffect } from 'react';
+
 import { useElements, useStripe, CardElement } from '@stripe/react-stripe-js';
 // import {loadStripe} from "@stripe/stripe-js";
 import Box from '@material-ui/core/Box';
@@ -14,6 +15,7 @@ import axios from 'axios';
 
 import checkoutContext from '../CheckoutContext';
 import storeContext from '../../storeContext';
+import { set } from 'date-fns';
 
 const useStyles = makeStyles({
   label: {
@@ -117,17 +119,14 @@ const PaymentTab = () => {
     setPaymentProcessing,
     setLeftTabChosen,
   } = useContext(checkoutContext);
+
   useEffect(() => {
     setProcessing(false);
   }, []);
 
   const [userInfo, setUserInfo] = useState(store.profile);
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
-  const card_element = elements?.getElement(CardElement);
-  const card = {};
-  card_element?.on('change', e => {
-    console.log('event : ', e);
-  });
+
   useEffect(() => {
     if (store.profile !== {}) {
       setUserInfo(store.profile);
@@ -145,7 +144,7 @@ const PaymentTab = () => {
 
   const onPay = async event => {
     event.preventDefault();
-
+    console.log('important: ');
     setProcessing(true);
 
     const billingDetails = {
