@@ -102,8 +102,7 @@ function AdminNavBar({ tab, setTab, ...props }) {
   const businessList = () => {
     if (Auth.authLevel >= 2) {
       // Complete business list for admin roles
-      console.log('farmList: ', farmList);
-      console.log('farmId: ', farmID);
+
       return (
         <Select
           defaultValue={'200-000001'}
@@ -120,7 +119,9 @@ function AdminNavBar({ tab, setTab, ...props }) {
         </Select>
       );
     }
+
     let ownedFarm = farmList.filter(farm => farm.business_uid === farmID);
+
     if (ownedFarm.length > 0) {
       ownedFarm = ownedFarm[0];
       return (

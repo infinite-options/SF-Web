@@ -23,17 +23,14 @@ function Admin() {
   );
 
   useEffect(() => {
-    console.log('Auth.authLevel: ', Auth.authLevel);
     localStorage.setItem('farmerTab', tab);
   }, [tab]);
 
   useEffect(() => {
     if (Auth.authLevel >= 2) {
-      console.log('loading farm info');
       axios
         .get(process.env.REACT_APP_SERVER_BASE_URI + 'all_businesses')
         .then(res => {
-          console.log(res);
           setFarmList(res.data.result);
           setFarmID(res.data.result[0].business_uid);
         })
@@ -45,15 +42,9 @@ function Admin() {
         });
     } else {
       axios
-        .get(
-          process.env.REACT_APP_SERVER_BASE_URI +
-            'Profile/' +
-            Cookies.get('customer_uid')
-        )
-        .then(response => {
-          let customerInfo = response.data.result[0];
-          console.log(customerInfo.role);
-          setFarmID(customerInfo.role);
+        .get(process.env.REACT_APP_SERVER_BASE_URI + 'all_businesses')
+        .then(res => {
+          setFarmList(res.data.result);
         })
         .catch(err => {
           if (err.response) {
@@ -61,11 +52,23 @@ function Admin() {
           }
           console.log(err);
         });
+      axios
+        .get(
+          process.env.REACT_APP_SERVER_BASE_URI +
+            'Profile/' +
+            Cookies.get('customer_uid')
+        )
+        .then(response => {
+          let customerInfo = response.data.result[0];
+          setFarmID(customerInfo.role);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }, []);
 
   const handleChangeFarm = event => {
-    console.log(event.target.value);
     setFarmID(event.target.value);
   };
   return (
