@@ -105,7 +105,7 @@ export default function DeliveryInfoTab() {
     setMap(null);
   }, []);
 
-  //TODO: refresh on farms when address is validated
+  //TODO testing: refresh on farms when address is validated
   const onCheckAddressClicked = () => {
     console.log('Verifying longitude and latitude from Delivery Info');
     FindLongLatWithAddr(
@@ -115,7 +115,7 @@ export default function DeliveryInfoTab() {
       userInfo.zip
     ).then((res) => {
       if (res.status === 'found') {
-        BusiApiMethods.getLocationBusinessIds(res.latitude, res.longitude).then(
+        BusiApiMethods.getLocationBusinessIds(res.longitude, res.latitude).then(
           (busiRes) => {
             if (busiRes.result && busiRes.result.length > 0) {
               if (busiRes.result[0].zone === store.profile.zone) {

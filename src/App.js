@@ -111,9 +111,9 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
-        <ConfirmationServiceProvider>
-          <ThemeProvider theme={theme}>
+      <ThemeProvider theme={theme}>
+        <div className="App">
+          <ConfirmationServiceProvider>
             <AuthContext.Provider
               value={{ isAuth, setIsAuth, authLevel, setAuthLevel }}
             >
@@ -136,9 +136,9 @@ function App() {
                 <Nav isAuth={isAuth} authLevel={authLevel} />
               )}
             </AuthContext.Provider>
-          </ThemeProvider>
-        </ConfirmationServiceProvider>
-      </div>
+          </ConfirmationServiceProvider>
+        </div>
+      </ThemeProvider>
     </Router>
   );
 }

@@ -1,18 +1,19 @@
 import React, { useMemo, useContext, useState, useEffect } from 'react';
 
 import { useElements, useStripe, CardElement } from '@stripe/react-stripe-js';
+import axios from 'axios';
 // import {loadStripe} from "@stripe/stripe-js";
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 import clsx from 'clsx';
+import { useConfirmation } from '../../../services/ConfirmationService';
 import appColors from '../../../styles/AppColors';
 import useResponsiveFontSize from '../../../utils/useResponsiveFontSize';
 import CssTextField from '../../../utils/CssTextField';
 import FindLongLatWithAddr from '../../../utils/FindLongLatWithAddr';
 
-import axios from 'axios';
-
+import { onPurchaseComplete } from '../utils/onPurchaseComplete';
 import checkoutContext from '../CheckoutContext';
 import storeContext from '../../storeContext';
 import { set } from 'date-fns';
@@ -98,6 +99,7 @@ const useOptions = () => {
 const PaymentTab = () => {
   const classes = useStyles();
   const store = useContext(storeContext);
+  const confirm = useConfirmation();
 
   const elements = useElements();
   const stripe = useStripe();
@@ -142,7 +144,7 @@ const PaymentTab = () => {
     );
   }, [userInfo]);
 
-  const onPay = async event => {
+  const onPay = async (event) => {
     event.preventDefault();
     console.log('important: ');
     setProcessing(true);
@@ -163,7 +165,7 @@ const PaymentTab = () => {
       const {
         data: { client_secret },
       } = await axios.post(
-        'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/Stripe_Intent',
+        process.env.REACT_APP_SERVER_BASE_URI + 'Stripe_Intent',
         formSending,
         {
           headers: {
@@ -171,7 +173,16 @@ const PaymentTab = () => {
           },
         }
       );
-      const items = Object.values(cartItems).map(item => item);
+      const items = Object.values(cartItems).map((item) => {
+        return {
+          qty: item.count,
+          name: item.name,
+          price: item.price,
+          item_uid: item.id,
+          itm_business_uid: item.business_uid,
+        };
+      });
+
       const cardElement = await elements.getElement(CardElement);
 
       const paymentMethod = await stripe.createPaymentMethod({
@@ -226,53 +237,27 @@ const PaymentTab = () => {
       };
 
       console.log('data sending: ', data);
-      let res = await axios.post(
-        'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/checkout',
-        data
-      );
-      cardElement.clear();
-      setCartItems({});
-      setCartTotal(0);
-      if (localStorage.getItem('cartTotal')) {
-        localStorage.setItem('cartTotal', 0);
-      }
+      let res = axios
+        .post(process.env.REACT_APP_SERVER_BASE_URI + 'checkout', data)
+        .then((res) => {
+          cardElement.clear();
+          setProcessing(false);
+          setPaymentProcessing(false);
+          onPurchaseComplete({ store: store, confirm: confirm });
+        });
+    } catch (err) {
       setProcessing(false);
       setPaymentProcessing(false);
-    } catch (err) {
       console.log('error happened while posting to Stripe_Intent api', err);
     }
   };
 
-  const onSubmit = () => {
-    if (isAddressConfirmed) {
-      store.setProfile({ ...userInfo });
-    }
-  };
-  const onConfirm = () => {
-    setLeftTabChosen(4);
-  };
-
-  const onCheckAddressClicked = () => {
-    console.log('Verifying longitude and latitude from Delivery Info');
-    FindLongLatWithAddr(
-      userInfo.address,
-      userInfo.city,
-      userInfo.state,
-      userInfo.zip
-    ).then(res => {
-      if (res.status === 'found') {
-        setIsAddressConfirmed(true);
-        store.setProfile(userInfo);
-      }
-    });
-  };
-
-  const onFieldChange = event => {
+  const onFieldChange = (event) => {
     const { name, value } = event.target;
     setUserInfo({ ...userInfo, [name]: value });
   };
 
-  const PlainTextField = props => {
+  const PlainTextField = (props) => {
     return (
       <Box mb={props.spacing || 1}>
         <CssTextField

@@ -21,9 +21,7 @@ function createHistoryCard(props) {
 function History() {
   // var userEmail="tazi.arthur@hotmail.com";
   var anotherEmail = 'gloria.koehl@gmail.com';
-  var url =
-    'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/history/' +
-    anotherEmail;
+  var url = process.env.REACT_APP_SERVER_BASE_URI + 'history/' + anotherEmail;
   const [historyData, SetfetchData] = useState([]);
   const [hasHistoryError, setHasHistoryError] = useState(false);
   const [isHistoryLoading, setIsHistoryLoading] = useState(true);

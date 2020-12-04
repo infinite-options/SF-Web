@@ -6,36 +6,27 @@ import { Box, Grid, Paper } from '@material-ui/core';
 import appColors from '../../../styles/AppColors';
 import { set } from 'js-cookie';
 
-// TODO: add unit, each is as is, anything else is '/' or 'per'
+// DONE: add unit, each is as is, anything else is '/' or 'per'
 function createProduct2(product) {
-  var tryItem = '';
-  var itemName = product.item_name;
-  if (product.item_name.indexOf('(') !== -1) {
-    tryItem = product.item_name.slice(
-      product.item_name.indexOf('('),
-      product.item_name.indexOf(')') + 1
-    );
-    itemName = product.item_name.slice(0, product.item_name.indexOf('('));
-  }
   return (
     <Entry
       name={product.item_name}
+      desc={product.item_desc}
       price={product.item_price}
       img={product.item_photo}
       type={product.item_type}
-      meaning={tryItem}
-      business_uid={product.itm_business_uid}
+      unit={product.item_unit}
+      business_uids={product.business_uids} // This is not from the database and not used, it is parsed in store within the last part of the getBusinesses method
+      business_uid={product.lowest_price_business_uid} // This is the business ID with the lowest price, also parsed from the getBusinesses method
       id={product.item_uid}
       key={product.item_uid}
     />
   );
 }
-// TODO: Duplicate items with manually set prices will be sent over
-//       depending on the day and/or farms selected, choose the farm
-//       that has the lowest price associated with that product and set
-//       the farm's buisness_id to be associated with the product in payment json
+// TODO: We are considering matching on item_name, item_desc and item_price.
+// If they are identical we should choose the one with the lowest business_price.
+// If Identical still then we should select the one with the earliest created_at date
 
-// TODO: check to majke sure product status === 'Active'
 function DisplayProduct() {
   const productSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
@@ -66,12 +57,17 @@ function DisplayProduct() {
     } else {
       message = 'Produce available for delivery on ' + store.expectedDelivery;
     }
-    if (store.products.length == 0 && !store.productsLoading) {
+    if (store.products.length === 0 && !store.productsLoading) {
       message =
         'Sorry, we could not find any produce that can be delivered to your provided address';
     }
     setDisplayMessage(message);
-  }, [productSelect.dayClicked, store.productsLoading, store.cartTotal]);
+  }, [
+    productSelect.dayClicked,
+    store.products,
+    store.productsLoading,
+    store.cartTotal,
+  ]);
 
   if (!store.productsLoading && !productSelect.itemError) {
     return (

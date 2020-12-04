@@ -65,7 +65,7 @@ function listItem(item) {
   );
 }
 
-// TODO: Order confirmation for completed purchase
+// TODO testing: Order confirmation for completed purchase
 export default function CheckoutTab() {
   const classes = useStyles();
   const store = useContext(storeContext);
@@ -151,6 +151,16 @@ export default function CheckoutTab() {
 
   function onAddItemsClicked() {
     store.setStorePage(0);
+    const items = Object.values(store.cartItems).map((item) => {
+      return {
+        qty: item.count,
+        name: item.name,
+        price: item.price,
+        item_uid: item.id,
+        itm_business_uid: item.business_uid,
+      };
+    });
+    console.log('items: ', items);
   }
 
   function onPayWithClicked(paymentType) {
@@ -227,18 +237,13 @@ export default function CheckoutTab() {
       {/* END: Order Items */}
 
       {/* START: Coupons */}
-      <Box className={classes.section}>
-        <Box fontWeight="bold" textAlign="left" mb={1} lineHeight={1.8}>
-          Choose one of the eligible promos to apply:
-        </Box>
-        <Coupons
-          setDeliveryFee={setDeliveryFee}
-          setPromoApplied={setPromoApplied}
-          subtotal={subtotal}
-          originalDeliveryFee={5}
-        />
-      </Box>
-
+      <Coupons
+        setDeliveryFee={setDeliveryFee}
+        setPromoApplied={setPromoApplied}
+        subtotal={subtotal}
+        originalDeliveryFee={5}
+        classes={classes}
+      />
       {/* END: Coupons */}
 
       {/* START: Pricing */}
@@ -294,6 +299,17 @@ export default function CheckoutTab() {
       {/* END: Pricing */}
 
       {/* START: Payment Buttons */}
+      <Box display="flex" flexDirection="column" px="30%">
+        <Button
+          className={classes.button}
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={() => onPayWithClicked('STRIPE')}
+        >
+          Pay with Stripe
+        </Button>
+      </Box>
       {!paypal ? (
         <Box display="flex" flexDirection="column" px="30%">
           <Button
@@ -305,16 +321,6 @@ export default function CheckoutTab() {
           >
             Pay with PayPal
           </Button>
-          <Button
-            className={classes.button}
-            size="small"
-            variant="contained"
-            color="primary"
-            onClick={() => onPayWithClicked('STRIPE')}
-          >
-            Pay with Stripe
-          </Button>
-          {/* END: Payment Buttons */}
         </Box>
       ) : (
         <PayPal
@@ -323,6 +329,7 @@ export default function CheckoutTab() {
           setCartItems={store.setCartItems}
         />
       )}
+      {/* END: Payment Buttons */}
     </Box>
   );
 }
