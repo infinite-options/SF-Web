@@ -11,6 +11,7 @@ import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import { makeStyles } from '@material-ui/core/styles';
+import appColors from '../styles/AppColors';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,7 +38,7 @@ function MenuListComposition(props) {
       return;
     }
     switch (nav) {
-      case 'days':
+      case 'store':
         window.location.replace('/store');
     }
   };
@@ -78,6 +79,7 @@ function MenuListComposition(props) {
     props.history.push('/');
   };
 
+  // TODO: Configure Menu buttons
   return (
     <div className={classes.root}>
       <div>
@@ -104,7 +106,7 @@ function MenuListComposition(props) {
                   placement === 'bottom' ? 'center top' : 'center bottom',
               }}
             >
-              <Paper>
+              <Paper style={{ backgroundColor: appColors.componentBg }}>
                 <ClickAwayListener onClickAway={handleClose}>
                   <MenuList
                     autoFocusItem={open}
@@ -113,34 +115,50 @@ function MenuListComposition(props) {
                   >
                     <MenuItem
                       onClick={(e) => {
-                        handleMenuItem(e, 'days');
+                        handleMenuItem(e, 'store');
                       }}
                     >
-                      Days
+                      Store
                     </MenuItem>
                     <MenuItem
                       disabled
                       onClick={(e) => {
-                        handleMenuItem(e, 'orders');
+                        handleMenuItem(e, 'rewards');
                       }}
                     >
-                      Orders
+                      Rewards
                     </MenuItem>
                     <MenuItem
                       disabled
                       onClick={(e) => {
-                        handleMenuItem(e, 'profile');
+                        handleMenuItem(e, 'payment details');
                       }}
                     >
-                      Profile
+                      Payment Details
                     </MenuItem>
                     <MenuItem
                       disabled
                       onClick={(e) => {
-                        handleMenuItem(e, 'informations');
+                        handleMenuItem(e, 'checkout');
                       }}
                     >
-                      Information
+                      Checkout
+                    </MenuItem>
+                    <MenuItem
+                      disabled
+                      onClick={(e) => {
+                        handleMenuItem(e, 'history');
+                      }}
+                    >
+                      History
+                    </MenuItem>
+                    <MenuItem
+                      disabled
+                      onClick={(e) => {
+                        handleMenuItem(e, 'refund');
+                      }}
+                    >
+                      Refund
                     </MenuItem>
                     <MenuItem onClick={handleClickLogOut}>Logout</MenuItem>
                   </MenuList>

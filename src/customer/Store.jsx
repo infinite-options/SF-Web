@@ -74,6 +74,7 @@ const Store = ({ ...props }) => {
         setProductsLoading(false);
         return;
       }
+      setProductsLoading(true);
       console.log('busiRes: ', busiRes);
       const businessesRes = busiRes.result;
       const businessUids = new Set();
@@ -123,7 +124,8 @@ const Store = ({ ...props }) => {
       setDayTimeDict(_dayTimeDict);
       setDaytimeFarmDict(_daytimeFarmDict);
       setFarmDaytimeDict(_farmDaytimeDict);
-      if (_farmList.length > 0) setProfile(updatedProfile);
+      if (_farmList.length > 0 && updatedProfile.zone !== profile.zone)
+        setProfile(updatedProfile);
 
       console.log('profile: ', profile);
       BusiMethods.getItems(
@@ -135,9 +137,8 @@ const Store = ({ ...props }) => {
         if (itemRes !== undefined) {
           setAllProducts(itemRes);
 
-          // DONE: set the business id of a duplicate item to be the business ID with the lowest BUSINESS price NOT ITEM price
-          // TODO: configure date to be added to the same buisness id
           for (const item of itemRes) {
+            setProductsLoading(true);
             try {
               if (item.item_status === 'Active') {
                 const namePriceDesc =
@@ -185,9 +186,11 @@ const Store = ({ ...props }) => {
               console.error(error);
             }
           }
+          setProductsLoading(false);
+        } else {
+          setProductsLoading(false);
         }
         setProducts(_products);
-        setProductsLoading(false);
       });
     });
   }
@@ -221,6 +224,7 @@ const Store = ({ ...props }) => {
       const long = cookies.get('longitude');
       const lat = cookies.get('latitude');
       const updatedProfile = {
+        customer_uid: '',
         email: '',
         firstName: '',
         lastName: '',

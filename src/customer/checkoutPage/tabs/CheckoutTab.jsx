@@ -56,10 +56,10 @@ function listItem(item) {
         price={item.price}
         count={item.count}
         img={item.img}
-        meaning={item.meaning}
+        isCountChangable={true}
         business_uid={item.business_uid}
         id={item.id}
-        key={item.id}
+        key={item.item_uid}
       />
     </>
   );
