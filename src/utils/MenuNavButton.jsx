@@ -120,7 +120,7 @@ function MenuListComposition(props) {
     props.history.push('/');
   };
 
-  // TODO: Configure Menu buttons
+  // TEST: Configure Menu buttons
   return (
     <div className={classes.root}>
       <div>
