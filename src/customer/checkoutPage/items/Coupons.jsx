@@ -3,6 +3,7 @@ import axios from 'axios';
 import Carousel from 'react-multi-carousel';
 import { Box } from '@material-ui/core';
 import storeContext from '../../storeContext';
+import { AuthContext } from '../../../auth/AuthContext';
 
 function calculateSubTotal(items) {
   var result = 0;
@@ -38,8 +39,9 @@ const responsive = {
 
 export default function Coupons(props) {
   const store = useContext(storeContext);
+  const auth = useContext(AuthContext);
 
-  // DONE:  Coupon properties: Title, Message, Expiration, Saving
+  // Coupon properties: Title, Message, Expiration, Saving
   // DONE:  if threshold is 0 "No minimum purchase"
   // DONE:  if amountNeeded is 0 take out needed message
   // DONE:  Sort coupons to be selected, available, unavailable
@@ -275,8 +277,6 @@ export default function Coupons(props) {
 
   function ApplySaving(coupon) {
     const deliveryOff = props.originalDeliveryFee - coupon.discountShipping;
-    console.log('availableCoupons[coupon]: ', coupon);
-    console.log('deliveryOff]: ', deliveryOff);
     props.setDeliveryFee(deliveryOff <= 0 ? 0 : deliveryOff);
     const discountAmountOff = props.subtotal - coupon.discountAmount;
     props.setPromoApplied(
@@ -329,21 +329,29 @@ export default function Coupons(props) {
     // if the Carousel view is acting up in localhost, replace this componant with: <></>, save the file,
     // then undo to original, and save again and it should work as expected
     <>
-      {(avaiCouponData.length > 0 || unavaiCouponData.length > 0) && (
-        <Box className={props.classes.section}>
-          <Box fontWeight="bold" textAlign="left" mb={1} lineHeight={1.8}>
-            Choose one of the eligible promos to apply:
+      {auth.isAuth ? (
+        (avaiCouponData.length > 0 || unavaiCouponData.length > 0) && (
+          <Box className={props.classes.section}>
+            <Box fontWeight="bold" textAlign="left" mb={1} lineHeight={1.8}>
+              Choose one of the eligible promos to apply:
+            </Box>
+            <Carousel
+              arrows={true}
+              swipeable={true}
+              partialVisible={true}
+              draggable={true}
+              showDots={true}
+              responsive={responsive}
+            >
+              {avaiCouponData.concat(unavaiCouponData).map(CreateCouponCard)}
+            </Carousel>
           </Box>
-          <Carousel
-            arrows={true}
-            swipeable={true}
-            partialVisible={true}
-            draggable={true}
-            showDots={true}
-            responsive={responsive}
-          >
-            {avaiCouponData.concat(unavaiCouponData).map(CreateCouponCard)}
-          </Carousel>
+        )
+      ) : (
+        <Box className={props.classes.section}>
+          <Box fontWeight="bold" mb={1} lineHeight={1.8}>
+            Sign up to be eligible for coupons!
+          </Box>
         </Box>
       )}
     </>

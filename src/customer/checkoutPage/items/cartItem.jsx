@@ -50,7 +50,7 @@ function CartItem(props) {
       display="flex"
       mb={2}
       py={1}
-      style={{ borderBottom: '1px solid' + appColors.paragraphText }}
+      style={{ borderBottom: '1px solid' + appColors.border }}
     >
       <Box
         className="center-cropped"
@@ -65,27 +65,39 @@ function CartItem(props) {
         }}
       />
       <Box display="flex" flexGrow={1} py={4.5}>
-        <Box width="30%" display="flex" ml={2} textAlign="start">
-          {props.name} {props.meaning}
+        <Box
+          width="30%"
+          display="flex"
+          ml={2}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            textAlign: 'center',
+          }}
+        >
+          {props.name}
         </Box>
         <Box width="30%" display="flex" flexGrow={1} justifyContent="center">
-          <RemoveIcon
-            fontSize="small"
-            cursor="pointer"
-            color="primary"
-            onClick={decrease}
-          />
-          <Box mx={1} color={appColors.primary}>
-            {props.id in store.cartItems
-              ? store.cartItems[props.id]['count']
-              : 0}
+          <Box hidden={!props.isCountChangable}>
+            <RemoveIcon
+              fontSize="small"
+              cursor="pointer"
+              color="primary"
+              onClick={decrease}
+            />
           </Box>
-          <AddIcon
-            fontSize="small"
-            cursor="pointer"
-            color="primary"
-            onClick={increase}
-          />
+          <Box mx={1} color={appColors.primary}>
+            {props.count}
+          </Box>
+          <Box hidden={!props.isCountChangable}>
+            <AddIcon
+              fontSize="small"
+              cursor="pointer"
+              color="primary"
+              onClick={increase}
+            />
+          </Box>
         </Box>
 
         <Box width="5%">${totalPrice}</Box>

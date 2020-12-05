@@ -11,7 +11,7 @@ export function onPurchaseComplete(props) {
   props
     .confirm({
       variant: 'info',
-      title: 'Your Purchase has been Processed and is Complete!',
+      title: 'Purchase Completed',
       description:
         'Thank you! Your order should arrive by ' +
         props.store.expectedDelivery +

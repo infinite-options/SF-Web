@@ -119,11 +119,11 @@ const DateCard = (props) => {
     } else {
       setIsClicked(true);
       store.setExpectedDelivery(
-        props.month +
+        props.weekDayFull +
+          ', ' +
+          props.month +
           ' ' +
           props.day +
-          ', ' +
-          props.weekDayFull +
           ' from ' +
           props.time
       );

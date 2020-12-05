@@ -96,6 +96,7 @@ const useOptions = () => {
   return options;
 };
 
+// TODO: Ask about payment details for guest
 const PaymentTab = () => {
   const classes = useStyles();
   const store = useContext(storeContext);
@@ -128,7 +129,12 @@ const PaymentTab = () => {
 
   const [userInfo, setUserInfo] = useState(store.profile);
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
+  const [deliveryInstructions, SetDeliveryInstructions] = useState('');
 
+  const onDeliveryInstructionsChange = (event) => {
+    const { value } = event.target;
+    SetDeliveryInstructions(value);
+  };
   useEffect(() => {
     if (store.profile !== {}) {
       setUserInfo(store.profile);
@@ -180,6 +186,7 @@ const PaymentTab = () => {
           price: item.price,
           item_uid: item.id,
           itm_business_uid: item.business_uid,
+          img: item.img,
         };
       });
 
@@ -204,7 +211,7 @@ const PaymentTab = () => {
         pur_business_uid: cartItems[Object.keys(cartItems)[0]].business_uid,
         items,
         order_instructions: 'fast',
-        delivery_instructions: 'Keep Fresh',
+        delivery_instructions: deliveryInstructions,
         order_type: 'meal',
         delivery_first_name: profile.firstName,
         delivery_last_name: profile.lastName,
@@ -317,7 +324,11 @@ const PaymentTab = () => {
           {userInfo.unit}, {userInfo.city}, {userInfo.state} {userInfo.zip}
         </Box>
       </Box>
-      <label className={classes.label}>
+      <label
+        value={profile.deliveryInstructions}
+        onChange={onDeliveryInstructionsChange}
+        className={classes.label}
+      >
         Enter Delivery Instructions Below:
       </label>
       <Box mb={1} mt={0.5} justifyContent="center">

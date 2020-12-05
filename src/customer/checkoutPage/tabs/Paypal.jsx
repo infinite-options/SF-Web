@@ -23,6 +23,7 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
       price: item.price,
       item_uid: item.id,
       itm_business_uid: item.business_uid,
+      img: item.img,
     };
   });
 

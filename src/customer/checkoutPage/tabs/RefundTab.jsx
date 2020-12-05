@@ -14,8 +14,8 @@ const useStyles = makeStyles({
     borderTopLeftRadius: 25,
   },
   imageContainer: {
-    width: '80%',
-    height: '30%',
+    width: '50%',
+    height: '50%',
     margin: 'auto',
     display: 'flex',
     alignItems: 'center',

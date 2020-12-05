@@ -178,8 +178,6 @@ function Entry(props) {
               <Box textAlign="right">
                 $ {props.price} {props.unit === 'each' ? '' : '/ '}
                 {props.unit}
-                <br />
-                {props.desc}
               </Box>
             </Box>
           </Box>

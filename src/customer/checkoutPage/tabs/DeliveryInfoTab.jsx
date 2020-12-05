@@ -391,9 +391,9 @@ export default function DeliveryInfoTab() {
           label: 'Email',
           spacing: spacing,
         })}
-        {PlainTextField({ label: 'Delivery Instructions', spacing: spacing })}
         <Box display="flex" mb={spacing}>
           <CssTextField
+            error={locError}
             value={userInfo.address}
             name="address"
             label="Street Address"
@@ -404,6 +404,7 @@ export default function DeliveryInfoTab() {
           />
           <Box ml={1} width="40%">
             <CssTextField
+              error={locError}
               value={userInfo.unit}
               name="unit"
               label="Apt Number"
@@ -414,9 +415,10 @@ export default function DeliveryInfoTab() {
             />
           </Box>
         </Box>
-        <Box display="flex" mb={spacing + 3}>
+        <Box display="flex" mb={spacing}>
           <Box width="33.3%">
             <CssTextField
+              error={locError}
               value={userInfo.city}
               name="city"
               label="City"
@@ -428,6 +430,7 @@ export default function DeliveryInfoTab() {
           </Box>
           <Box width="33.3%" mx={1}>
             <CssTextField
+              error={locError}
               value={userInfo.state}
               name="state"
               label="State"
@@ -439,6 +442,7 @@ export default function DeliveryInfoTab() {
           </Box>
           <Box width="33.3%">
             <CssTextField
+              error={locError}
               value={userInfo.zip}
               name="zip"
               label="Zip Code"
@@ -449,6 +453,21 @@ export default function DeliveryInfoTab() {
             />
           </Box>
         </Box>
+        <FormHelperText error={true} style={{ textAlign: 'center' }}>
+          {locErrorMessage}
+        </FormHelperText>
+        <Box hidden={isAddressConfirmed} mb={3}>
+          <Button
+            className={classes.button}
+            variant="outlined"
+            size="small"
+            color="paragraphText"
+            onClick={onCheckAddressClicked}
+          >
+            Verify Address
+          </Button>
+        </Box>
+        <Box mt={spacing + 3}></Box>
         {PlainTextField({
           name: 'password',
           label: 'Password',
