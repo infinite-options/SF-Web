@@ -4,7 +4,7 @@ import axios from 'axios';
 import Cookies from 'universal-cookie';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button } from '@material-ui/core';
+import { Button, FormHelperText } from '@material-ui/core';
 import clsx from 'clsx';
 import { useConfirmation } from '../../../services/ConfirmationService';
 import appColors from '../../../styles/AppColors';
@@ -123,6 +123,8 @@ const PaymentTab = () => {
     paymentProcessing,
     setPaymentProcessing,
     setLeftTabChosen,
+    guestInfo,
+    setGuestInfo,
   } = useContext(checkoutContext);
 
   useEffect(() => {
@@ -131,10 +133,18 @@ const PaymentTab = () => {
 
   const [userInfo, setUserInfo] = useState(store.profile);
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [nameError, setNameError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [deliveryInstructions, SetDeliveryInstructions] = useState('');
+
+  function resetError() {
+    setNameError('');
+    setPhoneError('');
+    setEmailError('');
+    setErrorMessage('');
+  }
 
   const onDeliveryInstructionsChange = (event) => {
     const { value } = event.target;
@@ -157,7 +167,36 @@ const PaymentTab = () => {
 
   const onPay = async (event) => {
     event.preventDefault();
-    console.log('important: ');
+    if (!auth.isAuth) {
+      let hasName = true;
+      let hasPhone = true;
+      let hasEmail = true;
+      if (guestInfo.name === '') {
+        setNameError('Empty');
+        hasName = false;
+      }
+      if (guestInfo.phoneNumber === '') {
+        setPhoneError('Empty');
+        hasPhone = false;
+      }
+      if (guestInfo.email === '') {
+        setEmailError('Empty');
+        hasEmail = false;
+      }
+      if (!hasName || !hasPhone || !hasEmail) {
+        setErrorMessage(
+          'Please provide all contact information to complete purchase'
+        );
+        return;
+      }
+      resetError();
+      const updatedProfile = { ...profile };
+      updatedProfile.firstName = guestInfo.name;
+      updatedProfile.phoneNum = guestInfo.phoneNumber;
+      updatedProfile.email = guestInfo.email;
+      store.setProfile(updatedProfile);
+    }
+
     setProcessing(true);
 
     const billingDetails = {
@@ -192,7 +231,7 @@ const PaymentTab = () => {
           price: item.price,
           item_uid: item.id,
           itm_business_uid: item.business_uid,
-          desc: item.sec,
+          desc: item.desc,
           img: item.img,
         };
       });
@@ -213,8 +252,7 @@ const PaymentTab = () => {
       //gathering data to send back our server
       //set start_delivery_date
 
-      // TODO: for Guest, put 'guest' in email and 'guest' in uid
-      // TODO: send carlos the item fields
+      // TODO: for Guest, put 'guest' in uid
       const data = {
         // pur_customer_uid: profile.customer_uid,
         pur_customer_uid: auth.isAuth ? cookies.get('customer_uid') : 'guest',
@@ -270,25 +308,10 @@ const PaymentTab = () => {
   };
 
   const onFieldChange = (event) => {
+    if (errorMessage !== '') resetError();
     const { name, value } = event.target;
-    setUserInfo({ ...userInfo, [name]: value });
-  };
-
-  const PlainTextField = (props) => {
-    return (
-      <Box mb={props.spacing || 1}>
-        <CssTextField
-          value={props.value}
-          name={props.name}
-          label={props.label}
-          type={props.type}
-          variant="outlined"
-          size="small"
-          fullWidth
-          onChange={onFieldChange}
-        />
-      </Box>
-    );
+    const cal = guestInfo;
+    setGuestInfo({ ...guestInfo, [name]: value });
   };
 
   const SectionLabel = (labelText) => {
@@ -305,15 +328,21 @@ const PaymentTab = () => {
     );
   };
 
-  const SectionContent = (contentText) => {
+  const SectionContent = (contentProps) => {
     return auth.isAuth ? (
-      <Box className={classes.info}>{contentText}</Box>
+      <Box className={classes.info}>{contentProps.text}</Box>
     ) : (
       <CssTextField
+        error={contentProps.error}
+        name={contentProps.name}
         size="small"
         variant="standard"
         fullWidth
-        style={{ marginLeft: '30px', height: '18px' }}
+        onChange={onFieldChange}
+        style={{
+          marginLeft: '30px',
+          height: '18px',
+        }}
       />
     );
   };
@@ -326,21 +355,38 @@ const PaymentTab = () => {
           Information.
         </p>
       )}
-      <Box className={classes.section} display="flex">
-        {SectionLabel('Contact Name:')}
-        <Box flexGrow={1} />
-        {SectionContent(userInfo.firstName + userInfo.lastName)}
-      </Box>
-      <Box className={classes.section} display="flex">
-        {SectionLabel('Contact Phone:')}
-        <Box flexGrow={1} />
-        {SectionContent(userInfo.phoneNum)}
-      </Box>
-      <Box className={classes.section} display="flex">
-        {SectionLabel('Contact Email:')}
-        <Box flexGrow={1} />
-        {SectionContent(userInfo.email)}
-      </Box>
+      <form>
+        <FormHelperText error={true} style={{ textAlign: 'center' }}>
+          {errorMessage}
+        </FormHelperText>
+        <Box className={classes.section} display="flex">
+          {SectionLabel('Contact Name:')}
+          <Box flexGrow={1} />
+          {SectionContent({
+            text: userInfo.firstName + userInfo.lastName,
+            name: 'name',
+            error: nameError,
+          })}
+        </Box>
+        <Box className={classes.section} display="flex">
+          {SectionLabel('Contact Phone:')}
+          <Box flexGrow={1} />
+          {SectionContent({
+            text: userInfo.phoneNum,
+            name: 'phoneNumber',
+            error: phoneError,
+          })}
+        </Box>
+        <Box className={classes.section} display="flex">
+          {SectionLabel('Contact Email:')}
+          <Box flexGrow={1} />
+          {SectionContent({
+            text: userInfo.email,
+            name: 'email',
+            error: emailError,
+          })}
+        </Box>
+      </form>
       <Box className={classes.section} display="flex">
         {SectionLabel('Delivery Address:')}
         <Box flexGrow={1} />
@@ -359,15 +405,15 @@ const PaymentTab = () => {
           {userInfo.unit}, {userInfo.city}, {userInfo.state} {userInfo.zip}
         </Box>
       </Box>
-      <label
-        value={profile.deliveryInstructions}
-        onChange={onDeliveryInstructionsChange}
-        className={classes.label}
-      >
+      <label value={profile.deliveryInstructions} className={classes.label}>
         Enter Delivery Instructions Below:
       </label>
       <Box mb={1} mt={0.5} justifyContent="center">
-        <textarea className={classes.delivInstr} type="" />
+        <textarea
+          onChange={onDeliveryInstructionsChange}
+          className={classes.delivInstr}
+          type=""
+        />
       </Box>
       <label className={classes.label}>Enter Cardholder Name Below:</label>
       <Box mt={1}>

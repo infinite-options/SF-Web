@@ -61,7 +61,7 @@ const useStyles = makeStyles({
 });
 
 // DONE: check auto-load email
-// TODO: test if works completely
+// DONE: test if works completely
 const RefundTab = () => {
   const { profile } = useContext(storeContext);
   const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);

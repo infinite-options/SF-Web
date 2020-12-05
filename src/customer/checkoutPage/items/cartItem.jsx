@@ -76,7 +76,10 @@ function CartItem(props) {
             textAlign: 'center',
           }}
         >
-          {props.name}
+          {props.name}{' '}
+          {props.unit !== undefined && props.unit !== ''
+            ? '(' + props.unit + ')'
+            : ''}
         </Box>
         <Box width="30%" display="flex" justifyContent="center">
           <Box hidden={!props.isCountChangable}>

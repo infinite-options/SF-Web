@@ -225,7 +225,7 @@ export default function DeliveryInfoTab() {
           name: 'email',
           label: 'Email',
         })}
-        {PlainTextField({
+        {/* {PlainTextField({
           name: 'password',
           label: 'Password',
           type: 'password',
@@ -234,9 +234,8 @@ export default function DeliveryInfoTab() {
           name: 'password',
           label: 'Password',
           type: 'password',
-        })}
-        <Box
-          hidden={true}
+        })} */}
+        {/* <Box
           display="flex"
           my={3}
           px={1.7}
@@ -249,7 +248,7 @@ export default function DeliveryInfoTab() {
             name="pushNotifications"
             onChange={onNotificationChange}
           />
-        </Box>
+        </Box> */}
         {paymentProcessing && (
           <p className={classes.notify}>
             Please Confirm your delivery information below.

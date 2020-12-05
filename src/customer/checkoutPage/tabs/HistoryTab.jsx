@@ -10,7 +10,9 @@ const CreateHistoryCard = (props) => {
     <HistoryCard
       items={JSON.parse(props.items)}
       purchaseDate={new Date(props.purchase_date)}
-      total={props.amount_paid}
+      total={props.amount_due}
+      amountPaid={props.amount_paid}
+      savings={props.amount_discount}
       amountSaved={props.amount_paid}
       address={props.delivery_address}
       unit={props.delivery_unit}

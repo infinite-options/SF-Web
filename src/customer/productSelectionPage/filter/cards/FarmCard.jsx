@@ -34,7 +34,7 @@ function FarmCard(props) {
     setIsClicked(productSelect.farmsClicked.has(props.id));
   }, [productSelect.farmsClicked]);
 
-  // TODO: disappearing farm bug
+  // TEST: disappearing farm bug
   // TEST: day click will reset farms
   useEffect(() => {
     const isNoDayClicked = productSelect.dayClicked === '';

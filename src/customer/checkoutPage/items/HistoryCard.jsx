@@ -12,6 +12,8 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: '6px solid' + appColors.checkoutSectionBorder,
     marginBottom: '50px',
     paddingBottom: '20px',
+    paddingLeft: '10px',
+    paddingRight: '10px',
   },
   date: {
     textAlign: 'left',
@@ -19,8 +21,20 @@ const useStyles = makeStyles((theme) => ({
     color: appColors.paragraphText,
     marginBottom: '10px',
   },
+  deliveryInstructions: {
+    textAlign: 'left',
+    fontSize: '16px',
+    color: appColors.paragraphText,
+    marginBottom: '10px',
+  },
   items: { paddingLeft: '0', paddingRight: '0' },
   total: { fontWeight: 'bold' },
+  savingDetails: { fontSize: '18px', fontWeight: 'regular' },
+  section: {
+    borderBottom: '1px solid' + appColors.checkoutSectionBorder,
+    paddingTop: '5px',
+    paddingBottom: '5px',
+  },
 }));
 
 function listItem(item) {
@@ -28,6 +42,7 @@ function listItem(item) {
     <>
       <CartItem
         name={item.name}
+        unit={item.unit}
         price={item.price}
         count={item.qty}
         img={item.img}
@@ -54,10 +69,34 @@ const HistoryCard = (props) => {
           hour12: true,
         })} */}
       </Box>
+      <Box className={classes.deliveryInstructions}>
+        Delivery Instructions:{' '}
+        {props.deliveryInstructions === ''
+          ? 'None provided.'
+          : props.deliveryInstructions}
+      </Box>
       <Box className={classes.items}>{props.items.map(listItem)}</Box>
-      <Box className={clsx(classes.items, classes.total)} display="flex">
-        total
+      <Box
+        className={clsx(classes.items, classes.savingDetails, classes.section)}
+        display="flex"
+      >
+        Total
         <Box flexGrow={1} />${props.total.toFixed(2)}
+      </Box>
+      <Box
+        className={clsx(classes.items, classes.savingDetails, classes.section)}
+        display="flex"
+      >
+        Savings
+        <Box flexGrow={1} />
+        -${props.savings.toFixed(2)}
+      </Box>
+      <Box
+        className={clsx(classes.items, classes.total, classes.section)}
+        display="flex"
+      >
+        You Paid
+        <Box flexGrow={1} />${props.amountPaid.toFixed(2)}
       </Box>
     </Box>
   );

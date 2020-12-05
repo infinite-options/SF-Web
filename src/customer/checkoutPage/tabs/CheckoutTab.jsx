@@ -53,6 +53,7 @@ function listItem(item) {
     <>
       <CartItem
         name={item.name}
+        unit={item.unit}
         price={item.price}
         count={item.count}
         img={item.img}
@@ -273,6 +274,7 @@ export default function CheckoutTab() {
         <Box width="70px">
           <CurrencyTextField
             variant="standard"
+            modifyValueOnWheel={false}
             value={driverTip}
             currencySymbol="$"
             minimumValue="0"
