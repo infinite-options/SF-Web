@@ -7,7 +7,6 @@ export function onPurchaseComplete(props) {
   localStorage.removeItem('cartTotal');
   localStorage.removeItem('cartItems');
 
-  // TODO: check message with Prashant
   props
     .confirm({
       variant: 'info',

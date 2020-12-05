@@ -16,13 +16,17 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
   );
   let paypalRef = useRef();
   //[{"qty": "3", "name": "Opo Gourd", "price": "0.5", "item_uid": "310-000087", "itm_business_uid": "200-000005"}]
+
+  // TODO: Add unit (bunch), desc (cOrganic)
   const items = Object.values(cartItems).map((item) => {
     return {
       qty: item.count,
       name: item.name,
+      unit: item.unit,
       price: item.price,
       item_uid: item.id,
       itm_business_uid: item.business_uid,
+      desc: item.sec,
       img: item.img,
     };
   });

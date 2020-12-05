@@ -130,7 +130,7 @@ const DateCard = (props) => {
     }
   }, [productSelect.dayClicked]);
 
-  // TODO testing: figure out a whether to do || or && for farms
+  // DONE: figure out a whether to do || or && for farms
   useEffect(() => {
     let _showCard = productSelect.farmsClicked.size == 0 ? true : false;
     let showCount = 0;

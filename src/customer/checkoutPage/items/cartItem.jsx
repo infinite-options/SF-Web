@@ -66,7 +66,7 @@ function CartItem(props) {
       />
       <Box display="flex" flexGrow={1} py={4.5}>
         <Box
-          width="30%"
+          width="50%"
           display="flex"
           ml={2}
           style={{
@@ -78,7 +78,7 @@ function CartItem(props) {
         >
           {props.name}
         </Box>
-        <Box width="30%" display="flex" flexGrow={1} justifyContent="center">
+        <Box width="30%" display="flex" justifyContent="center">
           <Box hidden={!props.isCountChangable}>
             <RemoveIcon
               fontSize="small"
@@ -100,7 +100,9 @@ function CartItem(props) {
           </Box>
         </Box>
 
-        <Box width="5%">${totalPrice}</Box>
+        <Box textAlign="right" width="20%">
+          ${totalPrice.toFixed(2)}
+        </Box>
       </Box>
     </Box>
   );

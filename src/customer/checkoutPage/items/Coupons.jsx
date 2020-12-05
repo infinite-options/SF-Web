@@ -47,7 +47,7 @@ export default function Coupons(props) {
   // DONE:  Sort coupons to be selected, available, unavailable
   // DONE:  Grab coupons from backend API
   // DONE:  Implement and add how much needed (threshold - subtotal): ex.Buy $10 more produce to be eligible
-  // TODO testing:  change saving with need to be eligible
+  // TEST:  change saving with need to be eligible
   // DONE:  Add how much saved
   // DONE:  Add expiration date
   // DONE:  See if dots in carosel view can move down

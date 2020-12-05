@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import DateCard from './cards/DateCard';
 import FilterContext from './FilterContext';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(1),
     textAlign: 'center',
@@ -15,13 +15,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 // DONE: Add extra days for multiple times
-// TODO testing: If date is unselected, clear the cart and give warning
+// TEST: If date is unselected, clear the cart and give warning
 // BUG: day is indicated a unselected when it is active
 // DONE: Make day exclusive
 const DaysCategory = () => {
   const filter = useContext(FilterContext);
 
-  const createDateCard = props => {
+  const createDateCard = (props) => {
     return (
       <DateCard
         weekDay={props.weekDay}

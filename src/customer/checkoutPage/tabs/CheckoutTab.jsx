@@ -65,7 +65,7 @@ function listItem(item) {
   );
 }
 
-// TODO testing: Order confirmation for completed purchase
+// TEST : Order confirmation for completed purchase
 export default function CheckoutTab() {
   const classes = useStyles();
   const store = useContext(storeContext);

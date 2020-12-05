@@ -96,7 +96,8 @@ const useOptions = () => {
   return options;
 };
 
-// TODO: Ask about payment details for guest
+// TODO: Add textfields for guest to enter in information
+// TODO: Add email for guest
 const PaymentTab = () => {
   const classes = useStyles();
   const store = useContext(storeContext);
@@ -183,9 +184,11 @@ const PaymentTab = () => {
         return {
           qty: item.count,
           name: item.name,
+          unit: item.unit,
           price: item.price,
           item_uid: item.id,
           itm_business_uid: item.business_uid,
+          desc: item.sec,
           img: item.img,
         };
       });
@@ -206,8 +209,11 @@ const PaymentTab = () => {
       //gathering data to send back our server
       //set start_delivery_date
 
+      // TODO: for Guest, put 'guest' in email and 'guest' in uid
+      // TODO: send carlos the item fields
       const data = {
-        pur_customer_uid: profile.customer_uid,
+        // pur_customer_uid: profile.customer_uid,
+        pur_customer_uid: '100-000055',
         pur_business_uid: cartItems[Object.keys(cartItems)[0]].business_uid,
         items,
         order_instructions: 'fast',

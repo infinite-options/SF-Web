@@ -42,7 +42,8 @@ const useStyles = makeStyles({
   },
 });
 
-//TODO verification: implement update profile
+// TEST: implement update profile
+// TODO: push notification endpoint
 export default function DeliveryInfoTab() {
   const classes = useStyles();
   const store = useContext(StoreContext);
@@ -105,7 +106,7 @@ export default function DeliveryInfoTab() {
     setMap(null);
   }, []);
 
-  //TODO testing: refresh on farms when address is validated
+  // TEST: refresh on farms when address is validated
   const onCheckAddressClicked = () => {
     console.log('Verifying longitude and latitude from Delivery Info');
     FindLongLatWithAddr(
