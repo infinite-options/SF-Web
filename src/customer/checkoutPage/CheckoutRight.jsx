@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
@@ -45,10 +46,21 @@ const StyledTab = withStyles((theme) => ({
 
 export default function CheckoutRight() {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
+
+  const location = useLocation();
+
+  const [rightTabChosen, setRightTabChosen] = useState(0);
+
+  useEffect(() => {
+    if (
+      location.state !== undefined &&
+      location.state.rightTabChosen !== undefined
+    )
+      setRightTabChosen(location.state.rightTabChosen);
+  }, [location]);
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    setRightTabChosen(newValue);
   };
 
   const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
@@ -65,7 +77,7 @@ export default function CheckoutRight() {
   return (
     <Paper className={classes.root} style={{ height: windowHeight - 95 }}>
       <StyledTabs
-        value={value}
+        value={rightTabChosen}
         onChange={handleChange}
         indicatorColor="secondary"
         textColor="secondary"
@@ -81,7 +93,7 @@ export default function CheckoutRight() {
       {/*
       Hi Quang, I changed it back to hidden just so that the
       coupons from checkout are not re-rendering with the coupon backend API call.
-      I'm sure there are ways to avoid this with the: {value != 0 && <CheckoutTab />}
+      I'm sure there are ways to avoid this with the: {rightTabChosen != 0 && <CheckoutTab />}
       So this'll just be a quick fix for now.
       */}
       {/*Hi Jeremy, Thanks for your comment.*/}
@@ -93,14 +105,14 @@ export default function CheckoutRight() {
           overflow: 'auto',
         }}
       >
-        <Box hidden={value !== 0}>
+        <Box hidden={rightTabChosen !== 0}>
           <CheckoutTab />
         </Box>
-        {/* value is 2 because the flex spacing takes up values 1 and 3 */}
-        <Box hidden={value !== 2}>
+        {/* rightTabChosen is 2 because the flex spacing takes up values 1 and 3 */}
+        <Box hidden={rightTabChosen !== 2}>
           <HistoryTab />
         </Box>
-        <Box hidden={value !== 4}>
+        <Box hidden={rightTabChosen !== 4}>
           <RefundTab />
         </Box>
       </Paper>

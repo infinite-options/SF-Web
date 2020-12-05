@@ -41,14 +41,39 @@ export default class AuthUtils {
         },
       })
       .then((response) => {
-        console.log('Update Profile: ', response);
-        console.log('Update Profile: ', response.data);
-        console.log('Update Profile: ', response.data.code);
-        console.log(
-          'Update Profile: ',
-          response.data.code >= 200 && response.data.code < 300
-        );
+        if (response.data) {
+          if (response.data.code >= 200 && response.data.code < 300)
+            return Promise.resolve({ code: 200 });
+          else {
+            return Promise.resolve({ code: 400 });
+          }
+        } else {
+          return Promise.resolve({ code: 400 });
+        }
+      })
+      .catch((err) => {
+        console.log('Update Profile Error: ', err.response || err);
+        return Promise.resolve({ code: 400 });
+      });
+  };
 
+  updatePushNotifications = async function (notificationValue) {
+    const notificationData = {
+      uid: this.cookies.get('customer_uid'),
+      notification: notificationValue ? 'TRUE' : 'FALSE',
+    };
+
+    return await axios
+      .post(
+        this.BASE_URL + 'update_guid_notification/customer,update',
+        notificationData,
+        {
+          headers: {
+            'Content-Type': 'text/plain',
+          },
+        }
+      )
+      .then((response) => {
         if (response.data) {
           if (response.data.code >= 200 && response.data.code < 300)
             return Promise.resolve({ code: 200 });

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import Carousel from 'react-multi-carousel';
 import { Box } from '@material-ui/core';
@@ -106,7 +106,7 @@ export default function Coupons(props) {
     setUnavaiCouponData(unavailableCoupons);
   }, [props.subtotal]);
 
-  useEffect(() => {
+  useMemo(() => {
     if (store.profile.email !== '') {
       console.log('coupons fetched');
       const url =

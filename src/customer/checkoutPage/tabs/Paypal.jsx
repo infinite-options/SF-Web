@@ -1,12 +1,18 @@
 import React, { useRef, useEffect, useState, useContext } from 'react';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
+
 import { useConfirmation } from '../../../services/ConfirmationService';
 import { onPurchaseComplete } from '../utils/onPurchaseComplete';
 import checkoutContext from '../CheckoutContext';
 import storeContext from '../../storeContext';
+import { AuthContext } from 'auth/AuthContext';
+
+const cookies = new Cookies();
 
 const PayPal = ({ value, setPaypal, setCartItems }) => {
   const store = useContext(storeContext);
+  const auth = useContext(AuthContext);
   const confirm = useConfirmation();
 
   const [loaded, setLoaded] = useState(false);
@@ -68,7 +74,9 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
               // sending the request to write everything to database
 
               const dataSending = {
-                pur_customer_uid: profile.customer_uid,
+                pur_customer_uid: auth.isAuth
+                  ? cookies.get('customer_uid')
+                  : 'guest',
                 pur_business_uid:
                   cartItems[Object.keys(cartItems)[0]].business_uid,
                 items,

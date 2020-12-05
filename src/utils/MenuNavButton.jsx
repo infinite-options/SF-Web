@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { AuthContext } from '../auth/AuthContext';
 import { withRouter } from 'react-router';
@@ -25,8 +26,9 @@ const useStyles = makeStyles((theme) => ({
 
 function MenuListComposition(props) {
   const classes = useStyles();
+  const history = useHistory();
   const [open, setOpen] = React.useState(false);
-  const Auth = useContext(AuthContext);
+  const auth = useContext(AuthContext);
   const anchorRef = React.useRef(null);
 
   const handleToggle = () => {
@@ -38,8 +40,47 @@ function MenuListComposition(props) {
       return;
     }
     switch (nav) {
-      case 'store':
-        window.location.replace('/store');
+      case 'Store':
+        history.push({
+          pathname: '/store',
+        });
+        break;
+      case 'Profile Info':
+        history.push({
+          pathname: '/store',
+          state: { leftTabChosen: 0 },
+        });
+        break;
+      case 'Rewards':
+        history.push({
+          pathname: '/store',
+          state: { leftTabChosen: 2 },
+        });
+        break;
+      case 'Payment Details':
+        history.push({
+          pathname: '/store',
+          state: { leftTabChosen: 4 },
+        });
+        break;
+      case 'Checkout':
+        history.push({
+          pathname: '/store',
+          state: { rightTabChosen: 0 },
+        });
+        break;
+      case 'History':
+        history.push({
+          pathname: '/store',
+          state: { rightTabChosen: 2 },
+        });
+        break;
+      case 'Refund':
+        history.push({
+          pathname: '/store',
+          state: { rightTabChosen: 4 },
+        });
+        break;
     }
   };
   const handleClose = (event) => {
@@ -68,8 +109,8 @@ function MenuListComposition(props) {
   }, [open]);
 
   const handleClickLogOut = () => {
-    Auth.setIsAuth(false);
-    Auth.setAuthLevel(0);
+    auth.setIsAuth(false);
+    auth.setAuthLevel(0);
 
     localStorage.removeItem('currentStorePage');
     localStorage.removeItem('cartTotal');
@@ -114,53 +155,67 @@ function MenuListComposition(props) {
                     onKeyDown={handleListKeyDown}
                   >
                     <MenuItem
+                      disabled={!auth.isAuth}
                       onClick={(e) => {
-                        handleMenuItem(e, 'store');
+                        handleMenuItem(e, 'Store');
                       }}
                     >
                       Store
                     </MenuItem>
                     <MenuItem
-                      disabled
+                      disabled={!auth.isAuth}
                       onClick={(e) => {
-                        handleMenuItem(e, 'rewards');
+                        handleMenuItem(e, 'Profile Info');
+                      }}
+                    >
+                      Profile Info
+                    </MenuItem>
+                    <MenuItem
+                      disabled={!auth.isAuth}
+                      onClick={(e) => {
+                        handleMenuItem(e, 'Rewards');
                       }}
                     >
                       Rewards
                     </MenuItem>
                     <MenuItem
-                      disabled
+                      disabled={!auth.isAuth}
                       onClick={(e) => {
-                        handleMenuItem(e, 'payment details');
+                        handleMenuItem(e, 'Payment Details');
                       }}
                     >
                       Payment Details
                     </MenuItem>
                     <MenuItem
-                      disabled
+                      disabled={!auth.isAuth}
                       onClick={(e) => {
-                        handleMenuItem(e, 'checkout');
+                        handleMenuItem(e, 'Checkout');
                       }}
                     >
                       Checkout
                     </MenuItem>
                     <MenuItem
-                      disabled
+                      disabled={!auth.isAuth}
                       onClick={(e) => {
-                        handleMenuItem(e, 'history');
+                        handleMenuItem(e, 'History');
                       }}
                     >
                       History
                     </MenuItem>
                     <MenuItem
-                      disabled
+                      disabled={!auth.isAuth}
                       onClick={(e) => {
-                        handleMenuItem(e, 'refund');
+                        handleMenuItem(e, 'Refund');
                       }}
                     >
                       Refund
                     </MenuItem>
-                    <MenuItem onClick={handleClickLogOut}>Logout</MenuItem>
+                    <MenuItem
+                      disabled={!auth.isAuth}
+                      onClick={handleClickLogOut}
+                    >
+                      Logout
+                    </MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>

@@ -43,7 +43,7 @@ const useStyles = makeStyles({
 });
 
 // TEST: implement update profile
-// TODO: push notification endpoint
+// TODO check with Prashant: push notification endpoint
 export default function DeliveryInfoTab() {
   const classes = useStyles();
   const store = useContext(StoreContext);
@@ -79,6 +79,9 @@ export default function DeliveryInfoTab() {
 
   const onSubmit = () => {
     if (isAddressConfirmed) {
+      if (userInfo.pushNotifications !== store.profile.pushNotifications) {
+        AuthMethods.updatePushNotifications(userInfo.pushNotifications);
+      }
       AuthMethods.updateProfile(userInfo).then((res) => {
         console.log('(res.code === 200): ', res);
         if (res.code === 200) {
@@ -180,6 +183,14 @@ export default function DeliveryInfoTab() {
     setUserInfo({ ...userInfo, [name]: value });
   };
 
+  const onNotificationChange = (event) => {
+    const { checked } = event.target;
+    setUserInfo({
+      ...userInfo,
+      pushNotifications: checked,
+    });
+  };
+
   useEffect(() => {
     setIsAddressConfirmed(
       userInfo.address === store.profile.address &&
@@ -225,6 +236,7 @@ export default function DeliveryInfoTab() {
           type: 'password',
         })}
         <Box
+          hidden={true}
           display="flex"
           my={3}
           px={1.7}
@@ -232,7 +244,11 @@ export default function DeliveryInfoTab() {
         >
           Push Notifications
           <Box flexGrow={1} />
-          <Switch />
+          <Switch
+            checked={userInfo.pushNotifications}
+            name="pushNotifications"
+            onChange={onNotificationChange}
+          />
         </Box>
         {paymentProcessing && (
           <p className={classes.notify}>

@@ -1,4 +1,5 @@
 import React, { useEffect, useContext, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
@@ -45,6 +46,15 @@ const StyledTab = withStyles((theme) => ({
 export default function CheckoutLeft({ ...props }) {
   const classes = useStyles();
   const { leftTabChosen, setLeftTabChosen } = useContext(checkoutContext);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (
+      location.state !== undefined &&
+      location.state.leftTabChosen !== undefined
+    )
+      setLeftTabChosen(location.state.leftTabChosen);
+  }, [location]);
 
   const handleChangeCheckoutLeft = (e, newValue) => {
     setLeftTabChosen(newValue);

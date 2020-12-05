@@ -23,7 +23,7 @@ function createProduct2(product) {
     />
   );
 }
-// TODO: We are considering matching on item_name, item_desc and item_price.
+// TEST: We are considering matching on item_name, item_desc and item_price.
 // If they are identical we should choose the one with the lowest business_price.
 // If Identical still then we should select the one with the earliest created_at date
 

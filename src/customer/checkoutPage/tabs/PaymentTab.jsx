@@ -1,8 +1,7 @@
 import React, { useMemo, useContext, useState, useEffect } from 'react';
-
 import { useElements, useStripe, CardElement } from '@stripe/react-stripe-js';
 import axios from 'axios';
-// import {loadStripe} from "@stripe/stripe-js";
+import Cookies from 'universal-cookie';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
@@ -12,11 +11,12 @@ import appColors from '../../../styles/AppColors';
 import useResponsiveFontSize from '../../../utils/useResponsiveFontSize';
 import CssTextField from '../../../utils/CssTextField';
 import FindLongLatWithAddr from '../../../utils/FindLongLatWithAddr';
-
 import { onPurchaseComplete } from '../utils/onPurchaseComplete';
-import checkoutContext from '../CheckoutContext';
 import storeContext from '../../storeContext';
-import { set } from 'date-fns';
+import { AuthContext } from '../../../auth/AuthContext';
+import checkoutContext from '../CheckoutContext';
+
+const cookies = new Cookies();
 
 const useStyles = makeStyles({
   label: {
@@ -101,6 +101,7 @@ const useOptions = () => {
 const PaymentTab = () => {
   const classes = useStyles();
   const store = useContext(storeContext);
+  const auth = useContext(AuthContext);
   const confirm = useConfirmation();
 
   const elements = useElements();
@@ -130,6 +131,9 @@ const PaymentTab = () => {
 
   const [userInfo, setUserInfo] = useState(store.profile);
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [deliveryInstructions, SetDeliveryInstructions] = useState('');
 
   const onDeliveryInstructionsChange = (event) => {
@@ -213,7 +217,7 @@ const PaymentTab = () => {
       // TODO: send carlos the item fields
       const data = {
         // pur_customer_uid: profile.customer_uid,
-        pur_customer_uid: '100-000055',
+        pur_customer_uid: auth.isAuth ? cookies.get('customer_uid') : 'guest',
         pur_business_uid: cartItems[Object.keys(cartItems)[0]].business_uid,
         items,
         order_instructions: 'fast',
@@ -287,33 +291,58 @@ const PaymentTab = () => {
     );
   };
 
+  const SectionLabel = (labelText) => {
+    return (
+      <Box
+        width="200px"
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        className={classes.label}
+      >
+        {labelText}
+      </Box>
+    );
+  };
+
+  const SectionContent = (contentText) => {
+    return auth.isAuth ? (
+      <Box className={classes.info}>{contentText}</Box>
+    ) : (
+      <CssTextField
+        size="small"
+        variant="standard"
+        fullWidth
+        style={{ marginLeft: '30px', height: '18px' }}
+      />
+    );
+  };
+
   return (
     <Box pt={3} px={10}>
       {paymentProcessing && (
         <p className={classes.notify}>
-          Please Enter Your Credit Card Information.
+          Please Enter Your {auth.isAuth ? '' : 'Contact and'} Credit Card
+          Information.
         </p>
       )}
       <Box className={classes.section} display="flex">
-        <Box width="200px" className={classes.label}>
-          Contact Name:
-        </Box>
+        {SectionLabel('Contact Name:')}
         <Box flexGrow={1} />
-        <Box className={classes.info}>
-          {userInfo.firstName} {userInfo.lastName}
-        </Box>
+        {SectionContent(userInfo.firstName + userInfo.lastName)}
       </Box>
       <Box className={classes.section} display="flex">
-        <Box width="200px" className={classes.label}>
-          Contact Phone:
-        </Box>
+        {SectionLabel('Contact Phone:')}
         <Box flexGrow={1} />
-        <Box className={classes.info}>{userInfo.phoneNum}</Box>
+        {SectionContent(userInfo.phoneNum)}
       </Box>
       <Box className={classes.section} display="flex">
-        <Box width="200px" className={classes.label}>
-          Delivery Address:
-        </Box>
+        {SectionLabel('Contact Email:')}
+        <Box flexGrow={1} />
+        {SectionContent(userInfo.email)}
+      </Box>
+      <Box className={classes.section} display="flex">
+        {SectionLabel('Delivery Address:')}
         <Box flexGrow={1} />
         <Box
           className={classes.info}
