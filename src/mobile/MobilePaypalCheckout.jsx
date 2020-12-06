@@ -1,39 +1,25 @@
 import React, { useRef, useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-import Cookies from 'universal-cookie';
+import { useConfirmation } from '../services/ConfirmationService';
 
-import { useConfirmation } from '../../../services/ConfirmationService';
-import { onPurchaseComplete } from '../utils/onPurchaseComplete';
-import checkoutContext from '../CheckoutContext';
-import storeContext from '../../storeContext';
-import { AuthContext } from 'auth/AuthContext';
-
-const cookies = new Cookies();
-
-const PayPal = ({ value, setPaypal, setCartItems }) => {
-  const store = useContext(storeContext);
-  const auth = useContext(AuthContext);
+const MobilePaypalCheckout = () => {
   const confirm = useConfirmation();
 
+  const { props } = {};
+  props.cartItems = {};
+  props.value = 10;
+  props.profile = {};
   const [loaded, setLoaded] = useState(false);
-  const { amountPaid, amountDue, discount } = useContext(checkoutContext);
-  const { profile, startDeliveryDate, cartItems, setCartTotal } = useContext(
-    storeContext
-  );
+
   let paypalRef = useRef();
   //[{"qty": "3", "name": "Opo Gourd", "price": "0.5", "item_uid": "310-000087", "itm_business_uid": "200-000005"}]
-
-  // DONE: Add unit (bunch), desc (cOrganic)
-  const items = Object.values(cartItems).map((item) => {
+  const items = Object.values(props.cartItems || {}).map((item) => {
     return {
       qty: item.count,
       name: item.name,
-      unit: item.unit,
       price: item.price,
       item_uid: item.id,
       itm_business_uid: item.business_uid,
-      desc: item.sec,
-      img: item.img,
     };
   });
 
@@ -63,7 +49,7 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
                     description: 'Testing',
                     amount: {
                       currency_code: 'USD',
-                      value: value,
+                      value: props.value,
                     },
                   },
                 ],
@@ -74,32 +60,29 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
               // sending the request to write everything to database
 
               const dataSending = {
-                pur_customer_uid: auth.isAuth
-                  ? cookies.get('customer_uid')
-                  : 'guest',
-                pur_business_uid:
-                  cartItems[Object.keys(cartItems)[0]].business_uid,
+                pur_customer_uid: props.profile.customer_uid,
+                pur_business_uid: props.business_uid,
                 items,
                 order_instructions: 'fast',
                 delivery_instructions: 'Keep Fresh',
                 order_type: 'meal',
-                delivery_first_name: profile.firstName,
-                delivery_last_name: profile.lastName,
-                delivery_phone_num: profile.phoneNum,
-                delivery_email: profile.email,
-                delivery_address: profile.address,
-                delivery_unit: profile.unit,
-                delivery_city: profile.city,
-                delivery_state: profile.state,
-                delivery_zip: profile.zip,
-                delivery_latitude: profile.latitude,
-                delivery_longitude: profile.longitude,
+                delivery_first_name: props.profile.firstName,
+                delivery_last_name: props.profile.lastName,
+                delivery_phone_num: props.profile.phoneNum,
+                delivery_email: props.profile.email,
+                delivery_address: props.profile.address,
+                delivery_unit: props.profile.unit,
+                delivery_city: props.profile.city,
+                delivery_state: props.profile.state,
+                delivery_zip: props.profile.zip,
+                delivery_latitude: props.profile.latitude,
+                delivery_longitude: props.profile.longitude,
                 purchase_notes: 'purchase_notes',
-                start_delivery_date: startDeliveryDate,
+                start_delivery_date: props.startDeliveryDate,
                 pay_coupon_id: '',
-                amount_due: amountDue,
-                amount_discount: discount,
-                amount_paid: amountPaid,
+                amount_due: props.amountDue,
+                amount_discount: props.discount,
+                amount_paid: props.amountPaid,
                 info_is_Addon: 'FALSE',
                 cc_num: 'NULL',
                 cc_exp_date: 'NULL',
@@ -113,13 +96,12 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
                 process.env.REACT_APP_SERVER_BASE_URI + 'checkout',
                 dataSending
               );
-              onPurchaseComplete({ store: store, confirm: confirm });
             },
           })
           .render(paypalRef)
       );
     }
-  }, [value]);
+  });
   return (
     <div>
       <div ref={(v) => (paypalRef = v)} />
@@ -127,4 +109,4 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
   );
 };
 
-export default PayPal;
+export default MobilePaypalCheckout;

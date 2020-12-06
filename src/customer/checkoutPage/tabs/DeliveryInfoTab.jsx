@@ -10,10 +10,11 @@ import {
   Button,
   FormHelperText,
 } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 import { useConfirmation } from '../../../services/ConfirmationService';
 import FindLongLatWithAddr from '../../../utils/FindLongLatWithAddr';
 import AuthUtils from '../../../utils/AuthUtils';
-import BusiApiReqs from '../../../utils/AuthUtils';
+import BusiApiReqs from '../../../utils/BusiApiReqs';
 import appColors from '../../../styles/AppColors';
 import Signup from '../../auth/Signup';
 import { AuthContext } from '../../../auth/AuthContext';
@@ -21,6 +22,7 @@ import StoreContext from '../../storeContext';
 import checkoutContext from '../CheckoutContext';
 import CssTextField from '../../../utils/CssTextField';
 import { mergeClasses } from '@material-ui/styles';
+import { Axis } from 'highcharts';
 
 const useStyles = makeStyles({
   root: {
@@ -40,12 +42,14 @@ const useStyles = makeStyles({
   },
 });
 
-//TODO verification: implement update profile
+// TEST: implement update profile
+// TODO check with Prashant: push notification endpoint
 export default function DeliveryInfoTab() {
   const classes = useStyles();
-  const Auth = useContext(AuthContext);
-  const confirm = useConfirmation();
   const store = useContext(StoreContext);
+  const Auth = useContext(AuthContext);
+  const history = useHistory();
+  const confirm = useConfirmation();
   const AuthMethods = new AuthUtils();
   const BusiApiMethods = new BusiApiReqs();
 
@@ -74,7 +78,25 @@ export default function DeliveryInfoTab() {
   const { setProfile } = store;
 
   const onSubmit = () => {
-    setProfile({ ...userInfo });
+    if (isAddressConfirmed) {
+      if (userInfo.pushNotifications !== store.profile.pushNotifications) {
+        AuthMethods.updatePushNotifications(userInfo.pushNotifications);
+      }
+      AuthMethods.updateProfile(userInfo).then((res) => {
+        console.log('(res.code === 200): ', res);
+        if (res.code === 200) {
+          setProfile({ ...userInfo });
+        } else {
+          setLocErrorMessage(
+            'There was an issue updating your profile, please try again later'
+          );
+        }
+      });
+    } else {
+      createLocError(
+        'Your address Had not been validated, please validate before saving changes.'
+      );
+    }
   };
 
   const onLoad = React.useCallback(function callback(map) {
@@ -87,6 +109,7 @@ export default function DeliveryInfoTab() {
     setMap(null);
   }, []);
 
+  // TEST: refresh on farms when address is validated
   const onCheckAddressClicked = () => {
     console.log('Verifying longitude and latitude from Delivery Info');
     FindLongLatWithAddr(
@@ -98,31 +121,34 @@ export default function DeliveryInfoTab() {
       if (res.status === 'found') {
         BusiApiMethods.getLocationBusinessIds(res.longitude, res.latitude).then(
           (busiRes) => {
-            if (busiRes.result.length > 0) {
+            if (busiRes.result && busiRes.result.length > 0) {
               if (busiRes.result[0].zone === store.profile.zone) {
-                setIsAddressConfirmed(true);
-                store.setProfile(userInfo);
-                setLocError('');
-                setLocErrorMessage('');
+                updateProfile(false, res.latitude, res.longitude);
               } else {
                 confirm({
                   variant: 'danger',
                   catchOnCancel: true,
                   title: 'About to Clear Cart',
-                  description: 'This address . Would you like to proceed?',
+                  description:
+                    "Thanks for updating your address. Please note if you click 'Yes' your cart will be cleared. Would you like to proceed?",
                 })
                   .then(() => {
-                    setIsAddressConfirmed(true);
-                    store.setProfile(userInfo);
-                    setLocError('');
-                    setLocErrorMessage('');
+                    updateProfile(true, res.latitude, res.longitude);
                   })
                   .catch(() => {});
               }
             } else {
-              createLocError(
-                'Sorry, there are no farms that are delivering to this address'
-              );
+              confirm({
+                variant: 'danger',
+                catchOnCancel: true,
+                title: 'Address Notification',
+                description:
+                  "We're happy to save your address. But please note, we are current not delivering to this address. Would you like to proceed?",
+              })
+                .then(() => {
+                  updateProfile(true, res.latitude, res.longitude);
+                })
+                .catch(() => {});
             }
           }
         );
@@ -132,9 +158,37 @@ export default function DeliveryInfoTab() {
     });
   };
 
+  // 1445 Koch Ln, San Jose, CA 95125
+  function updateProfile(isZoneUpdated, lat, long) {
+    const _userInfo = { ...userInfo };
+    _userInfo.latitude = lat.toString();
+    _userInfo.longitude = long.toString();
+    setIsAddressConfirmed(true);
+    store.setProfile(_userInfo);
+    setLocError('');
+    setLocErrorMessage('');
+    if (isZoneUpdated) {
+      localStorage.setItem('isProfileUpdated', store.profile.zone);
+      console.log('Zone should be updated');
+      store.setFarmsClicked(new Set());
+      store.setDayClicked('');
+      localStorage.removeItem('selectedDay');
+      localStorage.removeItem('cartTotal');
+      localStorage.removeItem('cartItems');
+    }
+  }
+
   const onFieldChange = (event) => {
     const { name, value } = event.target;
     setUserInfo({ ...userInfo, [name]: value });
+  };
+
+  const onNotificationChange = (event) => {
+    const { checked } = event.target;
+    setUserInfo({
+      ...userInfo,
+      pushNotifications: checked,
+    });
   };
 
   useEffect(() => {
@@ -171,7 +225,7 @@ export default function DeliveryInfoTab() {
           name: 'email',
           label: 'Email',
         })}
-        {PlainTextField({
+        {/* {PlainTextField({
           name: 'password',
           label: 'Password',
           type: 'password',
@@ -180,8 +234,8 @@ export default function DeliveryInfoTab() {
           name: 'password',
           label: 'Password',
           type: 'password',
-        })}
-        <Box
+        })} */}
+        {/* <Box
           display="flex"
           my={3}
           px={1.7}
@@ -189,8 +243,12 @@ export default function DeliveryInfoTab() {
         >
           Push Notifications
           <Box flexGrow={1} />
-          <Switch />
-        </Box>
+          <Switch
+            checked={userInfo.pushNotifications}
+            name="pushNotifications"
+            onChange={onNotificationChange}
+          />
+        </Box> */}
         {paymentProcessing && (
           <p className={classes.notify}>
             Please Confirm your delivery information below.
@@ -349,9 +407,9 @@ export default function DeliveryInfoTab() {
           label: 'Email',
           spacing: spacing,
         })}
-        {PlainTextField({ label: 'Delivery Instructions', spacing: spacing })}
         <Box display="flex" mb={spacing}>
           <CssTextField
+            error={locError}
             value={userInfo.address}
             name="address"
             label="Street Address"
@@ -362,6 +420,7 @@ export default function DeliveryInfoTab() {
           />
           <Box ml={1} width="40%">
             <CssTextField
+              error={locError}
               value={userInfo.unit}
               name="unit"
               label="Apt Number"
@@ -372,9 +431,10 @@ export default function DeliveryInfoTab() {
             />
           </Box>
         </Box>
-        <Box display="flex" mb={spacing + 3}>
+        <Box display="flex" mb={spacing}>
           <Box width="33.3%">
             <CssTextField
+              error={locError}
               value={userInfo.city}
               name="city"
               label="City"
@@ -386,6 +446,7 @@ export default function DeliveryInfoTab() {
           </Box>
           <Box width="33.3%" mx={1}>
             <CssTextField
+              error={locError}
               value={userInfo.state}
               name="state"
               label="State"
@@ -397,6 +458,7 @@ export default function DeliveryInfoTab() {
           </Box>
           <Box width="33.3%">
             <CssTextField
+              error={locError}
               value={userInfo.zip}
               name="zip"
               label="Zip Code"
@@ -407,6 +469,21 @@ export default function DeliveryInfoTab() {
             />
           </Box>
         </Box>
+        <FormHelperText error={true} style={{ textAlign: 'center' }}>
+          {locErrorMessage}
+        </FormHelperText>
+        <Box hidden={isAddressConfirmed} mb={3}>
+          <Button
+            className={classes.button}
+            variant="outlined"
+            size="small"
+            color="paragraphText"
+            onClick={onCheckAddressClicked}
+          >
+            Verify Address
+          </Button>
+        </Box>
+        <Box mt={spacing + 3}></Box>
         {PlainTextField({
           name: 'password',
           label: 'Password',

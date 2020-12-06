@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 export default async function FindLongLatWithAddr(address, city, state, zip) {
-  console.log('address, city, state, zip: ', address, city, state, zip);
   return await axios
     .get('https://dev.virtualearth.net/REST/v1/Locations/', {
       params: {
@@ -14,7 +13,6 @@ export default async function FindLongLatWithAddr(address, city, state, zip) {
       },
     })
     .then((res) => {
-      console.log('res: ', res);
       let locationApiResult = res.data;
       if (locationApiResult.statusCode === 200) {
         let location = locationApiResult.resourceSets[0].resources[0];
@@ -22,7 +20,6 @@ export default async function FindLongLatWithAddr(address, city, state, zip) {
          */
         let lat = location.bbox[0];
         let long = location.bbox[1];
-        console.log('lat,long : ', lat, long);
         return Promise.resolve({
           status: 'found',
           longitude: long,

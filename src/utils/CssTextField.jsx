@@ -16,7 +16,7 @@ const CssTextField = withStyles({
     '&:hover': {
       backgroundColor: '#fff',
     },
-    '&$focused': {
+    '&focused': {
       backgroundColor: '#fff',
     },
   },

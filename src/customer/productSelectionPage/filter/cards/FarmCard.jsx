@@ -13,33 +13,46 @@ function FarmCard(props) {
   const store = useContext(storeContext);
 
   const [isClicked, setIsClicked] = useState(false);
+  const [isClearFarmClicks, setIsClearFarmClicks] = useState(
+    productSelect.dayClicked === '' ? true : false
+  );
   const [showCard, setShowCard] = useState(
     productSelect.dayClicked === '' ? true : false
   );
 
   function gotFarmClicked() {
     const newFarmsClicked = new Set(productSelect.farmsClicked);
-
     if (isClicked) {
       newFarmsClicked.delete(props.id);
     } else {
       newFarmsClicked.add(props.id);
     }
     productSelect.setFarmsClicked(newFarmsClicked);
-    setIsClicked(!isClicked);
   }
+
   useEffect(() => {
-    let _showCard = productSelect.dayClicked === '' ? true : false;
-    console.log(
-      'productSelect.dayClicked === daytime: ',
-      productSelect.dayClicked
-    );
+    setIsClicked(productSelect.farmsClicked.has(props.id));
+  }, [productSelect.farmsClicked]);
+
+  // TEST: disappearing farm bug
+  // TEST: day click will reset farms
+  useEffect(() => {
+    const isNoDayClicked = productSelect.dayClicked === '';
+    let _showCard = isNoDayClicked ? true : false;
+    setIsClearFarmClicks(isNoDayClicked ? true : false);
+
+    if (!isNoDayClicked && isClearFarmClicks) {
+      productSelect.setFarmsClicked(new Set());
+      setIsClicked(false);
+      setIsClearFarmClicks(true);
+    }
+
     if (props.id in store.farmDaytimeDict)
       store.farmDaytimeDict[props.id].forEach((daytime) => {
         if (productSelect.dayClicked === daytime) _showCard = true;
       });
     setShowCard(_showCard);
-  }, [productSelect.dayClicked]);
+  }, [productSelect.dayClicked, store.farmDaytimeDict]);
 
   return (
     <Box

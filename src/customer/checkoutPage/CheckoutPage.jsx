@@ -20,6 +20,13 @@ export default function CheckoutPage() {
   const [paymentProcessing, setPaymentProcessing] = useState(false);
   const [leftTabChosen, setLeftTabChosen] = useState(4);
 
+  const [guestInfo, setGuestInfo] = useState({
+    name: '',
+    phoneNumber: '',
+    email: '',
+    addressVerified: true,
+  });
+
   return (
     <>
       <CheckoutContext.Provider
@@ -34,6 +41,8 @@ export default function CheckoutPage() {
           setDiscount,
           leftTabChosen,
           setLeftTabChosen,
+          guestInfo,
+          setGuestInfo,
         }}
       >
         <Elements stripe={stripePromise}>

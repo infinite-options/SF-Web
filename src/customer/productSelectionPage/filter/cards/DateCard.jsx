@@ -8,7 +8,7 @@ import AlertDialog from '../../../../utils/dialog';
 import ProdSelectContext from '../../ProdSelectContext';
 import storeContext from '../../../storeContext';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   card: {
     backgroundColor: '#e0e6e6',
     width: 70,
@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const DateCard = props => {
+const DateCard = (props) => {
   const productSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
   const confirm = useConfirmation();
@@ -91,11 +91,11 @@ const DateCard = props => {
     productSelect.setDayClicked(props.id);
     setIsClicked(true);
     store.setExpectedDelivery(
-      props.month +
+      props.weekDayFull +
+        ', ' +
+        props.month +
         ' ' +
         props.day +
-        ', ' +
-        props.weekDayFull +
         ' from ' +
         props.time
     );
@@ -114,34 +114,27 @@ const DateCard = props => {
   }
 
   useEffect(() => {
-    const selectedDay = localStorage.getItem('selectedDay');
-    console.log(
-      'selectedDay: ',
-      selectedDay,
-      props.id,
-      productSelect.dayClicked
-    );
     if (props.id !== productSelect.dayClicked) {
       setIsClicked(false);
     } else {
       setIsClicked(true);
       store.setExpectedDelivery(
-        props.month +
+        props.weekDayFull +
+          ', ' +
+          props.month +
           ' ' +
           props.day +
-          ', ' +
-          props.weekDayFull +
           ' from ' +
           props.time
       );
     }
   }, [productSelect.dayClicked]);
 
-  // TODO testing: figure out a whether to do || or && for farms
+  // DONE: figure out a whether to do || or && for farms
   useEffect(() => {
     let _showCard = productSelect.farmsClicked.size == 0 ? true : false;
     let showCount = 0;
-    productSelect.farmsClicked.forEach(farmId => {
+    productSelect.farmsClicked.forEach((farmId) => {
       const daytime = props.weekDayFullUpper + '&' + props.time;
       if (store.farmDaytimeDict[farmId].has(daytime)) {
         showCount += 1;

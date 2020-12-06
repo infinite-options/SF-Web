@@ -1,8 +1,9 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import Carousel from 'react-multi-carousel';
 import { Box } from '@material-ui/core';
 import storeContext from '../../storeContext';
+import { AuthContext } from '../../../auth/AuthContext';
 
 function calculateSubTotal(items) {
   var result = 0;
@@ -16,37 +17,37 @@ function calculateSubTotal(items) {
 
 const responsive = {
   superLargeDesktop: {
-    breakpoint: { max: 3000, min: 1370 },
-    items: 4,
-    partialVisibilityGutter: 10,
+    breakpoint: { max: 3000, min: 1650 },
+    items: 3,
+    partialVisibilityGutter: 30,
   },
   desktop: {
-    breakpoint: { max: 3000, min: 1370 },
-    items: 3,
-    partialVisibilityGutter: 10,
+    breakpoint: { max: 1650, min: 1400 },
+    items: 2,
+    partialVisibilityGutter: 90,
   },
   tablet: {
-    breakpoint: { max: 1370, min: 1000 },
-    items: 2,
-    partialVisibilityGutter: 40,
+    breakpoint: { max: 1400, min: 1250 },
+    items: 1,
+    partialVisibilityGutter: 330,
   },
   mobile: {
-    breakpoint: { max: 1000, min: 0 },
-    items: 1,
-    partialVisibilityGutter: 100,
+    breakpoint: { max: 1250, min: 0 },
+    partialVisibilityGutter: 150,
   },
 };
 
 export default function Coupons(props) {
   const store = useContext(storeContext);
+  const auth = useContext(AuthContext);
 
-  // DONE:  Coupon properties: Title, Message, Expiration, Saving
+  // Coupon properties: Title, Message, Expiration, Saving
   // DONE:  if threshold is 0 "No minimum purchase"
   // DONE:  if amountNeeded is 0 take out needed message
   // DONE:  Sort coupons to be selected, available, unavailable
   // DONE:  Grab coupons from backend API
   // DONE:  Implement and add how much needed (threshold - subtotal): ex.Buy $10 more produce to be eligible
-  // TODO testing:  change saving with need to be eligible
+  // TEST:  change saving with need to be eligible
   // DONE:  Add how much saved
   // DONE:  Add expiration date
   // DONE:  See if dots in carosel view can move down
@@ -105,7 +106,7 @@ export default function Coupons(props) {
     setUnavaiCouponData(unavailableCoupons);
   }, [props.subtotal]);
 
-  useEffect(() => {
+  useMemo(() => {
     if (store.profile.email !== '') {
       console.log('coupons fetched');
       const url =
@@ -226,7 +227,7 @@ export default function Coupons(props) {
         <Box
           onClick={onCouponClick}
           style={{
-            width: '200px',
+            width: '220px',
             height: '96px',
             backgroundImage: `url(${
               './coupon_img/' + coupProps.status + '.png'
@@ -237,8 +238,8 @@ export default function Coupons(props) {
             cursor: coupProps.status != 'unavailable' ? 'pointer' : '',
           }}
         >
-          <Box textlign="left" pl={2.5} pr={6} pt={1.5}>
-            <Box fontSize={12} height="30px" fontWeight="bold">
+          <Box textlign="left" pl={2} pr={6} pt={1.5}>
+            <Box fontSize={12} pr={1} height="30px" fontWeight="bold">
               {coupProps.title}
             </Box>
             <Box fontSize="12px">
@@ -276,8 +277,6 @@ export default function Coupons(props) {
 
   function ApplySaving(coupon) {
     const deliveryOff = props.originalDeliveryFee - coupon.discountShipping;
-    console.log('availableCoupons[coupon]: ', coupon);
-    console.log('deliveryOff]: ', deliveryOff);
     props.setDeliveryFee(deliveryOff <= 0 ? 0 : deliveryOff);
     const discountAmountOff = props.subtotal - coupon.discountAmount;
     props.setPromoApplied(
@@ -330,17 +329,30 @@ export default function Coupons(props) {
     // if the Carousel view is acting up in localhost, replace this componant with: <></>, save the file,
     // then undo to original, and save again and it should work as expected
     <>
-      {(avaiCouponData.length > 0 || unavaiCouponData.length > 0) && (
-        <Carousel
-          arrows={true}
-          partialVisible={true}
-          swipeable={true}
-          draggable={true}
-          showDots={true}
-          responsive={responsive}
-        >
-          {avaiCouponData.concat(unavaiCouponData).map(CreateCouponCard)}
-        </Carousel>
+      {auth.isAuth ? (
+        (avaiCouponData.length > 0 || unavaiCouponData.length > 0) && (
+          <Box className={props.classes.section}>
+            <Box fontWeight="bold" textAlign="left" mb={1} lineHeight={1.8}>
+              Choose one of the eligible promos to apply:
+            </Box>
+            <Carousel
+              arrows={true}
+              swipeable={true}
+              partialVisible={true}
+              draggable={true}
+              showDots={true}
+              responsive={responsive}
+            >
+              {avaiCouponData.concat(unavaiCouponData).map(CreateCouponCard)}
+            </Carousel>
+          </Box>
+        )
+      ) : (
+        <Box className={props.classes.section}>
+          <Box fontWeight="bold" mb={1} lineHeight={1.8}>
+            Sign up to be eligible for coupons!
+          </Box>
+        </Box>
       )}
     </>
   );

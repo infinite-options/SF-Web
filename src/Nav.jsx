@@ -15,6 +15,7 @@ import AdminSocialSignup from './admin/AdminSocialSignup';
 import AdminSignup from './admin/AdminSignup';
 import AdminLogin from './admin/AdminLogin';
 import Admin from './admin/Admin';
+import MobilePaypalCheckout from './mobile/MobilePaypalCheckout';
 
 // Nav here will take all the adress from children page to this and give
 // it to the switch route
@@ -31,6 +32,7 @@ function Nav(authLevel, isAuth) {
       <Route path="/history" component={History} />
       <Route path="/refund" component={Refund} />
       <Route exact path="/store" component={Store} />
+      <Route path="/payment/paypal:props" component={MobilePaypalCheckout} />
       <AuthAdminRoute
         path="/admin"
         component={Admin}

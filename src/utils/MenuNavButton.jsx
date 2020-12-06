@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { AuthContext } from '../auth/AuthContext';
 import { withRouter } from 'react-router';
@@ -11,6 +12,7 @@ import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import { makeStyles } from '@material-ui/core/styles';
+import appColors from '../styles/AppColors';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,8 +26,9 @@ const useStyles = makeStyles((theme) => ({
 
 function MenuListComposition(props) {
   const classes = useStyles();
+  const history = useHistory();
   const [open, setOpen] = React.useState(false);
-  const Auth = useContext(AuthContext);
+  const auth = useContext(AuthContext);
   const anchorRef = React.useRef(null);
 
   const handleToggle = () => {
@@ -37,8 +40,47 @@ function MenuListComposition(props) {
       return;
     }
     switch (nav) {
-      case 'days':
-        window.location.replace('/store');
+      case 'Store':
+        history.push({
+          pathname: '/store',
+        });
+        break;
+      case 'Profile Info':
+        history.push({
+          pathname: '/store',
+          state: { leftTabChosen: 0 },
+        });
+        break;
+      case 'Rewards':
+        history.push({
+          pathname: '/store',
+          state: { leftTabChosen: 2 },
+        });
+        break;
+      case 'Payment Details':
+        history.push({
+          pathname: '/store',
+          state: { leftTabChosen: 4 },
+        });
+        break;
+      case 'Checkout':
+        history.push({
+          pathname: '/store',
+          state: { rightTabChosen: 0 },
+        });
+        break;
+      case 'History':
+        history.push({
+          pathname: '/store',
+          state: { rightTabChosen: 2 },
+        });
+        break;
+      case 'Refund':
+        history.push({
+          pathname: '/store',
+          state: { rightTabChosen: 4 },
+        });
+        break;
     }
   };
   const handleClose = (event) => {
@@ -67,8 +109,8 @@ function MenuListComposition(props) {
   }, [open]);
 
   const handleClickLogOut = () => {
-    Auth.setIsAuth(false);
-    Auth.setAuthLevel(0);
+    auth.setIsAuth(false);
+    auth.setAuthLevel(0);
 
     localStorage.removeItem('currentStorePage');
     localStorage.removeItem('cartTotal');
@@ -78,6 +120,7 @@ function MenuListComposition(props) {
     props.history.push('/');
   };
 
+  // TEST: Configure Menu buttons
   return (
     <div className={classes.root}>
       <div>
@@ -104,7 +147,7 @@ function MenuListComposition(props) {
                   placement === 'bottom' ? 'center top' : 'center bottom',
               }}
             >
-              <Paper>
+              <Paper style={{ backgroundColor: appColors.componentBg }}>
                 <ClickAwayListener onClickAway={handleClose}>
                   <MenuList
                     autoFocusItem={open}
@@ -112,37 +155,67 @@ function MenuListComposition(props) {
                     onKeyDown={handleListKeyDown}
                   >
                     <MenuItem
+                      disabled={!auth.isAuth}
                       onClick={(e) => {
-                        handleMenuItem(e, 'days');
+                        handleMenuItem(e, 'Store');
                       }}
                     >
-                      Days
+                      Store
                     </MenuItem>
                     <MenuItem
-                      disabled
+                      disabled={!auth.isAuth}
                       onClick={(e) => {
-                        handleMenuItem(e, 'orders');
+                        handleMenuItem(e, 'Profile Info');
                       }}
                     >
-                      Orders
+                      Profile Info
                     </MenuItem>
                     <MenuItem
-                      disabled
+                      disabled={!auth.isAuth}
                       onClick={(e) => {
-                        handleMenuItem(e, 'profile');
+                        handleMenuItem(e, 'Rewards');
                       }}
                     >
-                      Profile
+                      Rewards
                     </MenuItem>
                     <MenuItem
-                      disabled
+                      disabled={!auth.isAuth}
                       onClick={(e) => {
-                        handleMenuItem(e, 'informations');
+                        handleMenuItem(e, 'Payment Details');
                       }}
                     >
-                      Information
+                      Payment Details
                     </MenuItem>
-                    <MenuItem onClick={handleClickLogOut}>Logout</MenuItem>
+                    <MenuItem
+                      disabled={!auth.isAuth}
+                      onClick={(e) => {
+                        handleMenuItem(e, 'Checkout');
+                      }}
+                    >
+                      Checkout
+                    </MenuItem>
+                    <MenuItem
+                      disabled={!auth.isAuth}
+                      onClick={(e) => {
+                        handleMenuItem(e, 'History');
+                      }}
+                    >
+                      History
+                    </MenuItem>
+                    <MenuItem
+                      disabled={!auth.isAuth}
+                      onClick={(e) => {
+                        handleMenuItem(e, 'Refund');
+                      }}
+                    >
+                      Refund
+                    </MenuItem>
+                    <MenuItem
+                      disabled={!auth.isAuth}
+                      onClick={handleClickLogOut}
+                    >
+                      Logout
+                    </MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>

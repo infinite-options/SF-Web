@@ -1,21 +1,22 @@
 import React, { useMemo, useContext, useState, useEffect } from 'react';
-
 import { useElements, useStripe, CardElement } from '@stripe/react-stripe-js';
-// import {loadStripe} from "@stripe/stripe-js";
+import axios from 'axios';
+import Cookies from 'universal-cookie';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button } from '@material-ui/core';
+import { Button, FormHelperText } from '@material-ui/core';
 import clsx from 'clsx';
+import { useConfirmation } from '../../../services/ConfirmationService';
 import appColors from '../../../styles/AppColors';
 import useResponsiveFontSize from '../../../utils/useResponsiveFontSize';
 import CssTextField from '../../../utils/CssTextField';
 import FindLongLatWithAddr from '../../../utils/FindLongLatWithAddr';
-
-import axios from 'axios';
-
-import checkoutContext from '../CheckoutContext';
+import { onPurchaseComplete } from '../utils/onPurchaseComplete';
 import storeContext from '../../storeContext';
-import { set } from 'date-fns';
+import { AuthContext } from '../../../auth/AuthContext';
+import checkoutContext from '../CheckoutContext';
+
+const cookies = new Cookies();
 
 const useStyles = makeStyles({
   label: {
@@ -95,9 +96,13 @@ const useOptions = () => {
   return options;
 };
 
+// TODO: Add textfields for guest to enter in information
+// TODO: Add email for guest
 const PaymentTab = () => {
   const classes = useStyles();
   const store = useContext(storeContext);
+  const auth = useContext(AuthContext);
+  const confirm = useConfirmation();
 
   const elements = useElements();
   const stripe = useStripe();
@@ -118,6 +123,8 @@ const PaymentTab = () => {
     paymentProcessing,
     setPaymentProcessing,
     setLeftTabChosen,
+    guestInfo,
+    setGuestInfo,
   } = useContext(checkoutContext);
 
   useEffect(() => {
@@ -126,7 +133,23 @@ const PaymentTab = () => {
 
   const [userInfo, setUserInfo] = useState(store.profile);
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [nameError, setNameError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [deliveryInstructions, SetDeliveryInstructions] = useState('');
 
+  function resetError() {
+    setNameError('');
+    setPhoneError('');
+    setEmailError('');
+    setErrorMessage('');
+  }
+
+  const onDeliveryInstructionsChange = (event) => {
+    const { value } = event.target;
+    SetDeliveryInstructions(value);
+  };
   useEffect(() => {
     if (store.profile !== {}) {
       setUserInfo(store.profile);
@@ -142,9 +165,53 @@ const PaymentTab = () => {
     );
   }, [userInfo]);
 
-  const onPay = async event => {
+  const onPay = async (event) => {
     event.preventDefault();
-    console.log('important: ');
+    if (!auth.isAuth) {
+      let hasName = true;
+      let hasPhone = true;
+      let hasEmail = true;
+      if (guestInfo.name === '') {
+        setNameError('Empty');
+        hasName = false;
+      }
+      if (guestInfo.phoneNumber === '') {
+        setPhoneError('Empty');
+        hasPhone = false;
+      }
+      if (guestInfo.email === '') {
+        setEmailError('Empty');
+        hasEmail = false;
+      } else {
+        let emailExists = await axios
+          .post(process.env.REACT_APP_SERVER_BASE_URI + 'AccountSalt', {
+            email: guestInfo.email,
+          })
+          .then((res) => {
+            return res.data.code >= 200 || res.data.code < 300;
+          });
+        if (emailExists) {
+          setEmailError('Exists');
+          setErrorMessage(
+            'This email is already associated with an account, please log in or use a different email.'
+          );
+          return;
+        }
+      }
+      if (!hasName || !hasPhone || !hasEmail) {
+        setErrorMessage(
+          'Please provide all contact information to complete purchase'
+        );
+        return;
+      }
+      resetError();
+      const updatedProfile = { ...profile };
+      updatedProfile.firstName = guestInfo.name;
+      updatedProfile.phoneNum = guestInfo.phoneNumber;
+      updatedProfile.email = guestInfo.email;
+      store.setProfile(updatedProfile);
+    }
+
     setProcessing(true);
 
     const billingDetails = {
@@ -163,7 +230,7 @@ const PaymentTab = () => {
       const {
         data: { client_secret },
       } = await axios.post(
-        'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/Stripe_Intent',
+        process.env.REACT_APP_SERVER_BASE_URI + 'Stripe_Intent',
         formSending,
         {
           headers: {
@@ -171,7 +238,19 @@ const PaymentTab = () => {
           },
         }
       );
-      const items = Object.values(cartItems).map(item => item);
+      const items = Object.values(cartItems).map((item) => {
+        return {
+          qty: item.count,
+          name: item.name,
+          unit: item.unit,
+          price: item.price,
+          item_uid: item.id,
+          itm_business_uid: item.business_uid,
+          desc: item.desc,
+          img: item.img,
+        };
+      });
+
       const cardElement = await elements.getElement(CardElement);
 
       const paymentMethod = await stripe.createPaymentMethod({
@@ -188,12 +267,14 @@ const PaymentTab = () => {
       //gathering data to send back our server
       //set start_delivery_date
 
+      // TODO: for Guest, put 'guest' in uid
       const data = {
-        pur_customer_uid: profile.customer_uid,
+        // pur_customer_uid: profile.customer_uid,
+        pur_customer_uid: auth.isAuth ? cookies.get('customer_uid') : 'guest',
         pur_business_uid: cartItems[Object.keys(cartItems)[0]].business_uid,
         items,
         order_instructions: 'fast',
-        delivery_instructions: 'Keep Fresh',
+        delivery_instructions: deliveryInstructions,
         order_type: 'meal',
         delivery_first_name: profile.firstName,
         delivery_last_name: profile.lastName,
@@ -226,66 +307,58 @@ const PaymentTab = () => {
       };
 
       console.log('data sending: ', data);
-      let res = await axios.post(
-        'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/checkout',
-        data
-      );
-      cardElement.clear();
-      setCartItems({});
-      setCartTotal(0);
-      if (localStorage.getItem('cartTotal')) {
-        localStorage.setItem('cartTotal', 0);
-      }
+      let res = axios
+        .post(process.env.REACT_APP_SERVER_BASE_URI + 'checkout', data)
+        .then((res) => {
+          cardElement.clear();
+          setProcessing(false);
+          setPaymentProcessing(false);
+          onPurchaseComplete({ store: store, confirm: confirm });
+        });
+    } catch (err) {
       setProcessing(false);
       setPaymentProcessing(false);
-    } catch (err) {
       console.log('error happened while posting to Stripe_Intent api', err);
     }
   };
 
-  const onSubmit = () => {
-    if (isAddressConfirmed) {
-      store.setProfile({ ...userInfo });
-    }
-  };
-  const onConfirm = () => {
-    setLeftTabChosen(4);
-  };
-
-  const onCheckAddressClicked = () => {
-    console.log('Verifying longitude and latitude from Delivery Info');
-    FindLongLatWithAddr(
-      userInfo.address,
-      userInfo.city,
-      userInfo.state,
-      userInfo.zip
-    ).then(res => {
-      if (res.status === 'found') {
-        setIsAddressConfirmed(true);
-        store.setProfile(userInfo);
-      }
-    });
-  };
-
-  const onFieldChange = event => {
+  const onFieldChange = (event) => {
+    if (errorMessage !== '') resetError();
     const { name, value } = event.target;
-    setUserInfo({ ...userInfo, [name]: value });
+    const cal = guestInfo;
+    setGuestInfo({ ...guestInfo, [name]: value });
   };
 
-  const PlainTextField = props => {
+  const SectionLabel = (labelText) => {
     return (
-      <Box mb={props.spacing || 1}>
-        <CssTextField
-          value={props.value}
-          name={props.name}
-          label={props.label}
-          type={props.type}
-          variant="outlined"
-          size="small"
-          fullWidth
-          onChange={onFieldChange}
-        />
+      <Box
+        width="200px"
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        className={classes.label}
+      >
+        {labelText}
       </Box>
+    );
+  };
+
+  const SectionContent = (contentProps) => {
+    return auth.isAuth ? (
+      <Box className={classes.info}>{contentProps.text}</Box>
+    ) : (
+      <CssTextField
+        error={contentProps.error}
+        name={contentProps.name}
+        size="small"
+        variant="standard"
+        fullWidth
+        onChange={onFieldChange}
+        style={{
+          marginLeft: '30px',
+          height: '18px',
+        }}
+      />
     );
   };
 
@@ -293,29 +366,44 @@ const PaymentTab = () => {
     <Box pt={3} px={10}>
       {paymentProcessing && (
         <p className={classes.notify}>
-          Please Enter Your Credit Card Information.
+          Please Enter Your {auth.isAuth ? '' : 'Contact and'} Credit Card
+          Information.
         </p>
       )}
+      <form>
+        <FormHelperText error={true} style={{ textAlign: 'center' }}>
+          {errorMessage}
+        </FormHelperText>
+        <Box className={classes.section} display="flex">
+          {SectionLabel('Contact Name:')}
+          <Box flexGrow={1} />
+          {SectionContent({
+            text: userInfo.firstName + userInfo.lastName,
+            name: 'name',
+            error: nameError,
+          })}
+        </Box>
+        <Box className={classes.section} display="flex">
+          {SectionLabel('Contact Phone:')}
+          <Box flexGrow={1} />
+          {SectionContent({
+            text: userInfo.phoneNum,
+            name: 'phoneNumber',
+            error: phoneError,
+          })}
+        </Box>
+        <Box className={classes.section} display="flex">
+          {SectionLabel('Contact Email:')}
+          <Box flexGrow={1} />
+          {SectionContent({
+            text: userInfo.email,
+            name: 'email',
+            error: emailError,
+          })}
+        </Box>
+      </form>
       <Box className={classes.section} display="flex">
-        <Box width="200px" className={classes.label}>
-          Contact Name:
-        </Box>
-        <Box flexGrow={1} />
-        <Box className={classes.info}>
-          {userInfo.firstName} {userInfo.lastName}
-        </Box>
-      </Box>
-      <Box className={classes.section} display="flex">
-        <Box width="200px" className={classes.label}>
-          Contact Phone:
-        </Box>
-        <Box flexGrow={1} />
-        <Box className={classes.info}>{userInfo.phoneNum}</Box>
-      </Box>
-      <Box className={classes.section} display="flex">
-        <Box width="200px" className={classes.label}>
-          Delivery Address:
-        </Box>
+        {SectionLabel('Delivery Address:')}
         <Box flexGrow={1} />
         <Box
           className={classes.info}
@@ -332,11 +420,15 @@ const PaymentTab = () => {
           {userInfo.unit}, {userInfo.city}, {userInfo.state} {userInfo.zip}
         </Box>
       </Box>
-      <label className={classes.label}>
+      <label value={profile.deliveryInstructions} className={classes.label}>
         Enter Delivery Instructions Below:
       </label>
       <Box mb={1} mt={0.5} justifyContent="center">
-        <textarea className={classes.delivInstr} type="" />
+        <textarea
+          onChange={onDeliveryInstructionsChange}
+          className={classes.delivInstr}
+          type=""
+        />
       </Box>
       <label className={classes.label}>Enter Cardholder Name Below:</label>
       <Box mt={1}>

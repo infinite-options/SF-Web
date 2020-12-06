@@ -9,7 +9,7 @@ import ProduceSelectContext from '../ProdSelectContext';
 
 const useStyles = makeStyles({
   button: {
-    border: '1px solid' + appColors.componentBg,
+    border: '1px solid' + appColors.border,
     borderRadius: 5,
     backgroundColor: 'white',
     color: appColors.primary,
@@ -29,10 +29,17 @@ function Entry(props) {
     let isInDay = false;
     let isInFarm = false;
     let isInCategory = false;
-    store.farmDaytimeDict[props.business_uid].forEach((daytime) => {
-      if (productSelect.dayClicked === daytime) isInDay = true;
+    for (const farm in props.business_uids) {
+      store.farmDaytimeDict[farm].forEach((daytime) => {
+        if (productSelect.dayClicked === daytime) isInDay = true;
+      });
+    }
+
+    productSelect.farmsClicked.forEach((farm) => {
+      if (farm in props.business_uids) {
+        isInFarm = true;
+      }
     });
-    if (productSelect.farmsClicked.has(props.business_uid)) isInFarm = true;
     if (productSelect.categoriesClicked.has(props.type)) isInCategory = true;
 
     setIsShown(
@@ -169,7 +176,8 @@ function Entry(props) {
               <Box textAlign="left">{props.name}</Box>
               <Box flexGrow={1} />
               <Box textAlign="right">
-                $ {props.price} {props.meaning}
+                $ {props.price} {props.unit === 'each' ? '' : '/ '}
+                {props.unit}
               </Box>
             </Box>
           </Box>

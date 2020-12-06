@@ -14,7 +14,7 @@ const useStyles = makeStyles({
     borderTopLeftRadius: 25,
   },
   imageContainer: {
-    width: '80%',
+    width: '50%',
     height: '50%',
     margin: 'auto',
     display: 'flex',
@@ -60,7 +60,8 @@ const useStyles = makeStyles({
   },
 });
 
-// TODO: check auto-load email
+// DONE: check auto-load email
+// DONE: test if works completely
 const RefundTab = () => {
   const { profile } = useContext(storeContext);
   const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
@@ -72,6 +73,9 @@ const RefundTab = () => {
   const [returnDesc, setReturnDesc] = useState('');
   const classes = useStyles();
 
+  React.useEffect(() => {
+    setUserEmail(profile.email);
+  }, [profile.email]);
   const handleImgChange = (e) => {
     setImageUpload({
       file: e.target.files[0],
@@ -93,7 +97,7 @@ const RefundTab = () => {
       formUpload.append('item_photo', imageUpload.file);
       try {
         let res = await axios.post(
-          'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/Refund',
+          process.env.REACT_APP_SERVER_BASE_URI + 'Refund',
           formUpload,
           {
             headers: {
@@ -109,7 +113,7 @@ const RefundTab = () => {
     }
   };
   return (
-    <Paper className={classes.root} style={{ height: windowHeight + 100 }}>
+    <>
       <div className={classes.imageContainer}>
         <img
           className={classes.image}
@@ -179,7 +183,7 @@ const RefundTab = () => {
           </button>
         </div>
       </div>
-    </Paper>
+    </>
   );
 };
 
