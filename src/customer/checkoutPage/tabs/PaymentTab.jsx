@@ -182,6 +182,21 @@ const PaymentTab = () => {
       if (guestInfo.email === '') {
         setEmailError('Empty');
         hasEmail = false;
+      } else {
+        let emailExists = await axios
+          .post(process.env.REACT_APP_SERVER_BASE_URI + 'AccountSalt', {
+            email: guestInfo.email,
+          })
+          .then((res) => {
+            return res.data.code >= 200 || res.data.code < 300;
+          });
+        if (emailExists) {
+          setEmailError('Exists');
+          setErrorMessage(
+            'This email is already associated with an account, please log in or use a different email.'
+          );
+          return;
+        }
       }
       if (!hasName || !hasPhone || !hasEmail) {
         setErrorMessage(
