@@ -21,7 +21,7 @@ const CreateHistoryCard = (props) => {
       zip={props.delivery_zip}
       paymentMethod={props.payment_type}
       deliveryInstructions={props.delivery_instructions}
-      key={props.purchase_uid}
+      key={props.purchase_uid + props.payment_uid}
     />
   );
 };
@@ -31,12 +31,9 @@ const HistoryTab = () => {
   const [historyList, setHistoryList] = useState([]);
 
   useEffect(() => {
-    axios
-      .get(process.env.REACT_APP_SERVER_BASE_URI + 'history/' + profile.email)
-      .then((res) => {
-        if (res && res.data && res.data.result) setHistoryList(res.data.result);
-      });
+    if (profile.email !== '') loadHistory(profile.email, setHistoryList);
   }, [profile.email]);
+
   return (
     <Box pt={5} px={10}>
       <Box mb={1} color={appColors.paragraphText} fontSize={20}>
@@ -45,5 +42,13 @@ const HistoryTab = () => {
     </Box>
   );
 };
+
+function loadHistory(email, setHistoryList) {
+  axios
+    .get(process.env.REACT_APP_SERVER_BASE_URI + 'history/' + email)
+    .then((res) => {
+      if (res && res.data && res.data.result) setHistoryList(res.data.result);
+    });
+}
 
 export default HistoryTab;

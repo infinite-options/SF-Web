@@ -43,6 +43,7 @@ const useStyles = makeStyles({
 });
 
 // TEST: implement update profile
+// DONE: don't allow to change email on social login, and change to existing mail
 // TODO check with Prashant: push notification endpoint
 export default function DeliveryInfoTab() {
   const classes = useStyles();
@@ -59,6 +60,8 @@ export default function DeliveryInfoTab() {
 
   const [locError, setLocError] = useState('');
   const [locErrorMessage, setLocErrorMessage] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [emailErrorMessage, setEmailErrorMessage] = useState('');
 
   function createLocError(message) {
     setLocError('Invalid Input');
@@ -77,10 +80,26 @@ export default function DeliveryInfoTab() {
 
   const { setProfile } = store;
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (isAddressConfirmed) {
       if (userInfo.pushNotifications !== store.profile.pushNotifications) {
         AuthMethods.updatePushNotifications(userInfo.pushNotifications);
+      }
+      if (store.profile.email !== userInfo.email) {
+        let emailExists = await axios
+          .post(process.env.REACT_APP_SERVER_BASE_URI + 'AccountSalt', {
+            email: userInfo.email,
+          })
+          .then((res) => {
+            return res.data.code >= 200 || res.data.code < 300;
+          });
+        if (emailExists) {
+          setEmailError('Exists');
+          setEmailErrorMessage(
+            'This email is already associated with an account, please try a different email.'
+          );
+          return;
+        }
       }
       AuthMethods.updateProfile(userInfo).then((res) => {
         console.log('(res.code === 200): ', res);
@@ -180,6 +199,10 @@ export default function DeliveryInfoTab() {
 
   const onFieldChange = (event) => {
     const { name, value } = event.target;
+    if (name === 'email' && emailError !== '') {
+      setEmailError('');
+      setEmailErrorMessage('');
+    }
     setUserInfo({ ...userInfo, [name]: value });
   };
 
@@ -204,10 +227,12 @@ export default function DeliveryInfoTab() {
     return (
       <Box mb={props.spacing || 1}>
         <CssTextField
+          error={props.error || ''}
           value={props.value}
           name={props.name}
           label={props.label}
           type={props.type}
+          disabled={props.disabled}
           variant="outlined"
           size="small"
           fullWidth
@@ -217,13 +242,27 @@ export default function DeliveryInfoTab() {
     );
   };
 
+  function toTitleCase(str) {
+    return str.replace(/\w\S*/g, function (txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  }
+
   const authFields = () => {
     return (
       <>
+        <FormHelperText error={true} style={{ textAlign: 'center' }}>
+          {emailErrorMessage}
+        </FormHelperText>
         {PlainTextField({
+          error: emailError,
           value: userInfo.email,
           name: 'email',
-          label: 'Email',
+          label:
+            (store.profile.socialMedia !== 'NULL'
+              ? toTitleCase(store.profile.socialMedia) + ' '
+              : '') + 'Email',
+          disabled: store.profile.socialMedia !== 'NULL',
         })}
         {/* {PlainTextField({
           name: 'password',
@@ -269,6 +308,9 @@ export default function DeliveryInfoTab() {
           name: 'phoneNum',
           label: 'Phone Number',
         })}
+        <FormHelperText error={true} style={{ textAlign: 'center' }}>
+          {locErrorMessage}
+        </FormHelperText>
         <Box display="flex" mb={1}>
           <CssTextField
             error={locError}
@@ -331,9 +373,7 @@ export default function DeliveryInfoTab() {
             />
           </Box>
         </Box>
-        <FormHelperText error={true} style={{ textAlign: 'center' }}>
-          {locErrorMessage}
-        </FormHelperText>
+
         <Box hidden={isAddressConfirmed} mb={3}>
           <Button
             className={classes.button}
@@ -407,6 +447,9 @@ export default function DeliveryInfoTab() {
           label: 'Email',
           spacing: spacing,
         })}
+        <FormHelperText error={true} style={{ textAlign: 'center' }}>
+          {locErrorMessage}
+        </FormHelperText>
         <Box display="flex" mb={spacing}>
           <CssTextField
             error={locError}
@@ -469,9 +512,7 @@ export default function DeliveryInfoTab() {
             />
           </Box>
         </Box>
-        <FormHelperText error={true} style={{ textAlign: 'center' }}>
-          {locErrorMessage}
-        </FormHelperText>
+
         <Box hidden={isAddressConfirmed} mb={3}>
           <Button
             className={classes.button}
