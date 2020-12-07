@@ -39,9 +39,35 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * Hook that alerts clicks outside of the passed ref
+ */
+function useOutsideAlerter(ref) {
+  useEffect(() => {
+    /**
+     * Alert if clicked on outside of element
+     */
+    function handleClickOutside(event) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        alert('You clicked outside of me!');
+      }
+    }
+
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [ref]);
+}
+
 //backgroundImage:`url(${Background})`,
 
-//DONE:  add Google, Apple, and Facebook login to sign up
+// TODO: Social login can login direct login only if the email is verified
+// TODO:  Add auto address fill
+// TODO:  Allow a click out of login to close it
+// DONE:  add Google, Apple, and Facebook login to sign up
 const Landing = ({ ...props }) => {
   const auth = useContext(AuthContext);
   const history = useHistory();

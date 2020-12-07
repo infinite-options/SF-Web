@@ -8,7 +8,6 @@ import CssTextField from '../../utils/CssTextField';
 import appColors from '../../styles/AppColors';
 import Background from '../../welcome-bg.png';
 import { AuthContext } from '../../auth/AuthContext';
-
 import axios from 'axios';
 
 class Signup extends Component {

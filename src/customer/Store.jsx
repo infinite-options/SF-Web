@@ -36,6 +36,7 @@ const Store = ({ ...props }) => {
     latitude: '',
     longitude: '',
     zone: '',
+    socialMedia: '',
   }); // checks if user is logged in
   const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
@@ -220,6 +221,7 @@ const Store = ({ ...props }) => {
           latitude: authRes.customer_lat,
           longitude: authRes.customer_long,
           zone: '',
+          socialMedia: authRes.user_social_media,
         };
         setProfile(updatedProfile);
       });
@@ -241,6 +243,7 @@ const Store = ({ ...props }) => {
         latitude: lat,
         longitude: long,
         zone: '',
+        socialMedia: '',
       };
       setProfile(updatedProfile);
 

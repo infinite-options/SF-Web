@@ -89,6 +89,7 @@ const RefundTab = () => {
     setUserEmail(profile.email);
   };
 
+  // TODO: Add Dialogue on completion
   const submitRefund = async () => {
     let formUpload = new FormData();
     if (imageUpload.file) {

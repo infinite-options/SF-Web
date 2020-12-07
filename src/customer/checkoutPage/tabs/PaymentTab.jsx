@@ -96,8 +96,11 @@ const useOptions = () => {
   return options;
 };
 
-// TODO: Add textfields for guest to enter in information
-// TODO: Add email for guest
+// DONE: Add textfields for guest to enter in information
+// DONE: Add email for guest
+// TODO: if a guest goes back to the home page, there is (for the most part) no wey for them to get back,
+//       So, cart needs to be cleared if they try in input a new address and buttons need to show if they
+//       entered an address and are in the home page, the menu buttons also need to be enabled for a guest
 const PaymentTab = () => {
   const classes = useStyles();
   const store = useContext(storeContext);
@@ -153,7 +156,16 @@ const PaymentTab = () => {
         userInfo.zip === store.profile.zip &&
         userInfo.state === store.profile.state
     );
-  }, [userInfo]);
+  }, [
+    userInfo.address,
+    userInfo.city,
+    userInfo.zip,
+    userInfo.state,
+    store.profile.address,
+    store.profile.city,
+    store.profile.zip,
+    store.profile.state,
+  ]);
 
   const onPay = async (event) => {
     event.preventDefault();
@@ -208,13 +220,10 @@ const PaymentTab = () => {
       const confirmed = await stripe.confirmCardPayment(client_secret, {
         payment_method: paymentMethod.paymentMethod.id,
       });
-
-      console.log('confirm Paid: ', confirmed);
       //gathering data to send back our server
       //set start_delivery_date
 
-      // TODO: for Guest, put 'guest' in email and 'guest' in uid
-      // TODO: send carlos the item fields
+      // DONE: for Guest, put 'guest' in uid
       const data = {
         // pur_customer_uid: profile.customer_uid,
         pur_customer_uid: auth.isAuth ? cookies.get('customer_uid') : 'guest',
@@ -253,9 +262,10 @@ const PaymentTab = () => {
         payment_type: 'STRIPE',
       };
 
-      console.log('data sending: ', data);
       let res = axios
-        .post(process.env.REACT_APP_SERVER_BASE_URI + 'checkout', data)
+        .post(process.env.REACT_APP_SERVER_BASE_URI + 'checkout', data, {
+          headers: { 'Access-Control-Allow-Origin': '*' },
+        })
         .then((res) => {
           cardElement.clear();
           setProcessing(false);
@@ -326,21 +336,38 @@ const PaymentTab = () => {
           Information.
         </p>
       )}
-      <Box className={classes.section} display="flex">
-        {SectionLabel('Contact Name:')}
-        <Box flexGrow={1} />
-        {SectionContent(userInfo.firstName + userInfo.lastName)}
-      </Box>
-      <Box className={classes.section} display="flex">
-        {SectionLabel('Contact Phone:')}
-        <Box flexGrow={1} />
-        {SectionContent(userInfo.phoneNum)}
-      </Box>
-      <Box className={classes.section} display="flex">
-        {SectionLabel('Contact Email:')}
-        <Box flexGrow={1} />
-        {SectionContent(userInfo.email)}
-      </Box>
+      <form>
+        <FormHelperText error={true} style={{ textAlign: 'center' }}>
+          {errorMessage}
+        </FormHelperText>
+        <Box className={classes.section} display="flex">
+          {SectionLabel('Contact Name:')}
+          <Box flexGrow={1} />
+          {SectionContent({
+            text: userInfo.firstName + ' ' + userInfo.lastName,
+            name: 'name',
+            error: nameError,
+          })}
+        </Box>
+        <Box className={classes.section} display="flex">
+          {SectionLabel('Contact Phone:')}
+          <Box flexGrow={1} />
+          {SectionContent({
+            text: userInfo.phoneNum,
+            name: 'phoneNumber',
+            error: phoneError,
+          })}
+        </Box>
+        <Box className={classes.section} display="flex">
+          {SectionLabel('Contact Email:')}
+          <Box flexGrow={1} />
+          {SectionContent({
+            text: userInfo.email,
+            name: 'email',
+            error: emailError,
+          })}
+        </Box>
+      </form>
       <Box className={classes.section} display="flex">
         {SectionLabel('Delivery Address:')}
         <Box flexGrow={1} />

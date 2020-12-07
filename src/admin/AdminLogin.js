@@ -17,6 +17,7 @@ import SocialLogin from './SocialLogin';
 
 const API_URL = process.env.REACT_APP_SERVER_BASE_URI + '';
 
+// TODO: if farmer default to home page
 function AdminLogin(props) {
   const [emailValue, setEmail] = useState('');
   const [passwordValue, setPassword] = useState('');
@@ -50,7 +51,7 @@ function AdminLogin(props) {
       Cookies.set('customer_uid', customerId);
       axios
         .get(process.env.REACT_APP_SERVER_BASE_URI + 'Profile/' + customerId)
-        .then(response => {
+        .then((response) => {
           console.log('Account:', response);
           let newAccountType = response.data.result[0].role.toLowerCase();
           switch (newAccountType) {
@@ -72,7 +73,7 @@ function AdminLogin(props) {
               props.history.push('/admin');
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err.response || err);
         });
       props.history.push('/admin');
@@ -115,16 +116,16 @@ function AdminLogin(props) {
     }
   }, []);
 
-  const handleEmailChange = e => {
+  const handleEmailChange = (e) => {
     // console.log('email is changing')
     setEmail(e.target.value);
   };
-  const handlePasswordChange = e => {
+  const handlePasswordChange = (e) => {
     // console.log('password is changing')
     setPassword(e.target.value);
   };
 
-  const verifyLoginInfo = e => {
+  const verifyLoginInfo = (e) => {
     // Attempt to login
     // Get salt for account
     axios
@@ -133,7 +134,7 @@ function AdminLogin(props) {
         email: emailValue,
         // }
       })
-      .then(res => {
+      .then((res) => {
         // console.log(emailValue, passwordValue);
         let saltObject = res;
         if (saltObject.data.code === 200) {
@@ -159,12 +160,12 @@ function AdminLogin(props) {
               const encoder = new TextEncoder();
               const data = encoder.encode(saltedPassword);
               //Hash salted password
-              crypto.subtle.digest(hashAlg, data).then(res => {
+              crypto.subtle.digest(hashAlg, data).then((res) => {
                 let hash = res;
                 // Decode hash with hex digest
                 let hashArray = Array.from(new Uint8Array(hash));
                 let hashedPassword = hashArray
-                  .map(byte => {
+                  .map((byte) => {
                     return byte.toString(16).padStart(2, '0');
                   })
                   .join('');
@@ -182,7 +183,7 @@ function AdminLogin(props) {
                       'Content-Type': 'text/plain',
                     },
                   })
-                  .then(res => {
+                  .then((res) => {
                     console.log(res);
                     if (res.data.code === 200) {
                       setError('');
@@ -233,13 +234,13 @@ function AdminLogin(props) {
                             },
                           }
                         )
-                        .then(res => {
+                        .then((res) => {
                           console.log(res);
                           setErrorMessage(
                             'Email not verified. Check your email to get link for verification.'
                           );
                         })
-                        .catch(err => {
+                        .catch((err) => {
                           setErrorMessage('Email not verified.');
                           if (err.response) {
                             console.log(err.response);
@@ -252,7 +253,7 @@ function AdminLogin(props) {
                       setErrorMessage(res.data.message);
                     }
                   })
-                  .catch(err => {
+                  .catch((err) => {
                     // Log error for Login endpoint
                     if (err.response) {
                       console.log(err.response);
@@ -278,7 +279,7 @@ function AdminLogin(props) {
                   'Content-Type': 'text/plain',
                 },
               })
-              .then(res => {
+              .then((res) => {
                 console.log(res);
                 if (res.data.code === 404) {
                   console.log('Invalid credentials');
@@ -290,7 +291,7 @@ function AdminLogin(props) {
                   setErrorMessage('Login failed, try again');
                 }
               })
-              .catch(err => {
+              .catch((err) => {
                 // Log error for Login endpoint
                 if (err.response) {
                   console.log(err.response);
@@ -316,7 +317,7 @@ function AdminLogin(props) {
           setError('Log in failed, try again');
         }
       })
-      .catch(err => {
+      .catch((err) => {
         // Log error for account salt endpoint
         if (err.response) {
           console.log(err.response);
