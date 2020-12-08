@@ -47,15 +47,13 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
   const CLIENT_ID =
     process.env.NODE_ENV === 'production' ? CLIENT.production : CLIENT.sandbox;
 
-  //TODO: Ask Quang about PayPal Client ID
+  //TODO: PayPal cart doesn't clear
   return (
     <div>
       <PayPalButton
         amount={value}
         // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
         onSuccess={(details, data) => {
-          alert('Transaction completed by ' + details.payer.name.given_name);
-
           const dataSending = {
             pur_customer_uid: auth.isAuth
               ? cookies.get('customer_uid')
@@ -93,7 +91,7 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
           console.log('data sending: ', dataSending);
           axios
             .post(
-              process.env.REACT_APP_SERVER_BASE_URI + 'checkout',
+              process.env.REACT_APP_SERVER_BASE_URI + 'purchase_Data_SF',
               dataSending
             )
             .then(() => {
