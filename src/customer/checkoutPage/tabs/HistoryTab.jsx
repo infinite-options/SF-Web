@@ -3,6 +3,7 @@ import axios from 'axios';
 import Box from '@material-ui/core/Box';
 import appColors from '../../../styles/AppColors';
 import storeContext from '../../storeContext';
+import checkoutContext from '../CheckoutContext';
 import HistoryCard from '../items/HistoryCard';
 
 const CreateHistoryCard = (props) => {
@@ -28,11 +29,12 @@ const CreateHistoryCard = (props) => {
 
 const HistoryTab = () => {
   const { profile } = useContext(storeContext);
+  const { purchaseMade } = useContext(checkoutContext);
   const [historyList, setHistoryList] = useState([]);
 
   useEffect(() => {
     if (profile.email !== '') loadHistory(profile.email, setHistoryList);
-  }, [profile.email]);
+  }, [profile.email, purchaseMade]);
 
   return (
     <Box pt={5} px={10}>

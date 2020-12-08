@@ -10,9 +10,6 @@ import { withRouter } from 'react-router';
 function SocialLogin(props) {
   const Auth = useContext(AuthContext);
 
-  const [errorValue, setError] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-
   useEffect(() => {
     if (
       process.env.REACT_APP_APPLE_CLIENT_ID &&
@@ -137,7 +134,7 @@ function SocialLogin(props) {
           });
         } else if (res.data.code === 411) {
           console.log('Wrong social media');
-          setError('social');
+          props.setError('social');
           let startIndex = res.data.message.indexOf("'");
           startIndex += 1;
           let endIndex = res.data.message.indexOf("'", startIndex + 1);
@@ -146,14 +143,14 @@ function SocialLogin(props) {
           let socialMediaUsedFormat =
             socialMediaUsed.charAt(0) + socialMediaUsed.slice(1).toLowerCase();
           let newErrorMessage = 'Use ' + socialMediaUsedFormat + ' to login';
-          setErrorMessage(newErrorMessage);
+          props.setErrorMessage(newErrorMessage);
         } else if (res.data.code === 406) {
           console.log('Use Password Login');
-          setError('social');
-          setErrorMessage('Use email and password to log in');
+          props.setError('social');
+          props.setErrorMessage('Use email and password to log in');
         } else {
           console.log('Unknown log in error');
-          setError('Log in failed, try again');
+          props.setError('Log in failed, try again');
         }
       })
       .catch((err) => {

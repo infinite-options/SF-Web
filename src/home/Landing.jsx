@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import {
@@ -13,12 +13,14 @@ import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Background from '../welcome-bg.png';
 
+import LocationSearchInput from '../utils/LocationSearchInput';
+import FindLongLatWithAddr from '../utils/FindLongLatWithAddr';
+import CssTextField from '../utils/CssTextField';
+import appColors from '../styles/AppColors';
 import LandingNavBar from './LandingNavBar';
 import AdminLogin from '../admin/AdminLogin';
 import Signup from '../customer/auth/Signup';
-import appColors from '../styles/AppColors';
-import FindLongLatWithAddr from '../utils/FindLongLatWithAddr';
-import CssTextField from '../utils/CssTextField';
+
 import { AuthContext } from 'auth/AuthContext';
 
 const cookies = new Cookies();
@@ -42,14 +44,19 @@ const useStyles = makeStyles((theme) => ({
 /**
  * Hook that alerts clicks outside of the passed ref
  */
+// TODO: click outside works, needs configuration on initial click
 function useOutsideAlerter(ref) {
   useEffect(() => {
     /**
      * Alert if clicked on outside of element
      */
     function handleClickOutside(event) {
-      if (ref.current && !ref.current.contains(event.target)) {
-        alert('You clicked outside of me!');
+      if (
+        ref.current &&
+        !ref.current.contains(event.target) &&
+        !ref.current.hidden
+      ) {
+        ref.current.hidden = true;
       }
     }
 
@@ -64,10 +71,9 @@ function useOutsideAlerter(ref) {
 
 //backgroundImage:`url(${Background})`,
 
-// TODO: Social login can login direct login only if the email is verified
+// TODO:  Social login can login direct login only if the email is verified
 // TODO:  Add auto address fill
-// TODO:  Allow a click out of login to close it
-// DONE:  add Google, Apple, and Facebook login to sign up
+// DONE:  Allow a click out of login to close it
 const Landing = ({ ...props }) => {
   const auth = useContext(AuthContext);
   const history = useHistory();
@@ -80,6 +86,11 @@ const Landing = ({ ...props }) => {
   const [deliverylocation, setDeliverylocation] = useState('');
   const [errorValue, setError] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  const loginWrapperRef = useRef(null);
+  useOutsideAlerter(loginWrapperRef, setIsLoginShown);
+  const signupWrapperRef = useRef(null);
+  useOutsideAlerter(signupWrapperRef, setIsSignUpShown);
 
   const onFieldChange = (event) => {
     const { value } = event.target;
@@ -167,6 +178,7 @@ const Landing = ({ ...props }) => {
             Local produce delivered to your doorstop
           </h4>
           <Box justifyContent="center">
+            <LocationSearchInput />
             <CssTextField
               error={errorValue}
               value={deliverylocation}
@@ -215,7 +227,11 @@ const Landing = ({ ...props }) => {
             display="flex"
             justifyContent="center"
           >
-            <Box className={classes.authModal} hidden={!isLoginShown}>
+            <Box
+              ref={loginWrapperRef}
+              className={classes.authModal}
+              hidden={!isLoginShown}
+            >
               <AdminLogin />
             </Box>
           </Box>
@@ -228,7 +244,11 @@ const Landing = ({ ...props }) => {
               display="flex"
               justifyContent="center"
             >
-              <Box className={classes.authModal} hidden={!isSignUpShown}>
+              <Box
+                ref={signupWrapperRef}
+                className={classes.authModal}
+                hidden={!isSignUpShown}
+              >
                 <Signup />
               </Box>
             </Box>

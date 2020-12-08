@@ -98,7 +98,7 @@ const useOptions = () => {
 
 // DONE: Add textfields for guest to enter in information
 // DONE: Add email for guest
-// TODO: Send Parva a note about the CORS issue
+// DONE: Send Parva a note about the CORS issue
 // TODO: if a guest goes back to the home page, there is (for the most part) no wey for them to get back,
 //       So, cart needs to be cleared if they try in input a new address and buttons need to show if they
 //       entered an address and are in the home page, the menu buttons also need to be enabled for a guest
@@ -106,6 +106,7 @@ const PaymentTab = () => {
   const classes = useStyles();
   const store = useContext(storeContext);
   const auth = useContext(AuthContext);
+  const checkout = useContext(checkoutContext);
   const confirm = useConfirmation();
 
   const elements = useElements();
@@ -259,7 +260,7 @@ const PaymentTab = () => {
           price: item.price,
           item_uid: item.id,
           itm_business_uid: item.business_uid,
-          desc: item.desc,
+          description: item.desc,
           img: item.img,
         };
       });
@@ -279,6 +280,7 @@ const PaymentTab = () => {
       //set start_delivery_date
 
       // DONE: for Guest, put 'guest' in uid
+      // TODO: Add Pay coupon ID
       const data = {
         // pur_customer_uid: profile.customer_uid,
         pur_customer_uid: auth.isAuth ? cookies.get('customer_uid') : 'guest',
@@ -301,9 +303,9 @@ const PaymentTab = () => {
         purchase_notes: 'purchase_notes',
         start_delivery_date: startDeliveryDate,
         pay_coupon_id: '',
-        amount_due: amountDue,
-        amount_discount: discount,
-        amount_paid: amountPaid,
+        amount_due: amountDue.toString(),
+        amount_discount: discount.toString(),
+        amount_paid: amountPaid.toString(),
         info_is_Addon: 'FALSE',
         cc_num: paymentMethod.paymentMethod.card.last4,
         cc_exp_date:
@@ -315,17 +317,38 @@ const PaymentTab = () => {
         cc_zip: 'NULL',
         charge_id: confirmed.paymentIntent.id,
         payment_type: 'STRIPE',
+        delivery_status: 'FALSE',
       };
 
+      console.log('purchase data: ', JSON.stringify(data));
+
       let res = axios
-        .post(process.env.REACT_APP_SERVER_BASE_URI + 'checkout', data, {
-          headers: { 'Access-Control-Allow-Origin': '*' },
-        })
+        .post(
+          process.env.REACT_APP_SERVER_BASE_URI + 'purchase_Data_SF',
+          data,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
         .then((res) => {
           cardElement.clear();
           setProcessing(false);
           setPaymentProcessing(false);
-          onPurchaseComplete({ store: store, confirm: confirm });
+          onPurchaseComplete({
+            store: store,
+            checkout: checkout,
+            confirm: confirm,
+          });
+        })
+        .catch((err) => {
+          setProcessing(false);
+          setPaymentProcessing(false);
+          console.log(
+            'error happened while posting to purchase_Data_SF api',
+            err
+          );
         });
     } catch (err) {
       setProcessing(false);

@@ -183,7 +183,9 @@ function AdminLogin(props) {
                       'Content-Type': 'text/plain',
                     },
                   })
+                  //TODO: Tell Prashant social login has to be done from back end
                   .then((res) => {
+                    //TODO: tell to please use Google/ Facebook login
                     console.log(res);
                     if (res.data.code === 200) {
                       setError('');
@@ -394,7 +396,7 @@ function AdminLogin(props) {
               <Box>or</Box>
             </Box>
           </Grid>
-          <SocialLogin />
+          <SocialLogin setError={setError} setErrorMessage={setErrorMessage} />
         </Grid>
       </Paper>
     </div>

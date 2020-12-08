@@ -16,6 +16,7 @@ export default function CheckoutPage() {
   const [amountPaid, setAmountPaid] = useState(0);
   const [amountDue, setAmountDue] = useState(0);
   const [discount, setDiscount] = useState(0);
+  const [purchaseMade, setPurchaseMade] = useState(0);
 
   const [paymentProcessing, setPaymentProcessing] = useState(false);
   const [leftTabChosen, setLeftTabChosen] = useState(4);
@@ -43,6 +44,8 @@ export default function CheckoutPage() {
           setLeftTabChosen,
           guestInfo,
           setGuestInfo,
+          purchaseMade,
+          setPurchaseMade,
         }}
       >
         <Elements stripe={stripePromise}>

@@ -1,9 +1,10 @@
 import React, { useState, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import appColors from '../../../styles/AppColors';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Button';
+import { useConfirmation } from '../../../services/ConfirmationService';
+import appColors from '../../../styles/AppColors';
 import blankImg from '../../../images/blank_img.svg';
 import storeContext from '../../storeContext';
 import axios from 'axios';
@@ -64,6 +65,7 @@ const useStyles = makeStyles({
 // DONE: test if works completely
 const RefundTab = () => {
   const { profile } = useContext(storeContext);
+  const confirm = useConfirmation();
   const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
   const [imageUpload, setImageUpload] = useState({
     file: null,
@@ -89,7 +91,7 @@ const RefundTab = () => {
     setUserEmail(profile.email);
   };
 
-  // TODO: Add Dialogue on completion
+  // DONE: Add Dialogue on completion
   const submitRefund = async () => {
     let formUpload = new FormData();
     if (imageUpload.file) {
@@ -108,6 +110,15 @@ const RefundTab = () => {
         );
         console.log('Upload success: ', res);
         reset();
+        // TODO: Check message with Prashant
+        confirm({
+          variant: 'info',
+          title: 'Refund Submitted',
+          description:
+            "We've received your refund request and we'll be back in touch shortly.",
+        })
+          .then(() => {})
+          .catch(() => {});
       } catch (err) {
         console.log(err);
       }

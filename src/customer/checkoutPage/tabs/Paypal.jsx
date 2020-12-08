@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import { PayPalButton } from 'react-paypal-button-v2';
 
 import { useConfirmation } from '../../../services/ConfirmationService';
 import { onPurchaseComplete } from '../utils/onPurchaseComplete';
@@ -12,6 +13,7 @@ const cookies = new Cookies();
 
 const PayPal = ({ value, setPaypal, setCartItems }) => {
   const store = useContext(storeContext);
+  const checkout = useContext(checkoutContext);
   const auth = useContext(AuthContext);
   const confirm = useConfirmation();
 
@@ -32,7 +34,7 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
       price: item.price,
       item_uid: item.id,
       itm_business_uid: item.business_uid,
-      desc: item.sec,
+      description: item.sec,
       img: item.img,
     };
   });
@@ -45,84 +47,67 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
   const CLIENT_ID =
     process.env.NODE_ENV === 'production' ? CLIENT.production : CLIENT.sandbox;
 
-  useEffect(() => {
-    const script = document.createElement('script');
-
-    script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT.sandbox}&currency=USD`;
-    script.addEventListener('load', () => setLoaded(true));
-    document.body.appendChild(script);
-
-    if (loaded) {
-      setTimeout(() =>
-        window.paypal
-          .Buttons({
-            createOrder: (data, actions) => {
-              return actions.order.create({
-                purchase_units: [
-                  {
-                    description: 'Testing',
-                    amount: {
-                      currency_code: 'USD',
-                      value: value,
-                    },
-                  },
-                ],
-              });
-            },
-            onApprove: async (data, actions) => {
-              await actions.order.capture();
-              // sending the request to write everything to database
-
-              const dataSending = {
-                pur_customer_uid: auth.isAuth
-                  ? cookies.get('customer_uid')
-                  : 'guest',
-                pur_business_uid:
-                  cartItems[Object.keys(cartItems)[0]].business_uid,
-                items,
-                order_instructions: 'fast',
-                delivery_instructions: 'Keep Fresh',
-                order_type: 'meal',
-                delivery_first_name: profile.firstName,
-                delivery_last_name: profile.lastName,
-                delivery_phone_num: profile.phoneNum,
-                delivery_email: profile.email,
-                delivery_address: profile.address,
-                delivery_unit: profile.unit,
-                delivery_city: profile.city,
-                delivery_state: profile.state,
-                delivery_zip: profile.zip,
-                delivery_latitude: profile.latitude,
-                delivery_longitude: profile.longitude,
-                purchase_notes: 'purchase_notes',
-                start_delivery_date: startDeliveryDate,
-                pay_coupon_id: '',
-                amount_due: amountDue,
-                amount_discount: discount,
-                amount_paid: amountPaid,
-                info_is_Addon: 'FALSE',
-                cc_num: 'NULL',
-                cc_exp_date: 'NULL',
-                cc_cvv: 'NULL',
-                cc_zip: 'NULL',
-                charge_id: 'NULL',
-                payment_type: 'PAYPAL',
-              };
-              console.log('data sending: ', dataSending);
-              await axios.post(
-                process.env.REACT_APP_SERVER_BASE_URI + 'checkout',
-                dataSending
-              );
-              onPurchaseComplete({ store: store, confirm: confirm });
-            },
-          })
-          .render(paypalRef)
-      );
-    }
-  }, [value]);
+  //TODO: Ask Quang about PayPal Client ID
   return (
     <div>
-      <div ref={(v) => (paypalRef = v)} />
+      <PayPalButton
+        amount={value}
+        // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
+        onSuccess={(details, data) => {
+          alert('Transaction completed by ' + details.payer.name.given_name);
+
+          const dataSending = {
+            pur_customer_uid: auth.isAuth
+              ? cookies.get('customer_uid')
+              : 'guest',
+            pur_business_uid: cartItems[Object.keys(cartItems)[0]].business_uid,
+            items,
+            order_instructions: 'fast',
+            delivery_instructions: 'Keep Fresh',
+            order_type: 'meal',
+            delivery_first_name: profile.firstName,
+            delivery_last_name: profile.lastName,
+            delivery_phone_num: profile.phoneNum,
+            delivery_email: profile.email,
+            delivery_address: profile.address,
+            delivery_unit: profile.unit,
+            delivery_city: profile.city,
+            delivery_state: profile.state,
+            delivery_zip: profile.zip,
+            delivery_latitude: profile.latitude,
+            delivery_longitude: profile.longitude,
+            purchase_notes: 'purchase_notes',
+            start_delivery_date: startDeliveryDate,
+            pay_coupon_id: '',
+            amount_due: amountDue.toString(),
+            amount_discount: discount.toString(),
+            amount_paid: amountPaid.toString(),
+            info_is_Addon: 'FALSE',
+            cc_num: 'NULL',
+            cc_exp_date: 'NULL',
+            cc_cvv: 'NULL',
+            cc_zip: 'NULL',
+            charge_id: 'NULL',
+            payment_type: 'PAYPAL',
+          };
+          console.log('data sending: ', dataSending);
+          axios
+            .post(
+              process.env.REACT_APP_SERVER_BASE_URI + 'checkout',
+              dataSending
+            )
+            .then(() => {
+              onPurchaseComplete({
+                store: store,
+                checkout: checkout,
+                confirm: confirm,
+              });
+            });
+        }}
+        options={{
+          clientId: CLIENT.sandbox,
+        }}
+      />
     </div>
   );
 };

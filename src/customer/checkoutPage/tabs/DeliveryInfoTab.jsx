@@ -44,7 +44,7 @@ const useStyles = makeStyles({
 
 // TEST: implement update profile
 // DONE: don't allow to change email on social login, and change to existing mail
-// TODO check with Prashant: push notification endpoint
+// DONE check with Prashant: push notification endpoint
 export default function DeliveryInfoTab() {
   const classes = useStyles();
   const store = useContext(StoreContext);

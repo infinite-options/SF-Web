@@ -65,7 +65,7 @@ class Signup extends Component {
           }
           console.log(err);
           console.log('Necessary information not received');
-          this.props.history.push('/adminlogin');
+          this.props.history.push('/');
         });
     }
     // Check location state for Gogle/Facebook Login

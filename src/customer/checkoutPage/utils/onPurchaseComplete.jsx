@@ -6,6 +6,7 @@ export function onPurchaseComplete(props) {
   props.store.setFarmsClicked(new Set());
   localStorage.removeItem('cartTotal');
   localStorage.removeItem('cartItems');
+  props.checkout.setPurchaseMade(props.checkout.purchaseMade + 1);
 
   props
     .confirm({

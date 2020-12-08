@@ -37,6 +37,8 @@
     "react-multi-carousel": "^2.5.5",
     "react-number-format": "^4.4.1",
     "react-payment": "^0.1.8",
+    "react-paypal-button-v2": "^2.6.2",
+    "react-places-autocomplete": "^7.3.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.0",
     "universal-cookie": "^4.0.4"
