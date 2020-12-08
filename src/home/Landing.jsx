@@ -165,6 +165,7 @@ const Landing = ({ ...props }) => {
         {/* START: Landing Page Logo */}
         <Box display="flex" width="50%" justifyContent="center">
           <img
+            alt="logo.png"
             height="300px"
             width="300px"
             src="./logos/logo_transprarent bg.png"
@@ -178,7 +179,7 @@ const Landing = ({ ...props }) => {
             Local produce delivered to your doorstop
           </h4>
           <Box justifyContent="center">
-            <LocationSearchInput />
+            {/* <LocationSearchInput /> */}
             <CssTextField
               error={errorValue}
               value={deliverylocation}

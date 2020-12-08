@@ -8,6 +8,7 @@ import {
   Button,
 } from '@material-ui/core';
 
+//TODO: Make the Dialog Box rounder
 export const ConfirmationDialog = ({
   open,
   title,
