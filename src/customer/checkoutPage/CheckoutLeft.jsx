@@ -76,26 +76,18 @@ export default function CheckoutLeft({ ...props }) {
         <Box flexGrow={1} />
         <StyledTab label="Payment Details" />
       </StyledTabs>
-      <Paper
-        style={{
-          marginTop: 10,
-          backgroundColor: 'white',
-          maxHeight: '92%',
-          overflow: 'auto',
-        }}
-      >
-        <Box hidden={leftTabChosen != 0}>
-          <DeliveryInfo />
-        </Box>
-        {/* value is 2 because the flex spacing takes up values 1 and 3 */}
-        <Box hidden={leftTabChosen != 2}>
-          <RewardsTab />
-        </Box>
-        {/* value is 4 because the flex spacing takes up values 1 and 3 */}
-        <Box hidden={leftTabChosen != 4}>
-          <PaymentTab />
-        </Box>
-      </Paper>
+
+      <Box hidden={leftTabChosen != 0}>
+        <DeliveryInfo />
+      </Box>
+      {/* value is 2 because the flex spacing takes up values 1 and 3 */}
+      <Box hidden={leftTabChosen != 2}>
+        <RewardsTab />
+      </Box>
+      {/* value is 4 because the flex spacing takes up values 1 and 3 */}
+      <Box hidden={leftTabChosen != 4}>
+        <PaymentTab />
+      </Box>
     </Paper>
   );
 }

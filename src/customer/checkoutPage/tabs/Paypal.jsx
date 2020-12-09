@@ -19,6 +19,7 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
 
   const [loaded, setLoaded] = useState(false);
   const { amountPaid, amountDue, discount } = useContext(checkoutContext);
+  console.log('totals values: ', amountPaid, amountDue, discount);
   const { profile, startDeliveryDate, cartItems, setCartTotal } = useContext(
     storeContext
   );

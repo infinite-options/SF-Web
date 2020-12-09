@@ -33,6 +33,7 @@ const responsive = {
   },
   mobile: {
     breakpoint: { max: 1250, min: 0 },
+    items: 1,
     partialVisibilityGutter: 150,
   },
 };
@@ -283,7 +284,9 @@ export default function Coupons(props) {
       discountAmountOff < 0
         ? props.subtotal
         : coupon.discountAmount +
-            discountAmountOff * (coupon.discountPercent / 100)
+            parseFloat(
+              (discountAmountOff * (coupon.discountPercent / 100)).toFixed(2)
+            )
     );
   }
 

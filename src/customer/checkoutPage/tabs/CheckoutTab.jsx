@@ -65,7 +65,8 @@ function listItem(item) {
   );
 }
 
-// TEST : Order confirmation for completed purchase
+// TEST: Order confirmation for completed purchase
+// TODO: Get Delivery and service fee from zone
 export default function CheckoutTab() {
   const classes = useStyles();
   const store = useContext(storeContext);
@@ -100,7 +101,7 @@ export default function CheckoutTab() {
   const [tax, setTax] = useState(0);
   const [total, setTotal] = useState(
     subtotal -
-      promoApplied.toFixed(2) +
+      promoApplied +
       deliveryFee +
       serviceFee +
       parseFloat(driverTip !== '' ? driverTip : 0) +
@@ -123,16 +124,16 @@ export default function CheckoutTab() {
         : 0;
     setTotal(total);
     setAmountPaid(total);
-    setDiscount(parseFloat(promoApplied.toFixed(2)));
+    setDiscount(promoApplied + (5 - deliveryFee));
   }, [subtotal, promoApplied, deliveryFee, driverTip]);
 
   useEffect(() => {
     setSubtotal(calculateSubTotal(cartItems));
     let amountDue = parseFloat(
-      (calculateSubTotal(cartItems) + deliveryFee + serviceFee).toFixed(2)
+      (calculateSubTotal(cartItems) + 5 + serviceFee).toFixed(2)
     );
     setAmountDue(amountDue);
-  }, [cartItems]);
+  }, [cartItems, deliveryFee]);
 
   useEffect(() => {
     setTax(0);
@@ -215,7 +216,7 @@ export default function CheckoutTab() {
       <Box className={classes.section} display="flex">
         <Box color={appColors.secondary}>Promo Applied</Box>
         <Box flexGrow={1} />
-        <Box>-${promoApplied.toFixed(2)}</Box>
+        <Box>-${promoApplied}</Box>
       </Box>
       <Box className={classes.section} display="flex">
         <Box>Service Fee</Box>
@@ -258,6 +259,19 @@ export default function CheckoutTab() {
         <Box>{total.toFixed(2)}</Box>
       </Box>
       {/* END: Pricing */}
+      <Box display="flex" my={2} flexDirection="column" px="2%">
+        <Button
+          className={classes.button}
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            setLeftTabChosen(4);
+          }}
+        >
+          Click to pay with Stripe or PayPal on the Payments Details page
+        </Button>
+      </Box>
     </Box>
   );
 }
