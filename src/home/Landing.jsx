@@ -39,6 +39,24 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     width: '500px',
   },
+  infoSection: {
+    width: '33.33%',
+    justifyContent: 'center',
+  },
+  infoImg: {
+    alignItems: 'center',
+    height: '150px',
+  },
+  infoTitle: {
+    color: appColors.primary,
+    marginBottom: '10px',
+  },
+  infoDesc: {
+    paddingLeft: '20%',
+    paddingRight: '20%',
+    textAlign: 'center',
+    color: appColors.paragraphText,
+  },
 }));
 
 /**
@@ -83,6 +101,7 @@ const Landing = ({ ...props }) => {
   const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
   const [isSignUpShown, setIsSignUpShown] = useState(false);
 
+  // For Guest Procedure
   const [deliverylocation, setDeliverylocation] = useState('');
   const [errorValue, setError] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -161,6 +180,46 @@ const Landing = ({ ...props }) => {
         isSignUpShown={isSignUpShown}
         setIsSignUpShown={setIsSignUpShown}
       />
+      {/* START: Login/SignUp Modal */}
+      <Box display="flex" justifyContent="flex-end">
+        {/* Login Modal */}
+        <Box
+          position="absolute"
+          width="50%"
+          display="flex"
+          justifyContent="center"
+          zIndex={40}
+        >
+          <Box
+            ref={loginWrapperRef}
+            className={classes.authModal}
+            hidden={!isLoginShown}
+          >
+            <AdminLogin />
+          </Box>
+        </Box>
+
+        {/* Sign Up Modal */}
+        <Box display="flex" justifyContent="flex-end">
+          <Box
+            position="absolute"
+            width="50%"
+            display="flex"
+            justifyContent="center"
+            zIndex={40}
+          >
+            <Box
+              ref={signupWrapperRef}
+              className={classes.authModal}
+              hidden={!isSignUpShown}
+            >
+              <Signup />
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+      {/* END: Login/SignUp Modal */}
+      {/* START: landing Logo and Guest Login */}
       <Box display="flex">
         {/* START: Landing Page Logo */}
         <Box display="flex" width="50%" justifyContent="center">
@@ -218,44 +277,40 @@ const Landing = ({ ...props }) => {
           </Box>
         </Box>
         {/* END: Local Produce Search */}
+      </Box>
 
-        {/* START: Login/SignUp Modal */}
-        <Box display="flex" justifyContent="flex-end">
-          {/* Login Modal */}
-          <Box
-            position="absolute"
-            width="50%"
-            display="flex"
-            justifyContent="center"
-          >
-            <Box
-              ref={loginWrapperRef}
-              className={classes.authModal}
-              hidden={!isLoginShown}
-            >
-              <AdminLogin />
-            </Box>
+      <Box> </Box>
+      <Box display="flex">
+        <Box className={classes.infoSection}>
+          <Box className={classes.infoImg}>
+            <img src="./landing/vegetables_info.png" alt="vegetables info" />
           </Box>
-
-          {/* Sign Up Modal */}
-          <Box display="flex" justifyContent="flex-end">
-            <Box
-              position="absolute"
-              width="50%"
-              display="flex"
-              justifyContent="center"
-            >
-              <Box
-                ref={signupWrapperRef}
-                className={classes.authModal}
-                hidden={!isSignUpShown}
-              >
-                <Signup />
-              </Box>
-            </Box>
-          </Box>
+          <div className={classes.infoTitle}>Farm to doorstep</div>
+          <div className={classes.infoDesc}>
+            We bring fresh produce from local farms right to our consumers'
+            doorstep. It's a farmer's market experience at your fingertips
+          </div>
         </Box>
-        {/* END: Login/SignUp Modal */}
+        <Box className={classes.infoSection}>
+          <Box className={classes.infoImg}>
+            <img src="./landing/farmer_info.png" alt="farmer info" />
+          </Box>
+          <div className={classes.infoTitle}>Farm to doorstep</div>
+          <div className={classes.infoDesc}>
+            We bring fresh produce from local farms right to our consumers'
+            doorstep. It's a farmer's market experience at your fingertips
+          </div>
+        </Box>
+        <Box className={classes.infoSection}>
+          <Box className={classes.infoImg}>
+            <img src="./landing/student_info.png" alt="student info" />
+          </Box>
+          <div className={classes.infoTitle}>Farm to doorstep</div>
+          <div className={classes.infoDesc}>
+            We bring fresh produce from local farms right to our consumers'
+            doorstep. It's a farmer's market experience at your fingertips
+          </div>
+        </Box>
       </Box>
     </Box>
   );

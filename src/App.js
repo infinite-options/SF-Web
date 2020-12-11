@@ -31,6 +31,12 @@ function calTotal() {
   return amount;
 }
 
+// TODO: 1. Finish home page per design (get Tu Universo and Royal Greens), no item limit
+//       2. Modal done on farmer items (have list ready for meeting on Thursday)
+//       3. Setting page Admin page for farms
+//       4. Home page address feature
+//       5. Optimize loading screen for produce
+//       6. Shipping and service fee from zones
 function App() {
   const theme = createMuiTheme({
     shadows: ['none'],
