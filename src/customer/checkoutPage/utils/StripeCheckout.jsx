@@ -77,24 +77,24 @@ const StripeCheckout = (props) => {
       let hasName = true;
       let hasPhone = true;
       let hasEmail = true;
-      if (props.guestInfo.name === '') {
-        props.serrors.etNameError('Empty');
+      if (guestInfo.name === '') {
+        props.errors.setNameError('Empty');
         hasName = false;
       }
-      if (props.guestInfo.phoneNumber === '') {
+      if (guestInfo.phoneNumber === '') {
         props.errors.setPhoneError('Empty');
         hasPhone = false;
       }
-      if (props.guestInfo.email === '') {
+      if (guestInfo.email === '') {
         props.errors.setEmailError('Empty');
         hasEmail = false;
       } else {
         let emailExists = await axios
           .post(process.env.REACT_APP_SERVER_BASE_URI + 'AccountSalt', {
-            email: props.guestInfo.email,
+            email: guestInfo.email,
           })
           .then((res) => {
-            return res.data.code >= 200 || res.data.code < 300;
+            return res.data.code >= 200 && res.data.code < 300;
           });
         if (emailExists) {
           props.errors.setEmailError('Exists');
@@ -112,9 +112,9 @@ const StripeCheckout = (props) => {
       }
       props.errors.resetError();
       const updatedProfile = { ...profile };
-      updatedProfile.firstName = props.guestInfo.name;
-      updatedProfile.phoneNum = props.guestInfo.phoneNumber;
-      updatedProfile.email = props.guestInfo.email;
+      updatedProfile.firstName = guestInfo.name;
+      updatedProfile.phoneNum = guestInfo.phoneNumber;
+      updatedProfile.email = guestInfo.email;
       setProfile(updatedProfile);
     }
 

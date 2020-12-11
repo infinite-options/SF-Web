@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     borderBottom: '4px solid ' + appColors.secondary,
     marginBottom: '30px',
-    width: '250px',
+    width: '230px',
   },
 }));
 
@@ -68,7 +68,6 @@ const ProductDisplay = () => {
   return (
     <Box className={classes.root}>
       <Box mx="auto" className={classes.title}>
-        {' '}
         Weekly Fresh Produce
       </Box>
       <Carousel

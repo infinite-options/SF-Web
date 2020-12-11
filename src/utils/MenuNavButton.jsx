@@ -39,47 +39,50 @@ function MenuListComposition(props) {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
+    const pathname = auth.authLevel >= 1 ? '/admin' : '/store';
     switch (nav) {
       case 'Store':
         history.push({
-          pathname: '/store',
+          pathname: pathname,
         });
         break;
       case 'Profile Info':
         history.push({
-          pathname: '/store',
+          pathname: pathname,
           state: { leftTabChosen: 0 },
         });
         break;
       case 'Rewards':
         history.push({
-          pathname: '/store',
+          pathname: pathname,
           state: { leftTabChosen: 2 },
         });
         break;
       case 'Payment Details':
         history.push({
-          pathname: '/store',
+          pathname: pathname,
           state: { leftTabChosen: 4 },
         });
         break;
       case 'Checkout':
         history.push({
-          pathname: '/store',
+          pathname: pathname,
           state: { rightTabChosen: 0 },
         });
         break;
       case 'History':
         history.push({
-          pathname: '/store',
+          pathname: pathname,
           state: { rightTabChosen: 2 },
         });
         break;
       case 'Refund':
         history.push({
-          pathname: '/store',
+          pathname: pathname,
           state: { rightTabChosen: 4 },
         });
+        break;
+      default:
         break;
     }
   };

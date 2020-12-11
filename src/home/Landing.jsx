@@ -57,6 +57,14 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     color: appColors.paragraphText,
   },
+  title: {
+    color: appColors.secondary,
+    fontSize: '22px',
+    fontWeight: 'bold',
+    borderBottom: '4px solid ' + appColors.secondary,
+    marginBottom: '50px',
+    width: '130px',
+  },
 }));
 
 /**
@@ -286,6 +294,9 @@ const Landing = ({ ...props }) => {
       {/* END: Local Produce Search */}
 
       {/* START: Info Section */}
+      <Box mx="auto" className={classes.title}>
+        What We Do
+      </Box>
       <Box display="flex">
         <Box className={classes.infoSection}>
           <Box className={classes.infoImg}>

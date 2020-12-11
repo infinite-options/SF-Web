@@ -59,6 +59,10 @@ function App() {
         main: appColors.secondary,
         // dark: will be calculated from palette.secondary.main,
       },
+      paragraphText: {
+        main: appColors.paragraphText,
+        // dark: will be calculated from palette.secondary.main,
+      },
     },
   });
   console.log('app started');

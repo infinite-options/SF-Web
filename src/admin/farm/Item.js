@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import NumberFormat from 'react-number-format';
 // import FavoriteIcon from '@material-ui/icons/Favorite';
 import StarRateIcon from '@material-ui/icons/StarRate';
@@ -9,6 +9,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import Box from '@material-ui/core/Box';
+import Checkbox from '@material-ui/core/Checkbox';
 // import Switch from '@material-ui/core/Switch';
 import { makeStyles } from '@material-ui/core/styles';
 // import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -27,12 +29,18 @@ import Axios from 'axios';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 
+import { AuthContext } from '../../auth/AuthContext';
+import appColors from 'styles/AppColors';
+
 const BASE_URL =
   'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
 const ITEM_EDIT_URL = BASE_URL + 'addItems/';
 
-//TODO: Fields Needed (business_price, item_desc, taxable)
+//TODO: Fields Needed ([X] business_price, [x] item_desc, [X] taxable, exp_date, status, favorite)
+//TODO: Update Needed ( business_price, item_desc, taxable, exp_date, status, favorite)
+
 export default function Item(props) {
+  const auth = useContext(AuthContext);
   const [editData, setEditData] = useState(props.data);
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState({
@@ -175,7 +183,7 @@ export default function Item(props) {
           <Grid item xs={12}>
             <TextField
               name="item_name"
-              /*style={{width: '150px', midWidth: '50px'}}*/ label="Name of Meal"
+              label="Item Name"
               onChange={handleEditChange}
               value={editData.item_name}
             />
@@ -183,7 +191,7 @@ export default function Item(props) {
           <Grid item xs={12}>
             <TextField
               name="item_price"
-              label="Price"
+              label="Item Price"
               // style={{width: '150px', midWidth: '50px', width: 'auto',}}
               InputProps={{
                 inputComponent: NumberFormatCustomPrice,
@@ -192,6 +200,20 @@ export default function Item(props) {
               value={editData.item_price}
             />
           </Grid>
+          {auth.authLevel == 2 && (
+            <Grid item xs={12}>
+              <TextField
+                name="business_price"
+                label="Business Price"
+                // style={{width: '150px', midWidth: '50px', width: 'auto',}}
+                InputProps={{
+                  inputComponent: NumberFormatCustomPrice,
+                }}
+                onChange={handleEditChange}
+                value={editData.item_price}
+              />
+            </Grid>
+          )}
           <Grid
             item
             xs={12}
@@ -268,7 +290,7 @@ export default function Item(props) {
           <Grid item xs={12} style={{ height: '100px' }}>
             <FormControl className={classes.formControl}>
               <InputLabel id="demo-simple-select-label">
-                Farming Method
+                Item Description
               </InputLabel>
               <Select
                 name="item_desc"
@@ -316,6 +338,23 @@ export default function Item(props) {
                 </Select>
               </FormControl>
             </div>
+          </Grid>
+          <Grid item xs={12}>
+            <Box
+              pl={9}
+              display="flex"
+              lineHeight="250%"
+              color={appColors.paragraphText}
+            >
+              Taxable?
+              <Box flexGrow={1} />
+              <Checkbox
+                checked={editData.item_taxable === 'TRUE'}
+                // onChange={}
+                name="checkedB"
+                color="primary"
+              />
+            </Box>
           </Grid>
           <Grid item xs={12} style={{ height: '100px', marginRight: '55px' }}>
             <Button

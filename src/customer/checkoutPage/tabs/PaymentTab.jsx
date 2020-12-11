@@ -286,13 +286,13 @@ const PaymentTab = () => {
         <StripeCheckout
           userInfo={userInfo}
           deliveryInstructions={deliveryInstructions}
-          errors={
-            (setNameError,
+          errors={{
+            setNameError,
             setPhoneError,
             setEmailError,
             setErrorMessage,
-            resetError)
-          }
+            resetError,
+          }}
           classes={classes}
         />
       </Box>
