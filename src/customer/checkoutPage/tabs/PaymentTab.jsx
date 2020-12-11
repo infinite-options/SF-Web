@@ -103,13 +103,15 @@ const PaymentTab = () => {
   const [userInfo, setUserInfo] = useState(store.profile);
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
-  const [nameError, setNameError] = useState('');
+  const [firstNameError, setFirstNameError] = useState('');
+  const [lastNameError, setLastNameError] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [deliveryInstructions, SetDeliveryInstructions] = useState('');
 
   function resetError() {
-    setNameError('');
+    setFirstNameError('');
+    setLastNameError('');
     setPhoneError('');
     setEmailError('');
     setErrorMessage('');
@@ -145,7 +147,6 @@ const PaymentTab = () => {
   const onFieldChange = (event) => {
     if (errorMessage !== '') resetError();
     const { name, value } = event.target;
-    const cal = guestInfo;
     setGuestInfo({ ...guestInfo, [name]: value });
   };
 
@@ -195,12 +196,21 @@ const PaymentTab = () => {
           {errorMessage}
         </FormHelperText>
         <Box className={classes.section} display="flex">
-          {SectionLabel('Contact Name:')}
+          {SectionLabel('Contact First Name:')}
           <Box flexGrow={1} />
           {SectionContent({
-            text: userInfo.firstName + ' ' + userInfo.lastName,
-            name: 'name',
-            error: nameError,
+            text: userInfo.firstName,
+            name: 'firstName',
+            error: firstNameError,
+          })}
+        </Box>
+        <Box className={classes.section} display="flex">
+          {SectionLabel('Contact Last Name:')}
+          <Box flexGrow={1} />
+          {SectionContent({
+            text: userInfo.lastName,
+            name: 'lastName',
+            error: lastNameError,
           })}
         </Box>
         <Box className={classes.section} display="flex">
@@ -287,7 +297,8 @@ const PaymentTab = () => {
           userInfo={userInfo}
           deliveryInstructions={deliveryInstructions}
           errors={{
-            setNameError,
+            setFirstNameError,
+            setLastNameError,
             setPhoneError,
             setEmailError,
             setErrorMessage,

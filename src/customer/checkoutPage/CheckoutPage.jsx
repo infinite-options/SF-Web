@@ -29,7 +29,8 @@ export default function CheckoutPage() {
   const [leftTabChosen, setLeftTabChosen] = useState(4);
 
   const [guestInfo, setGuestInfo] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     phoneNumber: '',
     email: '',
     addressVerified: true,

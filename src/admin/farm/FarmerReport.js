@@ -103,7 +103,7 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
         console.log(response);
 
         const updatedOrder = { ...order };
-        updatedOrder.delivery_status = 'Yes';
+        updatedOrder.delivery_status = 'TRUE';
         console.log(updatedOrder);
 
         setOrders((prevOrders) => {
@@ -125,7 +125,7 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
         console.log(response);
 
         const updatedOrder = { ...order };
-        updatedOrder.delivery_status = 'No';
+        updatedOrder.delivery_status = 'FALSE';
         console.log(updatedOrder);
 
         setOrders((prevOrders) => {
@@ -344,15 +344,11 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
           Send Packing Report
         </Button>
       </div>
-      <OrdersTable orders={orders} type="open" functions={buttonFunctions} />
+      <OrdersTable orders={orders} type="FALSE" functions={buttonFunctions} />
       <div style={labelStyle}>
         <h2>Delivered Orders</h2>
       </div>
-      <OrdersTable
-        orders={orders}
-        type="delivered"
-        functions={buttonFunctions}
-      />
+      <OrdersTable orders={orders} type="TRUE" functions={buttonFunctions} />
     </div>
   );
 }
@@ -376,20 +372,10 @@ function OrdersTable({ orders, type, ...props }) {
         </TableHead>
         <TableBody>
           {orders.map((order, idx) => {
-            const isDisplayed = (() => {
-              try {
-                return type === 'open'
-                  ? order.delivery_status.toLowerCase() === 'no'
-                  : order.delivery_status.toLowerCase() === 'yes';
-              } catch (err) {
-                // NOTE: Not sure what to do with orders with undefined/null value delivery_status tags. Are they open? delivered? deleted?
-                return type === 'open';
-              }
-            })();
             // !order.delivery_status && order.delivery_status.toLowerCase() !== "yes" :
             // order.delivery_status || order.delivery_status.toLowerCase() === "yes";
 
-            if (isDisplayed) {
+            if (type === order.delivery_status) {
               return (
                 <OrderRow
                   key={idx}
@@ -465,11 +451,11 @@ function OrderRow({ order, type, ...props }) {
             style={{ ...tinyButtonStyle, backgroundColor: '#6c757d' }}
             onClick={(e) =>
               props.functions[
-                type === 'open' ? 'handleDeliver' : 'handleCancel'
+                type === 'FALSE' ? 'handleDeliver' : 'handleCancel'
               ](e, order, props.index)
             }
           >
-            {type === 'open' ? 'deliver' : 'cancel'}
+            {type === 'FALSE' ? 'deliver' : 'cancel'}
           </Button>
           <br />
           <Button

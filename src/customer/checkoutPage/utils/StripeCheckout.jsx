@@ -77,8 +77,12 @@ const StripeCheckout = (props) => {
       let hasName = true;
       let hasPhone = true;
       let hasEmail = true;
-      if (guestInfo.name === '') {
-        props.errors.setNameError('Empty');
+      if (guestInfo.firstName === '') {
+        props.errors.setFirstNameError('Empty');
+        hasName = false;
+      }
+      if (guestInfo.LastName === '') {
+        props.errors.setLastNameError('Empty');
         hasName = false;
       }
       if (guestInfo.phoneNumber === '') {
@@ -112,7 +116,8 @@ const StripeCheckout = (props) => {
       }
       props.errors.resetError();
       const updatedProfile = { ...profile };
-      updatedProfile.firstName = guestInfo.name;
+      updatedProfile.firstName = guestInfo.firstName;
+      updatedProfile.lastName = guestInfo.lastName;
       updatedProfile.phoneNum = guestInfo.phoneNumber;
       updatedProfile.email = guestInfo.email;
       setProfile(updatedProfile);
