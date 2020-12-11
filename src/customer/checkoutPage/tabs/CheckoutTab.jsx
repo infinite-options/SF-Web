@@ -67,6 +67,7 @@ function listItem(item) {
 
 // TEST: Order confirmation for completed purchase
 // TODO: Get Delivery and service fee from zone
+// TODO: Add button to get to tab 4 of left side
 export default function CheckoutTab() {
   const classes = useStyles();
   const store = useContext(storeContext);

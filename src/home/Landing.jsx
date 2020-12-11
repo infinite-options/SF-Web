@@ -20,6 +20,7 @@ import appColors from '../styles/AppColors';
 import LandingNavBar from './LandingNavBar';
 import AdminLogin from '../admin/AdminLogin';
 import Signup from '../customer/auth/Signup';
+import ProductDisplay from './ProductDisplay';
 
 import { AuthContext } from 'auth/AuthContext';
 
@@ -30,7 +31,6 @@ const styles = {
   paddingBottom: '70px',
   alignItems: 'center',
   backgroundImage: `url(${Background})`,
-  maxHeight: 'auto',
   backgroundSize: 'cover',
 };
 
@@ -168,10 +168,10 @@ const Landing = ({ ...props }) => {
 
   return (
     <Box
-      height={window.innerHeight}
       style={{
         backgroundSize: '1000px',
         backgroundImage: `url(${'transparent-landing-bg.png'})`,
+        paddingBottom: '100px',
       }}
     >
       <LandingNavBar
@@ -279,7 +279,13 @@ const Landing = ({ ...props }) => {
         {/* END: Local Produce Search */}
       </Box>
 
-      <Box> </Box>
+      {/* START: Local Produce Search */}
+      <Box my={10}>
+        <ProductDisplay />
+      </Box>
+      {/* END: Local Produce Search */}
+
+      {/* START: Info Section */}
       <Box display="flex">
         <Box className={classes.infoSection}>
           <Box className={classes.infoImg}>
@@ -312,6 +318,7 @@ const Landing = ({ ...props }) => {
           </div>
         </Box>
       </Box>
+      {/* END: Info Section */}
     </Box>
   );
 };

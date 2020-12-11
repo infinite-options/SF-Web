@@ -1,14 +1,44 @@
 import React, { useState, useEffect } from 'react';
+import Carousel from 'react-multi-carousel';
 import { Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import appColors from '../styles/AppColors';
 import BusiApiReqs from '../utils/BusiApiReqs';
-import classes from '*.module.css';
-import Axios from 'axios';
+import Product from './Product';
+
+const responsive = {
+  superLargeDesktop: {
+    breakpoint: { max: 3000, min: 1430 },
+    items: 8,
+  },
+  desktop: {
+    breakpoint: { max: 1430, min: 1150 },
+    items: 6,
+  },
+  tablet: {
+    breakpoint: { max: 1150, min: 800 },
+    items: 4,
+  },
+  mobile: {
+    breakpoint: { max: 800, min: 0 },
+    items: 2,
+  },
+};
 
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: appColors.componentBg,
+    width: '100%',
+    height: '300px',
+    paddingTop: '10px',
+  },
+  title: {
+    color: appColors.secondary,
+    fontSize: '22px',
+    fontWeight: 'bold',
+    borderBottom: '4px solid ' + appColors.secondary,
+    marginBottom: '30px',
+    width: '250px',
   },
 }));
 
@@ -22,10 +52,48 @@ const ProductDisplay = () => {
     BusiMethods.getItems(
       ['fruit', 'desert', 'vegetable', 'other'],
       ['200-000016', '200-000017']
-    ).then((itemsData) => {});
+    ).then((itemsData) => {
+      const itemsSet = new Set();
+      const _itemList = [];
+      for (const item of itemsData) {
+        const uniqueItemProps =
+          item.item_name + item.item_price + item.item_desc;
+        if (!itemsSet.has(uniqueItemProps)) _itemList.push(item);
+        itemsSet.add(item.item_name + item.item_price + item.item_desc);
+      }
+      setItemsList(_itemList);
+    });
+  }, []);
+
   return (
-    <Box my={5} className={classes.root}>
-      {itemsList.map()}
+    <Box className={classes.root}>
+      <Box mx="auto" className={classes.title}>
+        {' '}
+        Weekly Fresh Produce
+      </Box>
+      <Carousel
+        arrows={true}
+        swipeable={true}
+        partialVisible={true}
+        slidesToSlide={3}
+        autoplay={true}
+        autoPlaySpeed={1000}
+        infinite={true}
+        draggable={true}
+        responsive={responsive}
+      >
+        {itemsList.map((product) => {
+          return (
+            <Product
+              img={product.item_photo}
+              name={product.item_name}
+              price={product.item_price}
+              unit={product.item_unit}
+              key={product.item_uid}
+            />
+          );
+        })}
+      </Carousel>
     </Box>
   );
 };
