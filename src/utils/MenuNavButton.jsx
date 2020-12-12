@@ -112,14 +112,14 @@ function MenuListComposition(props) {
   }, [open]);
 
   const handleClickLogOut = () => {
-    auth.setIsAuth(false);
-    auth.setAuthLevel(0);
-
     localStorage.removeItem('currentStorePage');
     localStorage.removeItem('cartTotal');
     localStorage.removeItem('cartItems');
     Cookies.remove('login-session');
     Cookies.remove('customer_uid');
+
+    auth.setIsAuth(false);
+    auth.setAuthLevel(0);
     props.history.push('/');
   };
 

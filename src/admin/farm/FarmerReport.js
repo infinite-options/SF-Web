@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// TODO: Add auto-refresh
 export default function FarmerReport({ farmID, farmName, ...props }) {
   // const [responseData, setResponseData] = useState();
   const [orders, setOrders] = useState([]);

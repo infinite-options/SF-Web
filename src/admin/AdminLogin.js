@@ -67,10 +67,10 @@ function AdminLogin(props) {
               Auth.setAuthLevel(0);
               props.history.push('/store');
               break;
-            // Farmer roles are moving towared business Id string
+            // Farmer roles are moving towards business Id string
             default:
-              Auth.setAuthLevel(1);
-              props.history.push('/admin');
+              Auth.setAuthLevel(0);
+              props.history.push('/store');
           }
         })
         .catch((err) => {

@@ -37,7 +37,7 @@ const theme = createMuiTheme({
     },
   },
 });
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: 'white',
@@ -81,18 +81,18 @@ function AdminNavBar({ tab, setTab, ...props }) {
 
   //when admin logs out, remove their login info from cookies
   const handleClickLogOut = () => {
-    Auth.setIsAuth(false);
-    Auth.setAuthLevel(0);
-
     localStorage.removeItem('currentStorePage');
     localStorage.removeItem('cartTotal');
     localStorage.removeItem('cartItems');
     Cookies.remove('login-session');
     Cookies.remove('customer_uid');
+
+    Auth.setIsAuth(false);
+    Auth.setAuthLevel(0);
     props.history.push('/');
   };
 
-  const handleLogoClick = event => {
+  const handleLogoClick = (event) => {
     console.log(event.target.value);
     // props.history.push('/store');
   };
@@ -105,7 +105,7 @@ function AdminNavBar({ tab, setTab, ...props }) {
 
       return (
         <Select
-          defaultValue={'200-000001'}
+          defaultValue={'200-0000016'}
           className={classes.farmSelect}
           onChange={handleChangeFarm}
         >
@@ -120,7 +120,7 @@ function AdminNavBar({ tab, setTab, ...props }) {
       );
     }
 
-    let ownedFarm = farmList.filter(farm => farm.business_uid === farmID);
+    let ownedFarm = farmList.filter((farm) => farm.business_uid === farmID);
 
     if (ownedFarm.length > 0) {
       ownedFarm = ownedFarm[0];

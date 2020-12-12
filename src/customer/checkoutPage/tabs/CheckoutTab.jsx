@@ -217,7 +217,7 @@ export default function CheckoutTab() {
       <Box className={classes.section} display="flex">
         <Box color={appColors.secondary}>Promo Applied</Box>
         <Box flexGrow={1} />
-        <Box>-${promoApplied}</Box>
+        <Box>-${promoApplied.toFixed(2)}</Box>
       </Box>
       <Box className={classes.section} display="flex">
         <Box>Service Fee</Box>

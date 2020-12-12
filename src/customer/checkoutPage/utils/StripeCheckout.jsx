@@ -73,55 +73,6 @@ const StripeCheckout = (props) => {
 
   const onPay = async (event) => {
     event.preventDefault();
-    if (!auth.isAuth) {
-      let hasName = true;
-      let hasPhone = true;
-      let hasEmail = true;
-      if (guestInfo.firstName === '') {
-        props.errors.setFirstNameError('Empty');
-        hasName = false;
-      }
-      if (guestInfo.LastName === '') {
-        props.errors.setLastNameError('Empty');
-        hasName = false;
-      }
-      if (guestInfo.phoneNumber === '') {
-        props.errors.setPhoneError('Empty');
-        hasPhone = false;
-      }
-      if (guestInfo.email === '') {
-        props.errors.setEmailError('Empty');
-        hasEmail = false;
-      } else {
-        let emailExists = await axios
-          .post(process.env.REACT_APP_SERVER_BASE_URI + 'AccountSalt', {
-            email: guestInfo.email,
-          })
-          .then((res) => {
-            return res.data.code >= 200 && res.data.code < 300;
-          });
-        if (emailExists) {
-          props.errors.setEmailError('Exists');
-          props.errors.setErrorMessage(
-            'This email is already associated with an account, please log in or use a different email.'
-          );
-          return;
-        }
-      }
-      if (!hasName || !hasPhone || !hasEmail) {
-        props.errors.setErrorMessage(
-          'Please provide all contact information to complete purchase'
-        );
-        return;
-      }
-      props.errors.resetError();
-      const updatedProfile = { ...profile };
-      updatedProfile.firstName = guestInfo.firstName;
-      updatedProfile.lastName = guestInfo.lastName;
-      updatedProfile.phoneNum = guestInfo.phoneNumber;
-      updatedProfile.email = guestInfo.email;
-      setProfile(updatedProfile);
-    }
 
     setProcessing(true);
 
@@ -185,7 +136,7 @@ const StripeCheckout = (props) => {
         items,
         order_instructions: 'fast',
         delivery_instructions: props.deliveryInstructions,
-        order_type: 'meal',
+        order_type: 'produce',
         delivery_first_name: profile.firstName,
         delivery_last_name: profile.lastName,
         delivery_phone_num: profile.phoneNum,

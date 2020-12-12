@@ -14,6 +14,7 @@ const CreateHistoryCard = (props) => {
     <HistoryCard
       items={JSON.parse(props.items)}
       purchaseDate={new Date(props.purchase_date)}
+      deliveryDate={new Date(props.start_delivery_date)}
       total={props.amount_due}
       amountPaid={props.amount_paid}
       savings={props.amount_discount}
@@ -30,6 +31,9 @@ const CreateHistoryCard = (props) => {
   );
 };
 
+// TODO: headers for item values
+// TODO: Give individual price for items
+// TODO: Add delivery date
 const HistoryTab = () => {
   const { isAuth } = useContext(AuthContext);
   const { profile } = useContext(storeContext);

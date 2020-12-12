@@ -73,12 +73,17 @@ function CartItem(props) {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
-            textAlign: 'center',
+            textAlign: 'left',
           }}
         >
           {props.name}{' '}
           {props.unit !== undefined && props.unit !== ''
-            ? '(' + props.unit + ')'
+            ? '($' +
+              props.price.toFixed(2) +
+              ' ' +
+              (props.unit === 'each' ? '' : '/ ') +
+              props.unit +
+              ')'
             : ''}
         </Box>
         <Box width="30%" display="flex" justifyContent="center">

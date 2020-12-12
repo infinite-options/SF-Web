@@ -136,8 +136,45 @@ const PaymentTab = () => {
     );
   }, [userInfo.address]);
 
-  function onPayWithClicked(type) {
+  async function onPayWithClicked(type) {
     if (amountPaid > 0) {
+      // check guest fields to make sure they are not empty
+      if (!auth.isAuth) {
+        let hasFirstName = true;
+        let hasLastName = true;
+        let hasPhone = true;
+        let hasEmail = true;
+        if (guestInfo.firstName === '') {
+          setFirstNameError('Empty');
+          hasFirstName = false;
+        }
+        if (guestInfo.lastName === '') {
+          setLastNameError('Empty');
+          hasLastName = false;
+        }
+        if (guestInfo.phoneNumber === '') {
+          setPhoneError('Empty');
+          hasPhone = false;
+        }
+        if (guestInfo.email === '') {
+          setEmailError('Empty');
+          hasEmail = false;
+        }
+        if (!hasFirstName || !hasLastName || !hasPhone || !hasEmail) {
+          setErrorMessage(
+            'Please provide all contact information to complete purchase'
+          );
+          return;
+        }
+
+        resetError();
+        const updatedProfile = { ...profile };
+        updatedProfile.firstName = guestInfo.firstName;
+        updatedProfile.lastName = guestInfo.lastName;
+        updatedProfile.phoneNum = guestInfo.phoneNumber;
+        updatedProfile.email = guestInfo.email;
+        store.setProfile(updatedProfile);
+      }
       setPaymentType(type);
     } else {
       alert('Please add items to your card before processing payment');
@@ -147,6 +184,7 @@ const PaymentTab = () => {
   const onFieldChange = (event) => {
     if (errorMessage !== '') resetError();
     const { name, value } = event.target;
+    if (value === '') setPaymentType('NONE');
     setGuestInfo({ ...guestInfo, [name]: value });
   };
 
@@ -183,6 +221,8 @@ const PaymentTab = () => {
     );
   };
 
+  //TODO: Add recipient label
+  //TODO: If guest, give message: 'enter a password and sign up to be eligible for history and additional coupons press continue to create your account or cancel to skip'
   return (
     <Box pt={3} px={10}>
       {paymentProcessing && (
@@ -196,7 +236,7 @@ const PaymentTab = () => {
           {errorMessage}
         </FormHelperText>
         <Box className={classes.section} display="flex">
-          {SectionLabel('Contact First Name:')}
+          {SectionLabel('First Name:')}
           <Box flexGrow={1} />
           {SectionContent({
             text: userInfo.firstName,
@@ -205,7 +245,7 @@ const PaymentTab = () => {
           })}
         </Box>
         <Box className={classes.section} display="flex">
-          {SectionLabel('Contact Last Name:')}
+          {SectionLabel('Last Name:')}
           <Box flexGrow={1} />
           {SectionContent({
             text: userInfo.lastName,
@@ -214,7 +254,7 @@ const PaymentTab = () => {
           })}
         </Box>
         <Box className={classes.section} display="flex">
-          {SectionLabel('Contact Phone:')}
+          {SectionLabel('Phone:')}
           <Box flexGrow={1} />
           {SectionContent({
             text: userInfo.phoneNum,
@@ -223,7 +263,7 @@ const PaymentTab = () => {
           })}
         </Box>
         <Box className={classes.section} display="flex">
-          {SectionLabel('Contact Email:')}
+          {SectionLabel('Email:')}
           <Box flexGrow={1} />
           {SectionContent({
             text: userInfo.email,
@@ -237,6 +277,7 @@ const PaymentTab = () => {
         <Box flexGrow={1} />
         <Box
           className={classes.info}
+          textAlign="Left"
           hidden={
             userInfo.address == '' &&
             userInfo.unit == '' &&
@@ -290,20 +331,15 @@ const PaymentTab = () => {
         </Box>
       </Box>
       <Box hidden={paymentType !== 'PAYPAL'}>
-        <PayPal value={amountPaid} />
+        <PayPal
+          value={amountPaid}
+          deliveryInstructions={deliveryInstructions}
+        />
       </Box>
       <Box hidden={paymentType !== 'STRIPE'}>
         <StripeCheckout
-          userInfo={userInfo}
           deliveryInstructions={deliveryInstructions}
-          errors={{
-            setFirstNameError,
-            setLastNameError,
-            setPhoneError,
-            setEmailError,
-            setErrorMessage,
-            resetError,
-          }}
+          setPaymentType={setPaymentType}
           classes={classes}
         />
       </Box>

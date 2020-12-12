@@ -11,7 +11,7 @@ import { AuthContext } from 'auth/AuthContext';
 
 const cookies = new Cookies();
 
-const PayPal = ({ value, setPaypal, setCartItems }) => {
+const PayPal = ({ value, deliveryInstructions }) => {
   const store = useContext(storeContext);
   const checkout = useContext(checkoutContext);
   const auth = useContext(AuthContext);
@@ -62,8 +62,8 @@ const PayPal = ({ value, setPaypal, setCartItems }) => {
             pur_business_uid: cartItems[Object.keys(cartItems)[0]].business_uid,
             items,
             order_instructions: 'fast',
-            delivery_instructions: 'Keep Fresh',
-            order_type: 'meal',
+            delivery_instructions: deliveryInstructions,
+            order_type: 'produce',
             delivery_first_name: profile.firstName,
             delivery_last_name: profile.lastName,
             delivery_phone_num: profile.phoneNum,

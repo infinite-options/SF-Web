@@ -57,7 +57,7 @@ export default function Coupons(props) {
   const [avaiCouponData, setAvaiCouponData] = useState([]);
   const [unavaiCouponData, setUnavaiCouponData] = useState([]);
 
-  useEffect(() => {
+  useMemo(() => {
     const allCoupons = avaiCouponData.concat(unavaiCouponData);
     console.log('allCoupons: ', allCoupons);
     const availableCoupons = [];
@@ -108,77 +108,74 @@ export default function Coupons(props) {
   }, [props.subtotal]);
 
   useMemo(() => {
-    if (store.profile.email !== '') {
-      console.log('coupons fetched');
-      const url =
-        process.env.REACT_APP_SERVER_BASE_URI +
-        'available_Coupons/' +
-        store.profile.email;
-      axios
-        .get(url)
-        .then((res) => {
-          const availableCoupons = [];
-          const unavailableCoupons = [];
-          const couponsRes = res.data.result;
+    console.log('coupons fetched');
+    const url =
+      process.env.REACT_APP_SERVER_BASE_URI +
+      'available_Coupons/' +
+      (auth.isAuth ? store.profile.email : 'guest');
+    axios
+      .get(url)
+      .then((res) => {
+        const availableCoupons = [];
+        const unavailableCoupons = [];
+        const couponsRes = res.data.result;
 
-          // notes: title
-          // discount_amount: apply first if applicable
-          // discount_percent: apply to subtotal - discount_amount
-          // discount_shipping: apply if applicable to service fee
-          // valid: check and show if true
-          // limits:  if num_used < limits show coupon
-          // num_used:  increment by 1 on each order
-          // recurring: is one time use
-          // expired coupons wont send through
-          for (const i in couponsRes) {
-            // Check if coupon is expired
-            const today = new Date();
-            const expDate = new Date(couponsRes[i].expire_date);
-            if (today <= expDate) {
-              const couponData = {
-                index: i,
-                title: couponsRes[i].notes,
-                threshold: couponsRes[i].threshold,
-                discountPercent: couponsRes[i].discount_percent,
-                discountAmount: couponsRes[i].discount_amount,
-                discountShipping: couponsRes[i].discount_shipping,
-                expDate: expDate,
-                amountSaved: calculateAmountSaved(
-                  couponsRes[i].discountAmount,
-                  couponsRes[i].discountPercent,
-                  couponsRes[i].discountShipping
-                ),
-                amountNeeded: couponsRes[i].threshold - props.subtotal,
-                status:
-                  props.subtotal > 0 &&
-                  props.subtotal >= couponsRes[i].threshold
-                    ? 'available'
-                    : 'unavailable',
-              };
+        // notes: title
+        // discount_amount: apply first if applicable
+        // discount_percent: apply to subtotal - discount_amount
+        // discount_shipping: apply if applicable to service fee
+        // valid: check and show if true
+        // limits:  if num_used < limits show coupon
+        // num_used:  increment by 1 on each order
+        // recurring: is one time use
+        // expired coupons wont send through
+        for (const i in couponsRes) {
+          // Check if coupon is expired
+          const today = new Date();
+          const expDate = new Date(couponsRes[i].expire_date);
+          if (today <= expDate) {
+            const couponData = {
+              index: i,
+              title: couponsRes[i].notes,
+              threshold: couponsRes[i].threshold,
+              discountPercent: couponsRes[i].discount_percent,
+              discountAmount: couponsRes[i].discount_amount,
+              discountShipping: couponsRes[i].discount_shipping,
+              expDate: expDate,
+              amountSaved: calculateAmountSaved(
+                couponsRes[i].discountAmount,
+                couponsRes[i].discountPercent,
+                couponsRes[i].discountShipping
+              ),
+              amountNeeded: couponsRes[i].threshold - props.subtotal,
+              status:
+                props.subtotal > 0 && props.subtotal >= couponsRes[i].threshold
+                  ? 'available'
+                  : 'unavailable',
+            };
 
-              if (couponData.status === 'available') {
-                availableCoupons.push(couponData);
-              } else {
-                unavailableCoupons.push(couponData);
-              }
+            if (couponData.status === 'available') {
+              availableCoupons.push(couponData);
+            } else {
+              unavailableCoupons.push(couponData);
             }
           }
+        }
 
-          // auto select max savings on available coupons
-          if (availableCoupons.length > 0) {
-            const maxIndex = FindMaxSavingCouponsIndex(availableCoupons);
-            availableCoupons[maxIndex].status = 'selected';
-            ApplySaving(availableCoupons[maxIndex]);
-            ArrayMove(availableCoupons, maxIndex, 0);
-          }
+        // auto select max savings on available coupons
+        if (availableCoupons.length > 0) {
+          const maxIndex = FindMaxSavingCouponsIndex(availableCoupons);
+          availableCoupons[maxIndex].status = 'selected';
+          ApplySaving(availableCoupons[maxIndex]);
+          ArrayMove(availableCoupons, maxIndex, 0);
+        }
 
-          setAvaiCouponData(availableCoupons);
-          setUnavaiCouponData(unavailableCoupons);
-        })
-        .catch((e) => {
-          console.log('Error getting coupons: ', e);
-        });
-    }
+        setAvaiCouponData(availableCoupons);
+        setUnavaiCouponData(unavailableCoupons);
+      })
+      .catch((e) => {
+        console.log('Error getting coupons: ', e);
+      });
   }, [store.profile.email]);
 
   const CreateCouponCard = (coupProps) => {
@@ -332,29 +329,21 @@ export default function Coupons(props) {
     // if the Carousel view is acting up in localhost, replace this componant with: <></>, save the file,
     // then undo to original, and save again and it should work as expected
     <>
-      {auth.isAuth ? (
-        (avaiCouponData.length > 0 || unavaiCouponData.length > 0) && (
-          <Box className={props.classes.section}>
-            <Box fontWeight="bold" textAlign="left" mb={1} lineHeight={1.8}>
-              Choose one of the eligible promos to apply:
-            </Box>
-            <Carousel
-              arrows={true}
-              swipeable={true}
-              partialVisible={true}
-              draggable={true}
-              showDots={true}
-              responsive={responsive}
-            >
-              {avaiCouponData.concat(unavaiCouponData).map(CreateCouponCard)}
-            </Carousel>
-          </Box>
-        )
-      ) : (
+      {(avaiCouponData.length > 0 || unavaiCouponData.length > 0) && (
         <Box className={props.classes.section}>
-          <Box fontWeight="bold" mb={1} lineHeight={1.8}>
-            Sign up to be eligible for coupons!
+          <Box fontWeight="bold" textAlign="left" mb={1} lineHeight={1.8}>
+            Choose one of the eligible promos to apply:
           </Box>
+          <Carousel
+            arrows={true}
+            swipeable={true}
+            partialVisible={true}
+            draggable={true}
+            showDots={true}
+            responsive={responsive}
+          >
+            {avaiCouponData.concat(unavaiCouponData).map(CreateCouponCard)}
+          </Carousel>
         </Box>
       )}
     </>

@@ -30,11 +30,11 @@ function Admin() {
     if (Auth.authLevel >= 2) {
       axios
         .get(process.env.REACT_APP_SERVER_BASE_URI + 'all_businesses')
-        .then(res => {
+        .then((res) => {
           setFarmList(res.data.result);
-          setFarmID(res.data.result[0].business_uid);
+          setFarmID(res.data.result[15].business_uid);
         })
-        .catch(err => {
+        .catch((err) => {
           if (err.response) {
             console.log(err.response);
           }
@@ -43,10 +43,10 @@ function Admin() {
     } else {
       axios
         .get(process.env.REACT_APP_SERVER_BASE_URI + 'all_businesses')
-        .then(res => {
+        .then((res) => {
           setFarmList(res.data.result);
         })
-        .catch(err => {
+        .catch((err) => {
           if (err.response) {
             console.log(err.response);
           }
@@ -58,17 +58,17 @@ function Admin() {
             'Profile/' +
             Cookies.get('customer_uid')
         )
-        .then(response => {
+        .then((response) => {
           let customerInfo = response.data.result[0];
           setFarmID(customerInfo.role);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     }
   }, []);
 
-  const handleChangeFarm = event => {
+  const handleChangeFarm = (event) => {
     setFarmID(event.target.value);
   };
   return (

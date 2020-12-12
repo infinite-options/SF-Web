@@ -15,13 +15,13 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: '10px',
     paddingRight: '10px',
   },
-  date: {
+  title: {
     textAlign: 'left',
     fontSize: '22px',
     color: appColors.paragraphText,
     marginBottom: '10px',
   },
-  deliveryInstructions: {
+  date: {
     textAlign: 'left',
     fontSize: '16px',
     color: appColors.paragraphText,
@@ -59,21 +59,53 @@ const HistoryCard = (props) => {
 
   return (
     <Box className={classes.card}>
+      <Box className={classes.title}>Purchase Date:</Box>
       <Box className={classes.date}>
-        {props.purchaseDate.toLocaleString('default', { month: 'long' })}{' '}
+        {props.purchaseDate.toString()}
+        {/* {props.purchaseDate.toLocaleString('default', { month: 'long' })}{' '}
         {props.purchaseDate.toLocaleString('default', { day: 'numeric' })},{' '}
         {props.purchaseDate.getFullYear()}
-        {/* {props.purchaseDate.toLocaleTimeString('en-US', {
+        {', '}
+        {props.purchaseDate.toLocaleTimeString('en-US', {
           hour: 'numeric',
           minute: 'numeric',
           hour12: true,
         })} */}
       </Box>
-      <Box className={classes.deliveryInstructions}>
-        Delivery Instructions:{' '}
+      <Box className={classes.title}>Delivery Date:</Box>
+      <Box className={classes.date}>
+        {props.deliveryDate.toString()}
+        {/* {props.purchaseDate.toLocaleString('default', { month: 'long' })}{' '}
+        {props.purchaseDate.toLocaleString('default', { day: 'numeric' })},{' '}
+        {props.purchaseDate.getFullYear()}
+        {', '}
+        {props.purchaseDate.toLocaleTimeString('en-US', {
+          hour: 'numeric',
+          minute: 'numeric',
+          hour12: true,
+        })} */}
+      </Box>
+      <Box className={classes.title}>Delivery Instructions:</Box>
+      <Box className={classes.date}>
         {props.deliveryInstructions === ''
           ? 'None provided.'
           : props.deliveryInstructions}
+      </Box>
+      <Box className={classes.title}>Delivery Address:</Box>
+      <Box className={classes.date}>
+        {props.address}, {props.city}, {props.city} {props.zip}
+      </Box>
+      <Box className={classes.section} display="flex">
+        <Box width="120px"></Box>
+        <Box width="50%" textAlign="left">
+          Name
+        </Box>
+        <Box width="20%" textAlign="center">
+          Quantity
+        </Box>
+        <Box width="22%" textAlign="right">
+          Price
+        </Box>
       </Box>
       <Box className={classes.items}>{props.items.map(listItem)}</Box>
       <Box
