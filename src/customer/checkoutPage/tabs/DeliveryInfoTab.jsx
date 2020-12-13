@@ -16,7 +16,7 @@ import FindLongLatWithAddr from '../../../utils/FindLongLatWithAddr';
 import AuthUtils from '../../../utils/AuthUtils';
 import BusiApiReqs from '../../../utils/BusiApiReqs';
 import appColors from '../../../styles/AppColors';
-import Signup from '../../auth/Signup';
+import Signup from '../../../auth/Signup';
 import { AuthContext } from '../../../auth/AuthContext';
 import StoreContext from '../../storeContext';
 import checkoutContext from '../CheckoutContext';

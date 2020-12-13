@@ -1,11 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react';
+import NumberFormat from 'react-number-format';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 // import Input from '@material-ui/core/Input';
 import axios from 'axios';
+import appColors from '../../styles/AppColors';
 import { AdminFarmContext } from '../AdminFarmContext';
 import AcceptTime from './components/AcceptTime';
 import DeliveryTime from './components/DeliveryTime';
+import WeeklyHourRange from './components/WeeklyHourRange';
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -20,9 +25,65 @@ const BUSINESS_DETAILS_URL =
 const API_URL =
   'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
 
+function NumberFormatCustom(props) {
+  const { inputRef, onChange, ...other } = props;
+
+  return (
+    <NumberFormat
+      {...other}
+      getInputRef={inputRef}
+      onValueChange={(values) => {
+        onChange({
+          target: {
+            name: props.name,
+            value: Math.abs(values.value),
+          },
+        });
+      }}
+      thousandSeparator
+      isNumericString
+      prefix="$"
+    />
+  );
+}
+function PercentFormatCustom(props) {
+  const { inputRef, onChange, ...other } = props;
+
+  return (
+    <NumberFormat
+      {...other}
+      getInputRef={inputRef}
+      onValueChange={(values) => {
+        onChange({
+          target: {
+            name: props.name,
+            value: Math.abs(values.value),
+          },
+        });
+      }}
+      thousandSeparator
+      isNumericString
+      suffix="%"
+    />
+  );
+}
 function createDateTimeAccept(props) {
   return (
     <AcceptTime
+      weekday={props.dayInWeek}
+      start={props.start}
+      end={props.end}
+      id={props.dayInWeek}
+      key={props.dayInWeek}
+    />
+  );
+}
+
+function createWeeklyDateTime(props) {
+  return (
+    <WeeklyHourRange
+      hours={props.hours}
+      setHours={props.setHours}
       weekday={props.dayInWeek}
       start={props.start}
       end={props.end}
@@ -43,8 +104,50 @@ function createDateTimeDelivery(props) {
     />
   );
 }
-// TODO: fields needed (business_hours, business_type, business_association, can_cancel, delivery, reusable, platform_fee, transaction_fee, revenue_sharing, profit_sharing)
+
+const dayInWeekArray = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+];
+
+function parseHours(hoursObject, setHoursObject) {
+  const hours = [];
+  if (Object.keys(hoursObject).length !== 0) {
+    for (const day of dayInWeekArray) {
+      var startDelivery = hoursObject[day][0].slice(0, 5);
+      var endDelivery = hoursObject[day][1].slice(0, 5);
+      var newDeliveryObj = {};
+      if (startDelivery === endDelivery) {
+        newDeliveryObj = {
+          dayInWeek: day,
+          start: '',
+          end: '',
+          hours: hoursObject,
+          setHours: setHoursObject,
+        };
+      } else {
+        newDeliveryObj = {
+          dayInWeek: day,
+          start: startDelivery,
+          end: endDelivery,
+          hours: hoursObject,
+          setHours: setHoursObject,
+        };
+      }
+      hours.push(newDeliveryObj);
+    }
+  }
+  return hours;
+}
+
+// TODO: fields needed ([x] business_hours, business_type, business_association, platform_fee [currency], transaction_fee [currency], revenue_sharing[%], profit_sharing[%])
 // TODO:  Add needed fields to settings page
+// TODO: container needs label
 export default function FarmerSettings({ farmID, farmName, ...props }) {
   const context = useContext(AdminFarmContext);
   const [settings, setSettings] = useState({});
@@ -62,6 +165,9 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
   const [saltPack, setSaltPack] = useState({});
   // const [image,setImage]=useState({});
   const [imgs, setImgs] = useState([]);
+
+  // Regular Hours for Business
+  const [regularHours, setRegularHours] = useState([]);
   const maxNumImg = 1;
 
   const changeImage = (imgList, newIndex) => {
@@ -86,6 +192,27 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
     // return hash;
   }
 
+  var [AcceptTimeObj, setAcceptTimeObj] = useState(
+    parseHours(context.timeChange, context.setTimeChange)
+  );
+  var [DeliveryTime, setDeliveryTime] = useState(
+    parseHours(context.deliveryTime, context.setDeliveryTime)
+  );
+  var [regHours, setRegHours] = useState(
+    parseHours(regularHours, setRegularHours)
+  );
+
+  useEffect(() => {
+    setAcceptTimeObj(parseHours(context.timeChange, context.setTimeChange));
+  }, [context.timeChange]);
+  useEffect(() => {
+    setDeliveryTime(parseHours(context.deliveryTime, context.setDeliveryTime));
+  }, [context.deliveryTime]);
+
+  useEffect(() => {
+    setRegHours(parseHours(regularHours, setRegularHours));
+  }, [regularHours]);
+
   async function update() {
     var tempoData = settings;
 
@@ -94,6 +221,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
 
     tempoData.business_name = businessAndFarmDetail.business_name;
     tempoData.business_desc = businessAndFarmDetail.description;
+
     tempoData.business_contact_first_name = businessAndFarmDetail.firstName;
     tempoData.business_contact_last_name = businessAndFarmDetail.lastName;
     tempoData.business_phone_num = businessAndFarmDetail.phone;
@@ -101,8 +229,13 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
     tempoData.business_city = businessAndFarmDetail.city;
     tempoData.business_state = businessAndFarmDetail.state;
     tempoData.business_zip = businessAndFarmDetail.zip;
+    tempoData.business_hours = regularHours;
     tempoData.business_accepting_hours = acceptTime;
     tempoData.business_delivery_hours = deliveryTime;
+    tempoData.platform_fee = businessAndFarmDetail.platformFee.toString();
+    tempoData.transaction_fee = businessAndFarmDetail.transactionFee.toString();
+    tempoData.profit_sharing = businessAndFarmDetail.profitSharing.toString();
+    tempoData.revenue_sharing = businessAndFarmDetail.revenueSharing.toString();
     // console.log(typeof tempoData.business_hours);
 
     if (typeof tempoData.business_hours === 'string') {
@@ -157,54 +290,17 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
         tempoData
       )
       .then((res) => {
-        console.log('succsess posting check password: ', res);
+        console.log('success posting check password: ', res);
       })
       .catch((err) => {
         console.log(err);
       });
   }
 
-  // async function changePassToTest(){
-  //     let object= settings;
-
-  //     let saltAlg=saltPack.hashAlg;
-  //     let salt = saltPack.salt;
-  //     let madePass="test123";
-  //     let saltPassword = madePass+salt;
-  //     const hashedPassword = await digestMessage(saltPassword,saltAlg);
-  //     console.log("Hash already",hashedPassword);
-  //     object.business_password=hashedPassword;
-  //     let acceptHour=JSON.parse(object.business_accepting_hours);
-  //     let deliveryHour=JSON.parse(object.business_delivery_hours);
-  //     let businessHour=JSON.parse(object.business_hours);
-  //     let association=JSON.parse(object.business_association);
-  //     object.business_accepting_hours=acceptHour;
-  //     object.business_delivery_hours=deliveryHour;
-  //     object.business_hours=businessHour;
-  //     object.business_association=association;
-  //     object.can_cancel=JSON.stringify(object.can_cancel);
-  //     object.delivery=JSON.stringify(object.delivery);
-  //     object.reusable=JSON.stringify(object.reusable);
-
-  //     console.log(object);
-  //     axios.post("https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/business_details_update/Post",object).then(res=>{
-  //             console.log("succsess posting check password: ",res)
-  //         }).catch(err=>{
-  //             console.log(err)
-  //         })
-  // }
-
   const handleChange = (event) => {
     if (event.target.name === 'phone') {
       let holdNumber = event.target.value;
       let createCorrectFormat = holdNumber;
-      // var createCorrectFormat =
-      // 	"(" +
-      // 	holdNumber.slice(0, 3) +
-      // 	") " +
-      // 	holdNumber.slice(3, 6) +
-      // 	"-" +
-      // 	holdNumber.slice(6, 10);
       setBusFarm({
         ...businessAndFarmDetail,
         [event.target.name]: createCorrectFormat,
@@ -342,6 +438,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
         context.setDeliveryTime(
           JSON.parse(response.data.result[0].business_delivery_hours)
         );
+        setRegularHours(JSON.parse(response.data.result[0].business_hours));
         var holdData = response.data.result[0];
         // Convert null values to empty string
         let keys = Object.keys(holdData);
@@ -354,14 +451,24 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
         var BusAndFarmObj = {
           business_name: holdData.business_name,
           description: holdData.business_desc,
+          businessAssociation: holdData.business_association,
           firstName: holdData.business_contact_first_name,
           lastName: holdData.business_contact_last_name,
           phone: holdData.business_phone_num,
+          email: holdData.business_email,
           street: holdData.business_address,
           city: holdData.business_city,
           state: holdData.business_state,
           zip: holdData.business_zip,
-          email: holdData.business_email,
+          businessLicense: holdData.business_license || '',
+          businessUsdot: holdData.business_USDOT || '',
+          businessEin: holdData.business_EIN || '',
+          businessWaubi: holdData.business_WAUBI || '',
+          businessNotiApprov: holdData.business_notification_approval || '',
+          platformFee: holdData.platform_fee,
+          transactionFee: holdData.transaction_fee,
+          revenueSharing: holdData.revenue_sharing,
+          profitSharing: holdData.profit_sharing,
           password: holdData.business_password,
           // madeUpPassword:"test123"
         };
@@ -413,90 +520,42 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
   if (error && !loaded) {
     return <div>We are loading Setting page for you</div>;
   }
-  var AcceptTimeObj = [];
-  var DeliveryTime = [];
-  const dayInWeekArray = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-  ];
-  var currentAcceptTime = context.timeChange;
-  var currentDeliveryTime = context.deliveryTime;
-
-  for (var i = 0; i < dayInWeekArray.length; i++) {
-    for (const object in currentAcceptTime) {
-      if (object === dayInWeekArray[i]) {
-        // console.log(currentAcceptTime[object][0].slice(0,5));
-        var startTime = currentAcceptTime[object][0].slice(0, 5);
-        var endTime = currentAcceptTime[object][1].slice(0, 5);
-        var newObj = {};
-        if (startTime === endTime) {
-          newObj = {
-            dayInWeek: dayInWeekArray[i],
-            start: '',
-            end: '',
-          };
-        } else {
-          newObj = {
-            dayInWeek: dayInWeekArray[i],
-            start: startTime,
-            end: endTime,
-          };
-        }
-        AcceptTimeObj.push(newObj);
-        // console.log(defaultValStart+" "+defaultValEnd);
-      }
-    }
-
-    for (const object in currentDeliveryTime) {
-      if (object === dayInWeekArray[i]) {
-        // console.log(currentAcceptTime[object][0].slice(0,5));
-        var startDelivery = currentDeliveryTime[object][0].slice(0, 5);
-        var endDelivery = currentDeliveryTime[object][1].slice(0, 5);
-        var newDeliveryObj = {};
-        if (startDelivery === endDelivery) {
-          newDeliveryObj = {
-            dayInWeek: dayInWeekArray[i],
-            start: '',
-            end: '',
-          };
-        } else {
-          newDeliveryObj = {
-            dayInWeek: dayInWeekArray[i],
-            start: startDelivery,
-            end: endDelivery,
-          };
-        }
-        // console.log(newObj);
-        DeliveryTime.push(newDeliveryObj);
-        // console.log(defaultValStart+" "+defaultValEnd);
-      }
-    }
-  }
 
   return (
-    <div hidden={props.hidden} className="alignLeft">
-      <div className="divleft">
-        <h1>Update Business Settings</h1>
-        <hr className="hrorange"></hr>
+    <div hidden={props.hidden}>
+      <Box display="flex">
+        <div className="divleft" style={{ width: '75%', height: '1250px' }}>
+          <Box display="flex">
+            <h1 style={{ marginLeft: '10px' }}>Update Business Settings</h1>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={update}
+              style={{
+                backgroundColor: appColors.primary,
+                color: 'white',
+                height: '20px',
+                marginTop: '35px',
+                marginLeft: '35px',
+              }}
+            >
+              Save Changes
+            </Button>
+          </Box>
+          <hr className="hrorange"></hr>
 
-        <Grid
-          container
-          style={{ /* textAlign: "left",*/ fontFamily: 'monospace' }}
-          spacing={2}
-        >
-          <Grid
-            container
-            item
-            lg={4}
-            style={{ textAlign: 'center' }}
-            className="hourSetting"
-          >
-            <Grid item xs={12}>
+          {/* START: Hours section */}
+          <Box display="flex">
+            <Box mx={1} width="350px">
+              <div
+                style={{
+                  // fontSize: "1rem",
+                  margin: '0.3rem 0 0.7rem',
+                }}
+              >
+                <h3>Regular Hours</h3>
+              </div>
+              {regHours.map(createWeeklyDateTime)}
               <div
                 style={{
                   // fontSize: "1rem",
@@ -506,8 +565,6 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                 <h3>Orders Accepting Hours</h3>
               </div>
               {AcceptTimeObj.map(createDateTimeAccept)}
-            </Grid>
-            <Grid item xs={12}>
               <div
                 style={{
                   // fontSize: "1rem",
@@ -517,78 +574,63 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                 <h3>Delivery Hours</h3>
               </div>
               {DeliveryTime.map(createDateTimeDelivery)}
-            </Grid>
-          </Grid>
-          <Grid container item lg={4} spacing={2}>
-            <Grid item xs={12}>
-              <h3>Business Detail</h3>
-            </Grid>
-            <Grid item xs={12}>
-              {/* <hr></hr> */}
-              <div>Business Name</div>
-              <TextField
-                size="small"
-                margin="dense"
-                value={businessAndFarmDetail.business_name}
-                variant="outlined"
-                style={{ height: '60px' }}
-                name="business_name"
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={12} sl={12}>
-              <div>Description</div>
-              <TextField
-                variant="outlined"
-                size="small"
-                margin="dense"
-                multiline
-                rows={4}
-                name="description"
-                value={businessAndFarmDetail.description}
-                // style={{ font-size: "" }}
-                onChange={handleChange}
-              />
-            </Grid>
+            </Box>
+            {/* END: Hours section */}
 
-            <Grid item xs={12}>
-              <div>Businesss Rep First Name</div>
+            {/* START: Business Details section */}
+            <Box flexGrow={1} mr={2}>
+              <h3>Business Details</h3>
+              <div>Business Rep First Name</div>
               <TextField
                 size="small"
                 margin="dense"
                 value={businessAndFarmDetail.firstName}
                 variant="outlined"
                 name="firstName"
+                fullWidth
                 onChange={handleChange}
               />
-            </Grid>
-
-            <Grid item xs={12}>
-              <div>Businesss Rep Last Name</div>
+              <div>Business Rep Last Name</div>
               <TextField
                 size="small"
                 margin="dense"
                 value={businessAndFarmDetail.lastName}
                 variant="outlined"
                 name="lastName"
+                fullWidth
                 onChange={handleChange}
               />
-            </Grid>
-
-            <Grid item xs={12}>
-              <div>Businesss Rep Phone Number</div>
+              <div>Business Rep Phone Number</div>
               <TextField
                 size="small"
                 margin="dense"
                 value={businessAndFarmDetail.phone}
                 variant="outlined"
                 name="phone"
+                fullWidth
                 onChange={handleChange}
               />
-            </Grid>
-
-            <h3>Farm Detail</h3>
-            <Grid item xs={12}>
+              <div>Business Rep Email</div>
+              <TextField
+                size="small"
+                margin="dense"
+                value={businessAndFarmDetail.email}
+                variant="outlined"
+                name="email"
+                fullWidth
+                onChange={handleChange}
+              />
+              <div>Business Association</div>
+              <TextField
+                size="small"
+                margin="dense"
+                value={businessAndFarmDetail.businessAssociation}
+                variant="outlined"
+                name="phone"
+                fullWidth
+                onChange={handleChange}
+              />
+              <h3>Farm Detail</h3>
               <div>Street</div>
               <TextField
                 size="small"
@@ -596,10 +638,9 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                 value={businessAndFarmDetail.street}
                 variant="outlined"
                 name="street"
+                fullWidth
                 onChange={handleChange}
               />
-            </Grid>
-            <Grid item xs={12}>
               <div>Farm City</div>
               <TextField
                 size="small"
@@ -607,10 +648,9 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                 value={businessAndFarmDetail.city}
                 variant="outlined"
                 name="city"
+                fullWidth
                 onChange={handleChange}
               />
-            </Grid>
-            <Grid item xs={6} sl={4}>
               <div>State</div>
               <TextField
                 size="small"
@@ -618,11 +658,9 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                 value={businessAndFarmDetail.state}
                 variant="outlined"
                 name="state"
+                fullWidth
                 onChange={handleChange}
               />
-            </Grid>
-
-            <Grid item xs={6} sl={4}>
               <div>Zip</div>
               <TextField
                 size="small"
@@ -630,12 +668,104 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                 value={businessAndFarmDetail.zip}
                 variant="outlined"
                 name="zip"
+                fullWidth
                 onChange={handleChange}
               />
-            </Grid>
-          </Grid>
-          <Grid item lg={4} spacing={2}>
-            <div className="">
+              <h3>Business Certificates</h3>
+              <div>Business License</div>
+              <TextField
+                size="small"
+                margin="dense"
+                value={businessAndFarmDetail.businessLicense}
+                variant="outlined"
+                name="businessLicense"
+                fullWidth
+                onChange={handleChange}
+              />
+              <div>Business USDOT</div>
+              <TextField
+                size="small"
+                margin="dense"
+                value={businessAndFarmDetail.businessUsdot}
+                variant="outlined"
+                name="businessUsdot"
+                fullWidth
+                onChange={handleChange}
+              />
+              <div>Business EIN</div>
+              <TextField
+                size="small"
+                margin="dense"
+                value={businessAndFarmDetail.businessEin}
+                variant="outlined"
+                name="businessEin"
+                fullWidth
+                onChange={handleChange}
+              />
+              <div>Business WAUBI</div>
+              <TextField
+                size="small"
+                margin="dense"
+                value={businessAndFarmDetail.businessWaubi}
+                variant="outlined"
+                name="businessWaubi"
+                fullWidth
+                onChange={handleChange}
+              />
+            </Box>
+            {/* END: Business Details section */}
+
+            {/* START: Delivery Strategy section */}
+            <Box width="300px">
+              <h3>Fees</h3>
+              <div>Platform Fee</div>
+              <TextField
+                size="small"
+                margin="dense"
+                value={businessAndFarmDetail.platformFee}
+                variant="outlined"
+                name="platformFee"
+                onChange={handleChange}
+                InputProps={{
+                  inputComponent: NumberFormatCustom,
+                }}
+              />
+              <div>transaction Fee</div>
+              <TextField
+                size="small"
+                margin="dense"
+                value={businessAndFarmDetail.transactionFee}
+                variant="outlined"
+                name="transactionFee"
+                onChange={handleChange}
+                InputProps={{
+                  inputComponent: NumberFormatCustom,
+                }}
+              />
+              <div>revenue Sharing</div>
+              <TextField
+                size="small"
+                margin="dense"
+                value={businessAndFarmDetail.revenueSharing}
+                variant="outlined"
+                name="revenueSharing"
+                onChange={handleChange}
+                InputProps={{
+                  inputComponent: PercentFormatCustom,
+                }}
+              />
+              <div>Profit Sharing</div>
+              <TextField
+                size="small"
+                margin="dense"
+                value={businessAndFarmDetail.profitSharing}
+                variant="outlined"
+                name="profitSharing"
+                onChange={handleChange}
+                InputProps={{
+                  inputComponent: PercentFormatCustom,
+                }}
+              />
               <h3>Delivery Strategy</h3>
               <FormControl component="fieldset">
                 {/* <FormLabel component="legend">Delivery Strategy</FormLabel> */}
@@ -662,8 +792,8 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                   />
                 </FormGroup>
 
-                <FormLabel component="legend">Storage</FormLabel>
                 <FormGroup>
+                  <FormLabel component="legend">Storage</FormLabel>
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -686,8 +816,8 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                   />
                 </FormGroup>
 
-                <FormLabel component="legend">Cancellation</FormLabel>
                 <FormGroup>
+                  <FormLabel component="legend">Cancellation</FormLabel>
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -710,118 +840,111 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                   />
                 </FormGroup>
               </FormControl>
-            </div>
-          </Grid>
-        </Grid>
-      </div>
-      <div className="divright">
-        <h1>Profile</h1>
-        <hr className="hrwhite"></hr>
-
-        <div className="makeMargin30">
-          <Grid
-            container
-            style={{ /* textAlign: "left",*/ fontFamily: 'monospace' }}
-          >
-            <Grid container item lg={12}>
-              <Grid item sl={12}>
-                <h3>Profile Picture</h3>
-                <div className="makeTopRefund">
-                  <ImageUploading
-                    multiple
-                    value={imgs}
-                    onChange={changeImage}
-                    maxNumber={maxNumImg}
-                    dataURLKey="data_url"
-                  >
-                    {({
-                      imageList,
-                      onImageUpload,
-                      onImageRemoveAll,
-                      onImageUpdate,
-                      onImageRemove,
-                      isDragging,
-                      dragProps,
-                    }) => (
-                      <div>
-                        {imgs.length > 0 ||
-                          (settings && (
-                            <img
-                              className="imageSize"
-                              src={
-                                imgs.length !== 0
-                                  ? imgs[0].data_url
-                                  : settings.business_image
-                              }
-                              alt="no-img-displace"
-                              style={isDragging ? { color: 'red' } : null}
-                              onClick={onImageUpload}
-                              {...dragProps}
-                            />
-                          ))}
-                        {/* &nbsp; */}
-                        <button
-                          className="chooseFileBrn"
-                          onClick={onImageUpload}
-                        >
-                          Choose File
-                        </button>
-                      </div>
-                    )}
-                  </ImageUploading>
-                </div>
-              </Grid>
-
-              <div>
-                <div>Email Address</div>
-                <TextField
-                  size="small"
-                  margin="dense"
-                  id="standard-read-only-input"
-                  label={businessAndFarmDetail.email}
-                  variant="outlined"
-                  // defaultValue={businessAndFarmDetail.email}
-                  name="email"
-                  // onChange={handleChange}
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                />
-                <div>New Password</div>
-                <TextField
-                  // error={errorStatus}
-                  size="small"
-                  margin="dense"
-                  label="*********"
-                  // defaultValue={businessAndFarmDetail.madeUpPassword}
-                  type="password"
-                  variant="outlined"
-                  name="password"
-                  onChange={handleChange}
-                />
-
-                <div>Confirm New Password</div>
-                <TextField
-                  // error={errorStatus}
-                  size="small"
-                  margin="dense"
-                  label=""
-                  variant="outlined"
-                  name="passwordConfirm"
-                  onChange={handleChange}
-                  // helperText={errorStatus?"Password not match":""}
-                />
-              </div>
-              <Grid item xs={12} className="updateBtn">
-                <button onClick={update}>Update</button>
-              </Grid>
-              {/* <Grid item xs={12}>
-                        <button onClick={changePassToTest}>MakePassToTest</button>
-                    </Grid> */}
-            </Grid>
-          </Grid>
+            </Box>
+            {/* END: Delivery Strategy section */}
+          </Box>
         </div>
-      </div>
+        <div className="divright" style={{ width: '25%', height: '1250px' }}>
+          <Box display="flex" mb={1}>
+            <h1 style={{ marginLeft: '10px' }}>Profile</h1>
+          </Box>
+          <hr className="hrwhite"></hr>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            width="100%"
+          >
+            <h3>Profile Picture</h3>
+
+            <div className="makeTopRefund">
+              <ImageUploading
+                multiple
+                value={imgs}
+                onChange={changeImage}
+                maxNumber={maxNumImg}
+                dataURLKey="data_url"
+              >
+                {({
+                  imageList,
+                  onImageUpload,
+                  onImageRemoveAll,
+                  onImageUpdate,
+                  onImageRemove,
+                  isDragging,
+                  dragProps,
+                }) => (
+                  <>
+                    <div>
+                      {imgs.length > 0 ||
+                        (settings && (
+                          <img
+                            className="imageSize"
+                            src={
+                              imgs.length !== 0
+                                ? imgs[0].data_url
+                                : settings.business_image
+                            }
+                            alt="no-img-displace"
+                            style={isDragging ? { color: 'red' } : null}
+                            onClick={onImageUpload}
+                            {...dragProps}
+                          />
+                        ))}
+                      {/* &nbsp; */}
+                    </div>
+                    <Box mt={14} mb={-10}>
+                      <button className="chooseFileBrn" onClick={onImageUpload}>
+                        Choose File
+                      </button>
+                    </Box>
+                  </>
+                )}
+              </ImageUploading>
+            </div>
+
+            <div>
+              <div>Email Address</div>
+              <TextField
+                size="small"
+                margin="dense"
+                id="standard-read-only-input"
+                label={businessAndFarmDetail.email}
+                variant="outlined"
+                // defaultValue={businessAndFarmDetail.email}
+                name="email"
+                // onChange={handleChange}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <div>New Password</div>
+              <TextField
+                // error={errorStatus}
+                size="small"
+                margin="dense"
+                // defaultValue={businessAndFarmDetail.madeUpPassword}
+                type="password"
+                variant="outlined"
+                name="password"
+                onChange={handleChange}
+              />
+
+              <div>Confirm New Password</div>
+              <TextField
+                // error={errorStatus}
+                size="small"
+                margin="dense"
+                type="password"
+                variant="outlined"
+                name="passwordConfirm"
+                onChange={handleChange}
+                // helperText={errorStatus?"Password not match":""}
+              />
+            </div>
+          </Box>
+        </div>
+      </Box>
     </div>
   );
 }

@@ -72,7 +72,7 @@ function Admin() {
     setFarmID(event.target.value);
   };
   return (
-    <div>
+    <>
       <AdminFarmContext.Provider
         value={{
           farmID,
@@ -89,7 +89,7 @@ function Admin() {
         <AdminNavBar tab={tab} setTab={setTab} />
         {Auth.authLevel >= 1 && <Farmer tab={tab} />}
       </AdminFarmContext.Provider>
-    </div>
+    </>
   );
 }
 

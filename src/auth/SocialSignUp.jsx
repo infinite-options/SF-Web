@@ -4,10 +4,9 @@ import { Box } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Cookies from 'js-cookie';
-import CssTextField from '../../utils/CssTextField';
-import appColors from '../../styles/AppColors';
-import Background from '../../welcome-bg.png';
-import { AuthContext } from '../../auth/AuthContext';
+import CssTextField from '../utils/CssTextField';
+import appColors from '../styles/AppColors';
+import { AuthContext } from './AuthContext';
 import axios from 'axios';
 
 class Signup extends Component {

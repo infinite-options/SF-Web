@@ -55,6 +55,13 @@ const useStyles = makeStyles((theme) => ({
 
 let API_URL = process.env.REACT_APP_SERVER_BASE_URI + '';
 
+// TODO: More people on list vs pages of 10
+// TODO: Fix check mark undoing sorting, make list not rearrange
+// TODO: Make check mark be individual
+// TODO: Reformat message box to go on top, every field should be on one line
+// TODO: Make sure the notification send is saved to saved messages
+// TODO: (Low Priority) Save group
+
 function NotificationMain({
   notification,
   customerList,
@@ -237,8 +244,8 @@ function NotificationMain({
                       .toString();
                     console.log(selectedUids);
                     let formData = new FormData();
-                    formData.append('uids',selectedUids)
-                    formData.append('message',message)
+                    formData.append('uids', selectedUids);
+                    formData.append('message', message);
                     axios
                       .post(API_URL + 'Send_Notification/customer', formData)
                       .then((res) => {

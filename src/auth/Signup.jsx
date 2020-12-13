@@ -5,10 +5,9 @@ import TextField from '@material-ui/core/TextField';
 import { Box, Button } from '@material-ui/core';
 import { withRouter } from 'react-router';
 import Paper from '@material-ui/core/Paper';
-import Background from '../../welcome-bg.png';
-import CssTextField from '../../utils/CssTextField';
-import appColors from '../../styles/AppColors';
-import SocialLogin from '../../admin/SocialLogin';
+import CssTextField from '../utils/CssTextField';
+import appColors from '../styles/AppColors';
+import SocialLogin from '../admin/SocialLogin';
 
 class Signup extends Component {
   constructor(props) {

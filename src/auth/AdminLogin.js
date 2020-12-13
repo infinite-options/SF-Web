@@ -9,11 +9,11 @@ import TextField from '@material-ui/core/TextField';
 import { Grid, Paper, Button, Typography, Box } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { sizing } from '@material-ui/system';
-import { AuthContext } from '../auth/AuthContext';
+import { AuthContext } from './AuthContext';
 import CssTextField from '../utils/CssTextField';
-import RevenueHighchart from './farm/RevenueHighchart';
+import RevenueHighchart from '../admin/farm/RevenueHighchart';
 import appColors from '../styles/AppColors';
-import SocialLogin from './SocialLogin';
+import SocialLogin from '../admin/SocialLogin';
 
 const API_URL = process.env.REACT_APP_SERVER_BASE_URI + '';
 

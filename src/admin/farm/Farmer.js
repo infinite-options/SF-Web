@@ -98,12 +98,8 @@ export default function Farmer({ tab, ...props }) {
   );
 }
 const paperStyle = {
-  height: '2000px',
-  width: '95%',
-  maxWidth: '2000px',
   textAlign: 'center',
-  display: 'inline-block',
+  margin: '0px',
   padding: '0px',
-  marginTop: '30px',
   backgroundColor: 'white',
 };

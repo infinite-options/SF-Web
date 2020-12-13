@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useContext } from 'react';
+import React, { useRef, useState, useContext } from 'react';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import { PayPalButton } from 'react-paypal-button-v2';
@@ -19,7 +19,6 @@ const PayPal = ({ value, deliveryInstructions }) => {
 
   const [loaded, setLoaded] = useState(false);
   const { amountPaid, amountDue, discount } = useContext(checkoutContext);
-  console.log('totals values: ', amountPaid, amountDue, discount);
   const { profile, startDeliveryDate, cartItems, setCartTotal } = useContext(
     storeContext
   );

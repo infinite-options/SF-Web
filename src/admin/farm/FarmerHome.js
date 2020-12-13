@@ -23,7 +23,7 @@ import axios from 'axios';
 const API_BASE_URL = process.env.REACT_APP_SERVER_BASE_URI + 'itemsByBusiness/';
 
 //TODO: add fields to add modal, close modal with x
-//TODO: for edit item price, if admin change item price and business price, if farm only chaneg business price
+//TODO: for edit item price, if admin change item price and business price, if farm only change business price
 //TODO: match fields in add produce to database values
 //TODO: Check if extra values needs to be added to the endpoint for edit item
 export default function FarmerHome({ farmID, farmName, ...props }) {

@@ -16,13 +16,6 @@ export default function CheckoutPage() {
   const [amountPaid, setAmountPaid] = useState(0);
   const [amountDue, setAmountDue] = useState(0);
   const [discount, setDiscount] = useState(0);
-
-  useEffect(() => {
-    console.log('amount due: ', amountDue);
-    console.log('amount paid: ', amountPaid);
-    console.log('discount: ', discount);
-    console.log('----------------- ');
-  });
   const [purchaseMade, setPurchaseMade] = useState(0);
 
   const [paymentProcessing, setPaymentProcessing] = useState(false);

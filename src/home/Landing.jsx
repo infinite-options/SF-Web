@@ -18,8 +18,8 @@ import FindLongLatWithAddr from '../utils/FindLongLatWithAddr';
 import CssTextField from '../utils/CssTextField';
 import appColors from '../styles/AppColors';
 import LandingNavBar from './LandingNavBar';
-import AdminLogin from '../admin/AdminLogin';
-import Signup from '../customer/auth/Signup';
+import AdminLogin from '../auth/AdminLogin';
+import Signup from '../auth/Signup';
 import ProductDisplay from './ProductDisplay';
 
 import { AuthContext } from 'auth/AuthContext';

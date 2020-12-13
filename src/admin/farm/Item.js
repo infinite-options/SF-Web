@@ -36,9 +36,11 @@ const BASE_URL =
   'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
 const ITEM_EDIT_URL = BASE_URL + 'addItems/';
 
-//TODO: Fields Needed ([X] business_price, [x] item_desc, [X] taxable, exp_date, status, favorite)
-//TODO: Update Needed ( business_price, item_desc, taxable, exp_date, status, favorite)
+//TODO: Fields Needed (exp_date)
+//TODO: Update Needed (exp_date)
 
+//TODO: sort by alphabetically and by price
+//
 export default function Item(props) {
   const auth = useContext(AuthContext);
   const [editData, setEditData] = useState(props.data);
@@ -88,8 +90,16 @@ export default function Item(props) {
     setEditData(props.data);
   };
   const handleEditChange = (event) => {
-    setEditData({ ...editData, [event.target.name]: event.target.value });
+    const { name, value, checked } = event.target;
+
+    let newValue = value;
+    const booleanVals = new Set(['taxable', 'favorite']);
+    if (booleanVals.has(name)) newValue = checked ? 'TRUE' : 'FALSE';
+    if (name === 'item_status') newValue = checked ? 'Active' : 'Past';
+    console.log('setEditData(props.data): ', name, newValue);
+    setEditData({ ...editData, [name]: newValue });
   };
+
   const onFileChange = (event) => {
     setFile({
       obj: event.target.files[0],
@@ -97,11 +107,13 @@ export default function Item(props) {
     });
     console.log(event.target.files[0].name);
   };
+
   const handleSaveButton = () => {
     // NOTE: call turn-file-to-s3-url API Endpoint
     updateData(editData);
     setOpen(false);
   };
+
   const handleDelete = () => {
     updateStatus('Hidden');
   };
@@ -117,13 +129,18 @@ export default function Item(props) {
     // console.log(postData);
 
     let formData = new FormData();
-
     Object.entries(postData).forEach((item) => {
+      console.log('item ', item);
       if (typeof item[1] !== 'string') {
+        console.log('postData[item[0]] ', postData[item[0]]);
         postData[item[0]] = item[1] ? String(item[1]) : '';
+        console.log('postData[item[0]] ', postData[item[0]]);
       }
       formData.append(item[0], item[1]);
     });
+    console.log('postData ', postData);
+
+    console.log('formData ', formData.get('item_taxable'));
 
     Axios.post(ITEM_EDIT_URL + 'Update', formData /*postData*/)
       .then((response) => {
@@ -175,7 +192,7 @@ export default function Item(props) {
   //modal that pops up when farmer edits an item
   const modelBody = (
     <div className={classes.paper}>
-      <Grid container style={{ textAlign: 'center' }}>
+      <Grid container>
         <Grid item xs={12}>
           <h3>Add Item</h3>
         </Grid>
@@ -187,6 +204,27 @@ export default function Item(props) {
               onChange={handleEditChange}
               value={editData.item_name}
             />
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl
+              className={classes.formControl}
+              style={{ marginLeft: 0 }}
+            >
+              <InputLabel id="demo-simple-select-label">
+                Type of Food
+              </InputLabel>
+              <Select
+                name="item_type"
+                onChange={handleEditChange}
+                autoWidth
+                value={editData.item_type}
+              >
+                <MenuItem value={'vegetable'}>Vegetable</MenuItem>
+                <MenuItem value={'fruit'}>Fruit</MenuItem>
+                <MenuItem value={'dessert'}>Dessert</MenuItem>
+                <MenuItem value={'other'}>Other</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12}>
             <TextField
@@ -210,7 +248,7 @@ export default function Item(props) {
                   inputComponent: NumberFormatCustomPrice,
                 }}
                 onChange={handleEditChange}
-                value={editData.item_price}
+                value={editData.business_price}
               />
             </Grid>
           )}
@@ -267,26 +305,6 @@ export default function Item(props) {
           </Grid>
         </Grid>
         <Grid container item xs={6} spacing={2} style={{ textAlign: 'right' }}>
-          <Grid item xs={12}>
-            <div style={{ height: '100px', backgroundColor: 'white' }}>
-              <FormControl className={classes.formControl}>
-                <InputLabel id="demo-simple-select-label">
-                  Type of Food
-                </InputLabel>
-                <Select
-                  name="item_type"
-                  onChange={handleEditChange}
-                  autoWidth
-                  value={editData.item_type}
-                >
-                  <MenuItem value={'vegetable'}>Vegetable</MenuItem>
-                  <MenuItem value={'fruit'}>Fruit</MenuItem>
-                  <MenuItem value={'dessert'}>Dessert</MenuItem>
-                  <MenuItem value={'other'}>Other</MenuItem>
-                </Select>
-              </FormControl>
-            </div>
-          </Grid>
           <Grid item xs={12} style={{ height: '100px' }}>
             <FormControl className={classes.formControl}>
               <InputLabel id="demo-simple-select-label">
@@ -330,6 +348,7 @@ export default function Item(props) {
                   autoWidth
                   value={editData.item_sizes}
                 >
+                  <MenuItem value={null}>N/A</MenuItem>
                   <MenuItem value={'XS'}>X-Small</MenuItem>
                   <MenuItem value={'S'}>Small</MenuItem>
                   <MenuItem value={'M'}>Medium</MenuItem>
@@ -340,18 +359,68 @@ export default function Item(props) {
             </div>
           </Grid>
           <Grid item xs={12}>
+            <TextField
+              id="date"
+              label="Expiration Date"
+              type="date"
+              value={editData.exp_date}
+              defaultValue="2017-05-24"
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
             <Box
               pl={9}
               display="flex"
               lineHeight="250%"
               color={appColors.paragraphText}
             >
-              Taxable?
+              Taxable
               <Box flexGrow={1} />
               <Checkbox
-                checked={editData.item_taxable === 'TRUE'}
+                checked={editData.taxable === 'TRUE'}
+                onChange={handleEditChange}
                 // onChange={}
-                name="checkedB"
+                name="taxable"
+                color="primary"
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Box
+              pl={9}
+              display="flex"
+              lineHeight="250%"
+              color={appColors.paragraphText}
+            >
+              Active
+              <Box flexGrow={1} />
+              <Checkbox
+                checked={editData.item_status === 'Active'}
+                onChange={handleEditChange}
+                // onChange={}
+                name="item_status"
+                color="primary"
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Box
+              pl={9}
+              display="flex"
+              lineHeight="250%"
+              color={appColors.paragraphText}
+            >
+              Favorite
+              <Box flexGrow={1} />
+              <Checkbox
+                checked={editData.favorite === 'TRUE'}
+                onChange={handleEditChange}
+                // onChange={}
+                name="favorite"
                 color="primary"
               />
             </Box>
