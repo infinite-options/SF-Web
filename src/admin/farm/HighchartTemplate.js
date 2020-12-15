@@ -2,11 +2,18 @@ import React, { useEffect, useState, useContext } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import axios from 'axios';
+import {
+  DateRangePicker,
+  DateRange,
+  DateRangeDelimiter,
+} from '@material-ui/pickers';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Box from '@material-ui/core/Box';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
+import { AdminFarmContext } from '../AdminFarmContext';
+
 require('highcharts/modules/exporting')(Highcharts);
 require('highcharts/modules/export-data')(Highcharts);
 
@@ -26,15 +33,24 @@ const useStyles = makeStyles((theme) => ({
 
 // TODO: add dropdown for farms / all and date range / all
 function RevenueHighchart() {
+  const classes = useStyles();
+  const { farmList, farmDict } = useContext(AdminFarmContext);
+
+  const [dateRange, setValue] = React.useState[
+    (new Date('2020-11-25'), new Date())
+  ];
+
   const [chartData, setChartData] = useState({});
   const [dataError, setError] = useState(false);
+
   const [listOfDates, setDates] = useState([]);
   const [listOfBuyers, setListOfBuyers] = useState([]);
   const [listOfCumRevenue, setCumRenevue] = useState([]);
   const [listOfDailyRevenue, setDailyRevenue] = useState([]);
-  const [businessID, setBusinessId] = useState('all');
 
-  const classes = useStyles();
+  const [businessID, setBusinessId] = useState('all');
+  const [purchasesRes, setPurchasesRes] = useState([]);
+
   const [barsType, setBarType] = useState('customer');
 
   const handleChange = (event) => {
@@ -45,6 +61,11 @@ function RevenueHighchart() {
 
   // TODO: First need to get all the dates that has customer activities, sort them
   // TODO: Get code from Allan
+  // DONE: 1. Add business
+  // DONE: 2. Fix Bug
+  // DONE: 3. Add businesses pull down
+  // TODO: 4. Add numbers to top
+  // TODO: 5. Add Date ranges
   // const newCustomers = [3, 1, 1, 0, 5, 3];
   // const returnCustomers = [2, 3, 4, 1, 3, 1];
   // const cumulativeProfit = [10, 29, 54, 57, 99, 115];
@@ -54,106 +75,117 @@ function RevenueHighchart() {
     axios
       .get(report_API + businessID)
       .then((res) => {
-        let theData = res.data.result;
-        setChartData(theData);
-        console.log(theData);
-
-        //todo: get list of dates
-        let dayDict = {};
-        let dayArr = [];
-        theData.map((days) => {
-          let tempDays = days.purchase_date.substring(0, 10);
-          if (!(tempDays in dayDict)) {
-            dayArr.push(tempDays);
-            dayDict[tempDays] = [];
-          }
-          dayDict[tempDays].push(days);
-        });
-        dayArr.sort(function (a, b) {
-          a = a.split('-').join('');
-          b = b.split('-').join('');
-          return a > b ? 1 : a < b ? -1 : 0;
-          // return a.localeCompare(b);         // <-- alternative
-        });
-        console.log(dayArr); //!comment out
-        setDates(dayArr);
-
-        //Todo: atfter getting all the dates, we get the buyer next
-        //todo (returner or new customers)
-        let buyerDict = {};
-        let customers = [];
-        let cIdx = 0;
-        const nullData = new Array(dayArr.length).fill(null);
-        let dailyIncome = new Array(dayArr.length).fill(0);
-        let revenue = new Array(dayArr.length).fill(0);
-        let total = 0;
-
-        for (const dayIdx in dayArr) {
-          let dailyProfit = 0;
-          for (const purchase of dayDict[dayArr[dayIdx]]) {
-            let barValue = '';
-            switch (barsType) {
-              case 'customer':
-                barValue =
-                  purchase.delivery_first_name +
-                  ' ' +
-                  purchase.delivery_last_name;
-                break;
-              case 'item':
-                barValue = purchase.item_name;
-                break;
-              default:
-                break;
-            }
-
-            const amountSpent = Math.round(purchase.Amount * 100) / 100;
-
-            if (barValue in buyerDict) {
-              customers[buyerDict[barValue]].data[dayIdx] += amountSpent;
-            } else {
-              buyerDict[barValue] = cIdx;
-              const customerData = {
-                type: 'column',
-                name: barValue,
-                showInLegend: true,
-                data: [...nullData],
-                tooltip: {
-                  pointFormat:
-                    '{series.name}: <b>{point.y}</b><br/>Total: <b>{point.stackTotal}</b>',
-                },
-                yAxis: 0,
-              };
-              customerData.data[dayIdx] = amountSpent;
-              customers.push(customerData);
-              cIdx += 1;
-            }
-            dailyProfit += amountSpent;
-            dailyProfit = Math.round(dailyProfit * 100) / 100;
-            if (amountSpent > 17 && amountSpent < 18) {
-              const fixed = Math.round(purchase.Amount * 100) / 100;
-
-              console.log(fixed, purchase.Amount);
-            }
-          }
-
-          total += dailyProfit;
-          total = Math.round(total * 100) / 100;
-          dailyIncome[dayIdx] = dailyProfit;
-          revenue[dayIdx] = total;
-        }
-
-        setListOfBuyers(customers);
-        setCumRenevue(revenue);
-        setDailyRevenue(dailyIncome);
-        // console.log("buyerContainer ", buyerContainer);
-        // console.log("retuners ", oldCustomer);
-        // console.log("NewBuyer ", newCustomer);
+        setPurchasesRes(res.data.result);
       })
       .catch((err) => {
         console.log('The error is from Highchart.js: ', err);
         setError(true);
       });
-  }, [businessID, barsType]);
+  }, [businessID]);
+
+  useEffect(() => {
+    if (purchasesRes.length > 0) loadSeriesData(purchasesRes);
+  }, [farmDict, barsType, purchasesRes]);
+
+  function loadSeriesData(res) {
+    let theData = res;
+    setChartData(theData);
+    console.log(theData);
+
+    //todo: get list of dates
+    let dayDict = {};
+    let dayArr = [];
+    theData.map((days) => {
+      let tempDays = days.purchase_date.substring(0, 10);
+      if (!(tempDays in dayDict)) {
+        dayArr.push(tempDays);
+        dayDict[tempDays] = [];
+      }
+      dayDict[tempDays].push(days);
+    });
+    dayArr.sort(function (a, b) {
+      a = a.split('-').join('');
+      b = b.split('-').join('');
+      return a > b ? 1 : a < b ? -1 : 0;
+      // return a.localeCompare(b);         // <-- alternative
+    });
+    console.log(dayArr); //!comment out
+    setDates(dayArr);
+
+    //Todo: atfter getting all the dates, we get the buyer next
+    //todo (returner or new customers)
+    let buyerDict = {};
+    let customers = [];
+    let cIdx = 0;
+    const nullData = new Array(dayArr.length).fill(null);
+    let dailyIncome = new Array(dayArr.length).fill(0);
+    let revenue = new Array(dayArr.length).fill(0);
+    let total = 0;
+
+    for (const dayIdx in dayArr) {
+      let dailyProfit = 0;
+      for (const purchase of dayDict[dayArr[dayIdx]]) {
+        let barValue = '';
+        switch (barsType) {
+          case 'customer':
+            barValue =
+              purchase.delivery_first_name + ' ' + purchase.delivery_last_name;
+            break;
+          case 'item':
+            barValue = purchase['deconstruct.name'];
+            break;
+          case 'business':
+            barValue = farmDict[purchase['deconstruct.itm_business_uid']];
+            break;
+          default:
+            break;
+        }
+
+        const amountSpent = Math.round(purchase.Amount * 100) / 100;
+
+        if (barValue in buyerDict) {
+          customers[buyerDict[barValue]].data[dayIdx] += amountSpent;
+          customers[buyerDict[barValue]].data[dayIdx] =
+            Math.round(customers[buyerDict[barValue]].data[dayIdx] * 100) / 100;
+        } else {
+          buyerDict[barValue] = cIdx;
+          const customerData = {
+            type: 'column',
+            name: barValue,
+            showInLegend: true,
+            data: [...nullData],
+            tooltip: {
+              pointFormat:
+                '{series.name}: <b>{point.y}</b><br/>Total: <b>{point.stackTotal}</b>',
+            },
+            yAxis: 0,
+          };
+          customerData.data[dayIdx] = amountSpent;
+          customers.push(customerData);
+          cIdx += 1;
+        }
+        dailyProfit += amountSpent;
+        dailyProfit = Math.round(dailyProfit * 100) / 100;
+        if (amountSpent > 17 && amountSpent < 18) {
+          const fixed = Math.round(purchase.Amount * 100) / 100;
+
+          console.log(fixed, purchase.Amount);
+        }
+      }
+
+      total += dailyProfit;
+      total = Math.round(total * 100) / 100;
+      dailyIncome[dayIdx] = dailyProfit;
+      revenue[dayIdx] = total;
+    }
+
+    setListOfBuyers(customers);
+    setCumRenevue(revenue);
+    setDailyRevenue(dailyIncome);
+    // console.log("buyerContainer ", buyerContainer);
+    // console.log("retuners ", oldCustomer);
+    // console.log("NewBuyer ", newCustomer);
+  }
 
   const options = {
     chart: { height: '900px' },
@@ -199,11 +231,6 @@ function RevenueHighchart() {
             color: '#f56a79',
           },
         },
-        // labels: {
-        // 	style: {
-        // 		fontSize: "19px",
-        // 	},
-        // },
         opposite: false,
       },
       {
@@ -244,25 +271,30 @@ function RevenueHighchart() {
     plotOptions: {
       column: {
         stacking: 'normal',
+        dataLabels: {
+          enabled: false,
+        },
       },
     },
     series: [
       ...listOfBuyers,
       {
+        type: 'line',
         name: 'Cumulative Revenue',
         showInLegend: false,
         data: listOfCumRevenue,
         tooltip: {
-          pointFormat: '{series.name}: <b>${point.y}</b>',
+          pointFormat: '{series.name}: <b>{point.y}</b><br/>',
         },
         yAxis: 2,
       },
       {
+        type: 'line',
         name: 'Daily Revenue',
         showInLegend: false,
         data: listOfDailyRevenue,
         tooltip: {
-          pointFormat: '{series.name}: <b>${point.y}</b>',
+          pointFormat: '{series.name}: <b>{point.y}</b><br/>',
         },
         yAxis: 1,
       },
@@ -311,7 +343,7 @@ function RevenueHighchart() {
 
   return (
     <>
-      <Box>
+      <Box display="flex">
         <FormControl className={classes.formControl}>
           <Select
             labelId="demo-controlled-open-select-label"
@@ -320,8 +352,14 @@ function RevenueHighchart() {
             value={businessID}
             onChange={handleChange}
           >
-            <MenuItem value={'customer'}>Customer</MenuItem>
-            <MenuItem value={'item'}>Item</MenuItem>
+            <MenuItem value={'all'}>All</MenuItem>
+            {farmList.map((farm) => {
+              return (
+                <MenuItem key={farm.business_uid} value={farm.business_uid}>
+                  {farm.business_name}
+                </MenuItem>
+              );
+            })}
           </Select>
         </FormControl>
         <FormControl className={classes.formControl}>
@@ -333,11 +371,12 @@ function RevenueHighchart() {
             onChange={handleChange}
           >
             <MenuItem value={'customer'}>Customer</MenuItem>
+            <MenuItem value={'business'}>Business</MenuItem>
             <MenuItem value={'item'}>Item</MenuItem>
           </Select>
         </FormControl>
       </Box>
-      <HighchartsReact highcharts={Highcharts} options={options} />{' '}
+      <HighchartsReact highcharts={Highcharts} options={options} />
     </>
   );
 }

@@ -15,6 +15,7 @@ function Admin() {
   const Auth = useContext(AuthContext);
   const [farmID, setFarmID] = useState('');
   const [farmList, setFarmList] = useState([]);
+  const [farmDict, setFarmDict] = useState({});
   const [timeChange, setTimeChange] = useState({});
   const [deliveryTime, setDeliveryTime] = useState({});
 
@@ -33,6 +34,11 @@ function Admin() {
         .then((res) => {
           setFarmList(res.data.result);
           setFarmID(res.data.result[15].business_uid);
+          const _farmDict = {};
+          for (const farm of res.data.result) {
+            _farmDict[farm.business_uid] = farm.business_name;
+          }
+          setFarmDict(_farmDict);
         })
         .catch((err) => {
           if (err.response) {
@@ -45,6 +51,12 @@ function Admin() {
         .get(process.env.REACT_APP_SERVER_BASE_URI + 'all_businesses')
         .then((res) => {
           setFarmList(res.data.result);
+
+          const _farmDict = {};
+          for (const farm of res.data.result) {
+            _farmDict[farm.business_uid] = farm.business_name;
+          }
+          setFarmDict(_farmDict);
         })
         .catch((err) => {
           if (err.response) {
@@ -81,6 +93,7 @@ function Admin() {
           setTimeChange,
           deliveryTime,
           setDeliveryTime,
+          farmDict,
           farmList,
           setFarmList,
           handleChangeFarm,
