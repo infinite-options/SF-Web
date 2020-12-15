@@ -41,6 +41,13 @@ function MenuListComposition(props) {
     }
     const pathname = auth.authLevel >= 1 ? '/admin' : '/store';
     switch (nav) {
+      case 'Admin':
+        if (auth.authLevel >= 1)
+          history.push({
+            pathname: pathname,
+            state: { leftTabChosen: 0 },
+          });
+        break;
       case 'Store':
         history.push({
           pathname: pathname,
@@ -157,6 +164,16 @@ function MenuListComposition(props) {
                     id="menu-list-grow"
                     onKeyDown={handleListKeyDown}
                   >
+                    {auth.authLevel >= 1 && (
+                      <MenuItem
+                        disabled={!auth.isAuth}
+                        onClick={(e) => {
+                          handleMenuItem(e, 'Admin');
+                        }}
+                      >
+                        Admin
+                      </MenuItem>
+                    )}
                     <MenuItem
                       disabled={!auth.isAuth}
                       onClick={(e) => {
