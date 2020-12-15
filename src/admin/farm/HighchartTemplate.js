@@ -1,25 +1,50 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import axios from 'axios';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import Box from '@material-ui/core/Box';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
 require('highcharts/modules/exporting')(Highcharts);
 require('highcharts/modules/export-data')(Highcharts);
 
 const report_API =
   'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/admin_report/';
 
+const useStyles = makeStyles((theme) => ({
+  button: {
+    display: 'block',
+    marginTop: theme.spacing(2),
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+}));
+
 // TODO: add dropdown for farms / all and date range / all
 function RevenueHighchart() {
   const [chartData, setChartData] = useState({});
   const [dataError, setError] = useState(false);
   const [listOfDates, setDates] = useState([]);
-  const [listOfNewBuyer, setNew] = useState([]);
-  const [listOfReturner, setOld] = useState([]);
+  const [listOfBuyers, setListOfBuyers] = useState([]);
   const [listOfCumRevenue, setCumRenevue] = useState([]);
   const [listOfDailyRevenue, setDailyRevenue] = useState([]);
-  let businessID = '200-000016';
+  const [businessID, setBusinessId] = useState('all');
 
-  //todo:First need to get all the dates that has customer activities, sort them
+  const classes = useStyles();
+  const [barsType, setBarType] = useState('customer');
+
+  const handleChange = (event) => {
+    const { value, name } = event.target;
+    if (name === 'type') setBarType(value);
+    else if (name === 'business') setBusinessId(value);
+  };
+
+  // TODO: First need to get all the dates that has customer activities, sort them
+  // TODO: Get code from Allan
   // const newCustomers = [3, 1, 1, 0, 5, 3];
   // const returnCustomers = [2, 3, 4, 1, 3, 1];
   // const cumulativeProfit = [10, 29, 54, 57, 99, 115];
@@ -34,10 +59,15 @@ function RevenueHighchart() {
         console.log(theData);
 
         //todo: get list of dates
+        let dayDict = {};
         let dayArr = [];
         theData.map((days) => {
           let tempDays = days.purchase_date.substring(0, 10);
-          !dayArr.includes(tempDays) && dayArr.push(tempDays);
+          if (!(tempDays in dayDict)) {
+            dayArr.push(tempDays);
+            dayDict[tempDays] = [];
+          }
+          dayDict[tempDays].push(days);
         });
         dayArr.sort(function (a, b) {
           a = a.split('-').join('');
@@ -50,39 +80,69 @@ function RevenueHighchart() {
 
         //Todo: atfter getting all the dates, we get the buyer next
         //todo (returner or new customers)
-        let buyerContainer = [];
-        let oldCustomer = new Array(dayArr.length).fill(0);
-        let newCustomer = new Array(dayArr.length).fill(0);
+        let buyerDict = {};
+        let customers = [];
+        let cIdx = 0;
+        const nullData = new Array(dayArr.length).fill(null);
         let dailyIncome = new Array(dayArr.length).fill(0);
         let revenue = new Array(dayArr.length).fill(0);
         let total = 0;
 
-        for (var i = 0; i < dayArr.length; i++) {
-          let displayArrayOfDate = theData.filter((aDate) => {
-            //!each of this will be one day
-            return aDate.purchase_date.substring(0, 10) === dayArr[i];
-          });
-
+        for (const dayIdx in dayArr) {
           let dailyProfit = 0;
-
-          for (var j = 0; j < displayArrayOfDate.length; j++) {
-            if (
-              buyerContainer.includes(displayArrayOfDate[j].pur_customer_uid)
-            ) {
-              oldCustomer[i] += 1;
-            } else {
-              buyerContainer.push(displayArrayOfDate[j].pur_customer_uid);
-              newCustomer[i] += 1;
+          for (const purchase of dayDict[dayArr[dayIdx]]) {
+            let barValue = '';
+            switch (barsType) {
+              case 'customer':
+                barValue =
+                  purchase.delivery_first_name +
+                  ' ' +
+                  purchase.delivery_last_name;
+                break;
+              case 'item':
+                barValue = purchase.item_name;
+                break;
+              default:
+                break;
             }
 
-            dailyProfit += parseInt(displayArrayOfDate[j].Amount);
+            const amountSpent = Math.round(purchase.Amount * 100) / 100;
+
+            if (barValue in buyerDict) {
+              customers[buyerDict[barValue]].data[dayIdx] += amountSpent;
+            } else {
+              buyerDict[barValue] = cIdx;
+              const customerData = {
+                type: 'column',
+                name: barValue,
+                showInLegend: true,
+                data: [...nullData],
+                tooltip: {
+                  pointFormat:
+                    '{series.name}: <b>{point.y}</b><br/>Total: <b>{point.stackTotal}</b>',
+                },
+                yAxis: 0,
+              };
+              customerData.data[dayIdx] = amountSpent;
+              customers.push(customerData);
+              cIdx += 1;
+            }
+            dailyProfit += amountSpent;
+            dailyProfit = Math.round(dailyProfit * 100) / 100;
+            if (amountSpent > 17 && amountSpent < 18) {
+              const fixed = Math.round(purchase.Amount * 100) / 100;
+
+              console.log(fixed, purchase.Amount);
+            }
           }
+
           total += dailyProfit;
-          dailyIncome[i] = dailyProfit;
-          revenue[i] = total;
+          total = Math.round(total * 100) / 100;
+          dailyIncome[dayIdx] = dailyProfit;
+          revenue[dayIdx] = total;
         }
-        setNew(newCustomer);
-        setOld(oldCustomer);
+
+        setListOfBuyers(customers);
         setCumRenevue(revenue);
         setDailyRevenue(dailyIncome);
         // console.log("buyerContainer ", buyerContainer);
@@ -93,9 +153,10 @@ function RevenueHighchart() {
         console.log('The error is from Highchart.js: ', err);
         setError(true);
       });
-  }, [businessID]);
+  }, [businessID, barsType]);
 
   const options = {
+    chart: { height: '900px' },
     title: {
       text: 'Revenue Analysis',
       align: 'left',
@@ -120,7 +181,7 @@ function RevenueHighchart() {
     xAxis: [
       {
         title: {
-          text: 'Purchase Date',
+          text: 'Date',
           style: {
             color: 'gray',
           },
@@ -182,32 +243,11 @@ function RevenueHighchart() {
     },
     plotOptions: {
       column: {
-        // stacking: 'normal',
+        stacking: 'normal',
       },
     },
     series: [
-      {
-        type: 'column',
-        name: 'New Customers',
-        showInLegend: false,
-        data: listOfNewBuyer,
-        tooltip: {
-          pointFormat:
-            '{series.name}: <b>{point.y}</b><br/>Total: <b>{point.stackTotal}</b>',
-        },
-        yAxis: 0,
-      },
-      {
-        type: 'column',
-        name: 'Return Customers',
-        showInLegend: false,
-        data: listOfReturner,
-        tooltip: {
-          pointFormat:
-            '{series.name}: <b>{point.y}</b><br/>Total: <b>{point.stackTotal}</b>',
-        },
-        yAxis: 0,
-      },
+      ...listOfBuyers,
       {
         name: 'Cumulative Revenue',
         showInLegend: false,
@@ -269,7 +309,37 @@ function RevenueHighchart() {
     },
   };
 
-  return <HighchartsReact highcharts={Highcharts} options={options} />;
+  return (
+    <>
+      <Box>
+        <FormControl className={classes.formControl}>
+          <Select
+            labelId="demo-controlled-open-select-label"
+            id="demo-controlled-open-select"
+            name="business"
+            value={businessID}
+            onChange={handleChange}
+          >
+            <MenuItem value={'customer'}>Customer</MenuItem>
+            <MenuItem value={'item'}>Item</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl className={classes.formControl}>
+          <Select
+            labelId="demo-controlled-open-select-label"
+            id="demo-controlled-open-select"
+            name="type"
+            value={barsType}
+            onChange={handleChange}
+          >
+            <MenuItem value={'customer'}>Customer</MenuItem>
+            <MenuItem value={'item'}>Item</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+      <HighchartsReact highcharts={Highcharts} options={options} />{' '}
+    </>
+  );
 }
 
 export default RevenueHighchart;

@@ -11,7 +11,7 @@ import { withStyles } from '@material-ui/styles';
 import { sizing } from '@material-ui/system';
 import { AuthContext } from './AuthContext';
 import CssTextField from '../utils/CssTextField';
-import RevenueHighchart from '../admin/farm/RevenueHighchart';
+import RevenueHighchart from '../admin/farm/HighchartTemplate';
 import appColors from '../styles/AppColors';
 import SocialLogin from '../admin/SocialLogin';
 
