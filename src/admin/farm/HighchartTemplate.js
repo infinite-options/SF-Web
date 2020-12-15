@@ -36,9 +36,8 @@ function RevenueHighchart() {
   const classes = useStyles();
   const { farmList, farmDict } = useContext(AdminFarmContext);
 
-  const [dateRange, setValue] = React.useState[
-    (new Date('2020-11-25'), new Date())
-  ];
+  const [startDate, setStartDate] = React.useState(new Date('2020-11-25'));
+  const [endDate, setEndDate] = React.useState(new Date());
 
   const [chartData, setChartData] = useState({});
   const [dataError, setError] = useState(false);
@@ -343,7 +342,7 @@ function RevenueHighchart() {
 
   return (
     <>
-      <Box display="flex">
+      <Box display="flex" justifyContent="center">
         <FormControl className={classes.formControl}>
           <Select
             labelId="demo-controlled-open-select-label"
