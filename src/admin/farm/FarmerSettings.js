@@ -914,6 +914,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                 // defaultValue={businessAndFarmDetail.email}
                 name="email"
                 // onChange={handleChange}
+                fullWidth
                 InputProps={{
                   readOnly: true,
                 }}
@@ -927,6 +928,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                 type="password"
                 variant="outlined"
                 name="password"
+                fullWidth
                 onChange={handleChange}
               />
 
@@ -938,6 +940,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                 type="password"
                 variant="outlined"
                 name="passwordConfirm"
+                fullWidth
                 onChange={handleChange}
                 // helperText={errorStatus?"Password not match":""}
               />

@@ -44,6 +44,7 @@ function RevenueHighchart() {
 
   const [listOfDates, setDates] = useState([]);
   const [listOfBuyers, setListOfBuyers] = useState([]);
+  const [listOfNumCateg, setListOfNumCateg] = useState([]);
   const [listOfCumRevenue, setCumRenevue] = useState([]);
   const [listOfDailyRevenue, setDailyRevenue] = useState([]);
 
@@ -83,7 +84,8 @@ function RevenueHighchart() {
   }, [businessID]);
 
   useEffect(() => {
-    if (purchasesRes.length > 0) loadSeriesData(purchasesRes);
+    if (purchasesRes.length > 0 || businessID !== 'all')
+      loadSeriesData(purchasesRes);
   }, [farmDict, barsType, purchasesRes]);
 
   function loadSeriesData(res) {
@@ -113,12 +115,13 @@ function RevenueHighchart() {
 
     //Todo: atfter getting all the dates, we get the buyer next
     //todo (returner or new customers)
-    let buyerDict = {};
+    let barDict = {};
     let customers = [];
     let cIdx = 0;
     const nullData = new Array(dayArr.length).fill(null);
     let dailyIncome = new Array(dayArr.length).fill(0);
     let revenue = new Array(dayArr.length).fill(0);
+    let uniqueBarSets = new Array(dayArr.length).fill(new Set());
     let total = 0;
 
     for (const dayIdx in dayArr) {
@@ -142,12 +145,12 @@ function RevenueHighchart() {
 
         const amountSpent = Math.round(purchase.Amount * 100) / 100;
 
-        if (barValue in buyerDict) {
-          customers[buyerDict[barValue]].data[dayIdx] += amountSpent;
-          customers[buyerDict[barValue]].data[dayIdx] =
-            Math.round(customers[buyerDict[barValue]].data[dayIdx] * 100) / 100;
+        if (barValue in barDict) {
+          customers[barDict[barValue]].data[dayIdx] += amountSpent;
+          customers[barDict[barValue]].data[dayIdx] =
+            Math.round(customers[barDict[barValue]].data[dayIdx] * 100) / 100;
         } else {
-          buyerDict[barValue] = cIdx;
+          barDict[barValue] = cIdx;
           const customerData = {
             type: 'column',
             name: barValue,
@@ -170,6 +173,8 @@ function RevenueHighchart() {
 
           console.log(fixed, purchase.Amount);
         }
+        if (uniqueBarSets[dayIdx].size == 0) uniqueBarSets[dayIdx] = new Set();
+        uniqueBarSets[dayIdx].add(barValue);
       }
 
       total += dailyProfit;
@@ -178,6 +183,11 @@ function RevenueHighchart() {
       revenue[dayIdx] = total;
     }
 
+    const uniqueBarVals = uniqueBarSets.map((set) => {
+      return set.size;
+    });
+
+    setListOfNumCateg(uniqueBarVals);
     setListOfBuyers(customers);
     setCumRenevue(revenue);
     setDailyRevenue(dailyIncome);
@@ -225,7 +235,7 @@ function RevenueHighchart() {
       {
         min: 0,
         title: {
-          text: 'Number of Customers',
+          text: barsType + ' purchase amount',
           style: {
             color: '#f56a79',
           },
@@ -248,6 +258,22 @@ function RevenueHighchart() {
           text: 'Cumulative Revenue ($)',
           style: {
             color: '#32e0c4',
+          },
+        },
+        opposite: true,
+      },
+      {
+        min: 0,
+        title: {
+          text: 'Number of ' + barsType + 's',
+          style: {
+            color: '#000',
+          },
+        },
+        stackLabels: {
+          enabled: true,
+          style: {
+            color: '#000',
           },
         },
         opposite: true,
@@ -278,7 +304,7 @@ function RevenueHighchart() {
     series: [
       ...listOfBuyers,
       {
-        type: 'line',
+        type: 'spline',
         name: 'Cumulative Revenue',
         showInLegend: false,
         data: listOfCumRevenue,
@@ -288,7 +314,7 @@ function RevenueHighchart() {
         yAxis: 2,
       },
       {
-        type: 'line',
+        type: 'spline',
         name: 'Daily Revenue',
         showInLegend: false,
         data: listOfDailyRevenue,
@@ -296,6 +322,16 @@ function RevenueHighchart() {
           pointFormat: '{series.name}: <b>{point.y}</b><br/>',
         },
         yAxis: 1,
+      },
+      {
+        type: 'scatter',
+        name: 'Number of ' + barsType + 's',
+        showInLegend: false,
+        data: listOfNumCateg,
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.y}</b><br/>',
+        },
+        yAxis: 3,
       },
     ],
     responsive: {

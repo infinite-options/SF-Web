@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
   infoSection: {
     width: '33.33%',
     justifyContent: 'center',
+    fontSize: '20px',
   },
   infoImg: {
     alignItems: 'center',
@@ -61,6 +62,8 @@ const useStyles = makeStyles((theme) => ({
     color: appColors.secondary,
     fontSize: '22px',
     fontWeight: 'bold',
+  },
+  bar: {
     borderBottom: '4px solid ' + appColors.secondary,
     marginBottom: '50px',
     width: '130px',
@@ -294,9 +297,8 @@ const Landing = ({ ...props }) => {
       {/* END: Local Produce Search */}
 
       {/* START: Info Section */}
-      <Box mx="auto" className={classes.title}>
-        What We Do
-      </Box>
+      <Box className={classes.title}>What We Do</Box>
+      <Box mx="auto" className={classes.bar} />
       <Box display="flex">
         <Box className={classes.infoSection}>
           <Box className={classes.infoImg}>
@@ -312,20 +314,21 @@ const Landing = ({ ...props }) => {
           <Box className={classes.infoImg}>
             <img src="./landing/farmer_info.png" alt="farmer info" />
           </Box>
-          <div className={classes.infoTitle}>Farm to doorstep</div>
+          <div className={classes.infoTitle}>Help local farmers</div>
           <div className={classes.infoDesc}>
-            We bring fresh produce from local farms right to our consumers'
-            doorstep. It's a farmer's market experience at your fingertips
+            Helping farmers continue their businesses in the post pandemic
+            world. Serving FResh brings their produce to your doorstep in the
+            safest way possible.
           </div>
         </Box>
         <Box className={classes.infoSection}>
           <Box className={classes.infoImg}>
             <img src="./landing/student_info.png" alt="student info" />
           </Box>
-          <div className={classes.infoTitle}>Farm to doorstep</div>
+          <div className={classes.infoTitle}>Empower students</div>
           <div className={classes.infoDesc}>
-            We bring fresh produce from local farms right to our consumers'
-            doorstep. It's a farmer's market experience at your fingertips
+            We help students gain real world experience by working with us on
+            developing Serving Fresh.
           </div>
         </Box>
       </Box>

@@ -36,6 +36,8 @@ const useStyles = makeStyles((theme) => ({
     color: appColors.secondary,
     fontSize: '22px',
     fontWeight: 'bold',
+  },
+  bar: {
     borderBottom: '4px solid ' + appColors.secondary,
     marginBottom: '30px',
     width: '230px',
@@ -67,9 +69,8 @@ const ProductDisplay = () => {
 
   return (
     <Box className={classes.root}>
-      <Box mx="auto" className={classes.title}>
-        Weekly Fresh Produce
-      </Box>
+      <Box className={classes.title}>Weekly Fresh Produce </Box>
+      <Box mx="auto" className={classes.bar} />
       <Carousel
         arrows={true}
         swipeable={true}

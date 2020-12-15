@@ -348,7 +348,7 @@ export default function Item(props) {
                   autoWidth
                   value={editData.item_sizes}
                 >
-                  <MenuItem value={null}>N/A</MenuItem>
+                  <MenuItem value={''}>N/A</MenuItem>
                   <MenuItem value={'XS'}>X-Small</MenuItem>
                   <MenuItem value={'S'}>Small</MenuItem>
                   <MenuItem value={'M'}>Medium</MenuItem>
