@@ -56,6 +56,11 @@ export default function FarmerHome({ farmID, farmName, ...props }) {
       .then((response) => {
         console.log('reload');
         console.log('Home:', response.data.result.result);
+        response.data.result.result.sort(function (a, b) {
+          var textA = a.item_name.toUpperCase();
+          var textB = b.item_name.toUpperCase();
+          return textA < textB ? -1 : textA > textB ? 1 : 0;
+        });
         setData(response.data.result.result);
       })
       .catch((err) => {

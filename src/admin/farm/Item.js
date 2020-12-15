@@ -38,7 +38,7 @@ const ITEM_EDIT_URL = BASE_URL + 'addItems/';
 
 //TODO: Fields Needed (exp_date)
 //TODO: Update Needed (exp_date)
-
+//BUG: Photos is acting up
 //TODO: sort by alphabetically and by price
 //
 export default function Item(props) {
@@ -331,6 +331,7 @@ export default function Item(props) {
                 autoWidth
                 value={editData.item_unit}
               >
+                <MenuItem value={'each'}>each</MenuItem>
                 <MenuItem value={'lbs'}>lbs</MenuItem>
                 <MenuItem value={'bunch'}>Bunch</MenuItem>
                 <MenuItem value={'basket'}>Basket</MenuItem>

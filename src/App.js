@@ -37,9 +37,9 @@ function calTotal() {
 //       4. Home page address feature
 //       5. Optimize loading screen for produce
 //       6. Shipping and service fee from zones
+//TODO: Link Google Analytics
 function App() {
   const theme = createMuiTheme({
-    shadows: ['none'],
     palette: {
       primary: {
         // light: will be calculated from palette.primary.main,
