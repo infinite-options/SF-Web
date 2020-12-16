@@ -39,6 +39,7 @@ function calTotal() {
 //       6. Optimize loading screen for produce
 //       7. Shipping and service fee from zones
 //TODO: Link Google Analytics
+// TODO: change favicon to white background
 function App() {
   const theme = createMuiTheme({
     palette: {

@@ -11,6 +11,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Box from '@material-ui/core/Box';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import { AdminFarmContext } from '../AdminFarmContext';
 
@@ -52,11 +53,13 @@ function RevenueHighchart() {
   const [purchasesRes, setPurchasesRes] = useState([]);
 
   const [barsType, setBarType] = useState('customer');
+  const [priceType, setPriceType] = useState('item');
 
   const handleChange = (event) => {
     const { value, name } = event.target;
     if (name === 'type') setBarType(value);
     else if (name === 'business') setBusinessId(value);
+    else if (name === 'price') setPriceType(value);
   };
 
   // TODO: First need to get all the dates that has customer activities, sort them
@@ -86,7 +89,7 @@ function RevenueHighchart() {
   useEffect(() => {
     if (purchasesRes.length > 0 || businessID !== 'all')
       loadSeriesData(purchasesRes);
-  }, [farmDict, barsType, purchasesRes]);
+  }, [farmDict, barsType, priceType, purchasesRes]);
 
   function loadSeriesData(res) {
     let theData = res;
@@ -143,7 +146,8 @@ function RevenueHighchart() {
             break;
         }
 
-        const amountSpent = Math.round(purchase.Amount * 100) / 100;
+        const amountSpent =
+          Math.round(purchase[priceType + '_amount'] * 100) / 100;
 
         if (barValue in barDict) {
           customers[barDict[barValue]].data[dayIdx] += amountSpent;
@@ -168,11 +172,6 @@ function RevenueHighchart() {
         }
         dailyProfit += amountSpent;
         dailyProfit = Math.round(dailyProfit * 100) / 100;
-        if (amountSpent > 17 && amountSpent < 18) {
-          const fixed = Math.round(purchase.Amount * 100) / 100;
-
-          console.log(fixed, purchase.Amount);
-        }
         if (uniqueBarSets[dayIdx].size == 0) uniqueBarSets[dayIdx] = new Set();
         uniqueBarSets[dayIdx].add(barValue);
       }
@@ -380,6 +379,7 @@ function RevenueHighchart() {
     <>
       <Box display="flex" justifyContent="center">
         <FormControl className={classes.formControl}>
+          <FormHelperText>Business</FormHelperText>
           <Select
             labelId="demo-controlled-open-select-label"
             id="demo-controlled-open-select"
@@ -398,6 +398,7 @@ function RevenueHighchart() {
           </Select>
         </FormControl>
         <FormControl className={classes.formControl}>
+          <FormHelperText>Graph Type</FormHelperText>
           <Select
             labelId="demo-controlled-open-select-label"
             id="demo-controlled-open-select"
@@ -406,6 +407,20 @@ function RevenueHighchart() {
             onChange={handleChange}
           >
             <MenuItem value={'customer'}>Customer</MenuItem>
+            <MenuItem value={'business'}>Business</MenuItem>
+            <MenuItem value={'item'}>Item</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl className={classes.formControl}>
+          <FormHelperText>Price Type</FormHelperText>
+          <Select
+            labelId="demo-controlled-open-select-label"
+            id="demo-controlled-open-select"
+            label="Select Price Type"
+            name="price"
+            value={priceType}
+            onChange={handleChange}
+          >
             <MenuItem value={'business'}>Business</MenuItem>
             <MenuItem value={'item'}>Item</MenuItem>
           </Select>

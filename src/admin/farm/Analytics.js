@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // TODO: add dropdown for farms / all and date range / all
-function RevenueHighchart() {
+function Analytics() {
   const classes = useStyles();
   const { farmList, farmDict } = useContext(AdminFarmContext);
 
@@ -45,13 +45,12 @@ function RevenueHighchart() {
   const [listOfDates, setDates] = useState([]);
   const [listOfBuyers, setListOfBuyers] = useState([]);
   const [listOfNumCateg, setListOfNumCateg] = useState([]);
-  const [listOfCumRevenue, setCumRenevue] = useState([]);
-  const [listOfDailyRevenue, setDailyRevenue] = useState([]);
 
   const [businessID, setBusinessId] = useState('all');
   const [purchasesRes, setPurchasesRes] = useState([]);
 
-  const [barsType, setBarType] = useState('customer');
+  // deconstruct.name is the item name
+  const [barsType, setBarType] = useState('deconstruct.name');
 
   const handleChange = (event) => {
     const { value, name } = event.target;
@@ -94,66 +93,70 @@ function RevenueHighchart() {
     console.log(theData);
 
     //todo: get list of dates
-    let dayDict = {};
-    let dayArr = [];
-    theData.map((days) => {
-      let tempDays = days.purchase_date.substring(0, 10);
-      if (!(tempDays in dayDict)) {
-        dayArr.push(tempDays);
-        dayDict[tempDays] = [];
+    let custAmnDict = {};
+    let custDict = {};
+    let cIdx = 0;
+    let custAmnArr = [];
+    let custArr = [];
+    theData.map((purchase) => {
+      let custName = (
+        purchase.delivery_first_name +
+        ' ' +
+        purchase.delivery_last_name +
+        ' ' +
+        purchase.pur_customer_uid
+      ).trim();
+      if (custName in custDict) {
+        custAmnArr[custAmnDict[custName]].amount += purchase.Amount;
+      } else {
+        custAmnArr.push({ name: custName, amount: purchase.Amount });
+        custDict[custName] = [];
+        custAmnDict[custName] = cIdx;
+        cIdx += 1;
       }
-      dayDict[tempDays].push(days);
+      custDict[custName].push(purchase);
     });
-    dayArr.sort(function (a, b) {
-      a = a.split('-').join('');
-      b = b.split('-').join('');
+    custAmnArr.sort(function (a, b) {
+      a = a.amount;
+      b = b.amount;
       return a > b ? 1 : a < b ? -1 : 0;
       // return a.localeCompare(b);         // <-- alternative
     });
-    console.log(dayArr); //!comment out
-    setDates(dayArr);
 
-    //Todo: atfter getting all the dates, we get the buyer next
+    custArr = custAmnArr.map((customer) => {
+      return customer.name;
+    });
+    setDates(custArr);
+
+    //TODO: after getting all the dates, we get the buyer next
     //todo (returner or new customers)
     let barDict = {};
-    let customers = [];
-    let cIdx = 0;
-    const nullData = new Array(dayArr.length).fill(null);
-    let dailyIncome = new Array(dayArr.length).fill(0);
-    let revenue = new Array(dayArr.length).fill(0);
-    let uniqueBarSets = new Array(dayArr.length).fill(new Set());
+    let purchases = [];
+    cIdx = 0;
+    const numPurchases = new Array(custArr.length).fill(0);
+    const nullData = new Array(custArr.length).fill(0);
     let total = 0;
 
-    for (const dayIdx in dayArr) {
+    for (const custIdx in custArr) {
       let dailyProfit = 0;
-      for (const purchase of dayDict[dayArr[dayIdx]]) {
-        let barValue = '';
-        switch (barsType) {
-          case 'customer':
-            barValue =
-              purchase.delivery_first_name + ' ' + purchase.delivery_last_name;
-            break;
-          case 'item':
-            barValue = purchase['deconstruct.name'];
-            break;
-          case 'business':
-            barValue = farmDict[purchase['deconstruct.itm_business_uid']];
-            break;
-          default:
-            break;
-        }
+      for (const purchase of custDict[custArr[custIdx]]) {
+        const barValue = purchase[barsType];
 
         const amountSpent = Math.round(purchase.Amount * 100) / 100;
 
         if (barValue in barDict) {
-          customers[barDict[barValue]].data[dayIdx] += amountSpent;
-          customers[barDict[barValue]].data[dayIdx] =
-            Math.round(customers[barDict[barValue]].data[dayIdx] * 100) / 100;
+          purchases[barDict[barValue]].data[custIdx] += amountSpent;
+          purchases[barDict[barValue]].data[custIdx] =
+            Math.round(purchases[barDict[barValue]].data[custIdx] * 100) / 100;
+          numPurchases[custIdx] += 1;
         } else {
           barDict[barValue] = cIdx;
-          const customerData = {
+          const barData = {
             type: 'column',
-            name: barValue,
+            name:
+              barsType === 'deconstruct.itm_business_uid'
+                ? farmDict[barValue]
+                : barValue,
             showInLegend: true,
             data: [...nullData],
             tooltip: {
@@ -162,9 +165,10 @@ function RevenueHighchart() {
             },
             yAxis: 0,
           };
-          customerData.data[dayIdx] = amountSpent;
-          customers.push(customerData);
+          barData.data[custIdx] = amountSpent;
+          purchases.push(barData);
           cIdx += 1;
+          numPurchases[custIdx] += 1;
         }
         dailyProfit += amountSpent;
         dailyProfit = Math.round(dailyProfit * 100) / 100;
@@ -173,24 +177,11 @@ function RevenueHighchart() {
 
           console.log(fixed, purchase.Amount);
         }
-        if (uniqueBarSets[dayIdx].size == 0) uniqueBarSets[dayIdx] = new Set();
-        uniqueBarSets[dayIdx].add(barValue);
       }
-
-      total += dailyProfit;
-      total = Math.round(total * 100) / 100;
-      dailyIncome[dayIdx] = dailyProfit;
-      revenue[dayIdx] = total;
     }
 
-    const uniqueBarVals = uniqueBarSets.map((set) => {
-      return set.size;
-    });
-
-    setListOfNumCateg(uniqueBarVals);
-    setListOfBuyers(customers);
-    setCumRenevue(revenue);
-    setDailyRevenue(dailyIncome);
+    setListOfBuyers(purchases);
+    setListOfNumCateg(numPurchases);
     // console.log("buyerContainer ", buyerContainer);
     // console.log("retuners ", oldCustomer);
     // console.log("NewBuyer ", newCustomer);
@@ -245,27 +236,7 @@ function RevenueHighchart() {
       {
         min: 0,
         title: {
-          text: 'Daily Revenue ($)',
-          style: {
-            color: '#f08a5d',
-          },
-        },
-        opposite: true,
-      },
-      {
-        min: 0,
-        title: {
-          text: 'Cumulative Revenue ($)',
-          style: {
-            color: '#32e0c4',
-          },
-        },
-        opposite: true,
-      },
-      {
-        min: 0,
-        title: {
-          text: 'Number of ' + barsType + 's',
+          text: 'Number of purchases',
           style: {
             color: '#000',
           },
@@ -304,34 +275,14 @@ function RevenueHighchart() {
     series: [
       ...listOfBuyers,
       {
-        type: 'spline',
-        name: 'Cumulative Revenue',
-        showInLegend: false,
-        data: listOfCumRevenue,
-        tooltip: {
-          pointFormat: '{series.name}: <b>{point.y}</b><br/>',
-        },
-        yAxis: 2,
-      },
-      {
-        type: 'spline',
-        name: 'Daily Revenue',
-        showInLegend: false,
-        data: listOfDailyRevenue,
-        tooltip: {
-          pointFormat: '{series.name}: <b>{point.y}</b><br/>',
-        },
-        yAxis: 1,
-      },
-      {
         type: 'scatter',
-        name: 'Number of ' + barsType + 's',
+        name: 'Number of purchases',
         showInLegend: false,
         data: listOfNumCateg,
         tooltip: {
           pointFormat: '{series.name}: <b>{point.y}</b><br/>',
         },
-        yAxis: 3,
+        yAxis: 1,
       },
     ],
     responsive: {
@@ -405,9 +356,8 @@ function RevenueHighchart() {
             value={barsType}
             onChange={handleChange}
           >
-            <MenuItem value={'customer'}>Customer</MenuItem>
-            <MenuItem value={'business'}>Business</MenuItem>
-            <MenuItem value={'item'}>Item</MenuItem>
+            <MenuItem value={'deconstruct.name'}>Item</MenuItem>
+            <MenuItem value={'deconstruct.itm_business_uid'}>Business</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -416,4 +366,4 @@ function RevenueHighchart() {
   );
 }
 
-export default RevenueHighchart;
+export default Analytics;

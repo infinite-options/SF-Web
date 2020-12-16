@@ -55,6 +55,13 @@ export default function Item(props) {
   const classes = useStyles();
 
   useEffect(() => {
+    setFile({
+      obj: undefined,
+      url: props.data.item_photo || '',
+    });
+  }, [props.data.item_photo]);
+
+  useEffect(() => {
     setEditData(props.data);
   }, [props.data]);
 
@@ -145,7 +152,6 @@ export default function Item(props) {
     Axios.post(ITEM_EDIT_URL + 'Update', formData /*postData*/)
       .then((response) => {
         console.log(response);
-        postData.created_at = created_at;
         props.setData((prevData) => {
           const updatedData = [...prevData];
           const sqlString = response.data.sql;
@@ -154,6 +160,7 @@ export default function Item(props) {
             // Converts price input from String to Number, to deal with empty string input cases.
             // Without this conversion in this case, price value would not be displayed since item_price = "".
             item_price: Number(postData.item_price),
+            business_price: Number(postData.business_price),
             item_photo: sqlString.substring(
               sqlString.indexOf("item_photo = '") + 14,
               sqlString.indexOf("item_photo = '") + 78
@@ -440,44 +447,6 @@ export default function Item(props) {
       </Grid>
     </div>
   );
-  // let oldCardItem = (
-  //     <Grid container  style={{backgroundColor: 'white',}}>
-  //         <Grid item xs={12}>
-  //             <CardContent style={{backgroundColor:'white', height: '20px', overflowY:'auto',}}>
-  //                     <h5 style={{backgroundColor: 'white', padding:'0', margin: '0',}}>{props.data.item_name}</h5>
-  //             </CardContent>
-  //         </Grid>
-  //         <Grid item xs={4} style={{backgroundColor:'white'}}>
-  //             <CardContent>
-  //                 <h5 style={{padding:'0', margin: '0',}}> <NumberFormat decimalScale={2}  fixedDecimalScale={true} value={props.data.item_price} displayType={'text'} thousandSeparator={true} prefix={'$'} /> </h5>
-  //             </CardContent>
-  //         </Grid>
-  //         <Grid item xs={2} style={{backgroundColor:'white',}}>
-
-  //         </Grid>
-  //         <Grid item xs={6} style={{backgroundColor:'white',}}>
-  //             <CardContent>
-
-  //             </CardContent>
-  //         </Grid>
-  //         <Grid item xs={12}>
-  //             <CardActions disableSpacing style={{justifyContent: "center"}}>
-  //                 <IconButton onClick={handleHeartChange}>
-  //                     <FavoriteIcon style={{color: props.data.favorite.toLowerCase() === "true" ? "red" : "grey"}} />
-  //                 </IconButton>
-  //                 <IconButton onClick={handleRefresh}>
-  //                     <RefreshIcon />
-  //                 </IconButton>
-  //                 <IconButton onClick={handleOpenEditModel}>
-  //                     <EditIcon/>
-  //                 </IconButton>
-  //                 <IconButton onClick={handleDelete}>
-  //                     <DeleteIcon/>
-  //                 </IconButton>
-  //             </CardActions>
-  //         </Grid>
-  //     </Grid>
-  // );
 
   const itemDescription = (description) => {
     // Description can be string or array

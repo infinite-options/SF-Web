@@ -21,6 +21,7 @@ import Chart from './chart';
 import Revenue from './revenue';
 import Store from '../../customer/Store';
 import RevenueHighchart from './HighchartTemplate';
+import Analytics from './Analytics';
 import Notifications from './Notifications';
 // import FarmerNavBar from './FarmerNavBar';
 
@@ -74,7 +75,7 @@ export default function Farmer({ tab, ...props }) {
           hidden={tab !== 2}
         />
         <div className={tab !== 3 ? 'hideChart' : ''}>
-          <Chart farmID={farmID} farmName={farmName} />
+          <Analytics farmID={farmID} farmName={farmName} />
         </div>
         <div className={tab !== 4 ? 'hideChart' : ''}>
           {/* <Revenue farmID={farmID} farmName={farmName} /> */}

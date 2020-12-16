@@ -1,6 +1,6 @@
 import React, { useMemo, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import PayPal from './Paypal';
+import PayPal from '../utils/Paypal';
 import StripeCheckout from '../utils/StripeCheckout';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';

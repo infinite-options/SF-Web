@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+//TODO: have store go to store selection
 function MenuListComposition(props) {
   const classes = useStyles();
   const history = useHistory();
@@ -39,53 +40,58 @@ function MenuListComposition(props) {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
-    const pathname = auth.authLevel >= 1 ? '/admin' : '/store';
     switch (nav) {
       case 'Admin':
-        if (auth.authLevel >= 1)
+        if (auth.authLevel === 2)
           history.push({
-            pathname: pathname,
-            state: { leftTabChosen: 0 },
+            pathname: '/admin',
+          });
+        break;
+      case 'Farm':
+        if (auth.authLevel === 1)
+          history.push({
+            pathname: '/admin',
           });
         break;
       case 'Store':
         history.push({
-          pathname: pathname,
+          pathname: '/store',
+          state: { storePage: 1 },
         });
         break;
       case 'Profile Info':
         history.push({
-          pathname: pathname,
+          pathname: '/store',
           state: { leftTabChosen: 0 },
         });
         break;
       case 'Rewards':
         history.push({
-          pathname: pathname,
+          pathname: '/store',
           state: { leftTabChosen: 2 },
         });
         break;
       case 'Payment Details':
         history.push({
-          pathname: pathname,
+          pathname: '/store',
           state: { leftTabChosen: 4 },
         });
         break;
       case 'Checkout':
         history.push({
-          pathname: pathname,
+          pathname: '/store',
           state: { rightTabChosen: 0 },
         });
         break;
       case 'History':
         history.push({
-          pathname: pathname,
+          pathname: '/store',
           state: { rightTabChosen: 2 },
         });
         break;
       case 'Refund':
         history.push({
-          pathname: pathname,
+          pathname: '/store',
           state: { rightTabChosen: 4 },
         });
         break;
@@ -164,7 +170,7 @@ function MenuListComposition(props) {
                     id="menu-list-grow"
                     onKeyDown={handleListKeyDown}
                   >
-                    {auth.authLevel >= 1 && (
+                    {auth.authLevel === 2 && (
                       <MenuItem
                         disabled={!auth.isAuth}
                         onClick={(e) => {
@@ -172,6 +178,16 @@ function MenuListComposition(props) {
                         }}
                       >
                         Admin
+                      </MenuItem>
+                    )}
+                    {auth.authLevel === 1 && (
+                      <MenuItem
+                        disabled={!auth.isAuth}
+                        onClick={(e) => {
+                          handleMenuItem(e, 'Farm');
+                        }}
+                      >
+                        Farm
                       </MenuItem>
                     )}
                     <MenuItem

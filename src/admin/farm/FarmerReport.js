@@ -348,16 +348,26 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
           Send Packing Report
         </Button>
       </div>
-      <OrdersTable orders={orders} type="FALSE" functions={buttonFunctions} />
+      <OrdersTable
+        orders={orders}
+        farmID={farmID}
+        type="FALSE"
+        functions={buttonFunctions}
+      />
       <div style={labelStyle}>
         <h2>Delivered Orders</h2>
       </div>
-      <OrdersTable orders={orders} type="TRUE" functions={buttonFunctions} />
+      <OrdersTable
+        orders={orders}
+        farmID={farmID}
+        type="TRUE"
+        functions={buttonFunctions}
+      />
     </div>
   );
 }
 
-function OrdersTable({ orders, type, ...props }) {
+function OrdersTable({ orders, type, farmID, ...props }) {
   return (
     <TableContainer component={Paper}>
       <Table aria-label="simple table">
@@ -383,6 +393,7 @@ function OrdersTable({ orders, type, ...props }) {
               return (
                 <OrderRow
                   key={idx}
+                  farmID={farmID}
                   index={idx}
                   order={order}
                   type={type}
@@ -399,7 +410,7 @@ function OrdersTable({ orders, type, ...props }) {
   );
 }
 
-function OrderRow({ order, type, ...props }) {
+function OrderRow({ order, type, farmID, ...props }) {
   const [hidden, setHidden] = useState(true);
 
   const address = (() => {
@@ -483,16 +494,19 @@ function OrderRow({ order, type, ...props }) {
         </TableCell>
       </TableRow>
       {!hidden &&
-        JSON.parse(order.items).map((item, idx) => (
-          <OrderItem
-            key={idx}
-            order={order}
-            item={item}
-            deleteItem={props.functions.handleItemDelete}
-            index={props.index}
-            itemIndex={idx}
-          />
-        ))}
+        JSON.parse(order.items).map((item, idx) => {
+          if (item.itm_business_uid == farmID)
+            return (
+              <OrderItem
+                key={idx}
+                order={order}
+                item={item}
+                deleteItem={props.functions.handleItemDelete}
+                index={props.index}
+                itemIndex={idx}
+              />
+            );
+        })}
     </React.Fragment>
   );
 }

@@ -201,7 +201,7 @@ function AdminNavBar({ tab, setTab, ...props }) {
                     className={classes.button}
                     onClick={() => setTab(3)}
                   >
-                    Charts
+                    Analytics
                   </Button>
                   <Button
                     size={'small'}

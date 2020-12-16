@@ -4,7 +4,7 @@ import Cookies from 'universal-cookie';
 import { PayPalButton } from 'react-paypal-button-v2';
 
 import { useConfirmation } from '../../../services/ConfirmationService';
-import { onPurchaseComplete } from '../utils/onPurchaseComplete';
+import { onPurchaseComplete } from './onPurchaseComplete';
 import checkoutContext from '../CheckoutContext';
 import storeContext from '../../storeContext';
 import { AuthContext } from 'auth/AuthContext';
