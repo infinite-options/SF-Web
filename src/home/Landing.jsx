@@ -317,7 +317,7 @@ const Landing = ({ ...props }) => {
           <div className={classes.infoTitle}>Help local farmers</div>
           <div className={classes.infoDesc}>
             Helping farmers continue their businesses in the post pandemic
-            world. Serving FResh brings their produce to your doorstep in the
+            world. Serving Fresh brings their produce to your doorstep in the
             safest way possible.
           </div>
         </Box>

@@ -11,7 +11,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
+import Box from '@material-ui/core/Box';
+import Checkbox from '@material-ui/core/Checkbox';
 import Switch from '@material-ui/core/Switch';
+import appColors from '../../styles/AppColors';
+import { AuthContext } from '../../auth/AuthContext';
 import { AdminFarmContext } from '../AdminFarmContext';
 import axios from 'axios';
 import {
@@ -28,30 +32,39 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import AuthUtils from 'utils/AuthUtils';
+
+const booleanVals = new Set(['taxable', 'favorite']);
 
 const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
+  const auth = useContext(AuthContext);
+
   const [file, setFile] = useState({ obj: undefined, url: '' }); // NOTE: url key is probably useless
   const [favorite, setFavorite] = useState(false);
   const classes = useStyles();
-  const [value, setValue] = useState({
-    itm_business_uid: '',
+  const [itemProps, setItemProps] = useState({
+    itm_business_uid: farmID,
     item_name: '',
-    item_status: '',
-    item_type: '',
-    item_desc: '',
-    item_unit: '',
+    item_status: 'Active',
+    item_type: 'Vegetable',
+    item_desc: 'notOrganic',
+    item_unit: 'each',
     item_price: '',
+    business_price: '',
     item_sizes: '',
-    favorite: '',
-    item_photo: '',
-    exp_date: '',
+    favorite: 'FALSE',
+    taxable: 'FALSE',
+    item_photo: { obj: undefined, url: '' },
+    exp_date: '0000-01-01',
   });
-  const handleChange = (e) => {
-    setValue({ ...value, [e.target.name]: e.target.value });
-  };
+  const handleChange = (event) => {
+    const { name, value, checked } = event.target;
 
-  const handleFavChange = (e) => {
-    setFavorite(!favorite);
+    let newValue = value;
+    if (booleanVals.has(name)) newValue = checked ? 'TRUE' : 'FALSE';
+    if (name === 'item_status') newValue = checked ? 'Active' : 'Past';
+    console.log('setEditData(props.data): ', name, newValue);
+    setItemProps({ ...itemProps, [name]: newValue });
   };
 
   const onFileChange = (event) => {
@@ -59,29 +72,33 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
       obj: event.target.files[0],
       url: URL.createObjectURL(event.target.files[0]),
     });
-    // console.log(event.target.files[0]);
-    // console.log(event.target.files[0].name);
+    console.log(event.target.files[0].name);
   };
+
   const insertAPI = process.env.REACT_APP_SERVER_BASE_URI + 'addItems/Insert';
 
   // NOTE: Which item inputs are optional/required?
-  const itemInfo = {
-    itm_business_uid: farmID,
-    item_name: value.item_name,
-    item_status: 'Active',
-    item_type: value.item_type,
-    item_desc: value.item_desc,
-    item_unit: value.item_unit,
-    item_price: value.item_price,
-    item_sizes: value.item_sizes,
-    favorite: favorite.toString().toUpperCase(),
-    item_photo: file.obj,
-    exp_date: '',
-    // image_category: "item_images", // NOTE: temporary
-  };
 
   //post new item to endpoint
   const addItem = () => {
+    const itemInfo = {
+      itm_business_uid: farmID,
+      item_name: itemProps.item_name,
+      item_status: 'Active',
+      item_type: itemProps.item_type,
+      item_desc: itemProps.item_desc,
+      item_unit: itemProps.item_unit,
+      item_price: parseFloat(itemProps.item_price).toFixed(2),
+      business_price: parseFloat(
+        auth.authLevel == 2 ? itemProps.business_price : itemProps.item_price
+      ).toFixed(2),
+      item_sizes: itemProps.item_sizes,
+      favorite: favorite.toString().toUpperCase(),
+      taxable: itemProps.taxable,
+      item_photo: file.obj,
+      exp_date: itemProps.exp_date,
+      // image_category: "item_images", // NOTE: temporary
+    };
     let formData = new FormData();
     Object.entries(itemInfo).forEach((entry) => {
       formData.append(entry[0], entry[1]);
@@ -109,7 +126,7 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
         );
         itemInfo.item_photo = sqlString.substring(
           sqlString.indexOf("item_photo = '") + 14,
-          sqlString.indexOf("item_photo = '") + 72
+          sqlString.indexOf("item_photo = '") + 78
         );
         props.setData((prevData) => [...prevData, itemInfo]);
 
@@ -121,97 +138,28 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
   };
 
   return (
-    <div className={classes.paper} ref={ref}>
-      <Grid container style={{ textAlign: 'center' }}>
+    <div className={classes.paper}>
+      <Grid container>
         <Grid item xs={12}>
           <h3>Add Item</h3>
         </Grid>
         <Grid container item xs={6} spacing={2}>
           <Grid item xs={12}>
-            <TextField
-              name="item_name"
-              /*style={{width: '150px', midWidth: '50px'}}*/ label="Name of Meal"
-              onChange={handleChange}
-              value={value.item_name}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              name="item_price"
-              label="Price"
-              // style={{width: '150px', midWidth: '50px', width: 'auto',}}
-              InputProps={{
-                inputComponent: NumberFormatCustomPrice,
-              }}
-              onChange={handleChange}
-              value={value.item_price}
-            />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            style={{
-              /*height: '100px', */ textAlign: 'left',
-              marginLeft: '25px',
-            }}
-          >
-            <FormControlLabel
-              control={
-                <Switch
-                  name="favorite"
-                  checked={favorite}
-                  onChange={handleFavChange}
-                />
-              }
-              label="Favorite"
-            />
-          </Grid>
-          <Grid item xs={12}>
-            {file.url ? (
-              <img
-                src={file.url}
-                alt="Produce Image"
-                width="140px"
-                height="100px"
-                style={{ border: '3px solid grey', objectFit: 'cover' }}
+            <Box display="flex" justifyContent="center">
+              <TextField
+                name="item_name"
+                label="Item Name"
+                onChange={handleChange}
+                value={itemProps.item_name}
               />
-            ) : (
-              <div
-                style={{
-                  border: '3px solid grey',
-                  width: '140px',
-                  height: '100px',
-                  margin: 'auto',
-                  textAlign: 'center',
-                  lineHeight: '100px',
-                  color: 'grey',
-                }}
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Box display="flex" justifyContent="center">
+              <FormControl
+                className={classes.formControl}
+                style={{ marginLeft: 0 }}
               >
-                Upload an Image
-              </div>
-            )}
-          </Grid>
-          <Grid item xs={12}>
-            <Button
-              size="small"
-              variant="contained"
-              component="label" /* style={{marginTop: '20px'}}*/
-            >
-              Add Picture
-              <input
-                onChange={onFileChange}
-                type="file"
-                id="uploadedPhoto"
-                accept="image/gif, image/jpeg, image/png"
-                style={{ display: 'none' }}
-              />
-            </Button>
-          </Grid>
-        </Grid>
-        <Grid container item xs={6} spacing={2} style={{ textAlign: 'right' }}>
-          <Grid item xs={12}>
-            <div style={{ height: '100px', backgroundColor: 'white' }}>
-              <FormControl className={classes.formControl}>
                 <InputLabel id="demo-simple-select-label">
                   Type of Food
                 </InputLabel>
@@ -219,7 +167,7 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
                   name="item_type"
                   onChange={handleChange}
                   autoWidth
-                  value={value.item_type}
+                  value={itemProps.item_type}
                 >
                   <MenuItem value={'vegetable'}>Vegetable</MenuItem>
                   <MenuItem value={'fruit'}>Fruit</MenuItem>
@@ -227,18 +175,97 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
                   <MenuItem value={'other'}>Other</MenuItem>
                 </Select>
               </FormControl>
-            </div>
+            </Box>
           </Grid>
+          <Grid item xs={12}>
+            <Box display="flex" justifyContent="center">
+              <TextField
+                name="item_price"
+                label="Item Price"
+                // style={{width: '150px', midWidth: '50px', width: 'auto',}}
+                InputProps={{
+                  inputComponent: NumberFormatCustomPrice,
+                }}
+                onChange={handleChange}
+                value={itemProps.item_price}
+              />
+            </Box>
+          </Grid>
+          {auth.authLevel == 2 && (
+            <Grid item xs={12}>
+              <Box display="flex" justifyContent="center">
+                <TextField
+                  name="business_price"
+                  label="Business Price"
+                  // style={{width: '150px', midWidth: '50px', width: 'auto',}}
+                  InputProps={{
+                    inputComponent: NumberFormatCustomPrice,
+                  }}
+                  onChange={handleChange}
+                  value={itemProps.business_price}
+                />
+              </Box>
+            </Grid>
+          )}
+
+          <Grid item xs={12}>
+            {' '}
+            <Box display="flex" justifyContent="center">
+              {file.url !== '' ? (
+                <img
+                  src={file.url}
+                  alt="Produce Image"
+                  width="140px"
+                  height="100px"
+                  style={{ border: '3px solid grey', objectFit: 'cover' }}
+                />
+              ) : (
+                <div
+                  style={{
+                    border: '3px solid grey',
+                    width: '140px',
+                    height: '100px',
+                    margin: 'auto',
+                    textAlign: 'center',
+                    lineHeight: '100px',
+                    color: 'grey',
+                  }}
+                >
+                  Upload an Image
+                </div>
+              )}
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Box display="flex" justifyContent="center">
+              <Button
+                size="small"
+                variant="contained"
+                component="label" /* style={{marginTop: '20px'}}*/
+              >
+                Add Picture
+                <input
+                  onChange={onFileChange}
+                  type="file"
+                  id="uploadedPhoto"
+                  accept="image/gif, image/jpeg, image/png"
+                  style={{ display: 'none' }}
+                />
+              </Button>
+            </Box>
+          </Grid>
+        </Grid>
+        <Grid container item xs={6} spacing={2} style={{ textAlign: 'right' }}>
           <Grid item xs={12} style={{ height: '100px' }}>
             <FormControl className={classes.formControl}>
               <InputLabel id="demo-simple-select-label">
-                Farming Method
+                Item Description
               </InputLabel>
               <Select
                 name="item_desc"
                 onChange={handleChange}
                 autoWidth
-                value={value.item_desc}
+                value={itemProps.item_desc}
               >
                 <MenuItem value={'Organic'}>Organic</MenuItem>
                 <MenuItem value={'cOrganic'}>Certified Organic</MenuItem>
@@ -253,8 +280,9 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
                 name="item_unit"
                 onChange={handleChange}
                 autoWidth
-                value={value.item_unit}
+                value={itemProps.item_unit}
               >
+                <MenuItem value={'each'}>each</MenuItem>
                 <MenuItem value={'lbs'}>lbs</MenuItem>
                 <MenuItem value={'bunch'}>Bunch</MenuItem>
                 <MenuItem value={'basket'}>Basket</MenuItem>
@@ -270,8 +298,9 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
                   name="item_sizes"
                   onChange={handleChange}
                   autoWidth
-                  value={value.item_sizes}
+                  value={itemProps.item_sizes}
                 >
+                  <MenuItem value={''}>N/A</MenuItem>
                   <MenuItem value={'XS'}>X-Small</MenuItem>
                   <MenuItem value={'S'}>Small</MenuItem>
                   <MenuItem value={'M'}>Medium</MenuItem>
@@ -280,6 +309,73 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
                 </Select>
               </FormControl>
             </div>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              id="date"
+              label="Expiration Date"
+              type="date"
+              value={itemProps.exp_date}
+              defaultValue="2017-05-24"
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Box
+              pl={9}
+              display="flex"
+              lineHeight="250%"
+              color={appColors.paragraphText}
+            >
+              Taxable
+              <Box flexGrow={1} />
+              <Checkbox
+                checked={itemProps.taxable === 'TRUE'}
+                onChange={handleChange}
+                // onChange={}
+                name="taxable"
+                color="primary"
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Box
+              pl={9}
+              display="flex"
+              lineHeight="250%"
+              color={appColors.paragraphText}
+            >
+              Active
+              <Box flexGrow={1} />
+              <Checkbox
+                checked={itemProps.item_status === 'Active'}
+                onChange={handleChange}
+                // onChange={}
+                name="item_status"
+                color="primary"
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Box
+              pl={9}
+              display="flex"
+              lineHeight="250%"
+              color={appColors.paragraphText}
+            >
+              Favorite
+              <Box flexGrow={1} />
+              <Checkbox
+                checked={itemProps.favorite === 'TRUE'}
+                onChange={handleChange}
+                // onChange={}
+                name="favorite"
+                color="primary"
+              />
+            </Box>
           </Grid>
           <Grid item xs={12} style={{ height: '100px', marginRight: '55px' }}>
             <Button

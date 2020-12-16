@@ -61,7 +61,7 @@ export default function CheckoutLeft({ ...props }) {
   };
 
   return (
-    <Paper className={classes.root}>
+    <Paper elevation={0} className={classes.root}>
       <StyledTabs
         value={leftTabChosen}
         onChange={handleChangeCheckoutLeft}

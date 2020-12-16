@@ -64,6 +64,102 @@ const Store = ({ ...props }) => {
     getBusinesses(profile.longitude, profile.latitude, { ...profile });
   }, [profile.latitude]);
 
+  // Toggles for the login and signup box to be passed in as props to the Landing Nav Bar
+  const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
+  const [isSignUpShown, setIsSignUpShown] = useState(false);
+
+  // Options for which page is showing
+  const [storePage, setStorePage] = useState(
+    parseInt(localStorage.getItem('currentStorePage') || '0')
+  );
+  const [rightTabChosen, setRightTabChosen] = useState(0);
+
+  useEffect(() => {
+    if (
+      location.state !== undefined &&
+      (location.state.rightTabChosen !== undefined ||
+        location.state.leftTabChosen !== undefined)
+    )
+      setStorePage(1);
+  }, [location]);
+
+  useEffect(() => {
+    localStorage.setItem('currentStorePage', storePage);
+  }, [storePage]);
+
+  localStorage.setItem('currentStorePage', storePage);
+
+  const [cartTotal, setCartTotal] = useState(
+    parseInt(localStorage.getItem('cartTotal') || '0')
+  );
+  const [cartItems, setCartItems] = useState(
+    JSON.parse(localStorage.getItem('cartItems') || '{}')
+  );
+
+  useEffect(() => {
+    console.log('cartTotal: ', cartTotal);
+    localStorage.setItem('cartTotal', cartTotal);
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  }, [cartTotal, cartItems]);
+
+  props.hidden = props.hidden !== null ? props.hidden : false;
+
+  useEffect(() => {
+    if (Auth.isAuth) {
+      setProductsLoading(true);
+      const AuthMethods = new AuthUtils();
+      AuthMethods.getProfile().then((authRes) => {
+        console.log('User profile and store items were retrieved');
+        console.log('authRes: ', authRes);
+        const updatedProfile = {
+          email: authRes.customer_email,
+          firstName: authRes.customer_first_name,
+          lastName: authRes.customer_last_name,
+          pushNotifications:
+            authRes.cust_notification_approval === 'TRUE' ? true : false,
+          phoneNum: authRes.customer_phone_num,
+          address: authRes.customer_address,
+          unit: authRes.customer_unit,
+          city: authRes.customer_city,
+          state: authRes.customer_state,
+          zip: authRes.customer_zip,
+          deliveryInstructions: '',
+          latitude: authRes.customer_lat,
+          longitude: authRes.customer_long,
+          zone: '',
+          socialMedia: authRes.user_social_media,
+        };
+        setProfile(updatedProfile);
+      });
+    } else {
+      const long = cookies.get('longitude');
+      const lat = cookies.get('latitude');
+      const updatedProfile = {
+        email: '',
+        firstName: '',
+        lastName: '',
+        pushNotifications: false,
+        phoneNum: '',
+        address: cookies.get('address'),
+        unit: '',
+        city: cookies.get('city'),
+        state: cookies.get('state'),
+        zip: cookies.get('zip'),
+        deliveryInstructions: '',
+        latitude: lat,
+        longitude: long,
+        zone: '',
+        socialMedia: '',
+      };
+      setProfile(updatedProfile);
+
+      console.log('long: ', long);
+      console.log('lat: ', lat);
+      if (long == undefined || lat == undefined) {
+        window.location.href = `${window.location.origin.toString()}/`;
+      }
+    }
+  }, []);
   function getBusinesses(long, lat, updatedProfile) {
     if (long !== '' && lat !== '') {
       const BusiMethods = new BusiApiReqs();
@@ -198,102 +294,6 @@ const Store = ({ ...props }) => {
     }
   }
 
-  useEffect(() => {
-    if (Auth.isAuth) {
-      setProductsLoading(true);
-      const AuthMethods = new AuthUtils();
-      AuthMethods.getProfile().then((authRes) => {
-        console.log('User profile and store items were retrieved');
-        console.log('authRes: ', authRes);
-        const updatedProfile = {
-          email: authRes.customer_email,
-          firstName: authRes.customer_first_name,
-          lastName: authRes.customer_last_name,
-          pushNotifications:
-            authRes.cust_notification_approval === 'TRUE' ? true : false,
-          phoneNum: authRes.customer_phone_num,
-          address: authRes.customer_address,
-          unit: authRes.customer_unit,
-          city: authRes.customer_city,
-          state: authRes.customer_state,
-          zip: authRes.customer_zip,
-          deliveryInstructions: '',
-          latitude: authRes.customer_lat,
-          longitude: authRes.customer_long,
-          zone: '',
-          socialMedia: authRes.user_social_media,
-        };
-        setProfile(updatedProfile);
-      });
-    } else {
-      const long = cookies.get('longitude');
-      const lat = cookies.get('latitude');
-      const updatedProfile = {
-        email: '',
-        firstName: '',
-        lastName: '',
-        pushNotifications: false,
-        phoneNum: '',
-        address: cookies.get('address'),
-        unit: '',
-        city: cookies.get('city'),
-        state: cookies.get('state'),
-        zip: cookies.get('zip'),
-        deliveryInstructions: '',
-        latitude: lat,
-        longitude: long,
-        zone: '',
-        socialMedia: '',
-      };
-      setProfile(updatedProfile);
-
-      console.log('long: ', long);
-      console.log('lat: ', lat);
-      if (long == undefined || lat == undefined) {
-        window.location.href = `${window.location.origin.toString()}/`;
-      }
-    }
-  }, []);
-
-  // Toggles for the login and signup box to be passed in as props to the Landing Nav Bar
-  const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
-  const [isSignUpShown, setIsSignUpShown] = useState(false);
-
-  // Options for which page is showing
-  const [storePage, setStorePage] = useState(
-    parseInt(localStorage.getItem('currentStorePage') || '0')
-  );
-
-  useEffect(() => {
-    if (
-      location.state !== undefined &&
-      (location.state.rightTabChosen !== undefined ||
-        location.state.leftTabChosen !== undefined)
-    )
-      setStorePage(1);
-  }, [location]);
-
-  useEffect(() => {
-    localStorage.setItem('currentStorePage', storePage);
-  }, [storePage]);
-
-  localStorage.setItem('currentStorePage', storePage);
-
-  const [cartTotal, setCartTotal] = useState(
-    parseInt(localStorage.getItem('cartTotal') || '0')
-  );
-  const [cartItems, setCartItems] = useState(
-    JSON.parse(localStorage.getItem('cartItems') || '{}')
-  );
-
-  useEffect(() => {
-    console.log('cartTotal: ', cartTotal);
-    localStorage.setItem('cartTotal', cartTotal);
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-  }, [cartTotal, cartItems]);
-
-  props.hidden = props.hidden !== null ? props.hidden : false;
-
   return (
     <div hidden={props.hidden}>
       <storeContext.Provider
@@ -306,6 +306,7 @@ const Store = ({ ...props }) => {
           setProfile,
           products,
           productsLoading,
+          rightTabChosen,
           setStorePage,
           numDeliveryTimes,
           dayTimeDict,
@@ -326,6 +327,7 @@ const Store = ({ ...props }) => {
           setIsSignUpShown={setIsSignUpShown}
           storePage={storePage}
           setStorePage={setStorePage}
+          setRightTabChosen={setRightTabChosen}
         />
         <Box hidden={storePage !== 0}>
           <Box display="flex">

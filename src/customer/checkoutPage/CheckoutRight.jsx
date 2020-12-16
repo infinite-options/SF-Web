@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Box from '@material-ui/core/Box';
+
 import CheckoutTab from './tabs/CheckoutTab';
 import HistoryTab from './tabs/HistoryTab';
 import RefundTab from './tabs/RefundTab';
 import appColors from '../../styles/AppColors';
-import { Box } from '@material-ui/core';
+import storeContext from '../storeContext';
 
 const useStyles = makeStyles({
   root: {
@@ -47,9 +49,15 @@ const StyledTab = withStyles((theme) => ({
 export default function CheckoutRight() {
   const classes = useStyles();
 
+  const store = useContext(storeContext);
+
   const location = useLocation();
 
   const [rightTabChosen, setRightTabChosen] = useState(0);
+
+  useEffect(() => {
+    setRightTabChosen(store.rightTabChosen);
+  }, [store.rightTabChosen]);
 
   useEffect(() => {
     if (
@@ -75,7 +83,11 @@ export default function CheckoutRight() {
   };
 
   return (
-    <Paper className={classes.root} style={{ height: windowHeight - 95 }}>
+    <Paper
+      elevation={0}
+      className={classes.root}
+      style={{ height: windowHeight - 95 }}
+    >
       <StyledTabs
         value={rightTabChosen}
         onChange={handleChange}
@@ -98,6 +110,7 @@ export default function CheckoutRight() {
       */}
       {/*Hi Jeremy, Thanks for your comment.*/}
       <Paper
+        elevation={0}
         style={{
           marginTop: 10,
           backgroundColor: appColors.componentBg,

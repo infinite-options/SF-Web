@@ -41,6 +41,8 @@ const useStyles = makeStyles((theme) => ({
 
 // TODO: Add auto-refresh
 // TODO: Add Photo to report
+// TODO: filter out farms
+// TODO: checked report total calculations
 export default function FarmerReport({ farmID, farmName, ...props }) {
   // const [responseData, setResponseData] = useState();
   const [orders, setOrders] = useState([]);

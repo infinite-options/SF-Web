@@ -105,7 +105,7 @@ function AdminNavBar({ tab, setTab, ...props }) {
 
       return (
         <Select
-          defaultValue={'200-0000016'}
+          defaultValue={'200-000016'}
           className={classes.farmSelect}
           onChange={handleChangeFarm}
         >

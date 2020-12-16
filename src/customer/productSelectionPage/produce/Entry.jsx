@@ -43,8 +43,7 @@ function Entry(props) {
     if (productSelect.categoriesClicked.has(props.type)) isInCategory = true;
 
     setIsShown(
-      props.id in store.cartItems ||
-        (isInDay && isInFarm && isInCategory) ||
+      (isInDay && isInFarm && isInCategory) ||
         (isInDay &&
           productSelect.farmsClicked.size == 0 &&
           productSelect.categoriesClicked.size == 0) ||

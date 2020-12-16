@@ -36,11 +36,14 @@ const BASE_URL =
   'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
 const ITEM_EDIT_URL = BASE_URL + 'addItems/';
 
+const booleanVals = new Set(['taxable', 'favorite']);
+
 //TODO: Fields Needed (exp_date)
 //TODO: Update Needed (exp_date)
 //BUG: Photos is acting up
 //TODO: sort by alphabetically and by price
 //
+
 export default function Item(props) {
   const auth = useContext(AuthContext);
   const [editData, setEditData] = useState(props.data);
@@ -93,7 +96,6 @@ export default function Item(props) {
     const { name, value, checked } = event.target;
 
     let newValue = value;
-    const booleanVals = new Set(['taxable', 'favorite']);
     if (booleanVals.has(name)) newValue = checked ? 'TRUE' : 'FALSE';
     if (name === 'item_status') newValue = checked ? 'Active' : 'Past';
     console.log('setEditData(props.data): ', name, newValue);
@@ -125,8 +127,6 @@ export default function Item(props) {
     const created_at = postData.created_at;
     delete postData.created_at;
     postData.item_photo = file.obj; // change to File object
-    // postData.image_category = "item_images"; // NOTE: temporary
-    // console.log(postData);
 
     let formData = new FormData();
     Object.entries(postData).forEach((item) => {
@@ -156,7 +156,7 @@ export default function Item(props) {
             item_price: Number(postData.item_price),
             item_photo: sqlString.substring(
               sqlString.indexOf("item_photo = '") + 14,
-              sqlString.indexOf("item_photo = '") + 72
+              sqlString.indexOf("item_photo = '") + 78
             ),
           };
           return updatedData;
@@ -194,7 +194,7 @@ export default function Item(props) {
     <div className={classes.paper}>
       <Grid container>
         <Grid item xs={12}>
-          <h3>Add Item</h3>
+          <h3>Edit Item</h3>
         </Grid>
         <Grid container item xs={6} spacing={2}>
           <Grid item xs={12}>

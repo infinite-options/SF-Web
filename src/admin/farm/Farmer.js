@@ -33,6 +33,8 @@ export default function Farmer({ tab, ...props }) {
         return 'Esquivel Farm';
       case '200-000004':
         return 'Resendiz Family';
+      case '200-0000016':
+        return 'Royal Greens Farms';
       default:
         return null;
     }
