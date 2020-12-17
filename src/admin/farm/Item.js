@@ -52,6 +52,18 @@ export default function Item(props) {
     obj: undefined,
     url: props.data.item_photo || '',
   });
+  const [itemImage, setItemImage] = useState(
+    props.data.item_photo ||
+      'https://via.placeholder.com/400?text=No+Image+Available'
+  );
+
+  useEffect(() => {
+    setItemImage(
+      props.data.item_photo ||
+        'https://via.placeholder.com/400?text=No+Image+Available'
+    );
+  }, [props.data.item_photo]);
+
   const classes = useStyles();
 
   useEffect(() => {
@@ -151,23 +163,27 @@ export default function Item(props) {
 
     Axios.post(ITEM_EDIT_URL + 'Update', formData /*postData*/)
       .then((response) => {
+        const sqlString = response.data.sql;
+        const photo = sqlString.substring(
+          sqlString.indexOf("item_photo = '") + 14,
+          sqlString.indexOf("item_photo = '") + 78
+        );
         console.log(response);
         props.setData((prevData) => {
           const updatedData = [...prevData];
-          const sqlString = response.data.sql;
+
           updatedData[props.index] = {
             ...postData,
             // Converts price input from String to Number, to deal with empty string input cases.
             // Without this conversion in this case, price value would not be displayed since item_price = "".
             item_price: Number(postData.item_price),
             business_price: Number(postData.business_price),
-            item_photo: sqlString.substring(
-              sqlString.indexOf("item_photo = '") + 14,
-              sqlString.indexOf("item_photo = '") + 78
-            ),
+            item_photo: photo,
           };
           return updatedData;
         });
+        setItemImage('');
+        setItemImage(photo);
       })
       .catch((err) => {
         console.error(err.response || err);
@@ -474,13 +490,12 @@ export default function Item(props) {
         {modelBody}
       </Modal>
       <Card variant="outlined" className={classes.card}>
-        <CardMedia
-          image={
-            props.data.item_photo ||
-            'https://via.placeholder.com/400?text=No+Image+Available'
-          }
-          style={{ width: '100%', height: '200px', margin: 'auto' }}
-        />
+        {itemImage !== '' && (
+          <CardMedia
+            image={itemImage}
+            style={{ width: '100%', height: '200px', margin: 'auto' }}
+          />
+        )}
         <CardContent>
           <h5 className={classes.itemName}>{props.data.item_name}</h5>
           <p className={classes.itemDesc}>
@@ -613,53 +628,3 @@ const useStyles = makeStyles((theme) => ({
     margin: '0.2rem',
   },
 }));
-
-/*
-<Grid container item xs={6}  style={{backgroundColor: 'green',}}>
-                    <Grid item xs={12}>
-                        <TextField
-                        label="Name of Meal"
-                        defaultValue={data.item_name}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                        label="Price"
-                        defaultValue={data.item_price}
-                        InputProps={{
-                            inputComponent: NumberFormatCustomPrice,
-                        }}
-                        />
-                    </Grid>
-                    
-                    <Grid item xs={12}>
-                        <Button onClick={handleSaveButton}>Save</Button>
-                    </Grid>
-                </Grid>
-
-                <Grid  container item xs={6}  style={{textAlign:'center', backgroundColor: 'blue',}}>
-                    <Grid item xs={12} >
-                        <Select
-                        defaultValue={"vegetable"} 
-                        >
-                            <MenuItem value={"vegetable"}>Vegetable</MenuItem>
-                            <MenuItem value={"fruit"}>Fruit</MenuItem>
-                            <MenuItem value={"dessert"}>Dessert</MenuItem>
-                            <MenuItem value={"other"}>Other</MenuItem>
-                        </Select>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <FormControlLabel control={<Switch />} label="Favorite" />
-                    </Grid>
-
-                    <Grid item xs={7} style={{backgroundColor: 'red'}}>
-                        <Button variant="contained" component="label">
-                            Edit Picture
-                            <input onChange={onFileChange} type="file" id="uploadedPhoto" accept="image/gif, image/jpeg, image/png" style={{ display: "none" }}/>
-                         </Button>
-                    </Grid>
-                    <Grid item xs={5}>
-                        {file.name}
-                    </Grid>
-                </Grid>
-*/

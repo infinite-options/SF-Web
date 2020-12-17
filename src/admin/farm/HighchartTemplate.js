@@ -130,21 +130,10 @@ function RevenueHighchart() {
     for (const dayIdx in dayArr) {
       let dailyProfit = 0;
       for (const purchase of dayDict[dayArr[dayIdx]]) {
-        let barValue = '';
-        switch (barsType) {
-          case 'customer':
-            barValue =
-              purchase.delivery_first_name + ' ' + purchase.delivery_last_name;
-            break;
-          case 'item':
-            barValue = purchase['deconstruct.name'];
-            break;
-          case 'business':
-            barValue = farmDict[purchase['deconstruct.itm_business_uid']];
-            break;
-          default:
-            break;
-        }
+        const barValue =
+          barsType === 'customer'
+            ? purchase.delivery_first_name + ' ' + purchase.delivery_last_name
+            : purchase[barsType];
 
         const amountSpent =
           Math.round(purchase[priceType + '_amount'] * 100) / 100;
@@ -406,9 +395,8 @@ function RevenueHighchart() {
             value={barsType}
             onChange={handleChange}
           >
-            <MenuItem value={'customer'}>Customer</MenuItem>
-            <MenuItem value={'business'}>Business</MenuItem>
-            <MenuItem value={'item'}>Item</MenuItem>
+            <MenuItem value={'deconstruct.itm_business_uid'}>Business</MenuItem>
+            <MenuItem value={'deconstruct.name'}>Item</MenuItem>
           </Select>
         </FormControl>
         <FormControl className={classes.formControl}>

@@ -8,6 +8,7 @@ import {
   DateRangeDelimiter,
 } from '@material-ui/pickers';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import Box from '@material-ui/core/Box';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -51,11 +52,13 @@ function Analytics() {
 
   // deconstruct.name is the item name
   const [barsType, setBarType] = useState('deconstruct.name');
+  const [priceType, setPriceType] = useState('item');
 
   const handleChange = (event) => {
     const { value, name } = event.target;
     if (name === 'type') setBarType(value);
     else if (name === 'business') setBusinessId(value);
+    else if (name === 'price') setPriceType(value);
   };
 
   // TODO: First need to get all the dates that has customer activities, sort them
@@ -85,7 +88,7 @@ function Analytics() {
   useEffect(() => {
     if (purchasesRes.length > 0 || businessID !== 'all')
       loadSeriesData(purchasesRes);
-  }, [farmDict, barsType, purchasesRes]);
+  }, [farmDict, barsType, priceType, purchasesRes]);
 
   function loadSeriesData(res) {
     let theData = res;
@@ -102,14 +105,16 @@ function Analytics() {
       let custName = (
         purchase.delivery_first_name +
         ' ' +
-        purchase.delivery_last_name +
-        ' ' +
-        purchase.pur_customer_uid
+        purchase.delivery_last_name
       ).trim();
       if (custName in custDict) {
-        custAmnArr[custAmnDict[custName]].amount += purchase.Amount;
+        custAmnArr[custAmnDict[custName]].amount +=
+          purchase[priceType + '_amount'];
       } else {
-        custAmnArr.push({ name: custName, amount: purchase.Amount });
+        custAmnArr.push({
+          name: custName,
+          amount: purchase[priceType + '_amount'],
+        });
         custDict[custName] = [];
         custAmnDict[custName] = cIdx;
         cIdx += 1;
@@ -142,7 +147,8 @@ function Analytics() {
       for (const purchase of custDict[custArr[custIdx]]) {
         const barValue = purchase[barsType];
 
-        const amountSpent = Math.round(purchase.Amount * 100) / 100;
+        const amountSpent =
+          Math.round(purchase[priceType + '_amount'] * 100) / 100;
 
         if (barValue in barDict) {
           purchases[barDict[barValue]].data[custIdx] += amountSpent;
@@ -331,6 +337,7 @@ function Analytics() {
     <>
       <Box display="flex" justifyContent="center">
         <FormControl className={classes.formControl}>
+          <FormHelperText>Business</FormHelperText>
           <Select
             labelId="demo-controlled-open-select-label"
             id="demo-controlled-open-select"
@@ -349,6 +356,7 @@ function Analytics() {
           </Select>
         </FormControl>
         <FormControl className={classes.formControl}>
+          <FormHelperText>Graph Type</FormHelperText>
           <Select
             labelId="demo-controlled-open-select-label"
             id="demo-controlled-open-select"
@@ -356,8 +364,22 @@ function Analytics() {
             value={barsType}
             onChange={handleChange}
           >
-            <MenuItem value={'deconstruct.name'}>Item</MenuItem>
             <MenuItem value={'deconstruct.itm_business_uid'}>Business</MenuItem>
+            <MenuItem value={'deconstruct.name'}>Item</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl className={classes.formControl}>
+          <FormHelperText>Price Type</FormHelperText>
+          <Select
+            labelId="demo-controlled-open-select-label"
+            id="demo-controlled-open-select"
+            label="Select Price Type"
+            name="price"
+            value={priceType}
+            onChange={handleChange}
+          >
+            <MenuItem value={'item'}>Item</MenuItem>
+            <MenuItem value={'business'}>Business</MenuItem>
           </Select>
         </FormControl>
       </Box>
