@@ -490,12 +490,10 @@ export default function Item(props) {
         {modelBody}
       </Modal>
       <Card variant="outlined" className={classes.card}>
-        {itemImage !== '' && (
-          <CardMedia
-            image={itemImage}
-            style={{ width: '100%', height: '200px', margin: 'auto' }}
-          />
-        )}
+        <CardMedia
+          image={itemImage + '?t=' + new Date().getTime()}
+          style={{ width: '100%', height: '200px', margin: 'auto' }}
+        />
         <CardContent>
           <h5 className={classes.itemName}>{props.data.item_name}</h5>
           <p className={classes.itemDesc}>
