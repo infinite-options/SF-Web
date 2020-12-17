@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -7,6 +7,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
+import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import { useConfirmation } from '../../services/ConfirmationService';
@@ -412,6 +413,7 @@ function OrdersTable({ orders, type, farmID, ...props }) {
 
 function OrderRow({ order, type, farmID, ...props }) {
   const [hidden, setHidden] = useState(true);
+  const [total, setTotal] = useState(0);
 
   const address = (() => {
     return `${order.delivery_address} ${
@@ -421,12 +423,25 @@ function OrderRow({ order, type, farmID, ...props }) {
       order.delivery_zip
     } `;
   })();
-  const count = (() => {
-    // let result = 0;
-    // JSON.parse(order.items).forEach(item => result += Number(item.qty));
-    // return result;
+  useMemo(() => {
+    var _total = 0;
+    for (const item of JSON.parse(order.items)) {
+      if (item.itm_business_uid === farmID) {
+        _total += item.price * item.qty;
+      }
+    }
+    setTotal(Math.round(_total * 100) / 100);
+  }, [order]);
 
-    return JSON.parse(order.items).length;
+  const count = (() => {
+    var _count = 0;
+    for (const item of JSON.parse(order.items)) {
+      if (item.itm_business_uid === farmID) {
+        _count += 1;
+      }
+    }
+
+    return _count;
   })();
   const hasPaid = (() => {
     const boolToString = String(order.amount_due === order.amount_paid);
@@ -445,7 +460,7 @@ function OrderRow({ order, type, farmID, ...props }) {
         <TableCell>{order.delivery_email}</TableCell>
         <TableCell>{address}</TableCell>
         <TableCell>{order.delivery_phone_num}</TableCell>
-        <TableCell>{order.Amount}</TableCell>
+        <TableCell>{'$' + total.toFixed(2)}</TableCell>
         <TableCell>{count}</TableCell>
         <TableCell>{hasPaid}</TableCell>
         <TableCell>
@@ -495,7 +510,7 @@ function OrderRow({ order, type, farmID, ...props }) {
       </TableRow>
       {!hidden &&
         JSON.parse(order.items).map((item, idx) => {
-          if (item.itm_business_uid == farmID)
+          if (item.itm_business_uid === farmID)
             return (
               <OrderItem
                 key={idx}
@@ -517,12 +532,31 @@ function OrderItem({ order, item, deleteItem, ...props }) {
     <TableRow>
       <TableCell colSpan={9}>
         <div style={{ border: '1px solid grey', padding: '0 10px' }}>
-          <h3>
-            {item.name}
+          <Box display="flex">
+            <img style={{ width: '115px', height: '115px' }} src={item.img} />
+            <Box>
+              <h3>
+                {item.name}{' '}
+                {item.unit !== undefined && item.unit !== ''
+                  ? '($' +
+                    item.price.toFixed(2) +
+                    ' ' +
+                    (item.unit === 'each' ? '' : '/ ') +
+                    item.unit +
+                    ')'
+                  : ''}
+              </h3>
+              <p>Quantity: {item.qty}</p>
+              <p>Revenue: ${(item.price * item.qty).toFixed(2)}</p>
+            </Box>
+            <Box flexGrow={1} />
             <Button
               style={{
                 ...tinyButtonStyle,
                 float: 'right',
+                height: '30px',
+                marginTop: 'auto',
+                marginBottom: 'auto',
                 backgroundColor: '#dc3545',
               }}
               onClick={(e) =>
@@ -531,9 +565,7 @@ function OrderItem({ order, item, deleteItem, ...props }) {
             >
               Delete
             </Button>
-          </h3>
-          <p>Quantity: {item.qty}</p>
-          <p>Revenue: ${(item.price * item.qty).toFixed(2)}</p>
+          </Box>
         </div>
       </TableCell>
     </TableRow>

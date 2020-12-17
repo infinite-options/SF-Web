@@ -518,7 +518,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
   };
 
   if (error && !loaded) {
-    return <div>We are loading Setting page for you</div>;
+    return <div>Loading Information...</div>;
   }
 
   return (

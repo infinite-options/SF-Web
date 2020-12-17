@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // TODO: add dropdown for farms / all and date range / all
+// TODO: Add Date Bar Category
 function Analytics() {
   const classes = useStyles();
   const { farmList, farmDict } = useContext(AdminFarmContext);
@@ -61,6 +62,7 @@ function Analytics() {
     else if (name === 'price') setPriceType(value);
   };
 
+  // TODO: Configure number of purchases field
   // TODO: First need to get all the dates that has customer activities, sort them
   // TODO: Get code from Allan
   // DONE: 1. Add business
@@ -163,7 +165,7 @@ function Analytics() {
               barsType === 'deconstruct.itm_business_uid'
                 ? farmDict[barValue]
                 : barValue,
-            showInLegend: true,
+            showInLegend: barsType === 'deconstruct.name' ? false : true,
             data: [...nullData],
             tooltip: {
               pointFormat:
@@ -196,7 +198,7 @@ function Analytics() {
   const options = {
     chart: { height: '900px' },
     title: {
-      text: 'Revenue Analysis',
+      text: 'Customer Analytics',
       align: 'left',
     },
     exporting: {
@@ -219,7 +221,7 @@ function Analytics() {
     xAxis: [
       {
         title: {
-          text: 'Date',
+          text: 'Customer',
           style: {
             color: 'gray',
           },
@@ -250,21 +252,21 @@ function Analytics() {
         stackLabels: {
           enabled: true,
           style: {
-            color: '#000',
+            fontWeight: 'bold',
+            color: 'black',
           },
         },
-        opposite: true,
       },
     ],
     // tooltip: {
     //     shared: true
     // },
     legend: {
-      layout: 'vertical',
+      layout: 'horizontal',
       align: 'left',
       x: 80,
       verticalAlign: 'top',
-      y: 55,
+      y: 10,
       floating: true,
       backgroundColor:
         Highcharts.defaultOptions.legend.backgroundColor || // theme

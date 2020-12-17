@@ -395,6 +395,7 @@ function RevenueHighchart() {
             value={barsType}
             onChange={handleChange}
           >
+            <MenuItem value={'customer'}>Customer</MenuItem>
             <MenuItem value={'deconstruct.itm_business_uid'}>Business</MenuItem>
             <MenuItem value={'deconstruct.name'}>Item</MenuItem>
           </Select>
