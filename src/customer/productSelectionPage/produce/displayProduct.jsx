@@ -16,6 +16,7 @@ function createProduct2(product) {
       img={product.item_photo}
       type={product.item_type}
       unit={product.item_unit}
+      isTaxable={product.taxable === 'TRUE'}
       business_uids={product.business_uids} // This is not from the database and not used, it is parsed in store within the last part of the getBusinesses method
       business_uid={product.lowest_price_business_uid} // This is the business ID with the lowest price, also parsed from the getBusinesses method
       id={product.item_uid}
@@ -49,7 +50,7 @@ function DisplayProduct() {
   useEffect(() => {
     let message = '';
     if (productSelect.dayClicked === '') {
-      message = 'Please select one produce delivery date and time.';
+      message = 'Start by selecting a delivery date and time.';
 
       if (store.cartTotal > 0) {
         message = 'Here are the items currently in your cart';
@@ -81,7 +82,7 @@ function DisplayProduct() {
           mb={2}
           style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
         >
-          {displayMessage}
+          <Box fontSize={22}>{displayMessage}</Box>
           <Box mt={2} />
           <Paper
             style={{

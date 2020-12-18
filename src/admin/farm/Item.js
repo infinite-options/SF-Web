@@ -150,7 +150,7 @@ export default function Item(props) {
     let formData = new FormData();
     Object.entries(postData).forEach((item) => {
       console.log('item ', item);
-      if (typeof item[1] !== 'string') {
+      if (typeof item[1] !== 'string' && item[0] !== 'item_photo') {
         console.log('postData[item[0]] ', postData[item[0]]);
         postData[item[0]] = item[1] ? String(item[1]) : '';
         console.log('postData[item[0]] ', postData[item[0]]);
@@ -495,39 +495,46 @@ export default function Item(props) {
           style={{ width: '100%', height: '200px', margin: 'auto' }}
         />
         <CardContent>
-          <h5 className={classes.itemName}>{props.data.item_name}</h5>
+          <h5 className={classes.itemName}>{props.data.item_name} </h5>
           <p className={classes.itemDesc}>
             {itemDescription(props.data.item_desc)}
           </p>
         </CardContent>
-        <NumberFormat
-          decimalScale={2}
-          fixedDecimalScale={true}
-          value={props.data.item_price}
-          displayType={'text'}
-          thousandSeparator={true}
-          prefix={'$'}
-          className={classes.itemPrice}
-        />
-        <IconButton onClick={handleHeartChange} className={classes.itemIcon}>
-          <StarRateIcon
-            style={{
-              color:
-                props.data.favorite.toLowerCase() === 'true'
-                  ? '#f7b300'
-                  : 'grey',
-            }}
-          />
-        </IconButton>
-        <IconButton onClick={handleRefresh} className={classes.itemIcon}>
-          <RefreshIcon />
-        </IconButton>
-        <IconButton onClick={handleDelete} className={classes.itemIcon}>
-          <DeleteIcon />
-        </IconButton>
-        <IconButton onClick={handleOpenEditModel} className={classes.itemIcon}>
-          <EditIcon />
-        </IconButton>
+        <Box display="flex">
+          <Box fontWeight="bold" fontsize={8}>
+            {props.data.item_unit !== undefined && props.data.item_unit !== ''
+              ? '$' +
+                props.data.item_price.toFixed(2) +
+                ' ' +
+                (props.data.item_unit === 'each' ? '' : '/ ') +
+                props.data.item_unit +
+                ''
+              : ''}
+          </Box>
+          <Box flexGrow={1} />
+          <IconButton onClick={handleHeartChange} className={classes.itemIcon}>
+            <StarRateIcon
+              style={{
+                color:
+                  props.data.favorite.toLowerCase() === 'true'
+                    ? '#f7b300'
+                    : 'grey',
+              }}
+            />
+          </IconButton>
+          <IconButton onClick={handleRefresh} className={classes.itemIcon}>
+            <RefreshIcon />
+          </IconButton>
+          <IconButton onClick={handleDelete} className={classes.itemIcon}>
+            <DeleteIcon />
+          </IconButton>
+          <IconButton
+            onClick={handleOpenEditModel}
+            className={classes.itemIcon}
+          >
+            <EditIcon />
+          </IconButton>
+        </Box>
       </Card>
     </Grid>
   );

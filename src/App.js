@@ -31,13 +31,11 @@ function calTotal() {
   return amount;
 }
 
-// TODO: 1. Add Item modal and picture Bug
-//       2. Chart for analytics from Allan
-//       3. Report page totals Bug
-//       4. Delivery and Service fee by zone
-//       5. Home page address feature
-//       6. Optimize loading screen for produce
-//       7. Shipping and service fee from zones
+/* TODO: 
+1. Service Fee and Delivery Fee from Zones endpoint
+2. checking accepting hours for dates showing in filter
+3. Home page address feature
+*/
 //TODO: Link Google Analytics
 // TODO: change favicon to white background
 function App() {

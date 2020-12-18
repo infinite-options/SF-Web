@@ -175,7 +175,7 @@ function Entry(props) {
               <Box textAlign="left">{props.name}</Box>
               <Box flexGrow={1} />
               <Box textAlign="right">
-                $ {props.price} {props.unit === 'each' ? '' : '/ '}
+                $ {props.price.toFixed(2)} {props.unit === 'each' ? '' : '/ '}
                 {props.unit}
               </Box>
             </Box>

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { useElements, CardElement } from '@stripe/react-stripe-js';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -76,13 +76,7 @@ export default function CheckoutTab() {
 
   const { setPaymentProcessing, setLeftTabChosen } = checkout;
   // Retrieve items from store context
-  function getItemsCart() {
-    var result = [];
-    for (const itemId in store.cartItems) {
-      result.push(store.cartItems[itemId]);
-    }
-    return result;
-  }
+
   // cartItems is a dictonary, need to convert it into an array
   const [cartItems, setCartItems] = useState(getItemsCart());
 
@@ -90,14 +84,55 @@ export default function CheckoutTab() {
     setCartItems(getItemsCart());
   }, [store.cartItems]);
 
+  var days = [
+    'SUNDAY',
+    'MONDAY',
+    'TUESDAY',
+    'WEDNESDAY',
+    'THURSDAY',
+    'FRIDAY',
+    'SATURDAY',
+  ];
+
+  useMemo(() => {
+    const today = days[new Date().getDay()];
+    if (store.profile.zone !== '')
+      axios
+        .post(
+          process.env.REACT_APP_SERVER_BASE_URI +
+            'get_Fee_Tax/' +
+            store.profile.zone +
+            ',' +
+            today
+        )
+        .then((res) => {
+          setOrigDeliveryFee(parseInt(res.data.service_fee));
+          setOrigServiceFee(parseInt(res.data.delivery_fee));
+        });
+  }, [store.profile.zone]);
+  function getItemsCart() {
+    var result = [];
+    for (const itemId in store.cartItems) {
+      result.push(store.cartItems[itemId]);
+    }
+    return result;
+  }
+
+  const [origDeliveryFee, setOrigDeliveryFee] = useState(5);
+  const [origServiceFee, setOrigServiceFee] = useState(1.5);
+
   // DONE: Add service fee
   // DONE: Add Delivery tip
   // DONE: apply promo to subtotal
   // DONE: make taxes not applied to the delivery fee
   const [subtotal, setSubtotal] = useState(calculateSubTotal(cartItems));
   const [promoApplied, setPromoApplied] = useState(0);
-  const [deliveryFee, setDeliveryFee] = useState(cartItems.length > 0 ? 5 : 0);
-  const [serviceFee, setServiceFee] = useState(cartItems.length > 0 ? 1.5 : 0);
+  const [deliveryFee, setDeliveryFee] = useState(
+    cartItems.length > 0 ? origDeliveryFee : 0
+  );
+  const [serviceFee, setServiceFee] = useState(
+    cartItems.length > 0 ? origServiceFee : 0
+  );
   const [driverTip, setDriverTip] = useState('');
   const [tax, setTax] = useState(0);
   const [total, setTotal] = useState(
@@ -125,20 +160,20 @@ export default function CheckoutTab() {
         : 0;
     setTotal(total);
     setAmountPaid(total);
-    setDiscount(promoApplied + (5 - deliveryFee));
+    setDiscount(promoApplied + (origServiceFee - deliveryFee));
   }, [subtotal, promoApplied, deliveryFee, driverTip]);
 
   useEffect(() => {
     setSubtotal(calculateSubTotal(cartItems));
     let amountDue = parseFloat(
-      (calculateSubTotal(cartItems) + 5 + serviceFee).toFixed(2)
+      (calculateSubTotal(cartItems) + origServiceFee + serviceFee).toFixed(2)
     );
     setAmountDue(amountDue);
   }, [cartItems, deliveryFee]);
 
   useEffect(() => {
     setTax(0);
-    setServiceFee(subtotal > 0 ? 1.5 : 0);
+    setServiceFee(subtotal > 0 ? origServiceFee : 0);
   }, [subtotal]);
 
   function onAddItemsClicked() {
@@ -203,7 +238,7 @@ export default function CheckoutTab() {
         setDeliveryFee={setDeliveryFee}
         setPromoApplied={setPromoApplied}
         subtotal={subtotal}
-        originalDeliveryFee={5}
+        originalDeliveryFee={origDeliveryFee}
         classes={classes}
       />
       {/* END: Coupons */}
