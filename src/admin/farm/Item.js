@@ -182,7 +182,6 @@ export default function Item(props) {
           };
           return updatedData;
         });
-        setItemImage('');
         setItemImage(photo);
       })
       .catch((err) => {
@@ -288,7 +287,10 @@ export default function Item(props) {
           <Grid item xs={12}>
             {file.url ? (
               <img
-                src={file.url + '?t=' + new Date().getTime()}
+                src={
+                  file.url +
+                  (file.obj === undefined ? '?t=' + new Date().getTime() : '')
+                }
                 alt="Produce Image"
                 width="140px"
                 height="100px"
