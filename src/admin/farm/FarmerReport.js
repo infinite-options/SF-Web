@@ -534,7 +534,10 @@ function OrderItem({ order, item, deleteItem, ...props }) {
       <TableCell colSpan={9}>
         <div style={{ border: '1px solid grey', padding: '0 10px' }}>
           <Box display="flex">
-            <img style={{ width: '115px', height: '115px' }} src={item.img} />
+            <img
+              style={{ width: '115px', height: '115px' }}
+              src={item.img + '?t=' + new Date().getTime()}
+            />
             <Box>
               <h3>
                 {item.name}{' '}

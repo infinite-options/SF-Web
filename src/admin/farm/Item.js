@@ -288,7 +288,7 @@ export default function Item(props) {
           <Grid item xs={12}>
             {file.url ? (
               <img
-                src={file.url}
+                src={file.url + '?t=' + new Date().getTime()}
                 alt="Produce Image"
                 width="140px"
                 height="100px"

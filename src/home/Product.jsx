@@ -15,7 +15,7 @@ const Product = (props) => {
           style={{
             width: '170px',
             height: '170px',
-            backgroundImage: `url(${props.img})`,
+            backgroundImage: `url(${props.img + '?t=' + new Date().getTime()})`,
             backgroundSize: '100% 100%',
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',
