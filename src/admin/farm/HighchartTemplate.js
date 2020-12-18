@@ -46,7 +46,7 @@ function RevenueHighchart() {
   const [listOfDates, setDates] = useState([]);
   const [listOfBuyers, setListOfBuyers] = useState([]);
   const [listOfNumCateg, setListOfNumCateg] = useState([]);
-  const [listOfCumRevenue, setCumRenevue] = useState([]);
+  const [listOfCumuRevenue, setCumuRevenue] = useState([]);
   const [listOfDailyRevenue, setDailyRevenue] = useState([]);
 
   const [businessID, setBusinessId] = useState('all');
@@ -69,10 +69,6 @@ function RevenueHighchart() {
   // DONE: 3. Add businesses pull down
   // TODO: 4. Add numbers to top
   // TODO: 5. Add Date ranges
-  // const newCustomers = [3, 1, 1, 0, 5, 3];
-  // const returnCustomers = [2, 3, 4, 1, 3, 1];
-  // const cumulativeProfit = [10, 29, 54, 57, 99, 115];
-  // const dailyRevenue = [10, 19, 25, 3, 42, 16];
 
   useEffect(() => {
     axios
@@ -177,7 +173,7 @@ function RevenueHighchart() {
 
     setListOfNumCateg(uniqueBarVals);
     setListOfBuyers(customers);
-    setCumRenevue(revenue);
+    setCumuRevenue(revenue);
     setDailyRevenue(dailyIncome);
     // console.log("buyerContainer ", buyerContainer);
     // console.log("retuners ", oldCustomer);
@@ -295,7 +291,7 @@ function RevenueHighchart() {
         type: 'spline',
         name: 'Cumulative Revenue',
         showInLegend: false,
-        data: listOfCumRevenue,
+        data: listOfCumuRevenue,
         tooltip: {
           pointFormat: '{series.name}: <b>{point.y}</b><br/>',
         },
@@ -410,8 +406,8 @@ function RevenueHighchart() {
             value={priceType}
             onChange={handleChange}
           >
-            <MenuItem value={'business'}>Business</MenuItem>
             <MenuItem value={'item'}>Item</MenuItem>
+            <MenuItem value={'business'}>Business</MenuItem>
           </Select>
         </FormControl>
       </Box>

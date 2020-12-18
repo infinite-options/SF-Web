@@ -25,6 +25,7 @@ const BUSINESS_DETAILS_URL =
 const API_URL =
   'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
 
+// TODO: cannot type in 12:00am
 function NumberFormatCustom(props) {
   const { inputRef, onChange, ...other } = props;
 
@@ -929,6 +930,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                 variant="outlined"
                 name="password"
                 fullWidth
+                style={{ width: '300px' }}
                 onChange={handleChange}
               />
 
@@ -941,6 +943,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                 variant="outlined"
                 name="passwordConfirm"
                 fullWidth
+                style={{ width: '300px' }}
                 onChange={handleChange}
                 // helperText={errorStatus?"Password not match":""}
               />

@@ -75,12 +75,15 @@ const Store = ({ ...props }) => {
   const [rightTabChosen, setRightTabChosen] = useState(0);
 
   useEffect(() => {
-    if (
-      location.state !== undefined &&
-      (location.state.rightTabChosen !== undefined ||
-        location.state.leftTabChosen !== undefined)
-    )
-      setStorePage(1);
+    if (location.state !== undefined) {
+      if (
+        location.state.rightTabChosen !== undefined ||
+        location.state.leftTabChosen !== undefined
+      )
+        setStorePage(1);
+      if (location.state.storePage !== undefined)
+        setStorePage(parseInt(location.state.storePage));
+    }
   }, [location]);
 
   useEffect(() => {

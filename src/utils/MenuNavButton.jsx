@@ -56,7 +56,7 @@ function MenuListComposition(props) {
       case 'Store':
         history.push({
           pathname: '/store',
-          state: { storePage: 1 },
+          state: { storePage: 0 },
         });
         break;
       case 'Profile Info':

@@ -32,6 +32,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const fields = {
+  business: 'deconstruct.itm_business_uid',
+  item: 'deconstruct.name',
+  date: 'purchase_date',
+};
+
 // TODO: add dropdown for farms / all and date range / all
 // TODO: Add Date Bar Category
 function Analytics() {
@@ -52,7 +58,7 @@ function Analytics() {
   const [purchasesRes, setPurchasesRes] = useState([]);
 
   // deconstruct.name is the item name
-  const [barsType, setBarType] = useState('deconstruct.name');
+  const [barsType, setBarType] = useState(fields.item);
   const [priceType, setPriceType] = useState('item');
 
   const handleChange = (event) => {
@@ -107,7 +113,9 @@ function Analytics() {
       let custName = (
         purchase.delivery_first_name +
         ' ' +
-        purchase.delivery_last_name
+        purchase.delivery_last_name +
+        ' ' +
+        purchase.pur_customer_uid
       ).trim();
       if (custName in custDict) {
         custAmnArr[custAmnDict[custName]].amount +=
@@ -139,6 +147,7 @@ function Analytics() {
     //todo (returner or new customers)
     let barDict = {};
     let purchases = [];
+    let purchaseIdSet = new Set();
     cIdx = 0;
     const numPurchases = new Array(custArr.length).fill(0);
     const nullData = new Array(custArr.length).fill(0);
@@ -147,8 +156,11 @@ function Analytics() {
     for (const custIdx in custArr) {
       let dailyProfit = 0;
       for (const purchase of custDict[custArr[custIdx]]) {
-        const barValue = purchase[barsType];
+        var barValue = purchase[barsType];
 
+        if (barsType === fields.date) {
+          barValue = barValue.substring(0, 7);
+        }
         const amountSpent =
           Math.round(purchase[priceType + '_amount'] * 100) / 100;
 
@@ -156,16 +168,16 @@ function Analytics() {
           purchases[barDict[barValue]].data[custIdx] += amountSpent;
           purchases[barDict[barValue]].data[custIdx] =
             Math.round(purchases[barDict[barValue]].data[custIdx] * 100) / 100;
-          numPurchases[custIdx] += 1;
+          if (!purchaseIdSet.has(purchase.purchase_uid)) {
+            numPurchases[custIdx] += 1;
+            purchaseIdSet.add(purchase.purchase_uid);
+          }
         } else {
           barDict[barValue] = cIdx;
           const barData = {
             type: 'column',
-            name:
-              barsType === 'deconstruct.itm_business_uid'
-                ? farmDict[barValue]
-                : barValue,
-            showInLegend: barsType === 'deconstruct.name' ? false : true,
+            name: barsType === fields.business ? farmDict[barValue] : barValue,
+            showInLegend: barsType === fields.item ? false : true,
             data: [...nullData],
             tooltip: {
               pointFormat:
@@ -176,15 +188,13 @@ function Analytics() {
           barData.data[custIdx] = amountSpent;
           purchases.push(barData);
           cIdx += 1;
-          numPurchases[custIdx] += 1;
+          if (!purchaseIdSet.has(purchase.purchase_uid)) {
+            numPurchases[custIdx] += 1;
+            purchaseIdSet.add(purchase.purchase_uid);
+          }
         }
         dailyProfit += amountSpent;
         dailyProfit = Math.round(dailyProfit * 100) / 100;
-        if (amountSpent > 17 && amountSpent < 18) {
-          const fixed = Math.round(purchase.Amount * 100) / 100;
-
-          console.log(fixed, purchase.Amount);
-        }
       }
     }
 
@@ -256,6 +266,7 @@ function Analytics() {
             color: 'black',
           },
         },
+        opposite: true,
       },
     ],
     // tooltip: {
@@ -366,8 +377,9 @@ function Analytics() {
             value={barsType}
             onChange={handleChange}
           >
-            <MenuItem value={'deconstruct.itm_business_uid'}>Business</MenuItem>
-            <MenuItem value={'deconstruct.name'}>Item</MenuItem>
+            <MenuItem value={fields.item}>Item</MenuItem>
+            <MenuItem value={fields.business}>Business</MenuItem>
+            <MenuItem value={fields.date}>Date</MenuItem>
           </Select>
         </FormControl>
         <FormControl className={classes.formControl}>

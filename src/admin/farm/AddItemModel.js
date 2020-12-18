@@ -46,16 +46,16 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
     itm_business_uid: farmID,
     item_name: '',
     item_status: 'Active',
-    item_type: 'Vegetable',
-    item_desc: 'notOrganic',
-    item_unit: 'each',
+    item_type: '',
+    item_desc: '',
+    item_unit: '',
     item_price: '',
     business_price: '',
     item_sizes: '',
     favorite: 'FALSE',
     taxable: 'FALSE',
     item_photo: { obj: undefined, url: '' },
-    exp_date: '0000-01-01',
+    exp_date: '',
   });
   const handleChange = (event) => {
     const { name, value, checked } = event.target;
@@ -316,7 +316,7 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
               label="Expiration Date"
               type="date"
               value={itemProps.exp_date}
-              defaultValue="2017-05-24"
+              defaultValue=""
               InputLabelProps={{
                 shrink: true,
               }}
