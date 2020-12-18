@@ -10,14 +10,21 @@ import { loadStripe } from '@stripe/stripe-js';
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
+const stripePromise = loadStripe(
+  process.env.NODE_ENV === 'production'
+    ? process.env.REACT_APP_STRIPE_PUBLIC_KEY_LIVE
+    : process.env.REACT_APP_STRIPE_PUBLIC_KEY
+);
 
 export default function CheckoutPage() {
   const [amountPaid, setAmountPaid] = useState(0);
   const [amountDue, setAmountDue] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [purchaseMade, setPurchaseMade] = useState(0);
-
+  console.log(
+    'In Checkout Page Production: ',
+    process.env.NODE_ENV === 'production'
+  );
   const [paymentProcessing, setPaymentProcessing] = useState(false);
   const [leftTabChosen, setLeftTabChosen] = useState(4);
 

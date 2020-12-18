@@ -103,7 +103,7 @@ const PayPal = ({ value, deliveryInstructions }) => {
             });
         }}
         options={{
-          clientId: CLIENT.sandbox,
+          clientId: CLIENT_ID,
         }}
       />
     </div>

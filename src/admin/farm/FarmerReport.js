@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
 // DONE: Add Photo to report
 // DONE: filter out farms
 // DONE: checked report total calculations
+// TODO: Take the next delivery day for summary report
 // TODO: Add business price and item price (item only seen by admin)
 export default function FarmerReport({ farmID, farmName, ...props }) {
   // const [responseData, setResponseData] = useState();

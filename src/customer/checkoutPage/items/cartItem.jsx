@@ -57,7 +57,7 @@ function CartItem(props) {
         style={{
           width: '90px',
           height: '90px',
-          backgroundImage: `url(${props.img})`,
+          backgroundImage: `url(${props.img + '?t=' + new Date().getTime()})`,
           backgroundSize: '100% 100%',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
