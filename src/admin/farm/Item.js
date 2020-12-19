@@ -216,62 +216,72 @@ export default function Item(props) {
     <div className={classes.paper}>
       <Grid container>
         <Grid item xs={12}>
-          <h3>Edit Item</h3>
+          <Box display="flex" justifyContent="center">
+            <h3>Edit Item</h3>
+          </Box>
         </Grid>
         <Grid container item xs={6} spacing={2}>
           <Grid item xs={12}>
-            <TextField
-              name="item_name"
-              label="Item Name"
-              onChange={handleEditChange}
-              value={editData.item_name}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <FormControl
-              className={classes.formControl}
-              style={{ marginLeft: 0 }}
-            >
-              <InputLabel id="demo-simple-select-label">
-                Type of Food
-              </InputLabel>
-              <Select
-                name="item_type"
-                onChange={handleEditChange}
-                autoWidth
-                value={editData.item_type}
-              >
-                <MenuItem value={'vegetable'}>Vegetable</MenuItem>
-                <MenuItem value={'fruit'}>Fruit</MenuItem>
-                <MenuItem value={'dessert'}>Dessert</MenuItem>
-                <MenuItem value={'other'}>Other</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              name="item_price"
-              label="Item Price"
-              // style={{width: '150px', midWidth: '50px', width: 'auto',}}
-              InputProps={{
-                inputComponent: NumberFormatCustomPrice,
-              }}
-              onChange={handleEditChange}
-              value={editData.item_price}
-            />
-          </Grid>
-          {auth.authLevel == 2 && (
-            <Grid item xs={12}>
+            <Box display="flex" justifyContent="center">
               <TextField
-                name="business_price"
-                label="Business Price"
+                name="item_name"
+                label="Item Name"
+                onChange={handleEditChange}
+                value={editData.item_name}
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Box display="flex" justifyContent="center">
+              <FormControl
+                className={classes.formControl}
+                style={{ marginLeft: 0 }}
+              >
+                <InputLabel id="demo-simple-select-label">
+                  Type of Food
+                </InputLabel>
+                <Select
+                  name="item_type"
+                  onChange={handleEditChange}
+                  autoWidth
+                  value={editData.item_type}
+                >
+                  <MenuItem value={'vegetable'}>Vegetable</MenuItem>
+                  <MenuItem value={'fruit'}>Fruit</MenuItem>
+                  <MenuItem value={'dessert'}>Dessert</MenuItem>
+                  <MenuItem value={'other'}>Other</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Box display="flex" justifyContent="center">
+              <TextField
+                name="item_price"
+                label="Item Price"
                 // style={{width: '150px', midWidth: '50px', width: 'auto',}}
                 InputProps={{
                   inputComponent: NumberFormatCustomPrice,
                 }}
                 onChange={handleEditChange}
-                value={editData.business_price}
+                value={editData.item_price}
               />
+            </Box>
+          </Grid>
+          {auth.authLevel == 2 && (
+            <Grid item xs={12}>
+              <Box display="flex" justifyContent="center">
+                <TextField
+                  name="business_price"
+                  label="Business Price"
+                  // style={{width: '150px', midWidth: '50px', width: 'auto',}}
+                  InputProps={{
+                    inputComponent: NumberFormatCustomPrice,
+                  }}
+                  onChange={handleEditChange}
+                  value={editData.business_price}
+                />
+              </Box>
             </Grid>
           )}
           <Grid
@@ -285,48 +295,52 @@ export default function Item(props) {
             {/* <FormControlLabel control={<Switch name="favorite" checked={editData.favorite.toLowerCase() === "true"} onChange={handleEditChange} />} label="Favorite" /> */}
           </Grid>
           <Grid item xs={12}>
-            {file.url ? (
-              <img
-                src={
-                  file.url +
-                  (file.obj === undefined ? '?t=' + new Date().getTime() : '')
-                }
-                alt="Produce Image"
-                width="140px"
-                height="100px"
-                style={{ border: '3px solid grey', objectFit: 'cover' }}
-              />
-            ) : (
-              <div
-                style={{
-                  border: '3px solid grey',
-                  width: '140px',
-                  height: '100px',
-                  margin: 'auto',
-                  textAlign: 'center',
-                  lineHeight: '100px',
-                  color: 'grey',
-                }}
-              >
-                Upload an Image
-              </div>
-            )}
+            <Box display="flex" justifyContent="center">
+              {file.url ? (
+                <img
+                  src={
+                    file.url +
+                    (file.obj === undefined ? '?t=' + new Date().getTime() : '')
+                  }
+                  alt="Produce"
+                  width="140px"
+                  height="100px"
+                  style={{ border: '3px solid grey', objectFit: 'cover' }}
+                />
+              ) : (
+                <div
+                  style={{
+                    border: '3px solid grey',
+                    width: '140px',
+                    height: '100px',
+                    margin: 'auto',
+                    textAlign: 'center',
+                    lineHeight: '100px',
+                    color: 'grey',
+                  }}
+                >
+                  Upload an Image
+                </div>
+              )}
+            </Box>
           </Grid>
           <Grid item xs={12}>
-            <Button
-              size="small"
-              variant="contained"
-              component="label" /* style={{marginTop: '20px'}}*/
-            >
-              Add Picture
-              <input
-                onChange={onFileChange}
-                type="file"
-                id="uploadedPhoto"
-                accept="image/gif, image/jpeg, image/png"
-                style={{ display: 'none' }}
-              />
-            </Button>
+            <Box display="flex" justifyContent="center">
+              <Button
+                size="small"
+                variant="contained"
+                component="label" /* style={{marginTop: '20px'}}*/
+              >
+                Add Picture
+                <input
+                  onChange={onFileChange}
+                  type="file"
+                  id="uploadedPhoto"
+                  accept="image/gif, image/jpeg, image/png"
+                  style={{ display: 'none' }}
+                />
+              </Button>
+            </Box>
           </Grid>
         </Grid>
         <Grid container item xs={6} spacing={2} style={{ textAlign: 'right' }}>
@@ -384,7 +398,7 @@ export default function Item(props) {
               </FormControl>
             </div>
           </Grid>
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <TextField
               id="date"
               label="Expiration Date"
@@ -395,7 +409,7 @@ export default function Item(props) {
                 shrink: true,
               }}
             />
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={12}>
             <Box

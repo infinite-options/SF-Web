@@ -141,8 +141,11 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
     <div className={classes.paper}>
       <Grid container>
         <Grid item xs={12}>
-          <h3>Add Item</h3>
+          <Box display="flex" justifyContent="center">
+            <h3>Add Item</h3>
+          </Box>
         </Grid>
+
         <Grid container item xs={6} spacing={2}>
           <Grid item xs={12}>
             <Box display="flex" justifyContent="center">
@@ -310,7 +313,7 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
               </FormControl>
             </div>
           </Grid>
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <TextField
               id="date"
               label="Expiration Date"
@@ -321,7 +324,7 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
                 shrink: true,
               }}
             />
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={12}>
             <Box
