@@ -286,17 +286,7 @@ export default function FarmerReport({
     var dayIncr = 0;
     while (dayIncr < 7) {
       const fullDay = days[today.getDay()];
-      if (
-        fullDay in deliveryTime &&
-        deliveryTime[fullDay][0] !== ':00' &&
-        deliveryTime[fullDay][1] !== ':00' &&
-        deliveryTime[fullDay][0] !== '' &&
-        deliveryTime[fullDay][1] !== '' &&
-        !(
-          deliveryTime[fullDay][0] === '00:00:00' &&
-          deliveryTime[fullDay][1] === '00:00:00'
-        )
-      ) {
+      if (fullDay === 'Sunday') {
         deliveryDate = formatDate(today);
         break;
       }
@@ -305,29 +295,29 @@ export default function FarmerReport({
     }
 
     if (deliveryDate !== '0000-01-01') {
-      axios
-        .post(BASE_URL + 'farmer_revenue_inventory_report/' + name, {
-          uid: farmID,
-          delivery_date: deliveryDate,
-        })
-        .then((res) => {
-          confirm({
-            variant: 'info',
-            catchOnCancel: true,
-            title: 'Email Sent',
-            description: 'Your ' + name + ' report has been successfully sent',
-          });
-        })
-        .catch((err) => {
-          console.log('Error: ', err);
-          confirm({
-            variant: 'info',
-            catchOnCancel: true,
-            title: 'Error!',
-            description:
-              'There was an error in sending your ' + name + ' report',
-          });
-        });
+      // axios
+      //   .post(BASE_URL + 'farmer_revenue_inventory_report/' + name, {
+      //     uid: farmID,
+      //     delivery_date: deliveryDate,
+      //   })
+      //   .then((res) => {
+      //     confirm({
+      //       variant: 'info',
+      //       catchOnCancel: true,
+      //       title: 'Email Sent',
+      //       description: 'Your ' + name + ' report has been successfully sent',
+      //     });
+      //   })
+      //   .catch((err) => {
+      //     console.log('Error: ', err);
+      //     confirm({
+      //       variant: 'info',
+      //       catchOnCancel: true,
+      //       title: 'Error!',
+      //       description:
+      //         'There was an error in sending your ' + name + ' report',
+      //     });
+      //   });
     } else {
       confirm({
         variant: 'info',
