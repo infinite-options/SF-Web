@@ -40,7 +40,6 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
   const auth = useContext(AuthContext);
 
   const [file, setFile] = useState({ obj: undefined, url: '' }); // NOTE: url key is probably useless
-  const [favorite, setFavorite] = useState(false);
   const classes = useStyles();
   const [itemProps, setItemProps] = useState({
     itm_business_uid: farmID,
@@ -84,7 +83,7 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
     const itemInfo = {
       itm_business_uid: farmID,
       item_name: itemProps.item_name,
-      item_status: 'Active',
+      item_status: itemProps.item_status,
       item_type: itemProps.item_type,
       item_desc: itemProps.item_desc,
       item_unit: itemProps.item_unit,
@@ -93,7 +92,7 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
         auth.authLevel == 2 ? itemProps.business_price : itemProps.item_price
       ).toFixed(2),
       item_sizes: itemProps.item_sizes,
-      favorite: favorite.toString().toUpperCase(),
+      favorite: itemProps.favorite,
       taxable: itemProps.taxable,
       item_photo: file.obj,
       exp_date: itemProps.exp_date,
@@ -128,6 +127,9 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
           sqlString.indexOf("item_photo = '") + 14,
           sqlString.indexOf("item_photo = '") + 78
         );
+        itemInfo.item_price = parseFloat(itemInfo.item_price);
+        itemInfo.business_price = parseFloat(itemInfo.business_price);
+
         props.setData((prevData) => [...prevData, itemInfo]);
 
         props.handleClose();
@@ -217,7 +219,7 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
               {file.url !== '' ? (
                 <img
                   src={file.url}
-                  alt="Produce Image"
+                  alt="Produce"
                   width="140px"
                   height="100px"
                   style={{ border: '3px solid grey', objectFit: 'cover' }}
@@ -387,7 +389,7 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
               /* component="label"*/ style={{ marginTop: '20px' }}
               onClick={addItem}
             >
-              Save
+              Add
             </Button>
           </Grid>
         </Grid>

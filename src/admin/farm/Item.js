@@ -166,7 +166,7 @@ export default function Item(props) {
         const sqlString = response.data.sql;
         const photo = sqlString.substring(
           sqlString.indexOf("item_photo = '") + 14,
-          sqlString.indexOf("item_photo = '") + 78
+          sqlString.indexOf("item_photo = '") + 98
         );
         console.log(response);
         props.setData((prevData) => {
@@ -298,10 +298,7 @@ export default function Item(props) {
             <Box display="flex" justifyContent="center">
               {file.url ? (
                 <img
-                  src={
-                    file.url +
-                    (file.obj === undefined ? '?t=' + new Date().getTime() : '')
-                  }
+                  src={file.url}
                   alt="Produce"
                   width="140px"
                   height="100px"
@@ -507,7 +504,7 @@ export default function Item(props) {
       </Modal>
       <Card variant="outlined" className={classes.card}>
         <CardMedia
-          image={itemImage + '?t=' + new Date().getTime()}
+          image={itemImage}
           style={{ width: '100%', height: '200px', margin: 'auto' }}
         />
         <CardContent>
@@ -517,7 +514,7 @@ export default function Item(props) {
           </p>
         </CardContent>
         <Box display="flex">
-          <Box fontWeight="bold" fontSize={8}>
+          <Box fontWeight="bold" fontSize={12}>
             {props.data.item_unit !== undefined && props.data.item_unit !== ''
               ? '$' +
                 props.data.item_price.toFixed(2) +

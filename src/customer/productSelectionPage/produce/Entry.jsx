@@ -105,9 +105,7 @@ function Entry(props) {
           style={{
             width: '170px',
             height: '170px',
-            backgroundImage: `url(${
-              props.img + '?t=' + new Date().getTime()
-            } )`,
+            backgroundImage: `url(${props.img} )`,
             backgroundSize: '100% 100%',
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',

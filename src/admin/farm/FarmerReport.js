@@ -47,6 +47,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const hours = {
+  Friday: ['09:00:00', '10:00:00'],
+  Monday: ['00:00:00', '00:00:00'],
+  Sunday: ['08:00:00', '12:59:00'],
+  Saturday: ['00:00:00', '00:00:00'],
+  Thursday: ['00:00:00', '00:00:00'],
+  Wednesday: ['08:00:00', '12:59:00'],
+};
+
 function formatDate(date) {
   var month = '' + (date.getMonth() + 1),
     day = '' + date.getDate(),
@@ -584,10 +593,7 @@ function OrderItem({ order, item, deleteItem, ...props }) {
       <TableCell colSpan={9}>
         <div style={{ border: '1px solid grey', padding: '0 10px' }}>
           <Box display="flex">
-            <img
-              style={{ width: '115px', height: '115px' }}
-              src={item.img + '?t=' + new Date().getTime()}
-            />
+            <img style={{ width: '115px', height: '115px' }} src={item.img} />
             <Box>
               <h3>
                 {item.name}{' '}
