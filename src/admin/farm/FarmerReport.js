@@ -295,29 +295,33 @@ export default function FarmerReport({
     }
 
     if (deliveryDate !== '0000-01-01') {
-      // axios
-      //   .post(BASE_URL + 'farmer_revenue_inventory_report/' + name, {
-      //     uid: farmID,
-      //     delivery_date: deliveryDate,
-      //   })
-      //   .then((res) => {
-      //     confirm({
-      //       variant: 'info',
-      //       catchOnCancel: true,
-      //       title: 'Email Sent',
-      //       description: 'Your ' + name + ' report has been successfully sent',
-      //     });
-      //   })
-      //   .catch((err) => {
-      //     console.log('Error: ', err);
-      //     confirm({
-      //       variant: 'info',
-      //       catchOnCancel: true,
-      //       title: 'Error!',
-      //       description:
-      //         'There was an error in sending your ' + name + ' report',
-      //     });
-      //   });
+      axios
+        .post(BASE_URL + 'farmer_revenue_inventory_report/' + name, {
+          uid: farmID,
+          delivery_date: deliveryDate,
+        })
+        .then((res) => {
+          confirm({
+            variant: 'info',
+            catchOnCancel: true,
+            title: 'Email Sent',
+            description:
+              'Your ' +
+              name +
+              ' report has been successfully sent for ' +
+              deliveryDate,
+          });
+        })
+        .catch((err) => {
+          console.log('Error: ', err);
+          confirm({
+            variant: 'info',
+            catchOnCancel: true,
+            title: 'Error!',
+            description:
+              'There was an error in sending your ' + name + ' report',
+          });
+        });
     } else {
       confirm({
         variant: 'info',
