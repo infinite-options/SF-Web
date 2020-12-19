@@ -10,7 +10,7 @@ function WeeklyHourRange(props) {
     const { value, name, id } = e.target;
     // console.log(value + " " + name + " " + id);
     var currentAcceptTime = { ...props.hours };
-    let timeWithSeconds = value + ':00';
+    let timeWithSeconds = value + (value === '' ? '00:00:00' : ':00');
     if (id === 'AM') {
       currentAcceptTime[name][0] = timeWithSeconds;
     } else {

@@ -503,7 +503,7 @@ export default function Item(props) {
           </p>
         </CardContent>
         <Box display="flex">
-          <Box fontWeight="bold" fontsize={8}>
+          <Box fontWeight="bold" fontSize={8}>
             {props.data.item_unit !== undefined && props.data.item_unit !== ''
               ? '$' +
                 props.data.item_price.toFixed(2) +

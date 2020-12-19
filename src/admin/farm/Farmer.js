@@ -26,7 +26,7 @@ import Notifications from './Notifications';
 // import FarmerNavBar from './FarmerNavBar';
 
 export default function Farmer({ tab, ...props }) {
-  const { farmID, setFarmID } = useContext(AdminFarmContext);
+  const { farmID, deliveryTime } = useContext(AdminFarmContext);
 
   const farmName = (() => {
     switch (farmID) {
@@ -68,7 +68,12 @@ export default function Farmer({ tab, ...props }) {
           farmName={farmName}
           hidden={tab !== 0 && tabIsValid}
         />
-        <FarmerReport farmID={farmID} farmName={farmName} hidden={tab !== 1} />
+        <FarmerReport
+          farmID={farmID}
+          deliveryTime={deliveryTime}
+          farmName={farmName}
+          hidden={tab !== 1}
+        />
         <FarmerSettings
           farmID={farmID}
           farmName={farmName}

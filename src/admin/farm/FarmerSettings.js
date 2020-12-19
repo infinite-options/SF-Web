@@ -120,8 +120,10 @@ function parseHours(hoursObject, setHoursObject) {
   const hours = [];
   if (Object.keys(hoursObject).length !== 0) {
     for (const day of dayInWeekArray) {
-      var startDelivery = hoursObject[day][0].slice(0, 5);
-      var endDelivery = hoursObject[day][1].slice(0, 5);
+      var startDelivery =
+        day in hoursObject ? hoursObject[day][0].slice(0, 5) : '';
+      var endDelivery =
+        day in hoursObject ? hoursObject[day][1].slice(0, 5) : '';
       var newDeliveryObj = {};
       if (startDelivery === endDelivery) {
         newDeliveryObj = {
@@ -565,7 +567,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
               >
                 <h3>Orders Accepting Hours</h3>
               </div>
-              {AcceptTimeObj.map(createDateTimeAccept)}
+              {AcceptTimeObj.map(createWeeklyDateTime)}
               <div
                 style={{
                   // fontSize: "1rem",
@@ -574,7 +576,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
               >
                 <h3>Delivery Hours</h3>
               </div>
-              {DeliveryTime.map(createDateTimeDelivery)}
+              {DeliveryTime.map(createWeeklyDateTime)}
             </Box>
             {/* END: Hours section */}
 

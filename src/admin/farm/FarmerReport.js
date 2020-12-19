@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useContext,
+  useCallback,
+} from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -11,13 +17,14 @@ import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import { useConfirmation } from '../../services/ConfirmationService';
+import { AdminFarmContext } from '../AdminFarmContext';
 
 const BASE_URL =
   'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
 // const ORDERS_INFO_URL = BASE_URL + "orders_info";
 const ORDER_ACTIONS_URL = BASE_URL + 'order_actions/';
 const INSERT_ORDER_URL = BASE_URL + 'purchase_Data_SF';
-const ADMIN_ORDER_URL = BASE_URL + 'admin_report/';
+const ADMIN_ORDER_URL = BASE_URL + 'admin_report_grouped/';
 
 const useStyles = makeStyles((theme) => ({
   // root: {
@@ -40,13 +47,39 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function formatDate(date) {
+  var month = '' + (date.getMonth() + 1),
+    day = '' + date.getDate(),
+    year = date.getFullYear();
+
+  if (month.length < 2) month = '0' + month;
+  if (day.length < 2) day = '0' + day;
+
+  return [year, month, day].join('-');
+}
+
+const days = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+];
+
 // TODO: Add auto-refresh
 // DONE: Add Photo to report
 // DONE: filter out farms
 // DONE: checked report total calculations
 // TODO: Take the next delivery day for summary report
 // TODO: Add business price and item price (item only seen by admin)
-export default function FarmerReport({ farmID, farmName, ...props }) {
+export default function FarmerReport({
+  farmID,
+  farmName,
+  deliveryTime,
+  ...props
+}) {
   // const [responseData, setResponseData] = useState();
   const [orders, setOrders] = useState([]);
   const classes = useStyles();
@@ -235,54 +268,68 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
       });
   };
 
-  const handleSendPackingReport = () => {
-    axios
-      .post(BASE_URL + 'farmer_revenue_inventory_report/packing', {
-        uid: farmID,
-        delivery_date: '2020-12-13',
-      })
-      .then((res) => {
-        confirm({
-          variant: 'info',
-          catchOnCancel: true,
-          title: 'Email Sent',
-          description: 'Your packing report has been successfully sent',
-        });
-      })
-      .catch((err) => {
-        console.log('Error: ', err);
-        confirm({
-          variant: 'info',
-          catchOnCancel: true,
-          title: 'Error!',
-          description: 'There was an error in sending your packing report',
-        });
-      });
-  };
+  const handleSendReport = (event) => {
+    const { name } = event.currentTarget;
+    let deliveryDate = '0000-01-01';
 
-  const handleSendSummaryReport = () => {
-    axios
-      .post(BASE_URL + 'farmer_revenue_inventory_report/summary', {
-        uid: farmID,
-        delivery_date: '2020-12-12',
-      })
-      .then((res) => {
-        confirm({
-          variant: 'info',
-          catchOnCancel: true,
-          title: 'Email Sent',
-          description: 'Your summary report has been successfully sent',
+    console.log();
+    var today = new Date();
+    var dayIncr = 0;
+    while (dayIncr < 7) {
+      const fullDay = days[today.getDay()];
+      if (
+        fullDay in deliveryTime &&
+        deliveryTime[fullDay][0] !== ':00' &&
+        deliveryTime[fullDay][1] !== ':00' &&
+        deliveryTime[fullDay][0] !== '' &&
+        deliveryTime[fullDay][1] !== '' &&
+        !(
+          deliveryTime[fullDay][0] === '00:00:00' &&
+          deliveryTime[fullDay][1] === '00:00:00'
+        )
+      ) {
+        deliveryDate = formatDate(today);
+        break;
+      }
+      dayIncr += 1;
+      today.setDate(today.getDate() + 1);
+    }
+
+    if (deliveryDate !== '0000-01-01') {
+      axios
+        .post(BASE_URL + 'farmer_revenue_inventory_report/' + name, {
+          uid: farmID,
+          delivery_date: deliveryDate,
+        })
+        .then((res) => {
+          confirm({
+            variant: 'info',
+            catchOnCancel: true,
+            title: 'Email Sent',
+            description: 'Your ' + name + ' report has been successfully sent',
+          });
+        })
+        .catch((err) => {
+          console.log('Error: ', err);
+          confirm({
+            variant: 'info',
+            catchOnCancel: true,
+            title: 'Error!',
+            description:
+              'There was an error in sending your ' + name + ' report',
+          });
         });
-      })
-      .catch((err) => {
-        console.log('Error: ', err);
-        confirm({
-          variant: 'info',
-          catchOnCancel: true,
-          title: 'Error!',
-          description: 'There was an error in sending your summary report',
-        });
+    } else {
+      confirm({
+        variant: 'info',
+        catchOnCancel: true,
+        title: name + ' error',
+        description:
+          "There are no delivery days available for this farm's " +
+          name +
+          ' report.',
       });
+    }
   };
 
   const buttonFunctions = {
@@ -338,15 +385,17 @@ export default function FarmerReport({ farmID, farmName, ...props }) {
       <div className={classes.reportButtonsRightSection}>
         <Button
           variant="contained"
+          name="summary"
           className={classes.reportButtons}
-          onClick={handleSendSummaryReport}
+          onClick={handleSendReport}
         >
           Send Summary Report
         </Button>
         <Button
           variant="contained"
+          name="packing"
           className={classes.reportButtons}
-          onClick={handleSendPackingReport}
+          onClick={handleSendReport}
         >
           Send Packing Report
         </Button>
