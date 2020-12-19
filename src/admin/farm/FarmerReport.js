@@ -24,7 +24,7 @@ const BASE_URL =
 // const ORDERS_INFO_URL = BASE_URL + "orders_info";
 const ORDER_ACTIONS_URL = BASE_URL + 'order_actions/';
 const INSERT_ORDER_URL = BASE_URL + 'purchase_Data_SF';
-const ADMIN_ORDER_URL = BASE_URL + 'admin_report_grouped/';
+const ADMIN_ORDER_URL = BASE_URL + 'admin_report_groupby/';
 
 const useStyles = makeStyles((theme) => ({
   // root: {

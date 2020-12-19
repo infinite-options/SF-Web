@@ -57,8 +57,8 @@ const PayPal = ({ value, deliveryInstructions }) => {
           const dataSending = {
             pur_customer_uid: auth.isAuth
               ? cookies.get('customer_uid')
-              : 'guest',
-            pur_business_uid: cartItems[Object.keys(cartItems)[0]].business_uid,
+              : 'GUEST',
+            pur_business_uid: 'WEB',
             items,
             order_instructions: 'fast',
             delivery_instructions: deliveryInstructions,

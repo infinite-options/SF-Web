@@ -131,8 +131,8 @@ const StripeCheckout = (props) => {
       // TODO: Add Pay coupon ID
       const data = {
         // pur_customer_uid: profile.customer_uid,
-        pur_customer_uid: auth.isAuth ? cookies.get('customer_uid') : 'guest',
-        pur_business_uid: cartItems[Object.keys(cartItems)[0]].business_uid,
+        pur_customer_uid: auth.isAuth ? cookies.get('customer_uid') : 'GUEST',
+        pur_business_uid: 'WEB',
         items,
         order_instructions: 'fast',
         delivery_instructions: props.deliveryInstructions,

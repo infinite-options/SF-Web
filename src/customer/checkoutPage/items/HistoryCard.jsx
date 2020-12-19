@@ -61,16 +61,15 @@ const HistoryCard = (props) => {
     <Box className={classes.card}>
       <Box className={classes.title}>Purchase Date:</Box>
       <Box className={classes.date}>
-        {props.purchaseDate.toString()}
-        {/* {props.purchaseDate.toLocaleString('default', { month: 'long' })}{' '}
+        {props.purchaseDate.toLocaleString('default', { month: 'long' })}{' '}
         {props.purchaseDate.toLocaleString('default', { day: 'numeric' })},{' '}
         {props.purchaseDate.getFullYear()}
-        {', '}
+        {' at '}
         {props.purchaseDate.toLocaleTimeString('en-US', {
           hour: 'numeric',
           minute: 'numeric',
           hour12: true,
-        })} */}
+        })}
       </Box>
       <Box className={classes.title}>Delivery Date:</Box>
       <Box className={classes.date}>

@@ -69,13 +69,10 @@ const useStyles = makeStyles({
   },
 });
 
-// DONE: Add textfields for guest to enter in information
-// DONE: Add email for guest
-// DONE: Send Parva a note about the CORS issue
 // TODO: if a guest goes back to the home page, there is (for the most part) no way for them to get back,
 //       So, cart needs to be cleared if they try in input a new address and buttons need to show if they
 //       entered an address and are in the home page, the menu buttons also need to be enabled for a guest
-// TODO: move the pay with buttons to the left side
+// TODO: Add delivery fee, service fee, and tip to history and sf purchase
 const PaymentTab = () => {
   const classes = useStyles();
   const store = useContext(storeContext);
