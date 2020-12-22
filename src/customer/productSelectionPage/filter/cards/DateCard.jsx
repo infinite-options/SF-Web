@@ -106,7 +106,7 @@ const DateCard = (props) => {
           ? '0' + props.monthInNumber
           : props.monthInNumber) +
         '-' +
-        (props.date < 10 ? '0' + props.date : props.date)
+        ((props.date < 10 ? '0' : '') + props.date)
     );
     store.setCartTotal(0);
     store.setCartItems({});

@@ -130,7 +130,7 @@ const Store = ({ ...props }) => {
           latitude: authRes.customer_lat,
           longitude: authRes.customer_long,
           zone: '',
-          socialMedia: authRes.user_social_media,
+          socialMedia: authRes.user_social_media || '',
         };
         setProfile(updatedProfile);
       });

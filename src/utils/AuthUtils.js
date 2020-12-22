@@ -18,20 +18,20 @@ export default class AuthUtils {
       });
   };
 
-  createProfile = async function (userInfo) {
+  createProfile = async function (userInfo, password) {
     let object = {
       email: userInfo.email,
-      password: userInfo.password,
+      password: password,
       first_name: userInfo.firstName,
       last_name: userInfo.lastName,
-      phone_number: userInfo.phone,
+      phone_number: userInfo.phoneNum,
       address: userInfo.address,
       unit: userInfo.unit,
       city: userInfo.city,
       state: userInfo.state,
       zip_code: userInfo.zip,
-      latitude: userInfo.lat,
-      longitude: userInfo.long,
+      latitude: userInfo.latitude,
+      longitude: userInfo.longitude,
       referral_source: 'WEB',
       role: 'CUSTOMER',
       social: 'FALSE',
@@ -48,35 +48,43 @@ export default class AuthUtils {
         },
       })
       .then((res) => {
-        let customerInfo = res.data.result;
-        console.log(customerInfo);
-        if (res.data.code === 200) {
-          axios
-            .post(
-              process.env.REACT_APP_SERVER_BASE_URI + 'email_verification',
-              { email: userInfo.email },
-              {
-                headers: {
-                  'Content-Type': 'text/plain',
-                },
-              }
-            )
-            .then((res) => {
-              console.log(res);
-            })
-            .catch((err) => {
-              if (err.response) {
-                console.log(err.response);
-              }
-              console.log(err);
-            });
+        try {
+          if (res.data.code >= 200 && res.data.code < 300) {
+            let customerInfo = res.data.result;
+            this.cookies.set('login-session', 'good');
+            this.cookies.set('customer_uid', customerInfo.customer_uid);
+            if (res.data.code === 200) {
+              axios
+                .post(
+                  process.env.REACT_APP_SERVER_BASE_URI + 'email_verification',
+                  { email: userInfo.email },
+                  {
+                    headers: {
+                      'Content-Type': 'text/plain',
+                    },
+                  }
+                )
+                .then((res) => {
+                  console.log(res);
+                })
+                .catch((err) => {
+                  if (err.response) {
+                    console.log(err.response);
+                  }
+                  console.log(err);
+                });
+            }
+            return Promise.resolve({ code: 200 });
+          } else {
+            return Promise.resolve({ code: 400 });
+          }
+        } catch {
+          return Promise.resolve({ code: 400 });
         }
       })
       .catch((err) => {
-        console.log(err);
-        if (err.response) {
-          console.log(err.response);
-        }
+        console.log('Update Profile Error: ', err.response || err);
+        return Promise.resolve({ code: 400 });
       });
   };
 

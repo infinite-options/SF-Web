@@ -56,7 +56,7 @@ function listItem(item) {
         price={item.price}
         count={item.count}
         img={item.img}
-        isCountChangable={true}
+        isCountChangeable={true}
         business_uid={item.business_uid}
         id={item.id}
         key={item.item_uid}
@@ -74,7 +74,12 @@ export default function CheckoutTab() {
   const checkout = useContext(checkoutContext);
   const elements = useElements();
 
-  const { setPaymentProcessing, setLeftTabChosen } = checkout;
+  const {
+    setPaymentProcessing,
+    setLeftTabChosen,
+    paymentDetails,
+    setPaymentDetails,
+  } = checkout;
   // Retrieve items from store context
 
   // cartItems is a dictonary, need to convert it into an array
@@ -143,7 +148,6 @@ export default function CheckoutTab() {
       parseFloat(driverTip !== '' ? driverTip : 0) +
       tax
   );
-  const { setAmountDue, setAmountPaid, setDiscount } = checkout;
   useEffect(() => {
     const total =
       subtotal > 0
@@ -159,22 +163,59 @@ export default function CheckoutTab() {
           )
         : 0;
     setTotal(total);
-    setAmountPaid(total);
-    setDiscount(promoApplied + (origServiceFee - deliveryFee));
+    setPaymentDetails((prev) => ({
+      ...prev,
+      discount: promoApplied + (origDeliveryFee - deliveryFee),
+    }));
   }, [subtotal, promoApplied, deliveryFee, driverTip]);
 
   useEffect(() => {
+    setPaymentDetails((prev) => ({
+      ...prev,
+      amountDue: total,
+    }));
+  }, [total]);
+
+  useEffect(() => {
     setSubtotal(calculateSubTotal(cartItems));
-    let amountDue = parseFloat(
-      (calculateSubTotal(cartItems) + origServiceFee + serviceFee).toFixed(2)
-    );
-    setAmountDue(amountDue);
-  }, [cartItems, deliveryFee]);
+  }, [cartItems]);
 
   useEffect(() => {
     setTax(0);
     setServiceFee(subtotal > 0 ? origServiceFee : 0);
+    setPaymentDetails((prev) => ({
+      ...prev,
+      subtotal: subtotal,
+    }));
   }, [subtotal]);
+
+  useEffect(() => {
+    setPaymentDetails((prev) => ({
+      ...prev,
+      deliveryFee: deliveryFee,
+    }));
+  }, [deliveryFee]);
+
+  useEffect(() => {
+    setPaymentDetails((prev) => ({
+      ...prev,
+      serviceFee: serviceFee,
+    }));
+  }, [serviceFee]);
+
+  useEffect(() => {
+    setPaymentDetails((prev) => ({
+      ...prev,
+      driverTip: parseFloat(driverTip),
+    }));
+  }, [driverTip]);
+
+  useEffect(() => {
+    setPaymentDetails((prev) => ({
+      ...prev,
+      taxes: tax,
+    }));
+  }, [tax]);
 
   function onAddItemsClicked() {
     store.setStorePage(0);
@@ -226,6 +267,21 @@ export default function CheckoutTab() {
             Add Items
           </Button>
         </Box>
+
+        {cartItems.length > 0 && (
+          <Box className={classes.section} display="flex">
+            <Box width="130px"></Box>
+            <Box width="40%" textAlign="left">
+              Name
+            </Box>
+            <Box width="50%" textAlign="center">
+              Quantity
+            </Box>
+            <Box width="10%" textAlign="left">
+              Price
+            </Box>
+          </Box>
+        )}
         <Box my={1} px={1}>
           {cartItems.map(listItem)}
         </Box>
@@ -278,7 +334,6 @@ export default function CheckoutTab() {
             decimalCharacter="."
             digitGroupSeparator=","
             onChange={(event, value) => {
-              console.log(value);
               setDriverTip(value);
             }}
           ></CurrencyTextField>

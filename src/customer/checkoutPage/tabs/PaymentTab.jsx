@@ -87,9 +87,7 @@ const PaymentTab = () => {
   } = useContext(storeContext);
 
   const {
-    amountPaid,
-    amountDue,
-    discount,
+    paymentDetails,
     paymentProcessing,
     setPaymentProcessing,
     setLeftTabChosen,
@@ -134,7 +132,7 @@ const PaymentTab = () => {
   }, [userInfo.address]);
 
   async function onPayWithClicked(type) {
-    if (amountPaid > 0) {
+    if (paymentDetails.amountDue > 0) {
       // check guest fields to make sure they are not empty
       if (!auth.isAuth) {
         let hasFirstName = true;
@@ -329,7 +327,7 @@ const PaymentTab = () => {
       </Box>
       <Box hidden={paymentType !== 'PAYPAL'}>
         <PayPal
-          value={amountPaid}
+          value={paymentDetails.amountDue}
           deliveryInstructions={deliveryInstructions}
         />
       </Box>

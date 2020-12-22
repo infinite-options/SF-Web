@@ -12,13 +12,17 @@ const cookies = new Cookies();
 const CreateHistoryCard = (props) => {
   return (
     <HistoryCard
+      id={props.purchase_uid}
       items={JSON.parse(props.items)}
-      purchaseDate={new Date(props.purchase_date)}
+      purchaseDate={new Date(props.purchase_date + '  UTC')}
       deliveryDate={new Date(props.start_delivery_date)}
-      total={props.amount_due}
+      subtotal={props.subtotal}
       amountPaid={props.amount_paid}
       savings={props.amount_discount}
-      amountSaved={props.amount_paid}
+      driverTip={props.driver_tip}
+      serviceFee={props.service_fee}
+      deliveryFee={props.delivery_fee}
+      taxes={props.taxes}
       address={props.delivery_address}
       unit={props.delivery_unit}
       city={props.delivery_city}
@@ -26,7 +30,7 @@ const CreateHistoryCard = (props) => {
       zip={props.delivery_zip}
       paymentMethod={props.payment_type}
       deliveryInstructions={props.delivery_instructions}
-      key={props.purchase_uid + props.payment_uid}
+      key={props.purchase_uid}
     />
   );
 };

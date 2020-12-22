@@ -88,25 +88,29 @@ function CartItem(props) {
             : ''}
         </Box>
         <Box width="30%" display="flex" justifyContent="center">
-          <Box hidden={!props.isCountChangable}>
-            <RemoveIcon
-              fontSize="small"
-              cursor="pointer"
-              color="primary"
-              onClick={decrease}
-            />
-          </Box>
+          {props.isCountChangeable && (
+            <Box>
+              <RemoveIcon
+                fontSize="small"
+                cursor="pointer"
+                color="primary"
+                onClick={decrease}
+              />
+            </Box>
+          )}
           <Box mx={1} color={appColors.primary}>
             {props.count}
           </Box>
-          <Box hidden={!props.isCountChangable}>
-            <AddIcon
-              fontSize="small"
-              cursor="pointer"
-              color="primary"
-              onClick={increase}
-            />
-          </Box>
+          {props.isCountChangeable && (
+            <Box>
+              <AddIcon
+                fontSize="small"
+                cursor="pointer"
+                color="primary"
+                onClick={increase}
+              />
+            </Box>
+          )}
         </Box>
 
         <Box textAlign="right" width="20%">

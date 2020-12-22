@@ -21,8 +21,6 @@ import { AuthContext } from '../../../auth/AuthContext';
 import StoreContext from '../../storeContext';
 import checkoutContext from '../CheckoutContext';
 import CssTextField from '../../../utils/CssTextField';
-import { mergeClasses } from '@material-ui/styles';
-import { Axis } from 'highcharts';
 
 const useStyles = makeStyles({
   root: {
@@ -56,16 +54,33 @@ export default function DeliveryInfoTab() {
 
   // Setting so that the store context isn't constantly re-rendered
   const [userInfo, setUserInfo] = useState(store.profile);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
 
+  const [signUpErrorMessage, setSignUpErrorMessage] = useState('');
   const [locError, setLocError] = useState('');
   const [locErrorMessage, setLocErrorMessage] = useState('');
   const [emailError, setEmailError] = useState('');
   const [emailErrorMessage, setEmailErrorMessage] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
 
   function createLocError(message) {
     setLocError('Invalid Input');
     setLocErrorMessage(message);
+  }
+
+  function resetErrors() {
+    setSignUpErrorMessage('');
+    setLocError('');
+    setLocErrorMessage('');
+    setEmailError('');
+    setEmailErrorMessage('');
+    setPasswordError('');
+    setConfirmPasswordError('');
+    setPasswordErrorMessage('');
   }
 
   const { paymentProcessing, setLeftTabChosen } = useContext(checkoutContext);
@@ -81,6 +96,10 @@ export default function DeliveryInfoTab() {
   const { setProfile } = store;
 
   const onSubmit = async () => {
+    resetErrors();
+    let isEmailError = false;
+    let isEmptyError = false;
+    let isPasswordError = false;
     if (isAddressConfirmed) {
       if (userInfo.pushNotifications !== store.profile.pushNotifications) {
         AuthMethods.updatePushNotifications(userInfo.pushNotifications);
@@ -91,16 +110,61 @@ export default function DeliveryInfoTab() {
             email: userInfo.email,
           })
           .then((res) => {
-            return res.data.code >= 200 || res.data.code < 300;
+            return res.data.code === 200;
           });
         if (emailExists) {
           setEmailError('Exists');
           setEmailErrorMessage(
             'This email is already associated with an account, please try a different email.'
           );
-          return;
+          isEmailError = true;
         }
       }
+
+      for (const field in userInfo) {
+        const excluded = new Set([
+          'email',
+          'firstName',
+          'lastName',
+          'phoneNum',
+          'latitude',
+          'state',
+          'city',
+          'zip',
+        ]);
+        if (userInfo[field] === '' && excluded.has(field)) {
+          setSignUpErrorMessage('Please enter in all Fields');
+          isEmptyError = true;
+        }
+      }
+
+      if (
+        password !== confirmPassword ||
+        password.length > 0 ||
+        confirmPassword.length > 0
+      ) {
+        setPasswordError('not matching');
+        setConfirmPasswordError('not matching');
+        setPasswordErrorMessage('Your passwords do not match');
+        isPasswordError = true;
+      }
+      // var count = 0;
+
+      // // Minimum eight characters, at least one letter and one number:
+      // count += password.length >= 8 && password.length <= 32 ? 1 : 0;
+      // count += /[a-z]/.test(password) ? 1 : 0;
+      // count += /[A-Z]/.test(password) ? 1 : 0;
+      // count += /\d/.test(password) ? 1 : 0;
+      // if (count < 4) {
+      //   setPasswordError('stronger');
+      //   setPasswordErrorMessage('Your password does not pass the criteria');
+      //   isPasswordError = true;
+      // }
+
+      if (isEmailError || isEmptyError || isPasswordError) {
+        return;
+      }
+
       if (auth.isAuth) {
         AuthMethods.updateProfile(userInfo).then((res) => {
           console.log('(res.code === 200): ', res);
@@ -113,14 +177,14 @@ export default function DeliveryInfoTab() {
           }
         });
       } else {
-        AuthMethods.createProfile(userInfo).then((res) => {
+        AuthMethods.createProfile(userInfo, password).then((res) => {
           if (res.code === 200) {
             setProfile({ ...userInfo });
             auth.setAuthLevel(0);
             auth.setIsAuth(0);
           } else {
             setLocErrorMessage(
-              'There was an issue creating your profile, please try again later'
+              'There was an issue creating your Account, please try again later'
             );
           }
         });
@@ -218,6 +282,20 @@ export default function DeliveryInfoTab() {
       setEmailErrorMessage('');
     }
     setUserInfo({ ...userInfo, [name]: value });
+  };
+
+  const onPasswordChange = (event) => {
+    const { name, value } = event.target;
+    if (passwordError !== '') {
+      setPasswordError('');
+      setConfirmPasswordError('');
+      setPasswordErrorMessage('');
+    }
+    if (name === 'confirm') {
+      setConfirmPassword(value);
+    } else {
+      setPassword(value);
+    }
   };
 
   const onNotificationChange = (event) => {
@@ -455,7 +533,11 @@ export default function DeliveryInfoTab() {
           label: 'Phone Number',
           spacing: spacing,
         })}
+        <FormHelperText error={true} style={{ textAlign: 'center' }}>
+          {emailErrorMessage}
+        </FormHelperText>
         {PlainTextField({
+          error: emailError,
           value: userInfo.email,
           name: 'email',
           label: 'Email',
@@ -538,18 +620,48 @@ export default function DeliveryInfoTab() {
             Verify Address
           </Button>
         </Box>
-        <Box mt={spacing + 3}></Box>
-        {PlainTextField({
-          name: 'password',
-          label: 'Password',
-          type: 'password',
-        })}
+        <Box mt={spacing + 3} />
+        <FormHelperText error={true} style={{ textAlign: 'center' }}>
+          {passwordErrorMessage}
+        </FormHelperText>
+        {/* <FormHelperText style={{ textAlign: 'center' }}>
+          Minimum eight and maximum thirty-two characters, at least one letter
+          and one number:
+        </FormHelperText> */}
+        <Box mb={0.5} />
+        <Box mb={spacing || 1}>
+          <CssTextField
+            error={passwordError}
+            label="Password"
+            type="password"
+            variant="outlined"
+            size="small"
+            fullWidth
+            onChange={onPasswordChange}
+          />
+        </Box>
+        <Box mb={spacing || 1}>
+          <CssTextField
+            error={confirmPasswordError}
+            name="confirm"
+            label="Confirm Password"
+            type="password"
+            variant="outlined"
+            size="small"
+            fullWidth
+            onChange={onPasswordChange}
+          />
+        </Box>
         <Box mt={3}>
+          <FormHelperText error={true} style={{ textAlign: 'center' }}>
+            {signUpErrorMessage}
+          </FormHelperText>
           <Button
             className={classes.button}
             variant="outlined"
             size="small"
             color="paragraphText"
+            onClick={onSubmit}
           >
             Sign Up
           </Button>

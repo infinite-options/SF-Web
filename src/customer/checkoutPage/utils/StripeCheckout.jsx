@@ -61,9 +61,7 @@ const StripeCheckout = (props) => {
   } = useContext(storeContext);
 
   const {
-    amountPaid,
-    amountDue,
-    discount,
+    paymentDetails,
     paymentProcessing,
     setPaymentProcessing,
     setLeftTabChosen,
@@ -87,7 +85,7 @@ const StripeCheckout = (props) => {
       },
     };
     let formSending = new FormData();
-    formSending.append('amount', amountPaid);
+    formSending.append('amount', paymentDetails.amountPaid);
     try {
       const {
         data: { client_secret },
@@ -151,9 +149,9 @@ const StripeCheckout = (props) => {
         purchase_notes: 'purchase_notes',
         start_delivery_date: startDeliveryDate,
         pay_coupon_id: '',
-        amount_due: amountDue.toString(),
-        amount_discount: discount.toString(),
-        amount_paid: amountPaid.toString(),
+        amount_due: paymentDetails.amountDue.toString(),
+        amount_discount: paymentDetails.discount.toString(),
+        amount_paid: paymentDetails.amountDue.toString(),
         info_is_Addon: 'FALSE',
         cc_num: paymentMethod.paymentMethod.card.last4,
         cc_exp_date:
@@ -166,11 +164,11 @@ const StripeCheckout = (props) => {
         charge_id: confirmed.paymentIntent.id,
         payment_type: 'STRIPE',
         delivery_status: 'FALSE',
-        subtotal: '5.55',
-        service_fee: '5.5555',
-        delivery_fee: '5.5898',
-        driver_tip: '5.33333',
-        taxes: '5',
+        subtotal: paymentDetails.subtotal.toString(),
+        service_fee: paymentDetails.serviceFee.toString(),
+        delivery_fee: paymentDetails.deliveryFee.toString(),
+        driver_tip: paymentDetails.driverTip.toString(),
+        taxes: paymentDetails.taxes.toString(),
       };
 
       let res = axios

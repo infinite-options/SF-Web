@@ -17,9 +17,16 @@ const stripePromise = loadStripe(
 );
 
 export default function CheckoutPage() {
-  const [amountPaid, setAmountPaid] = useState(0);
-  const [amountDue, setAmountDue] = useState(0);
-  const [discount, setDiscount] = useState(0);
+  const [paymentDetails, setPaymentDetails] = useState({
+    amountPaid: 0,
+    amountDue: 0,
+    discount: 0,
+    subtotal: 0,
+    serviceFee: 1.5,
+    deliveryFee: 5,
+    driverTip: 0,
+    taxes: 0,
+  });
   const [purchaseMade, setPurchaseMade] = useState(0);
   console.log(
     'In Checkout Page Production: ',
@@ -40,14 +47,10 @@ export default function CheckoutPage() {
     <>
       <CheckoutContext.Provider
         value={{
-          amountPaid,
-          amountDue,
-          discount,
+          paymentDetails,
+          setPaymentDetails,
           paymentProcessing,
           setPaymentProcessing,
-          setAmountPaid,
-          setAmountDue,
-          setDiscount,
           leftTabChosen,
           setLeftTabChosen,
           guestInfo,

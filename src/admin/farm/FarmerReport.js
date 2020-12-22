@@ -14,6 +14,10 @@ import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import { useConfirmation } from '../../services/ConfirmationService';
@@ -47,15 +51,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const hours = {
-  Friday: ['09:00:00', '10:00:00'],
-  Monday: ['00:00:00', '00:00:00'],
-  Sunday: ['08:00:00', '12:59:00'],
-  Saturday: ['00:00:00', '00:00:00'],
-  Thursday: ['00:00:00', '00:00:00'],
-  Wednesday: ['08:00:00', '12:59:00'],
-};
-
 function formatDate(date) {
   var month = '' + (date.getMonth() + 1),
     day = '' + date.getDate(),
@@ -68,13 +63,13 @@ function formatDate(date) {
 }
 
 const days = [
-  'Sunday',
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
+  'SUNDAY',
+  'MONDAY',
+  'TUESDAY',
+  'WEDNESDAY',
+  'THURSDAY',
+  'FRIDAY',
+  'SATURDAY',
 ];
 
 // TODO: Add auto-refresh
@@ -91,8 +86,38 @@ export default function FarmerReport({
 }) {
   // const [responseData, setResponseData] = useState();
   const [orders, setOrders] = useState([]);
+  const [deliveryDays, setDeliveryDays] = useState([]);
+  const [selectedDay, setSelectedDay] = useState('');
   const classes = useStyles();
   const confirm = useConfirmation();
+
+  useEffect(() => {
+    axios
+      .get(BASE_URL + 'business_delivery_details/' + farmID)
+      .then((res) => {
+        try {
+          const businessSet = new Set();
+          for (const business of res.data.result) {
+            businessSet.add(business.z_delivery_day);
+          }
+          const dayList = [...businessSet];
+          if (dayList.length > 0) {
+            setSelectedDay(dayList[0]);
+          }
+          setDeliveryDays(dayList);
+        } catch {
+          console.log('Error with retrieving business delivery days');
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [farmID]);
+
+  const handleDaySelect = (event) => {
+    const { value } = event.target;
+    setSelectedDay(value);
+  };
 
   const getFarmOrders = useCallback(
     async (hasCopied = false) => {
@@ -286,7 +311,7 @@ export default function FarmerReport({
     var dayIncr = 0;
     while (dayIncr < 7) {
       const fullDay = days[today.getDay()];
-      if (fullDay === 'Sunday') {
+      if (fullDay === selectedDay) {
         deliveryDate = formatDate(today);
         break;
       }
@@ -353,8 +378,11 @@ export default function FarmerReport({
         <a
           href={
             'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/order,' +
-            farmID
+            farmID +
+            ',2020-12-23'
           }
+          target="_blank"
+          rel="noreferrer"
           className={classes.reportLink}
         >
           <Button variant="contained" className={classes.reportButtons}>
@@ -364,8 +392,11 @@ export default function FarmerReport({
         <a
           href={
             'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/customer,' +
-            farmID
+            farmID +
+            ',2020-12-23'
           }
+          target="_blank"
+          rel="noreferrer"
           className={classes.reportLink}
         >
           <Button variant="contained" className={classes.reportButtons}>
@@ -375,8 +406,11 @@ export default function FarmerReport({
         <a
           href={
             'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/pivot,' +
-            farmID
+            farmID +
+            ',2020-12-23'
           }
+          target="_blank"
+          rel="noreferrer"
           className={classes.reportLink}
         >
           <Button variant="contained" className={classes.reportButtons}>
@@ -384,25 +418,46 @@ export default function FarmerReport({
           </Button>
         </a>
       </div>
-      {/* TODO: create two buttons for send packing and send summary */}
-      <div className={classes.reportButtonsRightSection}>
-        <Button
-          variant="contained"
-          name="summary"
-          className={classes.reportButtons}
-          onClick={handleSendReport}
-        >
-          Send Summary Report
-        </Button>
-        <Button
-          variant="contained"
-          name="packing"
-          className={classes.reportButtons}
-          onClick={handleSendReport}
-        >
-          Send Packing Report
-        </Button>
-      </div>
+      <Box display="flex" justifyContent="flex-end">
+        {selectedDay !== '' && (
+          <Box mt={-2}>
+            <FormHelperText>Delivery Day:</FormHelperText>
+            <Select
+              labelId="demo-controlled-open-select-label"
+              id="demo-controlled-open-select"
+              name="business"
+              value={selectedDay}
+              onChange={handleDaySelect}
+            >
+              {deliveryDays.map((day) => {
+                return (
+                  <MenuItem key={day} value={day}>
+                    {day}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </Box>
+        )}
+        <div className={classes.reportButtonsRightSection}>
+          <Button
+            variant="contained"
+            name="summary"
+            className={classes.reportButtons}
+            onClick={handleSendReport}
+          >
+            Send Summary Report
+          </Button>
+          <Button
+            variant="contained"
+            name="packing"
+            className={classes.reportButtons}
+            onClick={handleSendReport}
+          >
+            Send Packing Report
+          </Button>
+        </div>
+      </Box>
       <OrdersTable
         orders={orders}
         farmID={farmID}

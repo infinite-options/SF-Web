@@ -133,28 +133,26 @@ const Landing = ({ ...props }) => {
   }
 
   const onFindProduceClicked = () => {
+    const formatMessage =
+      'Please use the following format: Address, City, State Zipcode';
     const locationProps = deliverylocation.split(',');
     if (locationProps.length !== 3) {
-      createError(
-        'Please use the following format: Address, City, State Zipcode'
-      );
+      createError(formatMessage);
       return;
     }
     const stateZip = locationProps[2].trim().split(' ');
     if (stateZip.length !== 2) {
-      createError(
-        'Please use the following format: Address, City, State Zipcode'
-      );
+      createError(formatMessage);
       return;
     }
     setError('');
     setErrorMessage('');
 
     // DONE: Save for guest checkout
-    let address = locationProps[0];
-    let city = locationProps[1];
-    let state = stateZip[0];
-    let zip = stateZip[1];
+    let address = locationProps[0].trim();
+    let city = locationProps[1].trim();
+    let state = stateZip[0].trim();
+    let zip = stateZip[1].trim();
 
     FindLongLatWithAddr(address, city, state, zip).then((res) => {
       console.log('res: ', res);

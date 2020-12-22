@@ -18,7 +18,7 @@ const PayPal = ({ value, deliveryInstructions }) => {
   const confirm = useConfirmation();
 
   const [loaded, setLoaded] = useState(false);
-  const { amountPaid, amountDue, discount } = useContext(checkoutContext);
+  const { paymentDetails } = useContext(checkoutContext);
   const { profile, startDeliveryDate, cartItems, setCartTotal } = useContext(
     storeContext
   );
@@ -77,9 +77,9 @@ const PayPal = ({ value, deliveryInstructions }) => {
             purchase_notes: 'purchase_notes',
             start_delivery_date: startDeliveryDate,
             pay_coupon_id: '',
-            amount_due: amountDue.toString(),
-            amount_discount: discount.toString(),
-            amount_paid: amountPaid.toString(),
+            amount_due: paymentDetails.amountDue.toString(),
+            amount_discount: paymentDetails.discount.toString(),
+            amount_paid: paymentDetails.amountDue.toString(),
             info_is_Addon: 'FALSE',
             cc_num: 'NULL',
             cc_exp_date: 'NULL',
@@ -87,6 +87,11 @@ const PayPal = ({ value, deliveryInstructions }) => {
             cc_zip: 'NULL',
             charge_id: 'NULL',
             payment_type: 'PAYPAL',
+            subtotal: paymentDetails.subtotal.toString(),
+            service_fee: paymentDetails.serviceFee.toString(),
+            delivery_fee: paymentDetails.deliveryFee.toString(),
+            driver_tip: paymentDetails.driverTip.toString(),
+            taxes: paymentDetails.taxes.toString(),
           };
           console.log('data sending: ', dataSending);
           axios

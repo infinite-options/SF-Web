@@ -27,7 +27,11 @@ const useStyles = makeStyles((theme) => ({
     color: appColors.paragraphText,
     marginBottom: '10px',
   },
-  items: { paddingLeft: '0', paddingRight: '0' },
+  items: {
+    paddingLeft: '0',
+    paddingRight: '0',
+    fontSize: '16px',
+  },
   total: { fontWeight: 'bold' },
   savingDetails: { fontSize: '18px', fontWeight: 'regular' },
   section: {
@@ -47,7 +51,7 @@ function listItem(item) {
         count={item.qty}
         img={item.img}
         key={item.item_uid}
-        isCountChangable={false}
+        isCountChangeable={false}
       />
     </>
   );
@@ -59,8 +63,20 @@ const HistoryCard = (props) => {
 
   return (
     <Box className={classes.card}>
-      <Box className={classes.title}>Purchase Date:</Box>
       <Box className={classes.date}>
+        Expected Delivery Date:{' '}
+        {props.deliveryDate.toLocaleString('default', { month: 'long' })}{' '}
+        {props.deliveryDate.toLocaleString('default', { day: 'numeric' })},{' '}
+        {props.deliveryDate.getFullYear()}
+        {/* {' at '}
+        {props.deliveryDate.toLocaleTimeString('en-US', {
+          hour: 'numeric',
+          minute: 'numeric',
+          hour12: true,
+        })} */}
+      </Box>
+      <Box className={classes.date}>
+        Purchase Date:{' '}
         {props.purchaseDate.toLocaleString('default', { month: 'long' })}{' '}
         {props.purchaseDate.toLocaleString('default', { day: 'numeric' })},{' '}
         {props.purchaseDate.getFullYear()}
@@ -71,29 +87,18 @@ const HistoryCard = (props) => {
           hour12: true,
         })}
       </Box>
-      <Box className={classes.title}>Delivery Date:</Box>
       <Box className={classes.date}>
-        {props.deliveryDate.toString()}
-        {/* {props.purchaseDate.toLocaleString('default', { month: 'long' })}{' '}
-        {props.purchaseDate.toLocaleString('default', { day: 'numeric' })},{' '}
-        {props.purchaseDate.getFullYear()}
-        {', '}
-        {props.purchaseDate.toLocaleTimeString('en-US', {
-          hour: 'numeric',
-          minute: 'numeric',
-          hour12: true,
-        })} */}
+        Delivery Address: {props.address}, {props.city}, {props.city}{' '}
+        {props.zip}
       </Box>
-      <Box className={classes.title}>Delivery Instructions:</Box>
       <Box className={classes.date}>
+        Delivery Instructions:{' '}
         {props.deliveryInstructions === ''
           ? 'None provided.'
           : props.deliveryInstructions}
       </Box>
-      <Box className={classes.title}>Delivery Address:</Box>
-      <Box className={classes.date}>
-        {props.address}, {props.city}, {props.city} {props.zip}
-      </Box>
+      <Box className={classes.date}>Order ID: {props.id}</Box>
+
       <Box className={classes.section} display="flex">
         <Box width="120px"></Box>
         <Box width="50%" textAlign="left">
@@ -111,17 +116,47 @@ const HistoryCard = (props) => {
         className={clsx(classes.items, classes.savingDetails, classes.section)}
         display="flex"
       >
-        Total
-        <Box flexGrow={1} />${props.total.toFixed(2)}
+        Subtotal
+        <Box flexGrow={1} />${props.subtotal.toFixed(2)}
       </Box>
       <Box
         className={clsx(classes.items, classes.savingDetails, classes.section)}
         display="flex"
       >
-        Savings
+        Promo Applied
         <Box flexGrow={1} />
         -${props.savings.toFixed(2)}
       </Box>
+      <Box
+        className={clsx(classes.items, classes.savingDetails, classes.section)}
+        display="flex"
+      >
+        Delivery Fee
+        <Box flexGrow={1} />${props.deliveryFee.toFixed(2)}
+      </Box>
+      <Box
+        className={clsx(classes.items, classes.savingDetails, classes.section)}
+        display="flex"
+      >
+        Service Fee
+        <Box flexGrow={1} />${props.serviceFee.toFixed(2)}
+      </Box>
+      <Box
+        className={clsx(classes.items, classes.savingDetails, classes.section)}
+        display="flex"
+      >
+        Driver Tip
+        <Box flexGrow={1} />${props.driverTip.toFixed(2)}
+      </Box>
+
+      <Box
+        className={clsx(classes.items, classes.savingDetails, classes.section)}
+        display="flex"
+      >
+        Taxes
+        <Box flexGrow={1} />${props.taxes.toFixed(2)}
+      </Box>
+
       <Box
         className={clsx(classes.items, classes.total, classes.section)}
         display="flex"
