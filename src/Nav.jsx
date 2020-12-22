@@ -5,9 +5,6 @@ import Store from './customer/Store';
 import Landing from './home/Landing';
 import Signup from './auth/Signup';
 import SocialSignUp from './auth/SocialSignUp';
-import History from './customer/pages/history';
-import Refund from './customer/pages/Refund';
-import PayStripe from './customer/pages/stripe';
 import AuthAdminRoute from './auth/AuthAdminRoute';
 import AuthAdminLoginRoute from './auth/AuthAdminLoginRoute';
 import AdminSocialSignup from './admin/AdminSocialSignup';
@@ -26,9 +23,6 @@ function Nav(authLevel, isAuth) {
       <Route exact path="/signup" component={Signup} />
       <Route exact path="/socialsignup" component={SocialSignUp} />
       <Route exact path="/products" component={DisplayProducts} />
-      <Route path="/stripe" component={PayStripe} />
-      <Route path="/history" component={History} />
-      <Route path="/refund" component={Refund} />
       <Route exact path="/store" component={Store} />
       <Route path="/payment/paypal:props" component={MobilePaypalCheckout} />
       <AuthAdminRoute

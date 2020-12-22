@@ -481,7 +481,7 @@ function OrderRow({ order, type, farmID, ...props }) {
     var _total = 0;
     for (const item of JSON.parse(order.items)) {
       if (item.itm_business_uid === farmID) {
-        _total += item.price * item.qty;
+        _total += parseFloat(item.price) * item.qty;
       }
     }
     setTotal(Math.round(_total * 100) / 100);
@@ -581,6 +581,8 @@ function OrderRow({ order, type, farmID, ...props }) {
 }
 
 function OrderItem({ order, item, deleteItem, ...props }) {
+  const itemPrice = parseFloat(item.price);
+
   return (
     // {...(props.hidden ? { display: "none" } : {})}
     <TableRow>
@@ -593,7 +595,7 @@ function OrderItem({ order, item, deleteItem, ...props }) {
                 {item.name}{' '}
                 {item.unit !== undefined && item.unit !== ''
                   ? '($' +
-                    item.price.toFixed(2) +
+                    itemPrice.toFixed(2) +
                     ' ' +
                     (item.unit === 'each' ? '' : '/ ') +
                     item.unit +
@@ -601,7 +603,7 @@ function OrderItem({ order, item, deleteItem, ...props }) {
                   : ''}
               </h3>
               <p>Quantity: {item.qty}</p>
-              <p>Revenue: ${(item.price * item.qty).toFixed(2)}</p>
+              <p>Revenue: ${(itemPrice * item.qty).toFixed(2)}</p>
             </Box>
             <Box flexGrow={1} />
             <Button

@@ -48,7 +48,7 @@ const useStyles = makeStyles({
 export default function DeliveryInfoTab() {
   const classes = useStyles();
   const store = useContext(StoreContext);
-  const Auth = useContext(AuthContext);
+  const auth = useContext(AuthContext);
   const history = useHistory();
   const confirm = useConfirmation();
   const AuthMethods = new AuthUtils();
@@ -101,16 +101,30 @@ export default function DeliveryInfoTab() {
           return;
         }
       }
-      AuthMethods.updateProfile(userInfo).then((res) => {
-        console.log('(res.code === 200): ', res);
-        if (res.code === 200) {
-          setProfile({ ...userInfo });
-        } else {
-          setLocErrorMessage(
-            'There was an issue updating your profile, please try again later'
-          );
-        }
-      });
+      if (auth.isAuth) {
+        AuthMethods.updateProfile(userInfo).then((res) => {
+          console.log('(res.code === 200): ', res);
+          if (res.code === 200) {
+            setProfile({ ...userInfo });
+          } else {
+            setLocErrorMessage(
+              'There was an issue updating your profile, please try again later'
+            );
+          }
+        });
+      } else {
+        AuthMethods.createProfile(userInfo).then((res) => {
+          if (res.code === 200) {
+            setProfile({ ...userInfo });
+            auth.setAuthLevel(0);
+            auth.setIsAuth(0);
+          } else {
+            setLocErrorMessage(
+              'There was an issue creating your profile, please try again later'
+            );
+          }
+        });
+      }
     } else {
       createLocError(
         'Your address Had not been validated, please validate before saving changes.'
@@ -564,7 +578,7 @@ export default function DeliveryInfoTab() {
   return (
     <Paper className={classes.root}>
       <form onSubmit={onSubmit}>
-        {Auth.isAuth ? authFields() : noAuthFields(2)}
+        {auth.isAuth ? authFields() : noAuthFields(2)}
       </form>
     </Paper>
   );

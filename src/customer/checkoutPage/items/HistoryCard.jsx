@@ -43,7 +43,7 @@ function listItem(item) {
       <CartItem
         name={item.name}
         unit={item.unit}
-        price={item.price}
+        price={parseFloat(item.price)}
         count={item.qty}
         img={item.img}
         key={item.item_uid}

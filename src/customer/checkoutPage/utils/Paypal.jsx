@@ -28,13 +28,13 @@ const PayPal = ({ value, deliveryInstructions }) => {
   // DONE: Add unit (bunch), desc (cOrganic)
   const items = Object.values(cartItems).map((item) => {
     return {
-      qty: item.count,
+      qty: item.count.toString(),
       name: item.name,
       unit: item.unit,
-      price: item.price,
+      price: item.price.toString(),
       item_uid: item.id,
       itm_business_uid: item.business_uid,
-      description: item.sec,
+      description: item.desc,
       img: item.img,
     };
   });

@@ -18,6 +18,68 @@ export default class AuthUtils {
       });
   };
 
+  createProfile = async function (userInfo) {
+    let object = {
+      email: userInfo.email,
+      password: userInfo.password,
+      first_name: userInfo.firstName,
+      last_name: userInfo.lastName,
+      phone_number: userInfo.phone,
+      address: userInfo.address,
+      unit: userInfo.unit,
+      city: userInfo.city,
+      state: userInfo.state,
+      zip_code: userInfo.zip,
+      latitude: userInfo.lat,
+      longitude: userInfo.long,
+      referral_source: 'WEB',
+      role: 'CUSTOMER',
+      social: 'FALSE',
+      social_id: 'NULL',
+      user_access_token: 'FALSE',
+      user_refresh_token: 'FALSE',
+      mobile_access_token: 'FALSE',
+      mobile_refresh_token: 'FALSE',
+    };
+    return await axios
+      .post(process.env.REACT_APP_SERVER_BASE_URI + 'createAccount', object, {
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+      })
+      .then((res) => {
+        let customerInfo = res.data.result;
+        console.log(customerInfo);
+        if (res.data.code === 200) {
+          axios
+            .post(
+              process.env.REACT_APP_SERVER_BASE_URI + 'email_verification',
+              { email: userInfo.email },
+              {
+                headers: {
+                  'Content-Type': 'text/plain',
+                },
+              }
+            )
+            .then((res) => {
+              console.log(res);
+            })
+            .catch((err) => {
+              if (err.response) {
+                console.log(err.response);
+              }
+              console.log(err);
+            });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.response) {
+          console.log(err.response);
+        }
+      });
+  };
+
   updateProfile = async function (profile) {
     const profileData = {
       customer_first_name: profile.firstName,

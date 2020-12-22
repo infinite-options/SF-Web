@@ -102,10 +102,10 @@ const StripeCheckout = (props) => {
       );
       const items = Object.values(cartItems).map((item) => {
         return {
-          qty: item.count,
+          qty: item.count.toString(),
           name: item.name,
           unit: item.unit,
-          price: item.price,
+          price: item.price.toString(),
           item_uid: item.id,
           itm_business_uid: item.business_uid,
           description: item.desc,
@@ -166,6 +166,11 @@ const StripeCheckout = (props) => {
         charge_id: confirmed.paymentIntent.id,
         payment_type: 'STRIPE',
         delivery_status: 'FALSE',
+        subtotal: '5.55',
+        service_fee: '5.5555',
+        delivery_fee: '5.5898',
+        driver_tip: '5.33333',
+        taxes: '5',
       };
 
       let res = axios

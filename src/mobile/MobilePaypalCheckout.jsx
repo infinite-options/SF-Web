@@ -15,11 +15,14 @@ const MobilePaypalCheckout = () => {
   //[{"qty": "3", "name": "Opo Gourd", "price": "0.5", "item_uid": "310-000087", "itm_business_uid": "200-000005"}]
   const items = Object.values(props.cartItems || {}).map((item) => {
     return {
-      qty: item.count,
+      qty: item.count.toString(),
       name: item.name,
-      price: item.price,
+      unit: item.unit,
+      price: item.price.toString(),
       item_uid: item.id,
       itm_business_uid: item.business_uid,
+      description: item.desc,
+      img: item.img,
     };
   });
 

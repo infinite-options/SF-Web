@@ -5,16 +5,6 @@ import { Box } from '@material-ui/core';
 import storeContext from '../../storeContext';
 import { AuthContext } from '../../../auth/AuthContext';
 
-function calculateSubTotal(items) {
-  var result = 0;
-
-  for (const item of items) {
-    result += item.count * item.price;
-  }
-
-  return result;
-}
-
 const responsive = {
   superLargeDesktop: {
     breakpoint: { max: 3000, min: 1650 },

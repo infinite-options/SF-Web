@@ -7,7 +7,8 @@ import appColors from '../../../styles/AppColors';
 
 function CartItem(props) {
   const store = useContext(storeContext);
-  var totalPrice = props.price * props.count;
+  const itemPrice = parseFloat(props.price);
+  var totalPrice = itemPrice * props.count;
 
   function decrease() {
     if (props.id in store.cartItems) {
@@ -79,7 +80,7 @@ function CartItem(props) {
           {props.name}{' '}
           {props.unit !== undefined && props.unit !== ''
             ? '($' +
-              props.price.toFixed(2) +
+              itemPrice.toFixed(2) +
               ' ' +
               (props.unit === 'each' ? '' : '/ ') +
               props.unit +
