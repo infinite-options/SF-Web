@@ -102,10 +102,10 @@ const StripeCheckout = (props) => {
       );
       const items = Object.values(cartItems).map((item) => {
         return {
-          qty: item.count.toString(),
+          qty: item.count,
           name: item.name,
           unit: item.unit,
-          price: item.price.toString(),
+          price: item.price,
           item_uid: item.id,
           itm_business_uid: item.business_uid,
           description: item.desc,
