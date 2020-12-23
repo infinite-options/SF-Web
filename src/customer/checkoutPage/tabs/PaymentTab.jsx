@@ -73,6 +73,7 @@ const useStyles = makeStyles({
 //       So, cart needs to be cleared if they try in input a new address and buttons need to show if they
 //       entered an address and are in the home page, the menu buttons also need to be enabled for a guest
 // TODO: Add delivery fee, service fee, and tip to history and sf purchase
+// TODO: Add check for delivery instructions
 const PaymentTab = () => {
   const classes = useStyles();
   const store = useContext(storeContext);
