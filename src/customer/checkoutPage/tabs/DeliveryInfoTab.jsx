@@ -182,6 +182,7 @@ export default function DeliveryInfoTab() {
             setProfile({ ...userInfo });
             auth.setAuthLevel(0);
             auth.setIsAuth(0);
+            history.push('/store');
           } else {
             setLocErrorMessage(
               'There was an issue creating your Account, please try again later'

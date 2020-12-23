@@ -48,16 +48,14 @@ const StyledTab = withStyles((theme) => ({
 
 export default function CheckoutRight() {
   const classes = useStyles();
-
   const store = useContext(storeContext);
-
   const location = useLocation();
 
   const [rightTabChosen, setRightTabChosen] = useState(0);
 
   useEffect(() => {
-    setRightTabChosen(store.rightTabChosen);
-  }, [store.rightTabChosen]);
+    setRightTabChosen(0);
+  }, [store.storePage]);
 
   useEffect(() => {
     if (

@@ -99,6 +99,7 @@ const DateCard = (props) => {
         ' from ' +
         props.time
     );
+
     store.setStartDeliveryDate(
       props.year +
         '-' +
@@ -106,12 +107,25 @@ const DateCard = (props) => {
           ? '0' + props.monthInNumber
           : props.monthInNumber) +
         '-' +
-        ((props.date < 10 ? '0' : '') + props.date)
+        ((props.date < 10 ? '0' : '') + props.date) +
+        ' ' +
+        amPmTo24Hr(props.time)
     );
     store.setCartTotal(0);
     store.setCartItems({});
     localStorage.setItem('selectedDay', props.id);
   }
+  const amPmTo24Hr = (time) => {
+    if (time[2] !== 'a' && time[2] !== 'p') {
+      time = '0' + time;
+    }
+    if (time[2] === 'a') {
+      return time.substring(0, 2) + ':00:00';
+    }
+    if (time[2] === 'p') {
+      return (parseInt(time.substring(0, 2)) + 12).toString() + ':00:00';
+    }
+  };
 
   useEffect(() => {
     if (props.id !== productSelect.dayClicked) {

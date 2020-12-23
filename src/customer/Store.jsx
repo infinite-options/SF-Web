@@ -72,7 +72,6 @@ const Store = ({ ...props }) => {
   const [storePage, setStorePage] = useState(
     parseInt(localStorage.getItem('currentStorePage') || '0')
   );
-  const [rightTabChosen, setRightTabChosen] = useState(0);
 
   useEffect(() => {
     if (location.state !== undefined) {
@@ -309,7 +308,7 @@ const Store = ({ ...props }) => {
           setProfile,
           products,
           productsLoading,
-          rightTabChosen,
+          storePage,
           setStorePage,
           numDeliveryTimes,
           dayTimeDict,
@@ -330,7 +329,6 @@ const Store = ({ ...props }) => {
           setIsSignUpShown={setIsSignUpShown}
           storePage={storePage}
           setStorePage={setStorePage}
-          setRightTabChosen={setRightTabChosen}
         />
         <Box hidden={storePage !== 0}>
           <Box display="flex">

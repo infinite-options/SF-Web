@@ -35,7 +35,6 @@ export default function StoreNavBar(props) {
   var itemsAmount = store.cartTotal;
 
   const handleCartClick = () => {
-    props.setRightTabChosen(0);
     props.setStorePage(props.storePage === 1 ? 0 : 1);
   };
 

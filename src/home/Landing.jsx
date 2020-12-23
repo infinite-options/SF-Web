@@ -247,7 +247,7 @@ const Landing = ({ ...props }) => {
             Local produce delivered to your doorstop
           </h4>
           <Box justifyContent="center">
-            {/* <LocationSearchInput /> */}
+            <LocationSearchInput />
             <CssTextField
               error={errorValue}
               value={deliverylocation}

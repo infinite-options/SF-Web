@@ -165,7 +165,7 @@ export default function CheckoutTab() {
     setTotal(total);
     setPaymentDetails((prev) => ({
       ...prev,
-      discount: promoApplied + (origDeliveryFee - deliveryFee),
+      discount: promoApplied,
     }));
   }, [subtotal, promoApplied, deliveryFee, driverTip]);
 

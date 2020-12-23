@@ -78,6 +78,7 @@ const days = [
 // DONE: checked report total calculations
 // TODO: Take the next delivery day for summary report
 // TODO: Add business price and item price (item only seen by admin)
+// TODO: Add delivery instructions
 export default function FarmerReport({
   farmID,
   farmName,
