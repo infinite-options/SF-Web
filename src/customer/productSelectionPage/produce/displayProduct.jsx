@@ -13,6 +13,7 @@ function createProduct2(product) {
       name={product.item_name}
       desc={product.item_desc}
       price={product.item_price}
+      businessPrice={product.business_price}
       img={product.item_photo}
       type={product.item_type}
       unit={product.item_unit}

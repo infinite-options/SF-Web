@@ -78,11 +78,13 @@ const RefundTab = () => {
   React.useEffect(() => {
     setUserEmail(profile.email);
   }, [profile.email]);
+
   const handleImgChange = (e) => {
-    setImageUpload({
-      file: e.target.files[0],
-      path: URL.createObjectURL(e.target.files[0]),
-    });
+    if (e.target.files > 0)
+      setImageUpload({
+        file: e.target.files[0],
+        path: URL.createObjectURL(e.target.files[0]),
+      });
   };
 
   const reset = () => {
@@ -127,11 +129,7 @@ const RefundTab = () => {
   return (
     <>
       <div className={classes.imageContainer}>
-        <img
-          className={classes.image}
-          src={imageUpload.path}
-          alt="Please choose a image"
-        />
+        <img className={classes.image} src={imageUpload.path} alt="refund" />
       </div>
       <Box my={4}>
         <Button

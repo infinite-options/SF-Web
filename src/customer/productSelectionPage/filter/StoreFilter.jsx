@@ -61,6 +61,15 @@ const StoreFilter = () => {
       'Friday',
       'Saturday',
     ];
+    var fullDaysUpper = [
+      'SUNDAY',
+      'MONDAY',
+      'TUESDAY',
+      'WEDNESDAY',
+      'THURSDAY',
+      'FRIDAY',
+      'SATURDAY',
+    ];
 
     var default7Days = [];
     let i = 0;
@@ -79,10 +88,11 @@ const StoreFilter = () => {
         );
 
         // toUpperCase because the dictionary stores in upper case
-        const todaysDayUpper = fullDays[today.getDay()].toUpperCase();
+        const todaysDayUpper = fullDaysUpper[today.getDay()];
 
         // if the iterated day is in within the the dictionary to account for no selected farms
         if (todaysDayUpper in store.dayTimeDict) {
+          // eslint-disable-next-line no-loop-func
           store.dayTimeDict[todaysDayUpper].forEach((time) => {
             // IMPORTANT: make sure the index used for mapping a component key is unique,
             // I ran into rendering issue when they were the same

@@ -140,8 +140,8 @@ export default function DeliveryInfoTab() {
 
       if (
         password !== confirmPassword ||
-        password.length > 0 ||
-        confirmPassword.length > 0
+        password.length === 0 ||
+        confirmPassword.length === 0
       ) {
         setPasswordError('not matching');
         setConfirmPasswordError('not matching');
@@ -181,8 +181,13 @@ export default function DeliveryInfoTab() {
           if (res.code === 200) {
             setProfile({ ...userInfo });
             auth.setAuthLevel(0);
-            auth.setIsAuth(0);
-            history.push('/store');
+            auth.setIsAuth(true);
+            confirm({
+              variant: 'info',
+              catchOnCancel: true,
+              title: 'Profile Successfully Created',
+              description: 'Thank you for signing up. You are now signed in.',
+            }).then(() => {});
           } else {
             setLocErrorMessage(
               'There was an issue creating your Account, please try again later'

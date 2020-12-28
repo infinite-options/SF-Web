@@ -22,6 +22,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import { useConfirmation } from '../../services/ConfirmationService';
 import { AdminFarmContext } from '../AdminFarmContext';
+import { AuthContext } from 'auth/AuthContext';
 
 const BASE_URL =
   'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
@@ -86,11 +87,11 @@ export default function FarmerReport({
   ...props
 }) {
   // const [responseData, setResponseData] = useState();
+  const classes = useStyles();
+  const confirm = useConfirmation();
   const [orders, setOrders] = useState([]);
   const [deliveryDays, setDeliveryDays] = useState([]);
   const [selectedDay, setSelectedDay] = useState('');
-  const classes = useStyles();
-  const confirm = useConfirmation();
 
   useEffect(() => {
     axios
@@ -479,17 +480,21 @@ export default function FarmerReport({
 }
 
 function OrdersTable({ orders, type, farmID, ...props }) {
+  const auth = useContext(AuthContext);
+
   return (
     <TableContainer component={Paper}>
       <Table aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Date</TableCell>
+            <TableCell>Purchase Date</TableCell>
+            <TableCell>Delivery Date</TableCell>
             <TableCell>Name</TableCell>
             <TableCell>Email</TableCell>
             <TableCell>Address</TableCell>
             <TableCell>Phone</TableCell>
-            <TableCell>Total ($)</TableCell>
+            {auth.authLevel === 2 && <TableCell>Item Total ($)</TableCell>}
+            <TableCell>Business Total ($)</TableCell>
             <TableCell>Items</TableCell>
             <TableCell>Payment Completed?</TableCell>
             <TableCell />
@@ -522,8 +527,11 @@ function OrdersTable({ orders, type, farmID, ...props }) {
 }
 
 function OrderRow({ order, type, farmID, ...props }) {
+  const auth = useContext(AuthContext);
+
   const [hidden, setHidden] = useState(true);
   const [total, setTotal] = useState(0);
+  const [itemTotal, setItemTotal] = useState(0); // total for item price
 
   const address = (() => {
     return `${order.delivery_address} ${
@@ -535,6 +543,7 @@ function OrderRow({ order, type, farmID, ...props }) {
   })();
   useMemo(() => {
     var _total = 0;
+    var _itemTotal = 0;
     for (const item of JSON.parse(order.items)) {
       if (item.itm_business_uid === farmID) {
         _total += parseFloat(item.price) * item.qty;
@@ -564,12 +573,18 @@ function OrderRow({ order, type, farmID, ...props }) {
         <TableCell component="th" scope="row">
           {order.purchase_date}
         </TableCell>
+        <TableCell component="th" scope="row">
+          {order.delivery_date}
+        </TableCell>
         <TableCell>
           {order.delivery_first_name + ' ' + order.delivery_last_name}
         </TableCell>
         <TableCell>{order.delivery_email}</TableCell>
         <TableCell>{address}</TableCell>
         <TableCell>{order.delivery_phone_num}</TableCell>
+        {auth.authLevel === 2 && (
+          <TableCell>{'$' + itemTotal.toFixed(2)}</TableCell>
+        )}
         <TableCell>{'$' + total.toFixed(2)}</TableCell>
         <TableCell>{count}</TableCell>
         <TableCell>{hasPaid}</TableCell>

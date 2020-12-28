@@ -38,6 +38,7 @@
     "react-places-autocomplete": "^7.3.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.0",
+    "stripe": "^8.129.0",
     "universal-cookie": "^4.0.4"
   },
   "scripts": {

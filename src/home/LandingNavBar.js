@@ -65,7 +65,7 @@ export default function LandingNavBar({ ...props }) {
         <Toolbar>
           <MenuNavButton />
           <Box flexGrow={1} />
-          <Box hidden={!auth.isAuth}>
+          <Box hidden={!(auth.isAuth || auth.isGuest)}>
             <IconButton edge="end" className="link">
               <StorefrontIcon
                 fontSize="large"
@@ -83,6 +83,7 @@ export default function LandingNavBar({ ...props }) {
               </Badge>
             </IconButton>
           </Box>
+          <Box mr={4} />
           <Box hidden={auth.isAuth}>
             <Button
               className={classes.authButton}

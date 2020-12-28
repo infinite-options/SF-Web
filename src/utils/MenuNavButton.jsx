@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { AuthContext } from '../auth/AuthContext';
@@ -28,9 +28,15 @@ const useStyles = makeStyles((theme) => ({
 function MenuListComposition(props) {
   const classes = useStyles();
   const history = useHistory();
-  const [open, setOpen] = React.useState(false);
   const auth = useContext(AuthContext);
   const anchorRef = React.useRef(null);
+
+  const [open, setOpen] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(!(auth.isAuth || auth.isGuest));
+
+  useMemo(() => {
+    setIsDisabled(!(auth.isAuth || auth.isGuest));
+  }, [auth.isAuth, auth.isGuest]);
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -172,7 +178,7 @@ function MenuListComposition(props) {
                   >
                     {auth.authLevel === 2 && (
                       <MenuItem
-                        disabled={!auth.isAuth}
+                        disabled={isDisabled}
                         onClick={(e) => {
                           handleMenuItem(e, 'Admin');
                         }}
@@ -182,7 +188,7 @@ function MenuListComposition(props) {
                     )}
                     {auth.authLevel === 1 && (
                       <MenuItem
-                        disabled={!auth.isAuth}
+                        disabled={isDisabled}
                         onClick={(e) => {
                           handleMenuItem(e, 'Farm');
                         }}
@@ -191,7 +197,7 @@ function MenuListComposition(props) {
                       </MenuItem>
                     )}
                     <MenuItem
-                      disabled={!auth.isAuth}
+                      disabled={isDisabled}
                       onClick={(e) => {
                         handleMenuItem(e, 'Store');
                       }}
@@ -199,7 +205,7 @@ function MenuListComposition(props) {
                       Store
                     </MenuItem>
                     <MenuItem
-                      disabled={!auth.isAuth}
+                      disabled={isDisabled}
                       onClick={(e) => {
                         handleMenuItem(e, 'Profile Info');
                       }}
@@ -207,7 +213,7 @@ function MenuListComposition(props) {
                       Profile Info
                     </MenuItem>
                     <MenuItem
-                      disabled={!auth.isAuth}
+                      disabled={isDisabled}
                       onClick={(e) => {
                         handleMenuItem(e, 'Rewards');
                       }}
@@ -215,7 +221,7 @@ function MenuListComposition(props) {
                       Rewards
                     </MenuItem>
                     <MenuItem
-                      disabled={!auth.isAuth}
+                      disabled={isDisabled}
                       onClick={(e) => {
                         handleMenuItem(e, 'Payment Details');
                       }}
@@ -223,7 +229,7 @@ function MenuListComposition(props) {
                       Payment Details
                     </MenuItem>
                     <MenuItem
-                      disabled={!auth.isAuth}
+                      disabled={isDisabled}
                       onClick={(e) => {
                         handleMenuItem(e, 'Checkout');
                       }}
@@ -231,7 +237,7 @@ function MenuListComposition(props) {
                       Checkout
                     </MenuItem>
                     <MenuItem
-                      disabled={!auth.isAuth}
+                      disabled={isDisabled}
                       onClick={(e) => {
                         handleMenuItem(e, 'History');
                       }}
@@ -239,19 +245,21 @@ function MenuListComposition(props) {
                       History
                     </MenuItem>
                     <MenuItem
-                      disabled={!auth.isAuth}
+                      disabled={isDisabled}
                       onClick={(e) => {
                         handleMenuItem(e, 'Refund');
                       }}
                     >
                       Refund
                     </MenuItem>
-                    <MenuItem
-                      disabled={!auth.isAuth}
-                      onClick={handleClickLogOut}
-                    >
-                      Logout
-                    </MenuItem>
+                    {auth.isAuth && (
+                      <MenuItem
+                        disabled={isDisabled}
+                        onClick={handleClickLogOut}
+                      >
+                        Logout
+                      </MenuItem>
+                    )}
                   </MenuList>
                 </ClickAwayListener>
               </Paper>

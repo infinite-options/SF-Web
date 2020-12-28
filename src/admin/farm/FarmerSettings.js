@@ -6,8 +6,6 @@ import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
 import appColors from '../../styles/AppColors';
 import { AdminFarmContext } from '../AdminFarmContext';
-import AcceptTime from './components/AcceptTime';
-import DeliveryTime from './components/DeliveryTime';
 import WeeklyHourRange from './components/WeeklyHourRange';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -19,6 +17,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 // import UploadPreview from 'material-ui-upload/UploadPreview';
 // import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import ImageUploading from 'react-images-uploading';
+import blankImg from '../../images/blank_img.svg';
 
 const BUSINESS_DETAILS_URL =
   'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/business_details_update/';
@@ -68,35 +67,12 @@ function PercentFormatCustom(props) {
     />
   );
 }
-function createDateTimeAccept(props) {
-  return (
-    <AcceptTime
-      weekday={props.dayInWeek}
-      start={props.start}
-      end={props.end}
-      id={props.dayInWeek}
-      key={props.dayInWeek}
-    />
-  );
-}
 
 function createWeeklyDateTime(props) {
   return (
     <WeeklyHourRange
       hours={props.hours}
       setHours={props.setHours}
-      weekday={props.dayInWeek}
-      start={props.start}
-      end={props.end}
-      id={props.dayInWeek}
-      key={props.dayInWeek}
-    />
-  );
-}
-
-function createDateTimeDelivery(props) {
-  return (
-    <DeliveryTime
       weekday={props.dayInWeek}
       start={props.start}
       end={props.end}
@@ -118,32 +94,19 @@ const dayInWeekArray = [
 
 function parseHours(hoursObject, setHoursObject) {
   const hours = [];
-  if (Object.keys(hoursObject).length !== 0) {
-    for (const day of dayInWeekArray) {
-      var startDelivery =
-        day in hoursObject ? hoursObject[day][0].slice(0, 5) : '';
-      var endDelivery =
-        day in hoursObject ? hoursObject[day][1].slice(0, 5) : '';
-      var newDeliveryObj = {};
-      if (startDelivery === endDelivery) {
-        newDeliveryObj = {
-          dayInWeek: day,
-          start: '',
-          end: '',
-          hours: hoursObject,
-          setHours: setHoursObject,
-        };
-      } else {
-        newDeliveryObj = {
-          dayInWeek: day,
-          start: startDelivery,
-          end: endDelivery,
-          hours: hoursObject,
-          setHours: setHoursObject,
-        };
-      }
-      hours.push(newDeliveryObj);
-    }
+  for (const day of dayInWeekArray) {
+    const startDelivery =
+      day in hoursObject ? hoursObject[day][0].slice(0, 5) : '';
+    const endDelivery =
+      day in hoursObject ? hoursObject[day][1].slice(0, 5) : '';
+    const newDeliveryObj = {
+      dayInWeek: day,
+      start: startDelivery,
+      end: endDelivery,
+      hours: hoursObject,
+      setHours: setHoursObject,
+    };
+    hours.push(newDeliveryObj);
   }
   return hours;
 }
@@ -167,19 +130,20 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
   const [confirmPass, setConfirmPass] = useState('');
   const [saltPack, setSaltPack] = useState({});
   // const [image,setImage]=useState({});
-  const [imgs, setImgs] = useState([]);
-
+  const [imageUpload, setImageUpload] = useState({
+    file: null,
+    path: settings ? settings.business_image : blankImg,
+  });
   // Regular Hours for Business
   const [regularHours, setRegularHours] = useState([]);
   const maxNumImg = 1;
 
-  const changeImage = (imgList, newIndex) => {
-    console.log(imgList, newIndex);
-    setImgs(imgList);
-    // setAdd(true);
-    // console.log(imgs);
-    // console.log(isAdded);
-    // currentImg= imgs;
+  const handleImgChange = (e) => {
+    if (e.target.files > 0)
+      setImageUpload({
+        file: e.target.files[0],
+        path: URL.createObjectURL(e.target.files[0]),
+      });
   };
 
   async function digestMessage(message, alg) {
@@ -195,32 +159,18 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
     // return hash;
   }
 
-  var [AcceptTimeObj, setAcceptTimeObj] = useState(
-    parseHours(context.timeChange, context.setTimeChange)
-  );
-  var [DeliveryTime, setDeliveryTime] = useState(
-    parseHours(context.deliveryTime, context.setDeliveryTime)
-  );
-  var [regHours, setRegHours] = useState(
-    parseHours(regularHours, setRegularHours)
-  );
+  const [acceptTime, setAcceptTime] = useState(context.timeChange);
+  const [deliveryTime, setDeliveryTime] = useState(context.deliveryTime);
 
   useEffect(() => {
-    setAcceptTimeObj(parseHours(context.timeChange, context.setTimeChange));
+    setAcceptTime(context.timeChange);
   }, [context.timeChange]);
   useEffect(() => {
-    setDeliveryTime(parseHours(context.deliveryTime, context.setDeliveryTime));
+    setDeliveryTime(context.deliveryTime);
   }, [context.deliveryTime]);
 
-  useEffect(() => {
-    setRegHours(parseHours(regularHours, setRegularHours));
-  }, [regularHours]);
-
   async function update() {
-    var tempoData = settings;
-
-    var acceptTime = context.timeChange;
-    var deliveryTime = context.deliveryTime;
+    var tempoData = { ...settings };
 
     tempoData.business_name = businessAndFarmDetail.business_name;
     tempoData.business_desc = businessAndFarmDetail.description;
@@ -235,6 +185,10 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
     tempoData.business_hours = regularHours;
     tempoData.business_accepting_hours = acceptTime;
     tempoData.business_delivery_hours = deliveryTime;
+    tempoData.business_license = businessAndFarmDetail.businessLicense;
+    tempoData.business_USDOT = businessAndFarmDetail.businessUsdot;
+    tempoData.business_EIN = businessAndFarmDetail.businessEin;
+    tempoData.business_WAUBI = businessAndFarmDetail.businessWaubi;
     tempoData.platform_fee = businessAndFarmDetail.platformFee.toString();
     tempoData.transaction_fee = businessAndFarmDetail.transactionFee.toString();
     tempoData.profit_sharing = businessAndFarmDetail.profitSharing.toString();
@@ -261,10 +215,6 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
       tempoData.business_association = JSON.parse(
         tempoData.business_association
       );
-    }
-
-    if (imgs.length !== 0) {
-      tempoData.business_image = imgs[0].data_url;
     }
 
     //third column
@@ -524,6 +474,10 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
     return <div>Loading Information...</div>;
   }
 
+  const [regularHoursObj] = parseHours(regularHours, setRegularHours);
+  const [AcceptHoursObj] = parseHours(acceptTime, setAcceptTime);
+  const [DeliveryHoursObj] = parseHours(deliveryTime, setDeliveryTime);
+
   return (
     <div hidden={props.hidden}>
       <Box display="flex">
@@ -558,7 +512,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
               >
                 <h3>Regular Hours</h3>
               </div>
-              {regHours.map(createWeeklyDateTime)}
+              {regularHoursObj.map(createWeeklyDateTime)}
               <div
                 style={{
                   // fontSize: "1rem",
@@ -567,7 +521,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
               >
                 <h3>Orders Accepting Hours</h3>
               </div>
-              {AcceptTimeObj.map(createWeeklyDateTime)}
+              {AcceptHoursObj.map(createWeeklyDateTime)}
               <div
                 style={{
                   // fontSize: "1rem",
@@ -576,7 +530,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
               >
                 <h3>Delivery Hours</h3>
               </div>
-              {DeliveryTime.map(createWeeklyDateTime)}
+              {DeliveryHoursObj.map(createWeeklyDateTime)}
             </Box>
             {/* END: Hours section */}
 
@@ -860,50 +814,35 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
           >
             <h3>Profile Picture</h3>
 
-            <div className="makeTopRefund">
-              <ImageUploading
-                multiple
-                value={imgs}
-                onChange={changeImage}
-                maxNumber={maxNumImg}
-                dataURLKey="data_url"
+            <div>
+              <img
+                src={profileImage}
+                alt="profile"
+                style={{ width: 200, height: 200 }}
+              />
+            </div>
+            <div>
+              <Button
+                onChange={handleImgChange}
+                variant="outlined"
+                size="small"
+                color="primary"
+                component="label"
+                fullWidth
+                style={{
+                  borderColor: appColors.border,
+                  backgroundColor: 'white',
+                  width: '200px',
+                }}
               >
-                {({
-                  imageList,
-                  onImageUpload,
-                  onImageRemoveAll,
-                  onImageUpdate,
-                  onImageRemove,
-                  isDragging,
-                  dragProps,
-                }) => (
-                  <>
-                    <div>
-                      {imgs.length > 0 ||
-                        (settings && (
-                          <img
-                            className="imageSize"
-                            src={
-                              imgs.length !== 0
-                                ? imgs[0].data_url
-                                : settings.business_image
-                            }
-                            alt="no-img-displace"
-                            style={isDragging ? { color: 'red' } : null}
-                            onClick={onImageUpload}
-                            {...dragProps}
-                          />
-                        ))}
-                      {/* &nbsp; */}
-                    </div>
-                    <Box mt={14} mb={-10}>
-                      <button className="chooseFileBrn" onClick={onImageUpload}>
-                        Choose File
-                      </button>
-                    </Box>
-                  </>
-                )}
-              </ImageUploading>
+                Upload File
+                <input
+                  onChange={handleImgChange}
+                  type="file"
+                  accept="image/*"
+                  hidden
+                />
+              </Button>
             </div>
 
             <div>

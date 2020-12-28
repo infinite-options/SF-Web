@@ -70,6 +70,12 @@ function App() {
   let uid =
     cookies.get('customer_uid') == null ? '' : cookies.get('customer_uid');
 
+  let guesProfile =
+    localStorage.getItem('guestProfile') == null
+      ? ''
+      : localStorage.getItem('guestProfile');
+
+  const [isGuest, setIsGuest] = useState(guesProfile === '' ? false : true); // checks if user is logged in
   const [isAuth, setIsAuth] = useState(uid === '' ? false : true); // checks if user is logged in
   const [accountType, setAccountType] = useState();
   const [isUserLoaded, setIsUserLoaded] = useState(false);
@@ -78,7 +84,6 @@ function App() {
   // Level  1: User is logged in & is farmer or higher
   // Level  2: User is logged in & is admin
   const [authLevel, setAuthLevel] = useState();
-  const [farmID, setFarmID] = useState('200-000003');
   const [timeChange, setTimeChange] = useState({});
   const [deliveryTime, setDeliveryTime] = useState({});
 
@@ -125,13 +130,18 @@ function App() {
         <div className="App">
           <ConfirmationServiceProvider>
             <AuthContext.Provider
-              value={{ isAuth, setIsAuth, authLevel, setAuthLevel }}
+              value={{
+                isGuest,
+                setIsGuest,
+                isAuth,
+                setIsAuth,
+                authLevel,
+                setAuthLevel,
+              }}
             >
               {authLevel >= 1 ? (
                 <AdminFarmContext.Provider
                   value={{
-                    farmID,
-                    setFarmID,
                     timeChange,
                     setTimeChange,
                     deliveryTime,

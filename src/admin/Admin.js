@@ -24,6 +24,10 @@ function Admin() {
   );
 
   useEffect(() => {
+    if (farmID !== '') localStorage.setItem('farmID', farmID);
+  }, [farmID]);
+
+  useEffect(() => {
     localStorage.setItem('farmerTab', tab);
   }, [tab]);
 
@@ -32,8 +36,14 @@ function Admin() {
       axios
         .get(process.env.REACT_APP_SERVER_BASE_URI + 'all_businesses')
         .then((res) => {
-          setFarmList(res.data.result);
-          setFarmID(res.data.result[15].business_uid);
+          setFarmList(
+            res.data.result.sort(function (a, b) {
+              var textA = a.business_name.toUpperCase();
+              var textB = b.business_name.toUpperCase();
+              return textA < textB ? -1 : textA > textB ? 1 : 0;
+            })
+          );
+          setFarmID(localStorage.getItem('farmID'));
           const _farmDict = {};
           for (const farm of res.data.result) {
             _farmDict[farm.business_uid] = farm.business_name;
@@ -50,7 +60,13 @@ function Admin() {
       axios
         .get(process.env.REACT_APP_SERVER_BASE_URI + 'all_businesses')
         .then((res) => {
-          setFarmList(res.data.result);
+          setFarmList(
+            res.data.result.sort(function (a, b) {
+              var textA = a.item_name.toUpperCase();
+              var textB = b.item_name.toUpperCase();
+              return textA < textB ? -1 : textA > textB ? 1 : 0;
+            })
+          );
 
           const _farmDict = {};
           for (const farm of res.data.result) {
@@ -72,7 +88,6 @@ function Admin() {
         )
         .then((response) => {
           let customerInfo = response.data.result[0];
-          setFarmID(customerInfo.role);
         })
         .catch((err) => {
           console.log(err);

@@ -1,38 +1,13 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
-import Cookies from 'universal-cookie';
-import {
-  Box,
-  Button,
-  TextField,
-  InputAdornment,
-  FormHelperText,
-} from '@material-ui/core';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
-import Grid from '@material-ui/core/Grid';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import Background from '../welcome-bg.png';
-
-import LocationSearchInput from '../utils/LocationSearchInput';
-import FindLongLatWithAddr from '../utils/FindLongLatWithAddr';
-import CssTextField from '../utils/CssTextField';
+import Box from '@material-ui/core/Box';
+import { makeStyles } from '@material-ui/core/styles';
 import appColors from '../styles/AppColors';
 import LandingNavBar from './LandingNavBar';
 import AdminLogin from '../auth/AdminLogin';
 import Signup from '../auth/Signup';
 import ProductDisplay from './ProductDisplay';
-
-import { AuthContext } from 'auth/AuthContext';
-
-const cookies = new Cookies();
-
-const styles = {
-  paddingTop: '70px',
-  paddingBottom: '70px',
-  alignItems: 'center',
-  backgroundImage: `url(${Background})`,
-  backgroundSize: 'cover',
-};
+import DeliveryLocationSearch from './DeliveryLocationSearch';
 
 const useStyles = makeStyles((theme) => ({
   authModal: {
@@ -104,71 +79,17 @@ function useOutsideAlerter(ref) {
 // TODO:  Add auto address fill
 // DONE:  Allow a click out of login to close it
 const Landing = ({ ...props }) => {
-  const auth = useContext(AuthContext);
-  const history = useHistory();
   const classes = useStyles();
 
   // Toggles for the login and signup box to be passed in as props to the Landing Nav Bar
   const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
   const [isSignUpShown, setIsSignUpShown] = useState(false);
 
-  // For Guest Procedure
-  const [deliverylocation, setDeliverylocation] = useState('');
-  const [errorValue, setError] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-
   const loginWrapperRef = useRef(null);
   useOutsideAlerter(loginWrapperRef, setIsLoginShown);
   const signupWrapperRef = useRef(null);
   useOutsideAlerter(signupWrapperRef, setIsSignUpShown);
 
-  const onFieldChange = (event) => {
-    const { value } = event.target;
-    setDeliverylocation(value);
-  };
-
-  function createError(message) {
-    setError('Invalid Input');
-    setErrorMessage(message);
-  }
-
-  const onFindProduceClicked = () => {
-    const formatMessage =
-      'Please use the following format: Address, City, State Zipcode';
-    const locationProps = deliverylocation.split(',');
-    if (locationProps.length !== 3) {
-      createError(formatMessage);
-      return;
-    }
-    const stateZip = locationProps[2].trim().split(' ');
-    if (stateZip.length !== 2) {
-      createError(formatMessage);
-      return;
-    }
-    setError('');
-    setErrorMessage('');
-
-    // DONE: Save for guest checkout
-    let address = locationProps[0].trim();
-    let city = locationProps[1].trim();
-    let state = stateZip[0].trim();
-    let zip = stateZip[1].trim();
-
-    FindLongLatWithAddr(address, city, state, zip).then((res) => {
-      console.log('res: ', res);
-      if (res.status === 'found') {
-        cookies.set('longitude', res.longitude);
-        cookies.set('latitude', res.latitude);
-        cookies.set('address', address);
-        cookies.set('city', city);
-        cookies.set('state', state);
-        cookies.set('zip', zip);
-        history.push('/store');
-      } else {
-        createError('Sorry, we could not find this location');
-      }
-    });
-  };
   const handleClose = () => {
     console.log('close');
     setIsLoginShown(false);
@@ -240,50 +161,8 @@ const Landing = ({ ...props }) => {
           />
         </Box>
         {/* END: Landing Page Logo */}
-
         {/* START: Local Produce Search */}
-        <Box mt={10} width="50%" justifyContent="center">
-          <h4 style={{ color: appColors.secondary }}>
-            Local produce delivered to your doorstop
-          </h4>
-          <Box justifyContent="center">
-            <CssTextField
-              error={errorValue}
-              value={deliverylocation}
-              className={classes.margin}
-              id="input-with-icon-textfield"
-              size="small"
-              placeholder="Enter Delivery Location"
-              variant="outlined"
-              fullWidth
-              onChange={onFieldChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LocationOnIcon color="secondary" />
-                  </InputAdornment>
-                ),
-              }}
-              style={{ width: '500px' }}
-            />
-            <Box width="100%" justifyContent="center">
-              <FormHelperText error={true} style={{ textAlign: 'center' }}>
-                {errorMessage}
-              </FormHelperText>
-            </Box>
-          </Box>
-          <Box justifyContent="center" mt={2}>
-            <Button
-              size="small"
-              variant="contained"
-              color="secondary"
-              onClick={onFindProduceClicked}
-              style={{ width: '200px' }}
-            >
-              Find Local Produce
-            </Button>
-          </Box>
-        </Box>
+        <DeliveryLocationSearch />
         {/* END: Local Produce Search */}
       </Box>
 

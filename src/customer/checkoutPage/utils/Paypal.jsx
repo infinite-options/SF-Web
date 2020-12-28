@@ -32,6 +32,7 @@ const PayPal = ({ value, deliveryInstructions }) => {
       name: item.name,
       unit: item.unit,
       price: item.price,
+      business_price: item.businessPrice,
       item_uid: item.id,
       itm_business_uid: item.business_uid,
       description: item.desc,

@@ -2,6 +2,7 @@ import React, { useMemo, useContext, useState, useEffect } from 'react';
 import { useElements, useStripe, CardElement } from '@stripe/react-stripe-js';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import Stripe from 'stripe';
 
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -85,7 +86,7 @@ const StripeCheckout = (props) => {
       },
     };
     let formSending = new FormData();
-    formSending.append('amount', paymentDetails.amountPaid);
+    formSending.append('amount', paymentDetails.amountDue);
     try {
       const {
         data: { client_secret },
@@ -104,6 +105,7 @@ const StripeCheckout = (props) => {
           name: item.name,
           unit: item.unit,
           price: item.price,
+          business_price: item.businessPrice,
           item_uid: item.id,
           itm_business_uid: item.business_uid,
           description: item.desc,
@@ -113,15 +115,29 @@ const StripeCheckout = (props) => {
 
       const cardElement = await elements.getElement(CardElement);
 
+      const IntentStripe = Stripe(
+        process.env.NODE_ENV === 'production'
+          ? process.env.REACT_APP_STRIPE_PRIVATE_KEY_LIVE
+          : process.env.REACT_APP_STRIPE_PRIVATE_KEY
+      );
+
+      const paymentIntent = await IntentStripe.paymentIntents.create({
+        amount: paymentDetails.amountDue,
+        currency: 'usd',
+      });
+
       const paymentMethod = await stripe.createPaymentMethod({
         type: 'card',
         card: cardElement,
         billing_details: billingDetails,
       });
 
-      const confirmed = await stripe.confirmCardPayment(client_secret, {
-        payment_method: paymentMethod.paymentMethod.id,
-      });
+      const confirmed = await stripe.confirmCardPayment(
+        paymentIntent.client_secret,
+        {
+          payment_method: paymentMethod.paymentMethod.id,
+        }
+      );
       //gathering data to send back our server
       //set start_delivery_date
 

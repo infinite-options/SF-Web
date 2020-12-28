@@ -55,13 +55,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function AdminNavBar({ tab, setTab, ...props }) {
-  const {
-    farmID,
-    setFarmID,
-    farmList,
-    setFarmList,
-    handleChangeFarm,
-  } = useContext(AdminFarmContext);
+  const { farmID, farmList, setFarmList, handleChangeFarm } = useContext(
+    AdminFarmContext
+  );
 
   const Auth = useContext(AuthContext);
   useEffect(() => {

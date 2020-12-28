@@ -3,15 +3,15 @@ import TextField from '@material-ui/core/TextField';
 import { AdminFarmContext } from '../../AdminFarmContext';
 
 function WeeklyHourRange(props) {
-  const dayTime = 'AM';
-  const AfternoonTime = 'PM';
+  const dayTime = 'start';
+  const AfternoonTime = 'end';
 
   function handleTimeChange(e) {
     const { value, name, id } = e.target;
     // console.log(value + " " + name + " " + id);
     var currentAcceptTime = { ...props.hours };
-    let timeWithSeconds = value + (value === '' ? '00:00:00' : ':00');
-    if (id === 'AM') {
+    let timeWithSeconds = value;
+    if (id === 'start') {
       currentAcceptTime[name][0] = timeWithSeconds;
     } else {
       currentAcceptTime[name][1] = timeWithSeconds;

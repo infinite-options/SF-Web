@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import StoreNavBar from './StoreNavBar';
@@ -20,6 +21,7 @@ const cookies = new Cookies();
 const Store = ({ ...props }) => {
   const Auth = useContext(AuthContext);
   const location = useLocation();
+  const history = useHistory();
 
   const [profile, setProfile] = useState({
     email: '',
@@ -134,32 +136,30 @@ const Store = ({ ...props }) => {
         setProfile(updatedProfile);
       });
     } else {
-      const long = cookies.get('longitude');
-      const lat = cookies.get('latitude');
+      const guestProfile = JSON.parse(localStorage.getItem('guestProfile'));
+      if (guestProfile === null) {
+        history.push('/');
+        return;
+      }
+
       const updatedProfile = {
         email: '',
         firstName: '',
         lastName: '',
         pushNotifications: false,
         phoneNum: '',
-        address: cookies.get('address'),
+        address: guestProfile.address,
         unit: '',
-        city: cookies.get('city'),
-        state: cookies.get('state'),
-        zip: cookies.get('zip'),
+        city: guestProfile.city,
+        state: guestProfile.state,
+        zip: guestProfile.zip,
         deliveryInstructions: '',
-        latitude: lat,
-        longitude: long,
+        latitude: guestProfile.latitude,
+        longitude: guestProfile.longitude,
         zone: '',
-        socialMedia: '',
+        socialMedia: 'NULL',
       };
       setProfile(updatedProfile);
-
-      console.log('long: ', long);
-      console.log('lat: ', lat);
-      if (long == undefined || lat == undefined) {
-        window.location.href = `${window.location.origin.toString()}/`;
-      }
     }
   }, []);
   function getBusinesses(long, lat, updatedProfile) {
@@ -226,8 +226,12 @@ const Store = ({ ...props }) => {
         setDayTimeDict(_dayTimeDict);
         setDaytimeFarmDict(_daytimeFarmDict);
         setFarmDaytimeDict(_farmDaytimeDict);
-        if (_farmList.length > 0 && updatedProfile.zone !== profile.zone)
+        if (_farmList.length > 0 && updatedProfile.zone !== profile.zone) {
+          localStorage.removeItem('selectedDay');
+          localStorage.removeItem('cartTotal');
+          localStorage.removeItem('cartItems');
           setProfile(updatedProfile);
+        }
 
         console.log('profile: ', profile);
         BusiMethods.getItems(
