@@ -101,7 +101,7 @@ function AdminNavBar({ tab, setTab, ...props }) {
 
       return (
         <Select
-          defaultValue={'200-000016'}
+          defaultValue={localStorage.getItem('farmID')}
           className={classes.farmSelect}
           onChange={handleChangeFarm}
         >

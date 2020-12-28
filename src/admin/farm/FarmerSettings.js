@@ -136,6 +136,31 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
   });
   // Regular Hours for Business
   const [regularHours, setRegularHours] = useState([]);
+  const [acceptTime, setAcceptTime] = useState(context.timeChange);
+  const [deliveryTime, setDeliveryTime] = useState(context.deliveryTime);
+
+  const [regularHoursObj, setRegularHoursObj] = useState(
+    parseHours(regularHours, setRegularHours)
+  );
+  const [acceptTimeObj, setAcceptTimeObj] = useState(
+    parseHours(acceptTime, setAcceptTime)
+  );
+  const [deliveryTimeObj, setDeliveryTimeObj] = useState(
+    parseHours(deliveryTime, setDeliveryTime)
+  );
+
+  useEffect(() => {
+    setRegularHoursObj(parseHours(regularHours, setRegularHours));
+  }, [regularHours]);
+  useEffect(() => {
+    setAcceptTimeObj(parseHours(acceptTime, setAcceptTime));
+  }, [acceptTime]);
+  useEffect(() => {
+    setDeliveryTimeObj(parseHours(deliveryTime, setDeliveryTime));
+  }, [deliveryTime]);
+
+  useEffect(() => {}, [acceptTime]);
+
   const maxNumImg = 1;
 
   const handleImgChange = (e) => {
@@ -158,9 +183,6 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
     return hashHex;
     // return hash;
   }
-
-  const [acceptTime, setAcceptTime] = useState(context.timeChange);
-  const [deliveryTime, setDeliveryTime] = useState(context.deliveryTime);
 
   useEffect(() => {
     setAcceptTime(context.timeChange);
@@ -343,6 +365,10 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
 
   useEffect(() => {
     if (settings) {
+      setImageUpload({
+        file: null,
+        path: settings.business_image,
+      });
       console.log('test log the email: ', settings.business_email);
       if (settings.business_email === undefined) {
         console.log('true undifined');
@@ -474,10 +500,6 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
     return <div>Loading Information...</div>;
   }
 
-  const [regularHoursObj] = parseHours(regularHours, setRegularHours);
-  const [AcceptHoursObj] = parseHours(acceptTime, setAcceptTime);
-  const [DeliveryHoursObj] = parseHours(deliveryTime, setDeliveryTime);
-
   return (
     <div hidden={props.hidden}>
       <Box display="flex">
@@ -521,7 +543,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
               >
                 <h3>Orders Accepting Hours</h3>
               </div>
-              {AcceptHoursObj.map(createWeeklyDateTime)}
+              {acceptTimeObj.map(createWeeklyDateTime)}
               <div
                 style={{
                   // fontSize: "1rem",
@@ -530,7 +552,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
               >
                 <h3>Delivery Hours</h3>
               </div>
-              {DeliveryHoursObj.map(createWeeklyDateTime)}
+              {deliveryTimeObj.map(createWeeklyDateTime)}
             </Box>
             {/* END: Hours section */}
 
@@ -816,7 +838,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
 
             <div>
               <img
-                src={profileImage}
+                src={imageUpload.path || blankImg}
                 alt="profile"
                 style={{ width: 200, height: 200 }}
               />
