@@ -115,16 +115,16 @@ const StripeCheckout = (props) => {
 
       const cardElement = await elements.getElement(CardElement);
 
-      const IntentStripe = Stripe(
-        process.env.NODE_ENV === 'production'
-          ? process.env.REACT_APP_STRIPE_PRIVATE_KEY_LIVE
-          : process.env.REACT_APP_STRIPE_PRIVATE_KEY
-      );
+      // const IntentStripe = require('stripe')(
+      //   process.env.NODE_ENV === 'production'
+      //     ? process.env.REACT_APP_STRIPE_PRIVATE_KEY_LIVE
+      //     : process.env.REACT_APP_STRIPE_PRIVATE_KEY
+      // );
 
-      const paymentIntent = await IntentStripe.paymentIntents.create({
-        amount: paymentDetails.amountDue,
-        currency: 'usd',
-      });
+      // const paymentIntent = await IntentStripe.paymentIntents.create({
+      //   amount: paymentDetails.amountDue,
+      //   currency: 'usd',
+      // });
 
       const paymentMethod = await stripe.createPaymentMethod({
         type: 'card',
@@ -132,12 +132,9 @@ const StripeCheckout = (props) => {
         billing_details: billingDetails,
       });
 
-      const confirmed = await stripe.confirmCardPayment(
-        paymentIntent.client_secret,
-        {
-          payment_method: paymentMethod.paymentMethod.id,
-        }
-      );
+      const confirmed = await stripe.confirmCardPayment(client_secret, {
+        payment_method: paymentMethod.paymentMethod.id,
+      });
       //gathering data to send back our server
       //set start_delivery_date
 

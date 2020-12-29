@@ -97,7 +97,14 @@ const StoreFilter = () => {
             // IMPORTANT: make sure the index used for mapping a component key is unique,
             // I ran into rendering issue when they were the same
             var newDay = {
-              index: todaysDayUpper + '&' + time,
+              index:
+                months[today.getMonth()] +
+                '&' +
+                today.getDate() +
+                '&' +
+                todaysDayUpper +
+                '&' +
+                time,
               time: time,
               weekDay: days[today.getDay()],
               month: months[today.getMonth()],

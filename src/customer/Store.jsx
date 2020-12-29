@@ -18,6 +18,81 @@ import { set } from 'js-cookie';
 const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI;
 const cookies = new Cookies();
 
+const fullDaysUpper = [
+  'SUNDAY',
+  'MONDAY',
+  'TUESDAY',
+  'WEDNESDAY',
+  'THURSDAY',
+  'FRIDAY',
+  'SATURDAY',
+];
+
+const months = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'June',
+  'July',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
+
+// const isCurrentlyAccepting = (business) => {
+//   const today = new Date('2020-12-29T22:00:00');
+//   today.setDate(today + 1);
+//   const lowerDay = business.z_delivery_day.replace(
+//     /(\w)(\w*)/g,
+//     (_, firstChar, rest) => firstChar + rest.toLowerCase()
+//   );
+//   if (fullDaysUpper[today.getDay()] === business.z_delivery_day) {
+//     const acceptingHours = JSON.parse(business.business_accepting_hours);
+//     const startTime = new Date('2020-12-15T' + acceptingHours[lowerDay][0]);
+//     const endTime = new Date('2020-12-15T' + acceptingHours[lowerDay][1]);
+//     return startTime < today && today < endTime;
+//   }
+//   return true;
+// };
+
+function sameDay(d1, d2) {
+  return (
+    d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDate() === d2.getDate()
+  );
+}
+
+const amPmTo24Hr = (time) => {
+  if (time[2] !== 'a' && time[2] !== 'p') {
+    time = '0' + time;
+  }
+  if (time[2] === 'a') {
+    return time.substring(0, 2) + ':00';
+  }
+  if (time[2] === 'p') {
+    return (parseInt(time.substring(0, 2)) + 12).toString() + ':00';
+  }
+};
+
+const findWeekdayDates = () => {
+  const result = {};
+  const today = new Date();
+  let i = 0;
+  while (i < 7) {
+    result[fullDaysUpper[today.getDay()]] = new Date(today);
+    today.setDate(today.getDate() + 1);
+    i += 1;
+  }
+  return result;
+};
+
+const weekdayDatesDict = findWeekdayDates();
+
 const Store = ({ ...props }) => {
   const Auth = useContext(AuthContext);
   const location = useLocation();
@@ -168,11 +243,11 @@ const Store = ({ ...props }) => {
       BusiMethods.getLocationBusinessIds(long, lat).then((busiRes) => {
         // dictionary: business id with delivery days
         // show all if nothing selected
-        if (busiRes == undefined) {
+        if (busiRes === undefined) {
           setProductsLoading(false);
           return;
         }
-        if (busiRes.result == undefined) {
+        if (busiRes.result === undefined) {
           setProductsLoading(false);
           return;
         }
@@ -187,19 +262,49 @@ const Store = ({ ...props }) => {
         // get a list of buiness UIDs for the next req and
         // the farms properties for the filter
         for (const business of businessesRes) {
+          const today = new Date('2020-12-29T13:30:00');
+          const acceptDate = weekdayDatesDict[business.z_accepting_day];
+          const deliveryDate = new Date(
+            weekdayDatesDict[business.z_delivery_day].getTime()
+          );
+          const originalDeliveryDate =
+            weekdayDatesDict[business.z_delivery_day];
+
+          if (sameDay(today, acceptDate)) {
+            const acceptTimeComps = amPmTo24Hr(business.z_accepting_time).split(
+              ':'
+            );
+            const acceptHour = parseInt(acceptTimeComps[0]);
+            const acceptMinute = parseInt(acceptTimeComps[1]);
+            const todayHour = today.getHours();
+            const todayMinute = today.getMinutes();
+            if (todayHour >= acceptHour && todayMinute > acceptMinute) {
+              deliveryDate.setDate(originalDeliveryDate.getDate() + 7);
+            }
+          } else if (acceptDate > deliveryDate) {
+            deliveryDate.setDate(originalDeliveryDate.getDate() + 7);
+          }
+
           if (!businessUids.has(business.z_biz_id))
             businessUids.add(business.z_biz_id);
           const id = business.z_biz_id;
           const day = business.z_delivery_day;
           const time = business.z_delivery_time;
-          const daytime = day + '&' + time;
+          const date =
+            months[deliveryDate.getMonth()] +
+            '&' +
+            deliveryDate.getDate() +
+            '&' +
+            day +
+            '&' +
+            time;
 
           // Put set of farms into a dictionary with day as key
           // Set for faster lookups when inserting
-          if (!(daytime in _daytimeFarmDict)) {
-            _daytimeFarmDict[daytime] = new Set();
+          if (!(date in _daytimeFarmDict)) {
+            _daytimeFarmDict[date] = new Set();
           }
-          _daytimeFarmDict[daytime].add(id);
+          _daytimeFarmDict[date].add(id);
 
           if (!(day in _dayTimeDict)) {
             _dayTimeDict[day] = new Set();
@@ -218,7 +323,7 @@ const Store = ({ ...props }) => {
             });
             updatedProfile.zone = business.zone;
           }
-          _farmDaytimeDict[id].add(daytime);
+          _farmDaytimeDict[id].add(date);
         }
 
         setNumDeliveryTimes(Object.keys(_daytimeFarmDict).length);
@@ -233,7 +338,6 @@ const Store = ({ ...props }) => {
           setProfile(updatedProfile);
         }
 
-        console.log('profile: ', profile);
         BusiMethods.getItems(
           ['fruit', 'desert', 'vegetable', 'other'],
           Array.from(businessUids)

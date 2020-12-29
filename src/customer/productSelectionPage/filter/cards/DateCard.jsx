@@ -31,12 +31,21 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 10,
   },
 }));
-
+const amPmTo24Hr = (time) => {
+  if (time[2] !== 'a' && time[2] !== 'p') {
+    time = '0' + time;
+  }
+  if (time[2] === 'a') {
+    return time.substring(0, 2) + ':00:00';
+  }
+  if (time[2] === 'p') {
+    return (parseInt(time.substring(0, 2)) + 12).toString() + ':00:00';
+  }
+};
 const DateCard = (props) => {
   const productSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
   const confirm = useConfirmation();
-  const todaysDayUpper = props.weekDayFull.toUpperCase();
 
   const [isClicked, setIsClicked] = useState(false);
   const [showCard, setShowCard] = useState(
@@ -115,17 +124,6 @@ const DateCard = (props) => {
     store.setCartItems({});
     localStorage.setItem('selectedDay', props.id);
   }
-  const amPmTo24Hr = (time) => {
-    if (time[2] !== 'a' && time[2] !== 'p') {
-      time = '0' + time;
-    }
-    if (time[2] === 'a') {
-      return time.substring(0, 2) + ':00:00';
-    }
-    if (time[2] === 'p') {
-      return (parseInt(time.substring(0, 2)) + 12).toString() + ':00:00';
-    }
-  };
 
   useEffect(() => {
     if (props.id !== productSelect.dayClicked) {

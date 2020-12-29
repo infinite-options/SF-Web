@@ -48,7 +48,7 @@ function listItem(item) {
         name={item.name}
         unit={item.unit}
         price={parseFloat(item.price)}
-        count={item.qty}
+        count={parseInt(item.qty)}
         img={item.img}
         key={item.item_uid}
         isCountChangeable={false}
