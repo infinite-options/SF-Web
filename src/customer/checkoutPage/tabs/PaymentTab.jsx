@@ -105,7 +105,9 @@ const PaymentTab = () => {
   const [lastNameError, setLastNameError] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [emailError, setEmailError] = useState('');
-  const [deliveryInstructions, SetDeliveryInstructions] = useState('');
+  const [deliveryInstructions, SetDeliveryInstructions] = useState(
+    localStorage.getItem('deliveryInstructions') || ''
+  );
 
   function resetError() {
     setFirstNameError('');
@@ -118,6 +120,7 @@ const PaymentTab = () => {
   const onDeliveryInstructionsChange = (event) => {
     const { value } = event.target;
     SetDeliveryInstructions(value);
+    localStorage.setItem('deliveryInstructions', value);
   };
   useEffect(() => {
     if (store.profile !== {}) {

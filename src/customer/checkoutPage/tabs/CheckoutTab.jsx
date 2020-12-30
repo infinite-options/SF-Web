@@ -138,7 +138,7 @@ export default function CheckoutTab() {
   const [serviceFee, setServiceFee] = useState(
     cartItems.length > 0 ? origServiceFee : 0
   );
-  const [driverTip, setDriverTip] = useState('');
+  const [driverTip, setDriverTip] = useState(2);
   const [tax, setTax] = useState(0);
   const [total, setTotal] = useState(
     subtotal -

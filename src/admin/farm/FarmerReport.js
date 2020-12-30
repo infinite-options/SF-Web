@@ -304,11 +304,9 @@ export default function FarmerReport({
       });
   };
 
-  const handleSendReport = (event) => {
-    const { name } = event.currentTarget;
+  const nextDeliveryDay = () => {
     let deliveryDate = '0000-01-01';
 
-    console.log();
     var today = new Date();
     var dayIncr = 0;
     while (dayIncr < 7) {
@@ -320,6 +318,12 @@ export default function FarmerReport({
       dayIncr += 1;
       today.setDate(today.getDate() + 1);
     }
+    return deliveryDate;
+  };
+
+  const handleSendReport = (event) => {
+    const { name } = event.currentTarget;
+    let deliveryDate = nextDeliveryDay();
 
     if (deliveryDate !== '0000-01-01') {
       axios
@@ -381,7 +385,8 @@ export default function FarmerReport({
           href={
             'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/order,' +
             farmID +
-            ',2020-12-23'
+            ',' +
+            nextDeliveryDay()
           }
           target="_blank"
           rel="noreferrer"
@@ -395,7 +400,8 @@ export default function FarmerReport({
           href={
             'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/customer,' +
             farmID +
-            ',2020-12-23'
+            ',' +
+            nextDeliveryDay()
           }
           target="_blank"
           rel="noreferrer"
@@ -409,7 +415,8 @@ export default function FarmerReport({
           href={
             'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/pivot,' +
             farmID +
-            ',2020-12-23'
+            ',' +
+            nextDeliveryDay()
           }
           target="_blank"
           rel="noreferrer"
