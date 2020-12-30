@@ -96,7 +96,8 @@ const PaymentTab = () => {
     setLeftTabChosen,
     guestInfo,
     setGuestInfo,
-    setStripePromise,
+    paymentStatus,
+    setPaymentStatus,
   } = useContext(checkoutContext);
 
   const [userInfo, setUserInfo] = useState(store.profile);
@@ -119,8 +120,17 @@ const PaymentTab = () => {
   const onDeliveryInstructionsChange = (event) => {
     const { value } = event.target;
     SetDeliveryInstructions(value);
-    if (value === 'SFTEST')
-      setStripePromise(loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY));
+    if (value === 'SFTEST') {
+      if (paymentStatus !== 'test') {
+        setPaymentStatus('test');
+        console.log('Payment will be TEST');
+      }
+    } else {
+      if (paymentStatus !== 'live' && process.env.NODE_ENV === 'production') {
+        setPaymentStatus('live');
+        console.log('Payment will be LIVE');
+      }
+    }
   };
   useEffect(() => {
     if (store.profile !== {}) {

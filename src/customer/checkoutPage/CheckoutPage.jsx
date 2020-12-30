@@ -38,6 +38,10 @@ export default function CheckoutPage() {
     )
   );
 
+  const [paymentStatus, setPaymentStatus] = useState(
+    process.env.NODE_ENV === 'production' ? 'live' : 'test'
+  );
+
   const [guestInfo, setGuestInfo] = useState({
     firstName: '',
     lastName: '',
@@ -45,6 +49,16 @@ export default function CheckoutPage() {
     email: '',
     addressVerified: true,
   });
+
+  useEffect(() => {
+    setStripePromise(
+      loadStripe(
+        paymentStatus === 'live'
+          ? process.env.REACT_APP_STRIPE_PUBLIC_KEY_LIVE
+          : process.env.REACT_APP_STRIPE_PUBLIC_KEY
+      )
+    );
+  }, [paymentStatus]);
 
   return (
     <>
@@ -60,7 +74,8 @@ export default function CheckoutPage() {
           setGuestInfo,
           purchaseMade,
           setPurchaseMade,
-          setStripePromise,
+          paymentStatus,
+          setPaymentStatus,
         }}
       >
         <Elements stripe={stripePromise}>

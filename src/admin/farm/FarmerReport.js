@@ -545,7 +545,7 @@ function OrderRow({ order, type, farmID, ...props }) {
     var _businessTotal = 0;
     var _itemTotal = 0;
     for (const item of JSON.parse(order.items)) {
-      if (item.itm_business_uid === farmID) {
+      if (item.itm_business_uid === farmID || farmID === 'all') {
         _itemTotal += parseFloat(item.price) * item.qty;
         _businessTotal += parseFloat(item.business_price || 0) * item.qty;
       }
@@ -557,7 +557,7 @@ function OrderRow({ order, type, farmID, ...props }) {
   const count = (() => {
     var _count = 0;
     for (const item of JSON.parse(order.items)) {
-      if (item.itm_business_uid === farmID) {
+      if (item.itm_business_uid === farmID || farmID === 'all') {
         _count += 1;
       }
     }
@@ -635,7 +635,7 @@ function OrderRow({ order, type, farmID, ...props }) {
       </TableRow>
       {!hidden &&
         JSON.parse(order.items).map((item, idx) => {
-          if (item.itm_business_uid === farmID)
+          if (item.itm_business_uid === farmID || farmID === 'all')
             return (
               <OrderItem
                 key={idx}

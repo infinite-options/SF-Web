@@ -105,6 +105,8 @@ function AdminNavBar({ tab, setTab, ...props }) {
           className={classes.farmSelect}
           onChange={handleChangeFarm}
         >
+          <MenuItem value={'all'}>All</MenuItem>
+          );
           {farmList.map((item, index) => {
             return (
               <MenuItem key={index} value={item.business_uid}>

@@ -87,6 +87,7 @@ const StripeCheckout = (props) => {
     };
     let formSending = new FormData();
     formSending.append('amount', paymentDetails.amountDue);
+    formSending.append('note', props.deliveryInstructions);
     try {
       const {
         data: { client_secret },
