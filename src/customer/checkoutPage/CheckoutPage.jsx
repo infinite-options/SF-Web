@@ -10,6 +10,11 @@ import { loadStripe } from '@stripe/stripe-js';
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
+const stripePromise = loadStripe(
+  process.env.NODE_ENV === 'production'
+    ? process.env.REACT_APP_STRIPE_PUBLIC_KEY_LIVE
+    : process.env.REACT_APP_STRIPE_PUBLIC_KEY
+);
 
 export default function CheckoutPage() {
   const [paymentDetails, setPaymentDetails] = useState({
@@ -30,18 +35,6 @@ export default function CheckoutPage() {
   const [paymentProcessing, setPaymentProcessing] = useState(false);
   const [leftTabChosen, setLeftTabChosen] = useState(4);
 
-  const [stripePromise, setStripePromise] = useState(
-    loadStripe(
-      process.env.NODE_ENV === 'production'
-        ? process.env.REACT_APP_STRIPE_PUBLIC_KEY_LIVE
-        : process.env.REACT_APP_STRIPE_PUBLIC_KEY
-    )
-  );
-
-  const [paymentStatus, setPaymentStatus] = useState(
-    process.env.NODE_ENV === 'production' ? 'live' : 'test'
-  );
-
   const [guestInfo, setGuestInfo] = useState({
     firstName: '',
     lastName: '',
@@ -49,16 +42,6 @@ export default function CheckoutPage() {
     email: '',
     addressVerified: true,
   });
-
-  useEffect(() => {
-    setStripePromise(
-      loadStripe(
-        paymentStatus === 'live'
-          ? process.env.REACT_APP_STRIPE_PUBLIC_KEY_LIVE
-          : process.env.REACT_APP_STRIPE_PUBLIC_KEY
-      )
-    );
-  }, [paymentStatus]);
 
   return (
     <>
@@ -74,8 +57,6 @@ export default function CheckoutPage() {
           setGuestInfo,
           purchaseMade,
           setPurchaseMade,
-          paymentStatus,
-          setPaymentStatus,
         }}
       >
         <Elements stripe={stripePromise}>

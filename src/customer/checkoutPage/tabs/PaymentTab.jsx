@@ -13,7 +13,7 @@ import storeContext from '../../storeContext';
 import { AuthContext } from '../../../auth/AuthContext';
 import checkoutContext from '../CheckoutContext';
 import PayPal from '../utils/Paypal';
-import StripeCheckout from '../utils/StripeCheckout';
+import StripeElement from '../utils/StripeElement';
 
 const useStyles = makeStyles({
   label: {
@@ -96,8 +96,6 @@ const PaymentTab = () => {
     setLeftTabChosen,
     guestInfo,
     setGuestInfo,
-    paymentStatus,
-    setPaymentStatus,
   } = useContext(checkoutContext);
 
   const [userInfo, setUserInfo] = useState(store.profile);
@@ -120,17 +118,6 @@ const PaymentTab = () => {
   const onDeliveryInstructionsChange = (event) => {
     const { value } = event.target;
     SetDeliveryInstructions(value);
-    if (value === 'SFTEST') {
-      if (paymentStatus !== 'test') {
-        setPaymentStatus('test');
-        console.log('Payment will be TEST');
-      }
-    } else {
-      if (paymentStatus !== 'live' && process.env.NODE_ENV === 'production') {
-        setPaymentStatus('live');
-        console.log('Payment will be LIVE');
-      }
-    }
   };
   useEffect(() => {
     if (store.profile !== {}) {
@@ -347,13 +334,13 @@ const PaymentTab = () => {
           deliveryInstructions={deliveryInstructions}
         />
       </Box>
-      <Box hidden={paymentType !== 'STRIPE'}>
-        <StripeCheckout
+      {paymentType === 'STRIPE' && (
+        <StripeElement
           deliveryInstructions={deliveryInstructions}
           setPaymentType={setPaymentType}
           classes={classes}
         />
-      </Box>
+      )}
       {/* END: Payment Buttons */}
     </Box>
   );

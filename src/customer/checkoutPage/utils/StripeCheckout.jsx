@@ -242,7 +242,11 @@ const StripeCheckout = (props) => {
       <Box mt={1}>
         <label className={props.classes.label}>
           Enter Card details Below:
-          <CardElement className={props.classes.element} options={options} />
+          <CardElement
+            elementRef={(c) => (this._element = c)}
+            className={props.classes.element}
+            options={options}
+          />
         </label>
       </Box>
 
