@@ -127,13 +127,19 @@ const Store = ({ ...props }) => {
   const [numDeliveryTimes, setNumDeliveryTimes] = useState(0);
   const [daytimeFarmDict, setDaytimeFarmDict] = useState({});
   const [farmDaytimeDict, setFarmDaytimeDict] = useState({});
-  const [startDeliveryDate, setStartDeliveryDate] = useState('');
+  const [startDeliveryDate, setStartDeliveryDate] = useState(
+    localStorage.getItem('startDeliveryDate') || ''
+  );
   const [expectedDelivery, setExpectedDelivery] = useState('');
 
   const [farmsClicked, setFarmsClicked] = useState(new Set());
   const [dayClicked, setDayClicked] = useState(
     localStorage.getItem('selectedDay') || ''
   );
+
+  useEffect(() => {
+    localStorage.setItem('startDeliveryDate', startDeliveryDate);
+  }, [startDeliveryDate]);
 
   useEffect(() => {
     localStorage.setItem('selectedDay', dayClicked);
