@@ -7,6 +7,7 @@ import { Button, FormHelperText } from '@material-ui/core';
 import clsx from 'clsx';
 
 import appColors from '../../../styles/AppColors';
+import AuthUtils from '../../../utils/AuthUtils';
 import CssTextField from '../../../utils/CssTextField';
 import FindLongLatWithAddr from '../../../utils/FindLongLatWithAddr';
 import storeContext from '../../storeContext';
@@ -71,11 +72,6 @@ const useStyles = makeStyles({
   },
 });
 
-// TODO: if a guest goes back to the home page, there is (for the most part) no way for them to get back,
-//       So, cart needs to be cleared if they try in input a new address and buttons need to show if they
-//       entered an address and are in the home page, the menu buttons also need to be enabled for a guest
-// TODO: Add delivery fee, service fee, and tip to history and sf purchase
-// TODO: Add check for delivery instructions
 const PaymentTab = () => {
   const classes = useStyles();
   const store = useContext(storeContext);
@@ -122,6 +118,7 @@ const PaymentTab = () => {
     SetDeliveryInstructions(value);
     localStorage.setItem('deliveryInstructions', value);
   };
+
   useEffect(() => {
     if (store.profile !== {}) {
       setUserInfo(store.profile);
@@ -292,11 +289,12 @@ const PaymentTab = () => {
           {userInfo.unit}, {userInfo.city}, {userInfo.state} {userInfo.zip}
         </Box>
       </Box>
-      <label value={profile.deliveryInstructions} className={classes.label}>
+      <label className={classes.label}>
         Enter Delivery Instructions Below:
       </label>
       <Box mb={1} mt={0.5} justifyContent="center">
         <textarea
+          value={deliveryInstructions}
           onChange={onDeliveryInstructionsChange}
           className={classes.delivInstr}
           type=""

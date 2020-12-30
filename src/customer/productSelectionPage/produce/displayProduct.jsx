@@ -86,6 +86,7 @@ function DisplayProduct() {
           <Box fontSize={22}>{displayMessage}</Box>
           <Box mt={2} />
           <Paper
+            elevation={0}
             style={{
               backgroundColor: appColors.componentBg,
               maxHeight: '100%',

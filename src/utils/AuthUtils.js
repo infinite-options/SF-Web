@@ -159,4 +159,30 @@ export default class AuthUtils {
         return Promise.resolve({ code: 400 });
       });
   };
+
+  getLastDeliveryDate = async function (notificationValue) {
+    return await axios
+      .get(
+        this.BASE_URL +
+          'last_delivery_instruction/' +
+          this.cookies.get('customer_uid')
+      )
+      .then((response) => {
+        try {
+          if (response.data) {
+            if (response.data.code >= 200 && response.data.code < 300)
+              return Promise.resolve(
+                response.data.result[0].delivery_instructions
+              );
+            else {
+              return Promise.resolve('');
+            }
+          } else {
+            return Promise.resolve('');
+          }
+        } catch {
+          return Promise.resolve('');
+        }
+      });
+  };
 }
