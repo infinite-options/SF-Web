@@ -147,7 +147,14 @@ const DateCard = (props) => {
     let _showCard = productSelect.farmsClicked.size == 0 ? true : false;
     let showCount = 0;
     productSelect.farmsClicked.forEach((farmId) => {
-      const daytime = props.weekDayFullUpper + '&' + props.time;
+      const daytime =
+        props.month +
+        '&' +
+        props.day +
+        '&' +
+        props.weekDayFullUpper +
+        '&' +
+        props.time;
       if (store.farmDaytimeDict[farmId].has(daytime)) {
         showCount += 1;
       }

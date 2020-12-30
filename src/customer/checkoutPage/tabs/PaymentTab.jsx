@@ -1,17 +1,19 @@
 import React, { useMemo, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import PayPal from '../utils/Paypal';
-import StripeCheckout from '../utils/StripeCheckout';
+import { loadStripe } from '@stripe/stripe-js';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, FormHelperText } from '@material-ui/core';
 import clsx from 'clsx';
+
 import appColors from '../../../styles/AppColors';
 import CssTextField from '../../../utils/CssTextField';
 import FindLongLatWithAddr from '../../../utils/FindLongLatWithAddr';
 import storeContext from '../../storeContext';
 import { AuthContext } from '../../../auth/AuthContext';
 import checkoutContext from '../CheckoutContext';
+import PayPal from '../utils/Paypal';
+import StripeCheckout from '../utils/StripeCheckout';
 
 const useStyles = makeStyles({
   label: {
@@ -94,6 +96,7 @@ const PaymentTab = () => {
     setLeftTabChosen,
     guestInfo,
     setGuestInfo,
+    setStripePromise,
   } = useContext(checkoutContext);
 
   const [userInfo, setUserInfo] = useState(store.profile);
@@ -116,6 +119,8 @@ const PaymentTab = () => {
   const onDeliveryInstructionsChange = (event) => {
     const { value } = event.target;
     SetDeliveryInstructions(value);
+    if (value === 'SFTEST')
+      setStripePromise(loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY));
   };
   useEffect(() => {
     if (store.profile !== {}) {

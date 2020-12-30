@@ -18,6 +18,8 @@ import { set } from 'js-cookie';
 const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI;
 const cookies = new Cookies();
 
+const testDate = new Date();
+
 const fullDaysUpper = [
   'SUNDAY',
   'MONDAY',
@@ -81,7 +83,8 @@ const amPmTo24Hr = (time) => {
 
 const findWeekdayDates = () => {
   const result = {};
-  const today = new Date();
+  // const today = new Date();
+  const today = new Date(testDate.getTime());
   let i = 0;
   while (i < 7) {
     result[fullDaysUpper[today.getDay()]] = new Date(today);
@@ -255,6 +258,7 @@ const Store = ({ ...props }) => {
         console.log('busiRes: ', busiRes);
         const businessesRes = busiRes.result;
         const businessUids = new Set();
+        const dateDict = {};
         const _farmList = [];
         const _dayTimeDict = {};
         const _daytimeFarmDict = {};
@@ -262,7 +266,8 @@ const Store = ({ ...props }) => {
         // get a list of buiness UIDs for the next req and
         // the farms properties for the filter
         for (const business of businessesRes) {
-          const today = new Date('2020-12-29T13:30:00');
+          const today = testDate;
+          // const today = new Date();
           const acceptDate = weekdayDatesDict[business.z_accepting_day];
           const deliveryDate = new Date(
             weekdayDatesDict[business.z_delivery_day].getTime()
@@ -274,16 +279,24 @@ const Store = ({ ...props }) => {
             const acceptTimeComps = amPmTo24Hr(business.z_accepting_time).split(
               ':'
             );
-            const acceptHour = parseInt(acceptTimeComps[0]);
-            const acceptMinute = parseInt(acceptTimeComps[1]);
-            const todayHour = today.getHours();
-            const todayMinute = today.getMinutes();
-            if (todayHour >= acceptHour && todayMinute > acceptMinute) {
+
+            const acceptHour = acceptTimeComps[0];
+            const acceptMinute = acceptTimeComps[1];
+            const todayHour = today.getHours().toString();
+            const todayMinute = today.getMinutes().toString();
+            const acceptTime = Date.parse(
+              '01/01/2020 ' + acceptHour + ':' + acceptMinute + ':00'
+            );
+            const todayTime = Date.parse(
+              '01/01/2020 ' + todayHour + ':' + todayMinute + ':00'
+            );
+            if (todayTime > acceptTime) {
               deliveryDate.setDate(originalDeliveryDate.getDate() + 7);
             }
           } else if (acceptDate > deliveryDate) {
             deliveryDate.setDate(originalDeliveryDate.getDate() + 7);
           }
+          console.log(deliveryDate);
 
           if (!businessUids.has(business.z_biz_id))
             businessUids.add(business.z_biz_id);
@@ -303,6 +316,7 @@ const Store = ({ ...props }) => {
           // Set for faster lookups when inserting
           if (!(date in _daytimeFarmDict)) {
             _daytimeFarmDict[date] = new Set();
+            dateDict[date] = deliveryDate;
           }
           _daytimeFarmDict[date].add(id);
 
@@ -325,7 +339,28 @@ const Store = ({ ...props }) => {
           }
           _farmDaytimeDict[id].add(date);
         }
+        const dateTimeDateDict = {};
 
+        // Check for rollover Dates and fill the later date if necessary
+        for (const currDate in _daytimeFarmDict) {
+          const dateComps = currDate.split('&');
+          const dayTime = dateComps[2] + '&' + dateComps[3];
+
+          if (!(dayTime in dateTimeDateDict)) {
+            dateTimeDateDict[dayTime] = currDate;
+          } else {
+            const seenDate = dateTimeDateDict[dayTime];
+            const fillDateString =
+              dateDict[currDate] > dateDict[seenDate] ? currDate : seenDate;
+            _daytimeFarmDict[fillDateString] = new Set([
+              ..._daytimeFarmDict[dateTimeDateDict[dayTime]],
+              ..._daytimeFarmDict[currDate],
+            ]);
+            _daytimeFarmDict[fillDateString].forEach((farmID) => {
+              _farmDaytimeDict[farmID].add(fillDateString);
+            });
+          }
+        }
         setNumDeliveryTimes(Object.keys(_daytimeFarmDict).length);
         setFarmsList(_farmList);
         setDayTimeDict(_dayTimeDict);

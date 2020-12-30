@@ -5,10 +5,12 @@ const path = require('path');
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
+// See your keys here: https://dashboard.stripe.com/account/apikeys
+const Stripe = require('stripe');
 
 const app = express();
 
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 5000;
 
 app.use(express.static(path.join(__dirname, 'build')));
 
@@ -21,28 +23,19 @@ var cert_url = '/etc/letsencrypt/live/servingfresh.me/cert.pem';
 
 var options = {};
 
-// app.post('/create-checkout-session', async (req, res) => {
-//   const session = await stripe.checkout.sessions.create({
-//     payment_method_types: ['card'],
-//     line_items: [
-//       {
-//         price_data: {
-//           currency: 'usd',
-//           product_data: {
-//             name: 'T-shirt',
-//           },
-//           unit_amount: 0,
-//         },
-//         quantity: 1,
-//       },
-//     ],
-//     mode: 'payment',
-//     success_url: 'https://example.com/success',
-//     cancel_url: 'https://example.com/cancel',
-//   });
-
-//   res.json({ id: session.id });
-// });
+app.get('/stripe/payment-intent', async (req, res) => {
+  console.log('in stripe intent');
+  const stripe = Stripe(
+    process.env.NODE_ENV === 'production' && req.type !== 'test'
+      ? process.env.REACT_APP_STRIPE_PUBLIC_KEY_LIVE
+      : process.env.REACT_APP_STRIPE_PUBLIC_KEY
+  );
+  const intent = stripe.paymentIntents.create({
+    amount: req.amount,
+    currency: 'usd',
+  });
+  res.json({ client_secret: intent.client_secret });
+});
 
 if (process.env.SUDO_USER != undefined) {
   options['key'] = fs.readFileSync(key_url);

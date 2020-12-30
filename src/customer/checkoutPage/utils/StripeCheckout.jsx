@@ -115,15 +115,26 @@ const StripeCheckout = (props) => {
 
       const cardElement = await elements.getElement(CardElement);
 
-      // const IntentStripe = require('stripe')(
-      //   process.env.NODE_ENV === 'production'
+      // const IntentStripe = Stripe(
+      //   process.env.NODE_ENV === 'production' &&
+      //     props.deliveryInstructions !== 'SFTEST'
       //     ? process.env.REACT_APP_STRIPE_PRIVATE_KEY_LIVE
       //     : process.env.REACT_APP_STRIPE_PRIVATE_KEY
       // );
 
+      // const centsAmount = parseInt(parseFloat(paymentDetails.amountDue) * 100);
+      // const centsType = typeof centsAmount;
       // const paymentIntent = await IntentStripe.paymentIntents.create({
-      //   amount: paymentDetails.amountDue,
+      //   amount: centsAmount,
       //   currency: 'usd',
+      // });
+
+      // const IntentStripe = Stripe('sk_test_fe99fW2owhFEGTACgW3qaykd006gHUwj1j');
+
+      // const paymentIntent = await IntentStripe.paymentIntents.create({
+      //   amount: 1099,
+      //   currency: 'usd',
+      //   payment_method_types: ['card'],
       // });
 
       const paymentMethod = await stripe.createPaymentMethod({

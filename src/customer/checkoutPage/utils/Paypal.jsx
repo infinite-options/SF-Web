@@ -1,4 +1,4 @@
-import React, { useRef, useState, useContext } from 'react';
+import React, { useRef, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import { PayPalButton } from 'react-paypal-button-v2';
@@ -45,8 +45,22 @@ const PayPal = ({ value, deliveryInstructions }) => {
     production: process.env.REACT_APP_PAYPAL_CLIENT_ID_LIVE,
   };
 
-  const CLIENT_ID =
-    process.env.NODE_ENV === 'production' ? CLIENT.production : CLIENT.sandbox;
+  const [CLIENT_ID, setCLIENT_ID] = useState(
+    process.env.NODE_ENV === 'production' ? CLIENT.production : CLIENT.sandbox
+  );
+
+  useEffect(() => {
+    if (deliveryInstructions === 'SFTEST') {
+      if (CLIENT_ID !== CLIENT.sandbox) {
+        setCLIENT_ID(CLIENT.sandbox);
+      }
+    } else if (
+      CLIENT_ID !== CLIENT.production &&
+      process.env.NODE_ENV === 'production'
+    ) {
+      setCLIENT_ID(CLIENT.production);
+    }
+  }, [deliveryInstructions]);
 
   //TODO: PayPal cart doesn't clear
   return (

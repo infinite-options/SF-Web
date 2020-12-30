@@ -530,7 +530,7 @@ function OrderRow({ order, type, farmID, ...props }) {
   const auth = useContext(AuthContext);
 
   const [hidden, setHidden] = useState(true);
-  const [total, setTotal] = useState(0);
+  const [businessTotal, setBusinessTotal] = useState(0);
   const [itemTotal, setItemTotal] = useState(0); // total for item price
 
   const address = (() => {
@@ -542,14 +542,16 @@ function OrderRow({ order, type, farmID, ...props }) {
     } `;
   })();
   useMemo(() => {
-    var _total = 0;
+    var _businessTotal = 0;
     var _itemTotal = 0;
     for (const item of JSON.parse(order.items)) {
       if (item.itm_business_uid === farmID) {
-        _total += parseFloat(item.price) * item.qty;
+        _itemTotal += parseFloat(item.price) * item.qty;
+        _businessTotal += parseFloat(item.business_price || 0) * item.qty;
       }
     }
-    setTotal(Math.round(_total * 100) / 100);
+    setItemTotal(Math.round(_itemTotal * 100) / 100);
+    setBusinessTotal(Math.round(_businessTotal * 100) / 100);
   }, [order]);
 
   const count = (() => {
@@ -574,7 +576,7 @@ function OrderRow({ order, type, farmID, ...props }) {
           {order.purchase_date}
         </TableCell>
         <TableCell component="th" scope="row">
-          {order.delivery_date}
+          {order.start_delivery_date}
         </TableCell>
         <TableCell>
           {order.delivery_first_name + ' ' + order.delivery_last_name}
@@ -582,10 +584,8 @@ function OrderRow({ order, type, farmID, ...props }) {
         <TableCell>{order.delivery_email}</TableCell>
         <TableCell>{address}</TableCell>
         <TableCell>{order.delivery_phone_num}</TableCell>
-        {auth.authLevel === 2 && (
-          <TableCell>{'$' + itemTotal.toFixed(2)}</TableCell>
-        )}
-        <TableCell>{'$' + total.toFixed(2)}</TableCell>
+        {auth.authLevel === 2 && <TableCell>{'$' + itemTotal}</TableCell>}
+        <TableCell>{'$' + businessTotal}</TableCell>
         <TableCell>{count}</TableCell>
         <TableCell>{hasPaid}</TableCell>
         <TableCell>

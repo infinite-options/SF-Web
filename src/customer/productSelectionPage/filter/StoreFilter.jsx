@@ -79,13 +79,10 @@ const StoreFilter = () => {
       // The whole goal is to get all of the days with their times that are available within the customer zone
       while (default7Days.length < store.numDeliveryTimes && i < 30) {
         var today = new Date();
-        var onePm = new Date(0, 0, 0, 13, 0, 0, 0);
         // +1 to start from tomorrow
         // DONE, needs testing: after 1pm change to + 2
 
-        today.setDate(
-          today.getDate() + (today.getHours() < onePm.getHours() ? 1 : 2) + i
-        );
+        today.setDate(today.getDate() + 1 + i);
 
         // toUpperCase because the dictionary stores in upper case
         const todaysDayUpper = fullDaysUpper[today.getDay()];
@@ -95,27 +92,30 @@ const StoreFilter = () => {
           // eslint-disable-next-line no-loop-func
           store.dayTimeDict[todaysDayUpper].forEach((time) => {
             // IMPORTANT: make sure the index used for mapping a component key is unique,
-            // I ran into rendering issue when they were the same
-            var newDay = {
-              index:
-                months[today.getMonth()] +
-                '&' +
-                today.getDate() +
-                '&' +
-                todaysDayUpper +
-                '&' +
-                time,
-              time: time,
-              weekDay: days[today.getDay()],
-              month: months[today.getMonth()],
-              day: today.getDate(),
-              year: today.getFullYear(),
-              monthInNumber: today.getMonth() + 1,
-              date: today.getDate(),
-              weekDayFull: fullDays[today.getDay()],
-              weekDayFullUpper: todaysDayUpper,
-            };
-            default7Days.push(newDay);
+            // I ran into rendering issue when they were the sameconst dateString =
+            const dateString =
+              months[today.getMonth()] +
+              '&' +
+              today.getDate() +
+              '&' +
+              todaysDayUpper +
+              '&' +
+              time;
+            if (dateString in store.daytimeFarmDict) {
+              var newDay = {
+                index: dateString,
+                time: time,
+                weekDay: days[today.getDay()],
+                month: months[today.getMonth()],
+                day: today.getDate(),
+                year: today.getFullYear(),
+                monthInNumber: today.getMonth() + 1,
+                date: today.getDate(),
+                weekDayFull: fullDays[today.getDay()],
+                weekDayFullUpper: todaysDayUpper,
+              };
+              default7Days.push(newDay);
+            }
           });
         }
         i++;
@@ -130,7 +130,7 @@ const StoreFilter = () => {
   // For when the URL endpoints have finished loading in all of the information
   useEffect(() => {
     setShownDays(createDefault7Day());
-  }, [store.dayTimeDict]);
+  }, [store.dayTimeDict, store.daytimeFarmDict]);
 
   return (
     <FilterContext.Provider value={{ shownDays }}>
