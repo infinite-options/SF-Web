@@ -96,12 +96,14 @@ function App() {
   }, [tab]);
 
   useEffect(() => {
+    let isMounted = true; // note this flag denote mount status
     axios
       .get(BASE_URL + 'Profile/' + cookies.get('customer_uid'))
       .then((response) => {
         console.log('Account:', response);
         let newAccountType = response.data.result[0].role.toLowerCase();
-        setAccountType(response.data.result[0].role ? newAccountType : '');
+        if (isMounted)
+          setAccountType(response.data.result[0].role ? newAccountType : '');
         // Farmer is now string of businessId
         let newAuthLevel = (() => {
           console.log(newAccountType);
@@ -117,11 +119,14 @@ function App() {
           }
         })();
         console.log(newAuthLevel);
-        setAuthLevel(newAuthLevel);
+        if (isMounted) setAuthLevel(newAuthLevel);
       })
       .catch((err) => {
         console.log(err.response || err);
       });
+    return () => {
+      isMounted = false;
+    };
   }, [isAuth]);
 
   return (

@@ -14,10 +14,10 @@ function FarmCard(props) {
 
   const [isClicked, setIsClicked] = useState(false);
   const [isClearFarmClicks, setIsClearFarmClicks] = useState(
-    productSelect.dayClicked === '' ? true : false
+    store.dayClicked === '' ? true : false
   );
   const [showCard, setShowCard] = useState(
-    productSelect.dayClicked === '' ? true : false
+    store.dayClicked === '' ? true : false
   );
 
   function gotFarmClicked() {
@@ -37,7 +37,7 @@ function FarmCard(props) {
   // TEST: disappearing farm bug
   // TEST: day click will reset farms
   useEffect(() => {
-    const isNoDayClicked = productSelect.dayClicked === '';
+    const isNoDayClicked = store.dayClicked === '';
     let _showCard = isNoDayClicked ? true : false;
     setIsClearFarmClicks(isNoDayClicked ? true : false);
 
@@ -49,10 +49,10 @@ function FarmCard(props) {
 
     if (props.id in store.farmDaytimeDict)
       store.farmDaytimeDict[props.id].forEach((daytime) => {
-        if (productSelect.dayClicked === daytime) _showCard = true;
+        if (store.dayClicked === daytime) _showCard = true;
       });
     setShowCard(_showCard);
-  }, [productSelect.dayClicked, store.farmDaytimeDict]);
+  }, [store.dayClicked, store.farmDaytimeDict]);
 
   return (
     <Box

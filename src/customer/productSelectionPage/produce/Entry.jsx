@@ -31,7 +31,7 @@ function Entry(props) {
     let isInCategory = false;
     for (const farm in props.business_uids) {
       store.farmDaytimeDict[farm].forEach((daytime) => {
-        if (productSelect.dayClicked === daytime) isInDay = true;
+        if (store.dayClicked === daytime) isInDay = true;
       });
     }
 
@@ -51,7 +51,7 @@ function Entry(props) {
         (isInDay && isInFarm && productSelect.categoriesClicked.size == 0)
     );
   }, [
-    productSelect.dayClicked,
+    store.dayClicked,
     productSelect.farmsClicked,
     productSelect.categoriesClicked,
     store.cartItems,

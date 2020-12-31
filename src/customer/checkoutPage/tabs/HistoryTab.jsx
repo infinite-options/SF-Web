@@ -45,6 +45,20 @@ const HistoryTab = () => {
   const [historyList, setHistoryList] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [message, setMessage] = useState(true);
+  async function loadHistory(setHistoryList, setHistoryLoading) {
+    axios
+      .get(
+        process.env.REACT_APP_SERVER_BASE_URI +
+          'history/' +
+          cookies.get('customer_uid')
+      )
+      .then((res) => {
+        if (res && res.data && res.data.result) {
+          setHistoryList(res.data.result);
+        }
+        setHistoryLoading(false);
+      });
+  }
 
   useEffect(() => {
     if (cookies.get('customer_uid') !== '')
@@ -75,20 +89,5 @@ const HistoryTab = () => {
     </Box>
   );
 };
-
-function loadHistory(setHistoryList, setHistoryLoading) {
-  axios
-    .get(
-      process.env.REACT_APP_SERVER_BASE_URI +
-        'history/' +
-        cookies.get('customer_uid')
-    )
-    .then((res) => {
-      if (res && res.data && res.data.result) {
-        setHistoryList(res.data.result);
-      }
-      setHistoryLoading(false);
-    });
-}
 
 export default HistoryTab;

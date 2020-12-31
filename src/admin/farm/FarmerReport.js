@@ -102,9 +102,14 @@ export default function FarmerReport({
           for (const business of res.data.result) {
             businessSet.add(business.z_delivery_day);
           }
-          const dayList = [...businessSet];
+          let dayList = [...businessSet];
           if (dayList.length > 0) {
             setSelectedDay(dayList[0]);
+          } else {
+            if (farmID === 'all') {
+              dayList = ['SUNDAY', 'WEDNESDAY'];
+              setSelectedDay(dayList[0]);
+            }
           }
           setDeliveryDays(dayList);
         } catch {
@@ -383,7 +388,9 @@ export default function FarmerReport({
       <div className={classes.reportButtonsSection}>
         <a
           href={
-            'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/order,' +
+            (farmID === 'all'
+              ? 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/order_all,'
+              : 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/order,') +
             farmID +
             ',' +
             nextDeliveryDay()
@@ -398,7 +405,9 @@ export default function FarmerReport({
         </a>
         <a
           href={
-            'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/customer,' +
+            (farmID === 'all'
+              ? 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/customer_all,'
+              : 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/customer,') +
             farmID +
             ',' +
             nextDeliveryDay()
@@ -413,7 +422,9 @@ export default function FarmerReport({
         </a>
         <a
           href={
-            'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/pivot,' +
+            (farmID === 'all'
+              ? 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/pivot_all,'
+              : 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/pivot,') +
             farmID +
             ',' +
             nextDeliveryDay()
@@ -428,7 +439,7 @@ export default function FarmerReport({
         </a>
       </div>
       <Box display="flex" justifyContent="flex-end">
-        {selectedDay !== '' && (
+        {deliveryDays.length > 0 && (
           <Box mt={-2}>
             <FormHelperText>Delivery Day:</FormHelperText>
             <Select

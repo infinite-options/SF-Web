@@ -66,7 +66,7 @@ const DateCard = (props) => {
       }
     } else {
       console.log('store.cartTotal: ', store.cartTotal);
-      if (productSelect.dayClicked != '' && store.cartTotal !== 0) {
+      if (store.dayClicked != '' && store.cartTotal !== 0) {
         displayDialog(changeDay);
       } else {
         changeDay();
@@ -90,15 +90,14 @@ const DateCard = (props) => {
 
   function clearCartAndDay() {
     store.setExpectedDelivery('');
-    productSelect.setDayClicked('');
+    store.setDayClicked('');
     store.setCartTotal(0);
     store.setCartItems({});
     setIsClicked(false);
   }
 
   function changeDay() {
-    productSelect.setDayClicked(props.id);
-    setIsClicked(true);
+    store.setDayClicked(props.id);
     store.setExpectedDelivery(
       props.weekDayFull +
         ', ' +
@@ -126,7 +125,7 @@ const DateCard = (props) => {
   }
 
   useEffect(() => {
-    if (props.id !== productSelect.dayClicked || store.dayClicked === '') {
+    if (props.id !== store.dayClicked) {
       setIsClicked(false);
     } else {
       setIsClicked(true);
@@ -140,7 +139,7 @@ const DateCard = (props) => {
           props.time
       );
     }
-  }, [productSelect.dayClicked, store.dayClicked]);
+  }, [store.dayClicked]);
 
   // DONE: figure out a whether to do || or && for farms
   useEffect(() => {

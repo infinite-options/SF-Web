@@ -119,7 +119,6 @@ const Store = ({ ...props }) => {
     socialMedia: '',
   }); // checks if user is logged in
   const [products, setProducts] = useState([]);
-  const [allProducts, setAllProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
 
   const [farmsList, setFarmsList] = useState([]);
@@ -251,7 +250,7 @@ const Store = ({ ...props }) => {
       setProfile(updatedProfile);
     }
   }, []);
-  function getBusinesses(long, lat, updatedProfile) {
+  async function getBusinesses(long, lat, updatedProfile) {
     if (long !== '' && lat !== '') {
       const BusiMethods = new BusiApiReqs();
       BusiMethods.getLocationBusinessIds(long, lat).then((busiRes) => {
@@ -391,8 +390,6 @@ const Store = ({ ...props }) => {
           const _products = [];
           const itemDict = {};
           if (itemRes !== undefined) {
-            setAllProducts(itemRes);
-
             for (const item of itemRes) {
               setProductsLoading(true);
               try {
