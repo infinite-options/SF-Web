@@ -98,7 +98,6 @@ const DateCard = (props) => {
 
   function changeDay() {
     store.setDayClicked(props.id);
-    setIsClicked(true);
     store.setExpectedDelivery(
       props.weekDayFull +
         ', ' +
