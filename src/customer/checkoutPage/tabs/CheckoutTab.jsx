@@ -99,7 +99,7 @@ export default function CheckoutTab() {
     'SATURDAY',
   ];
 
-  useMemo(() => {
+  const loadFees = async () => {
     const today = days[new Date().getDay()];
     if (store.profile.zone !== '')
       axios
@@ -123,6 +123,10 @@ export default function CheckoutTab() {
           setOrigDeliveryFee(5);
           setOrigServiceFee(1.5);
         });
+  };
+
+  useMemo(() => {
+    loadFees();
   }, [store.profile.zone]);
   function getItemsCart() {
     var result = [];

@@ -250,7 +250,7 @@ const Store = ({ ...props }) => {
       setProfile(updatedProfile);
     }
   }, []);
-  function getBusinesses(long, lat, updatedProfile) {
+  async function getBusinesses(long, lat, updatedProfile) {
     if (long !== '' && lat !== '') {
       const BusiMethods = new BusiApiReqs();
       BusiMethods.getLocationBusinessIds(long, lat).then((busiRes) => {

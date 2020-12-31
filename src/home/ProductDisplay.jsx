@@ -51,6 +51,10 @@ const ProductDisplay = () => {
   const [itemsList, setItemsList] = useState([]);
 
   useEffect(() => {
+    getItems();
+  }, []);
+
+  const getItems = async () => {
     BusiMethods.getItems(
       ['fruit', 'desert', 'vegetable', 'other'],
       ['200-000016', '200-000017']
@@ -65,7 +69,7 @@ const ProductDisplay = () => {
       }
       setItemsList(_itemList);
     });
-  }, []);
+  };
 
   return (
     <Box className={classes.root}>

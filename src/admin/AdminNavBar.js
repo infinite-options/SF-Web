@@ -59,6 +59,20 @@ function AdminNavBar({ tab, setTab, ...props }) {
     AdminFarmContext
   );
 
+  const [defaultFarm, setDefaultFarm] = useState(
+    farmList.includes(localStorage.getItem('farmID'))
+      ? localStorage.getItem('farmID')
+      : 'all'
+  );
+
+  useEffect(() => {
+    setDefaultFarm(
+      farmList.includes(localStorage.getItem('farmID'))
+        ? localStorage.getItem('farmID')
+        : 'all'
+    );
+  }, [farmList]);
+
   const Auth = useContext(AuthContext);
   useEffect(() => {
     // axios
@@ -101,7 +115,7 @@ function AdminNavBar({ tab, setTab, ...props }) {
 
       return (
         <Select
-          defaultValue={localStorage.getItem('farmID')}
+          defaultValue={'all'}
           className={classes.farmSelect}
           onChange={handleChangeFarm}
         >

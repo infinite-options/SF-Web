@@ -43,7 +43,9 @@ function Admin() {
               return textA < textB ? -1 : textA > textB ? 1 : 0;
             })
           );
-          setFarmID(localStorage.getItem('farmID'));
+          // setFarmID(localStorage.getItem('farmID'));
+          setFarmID('all');
+
           const _farmDict = {};
           for (const farm of res.data.result) {
             _farmDict[farm.business_uid] = farm.business_name;

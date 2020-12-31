@@ -83,11 +83,15 @@ function RevenueHighchart() {
   }, [businessID]);
 
   useEffect(() => {
+    let isMounted = true; // note this flag denote mount status
     if (purchasesRes.length > 0 || businessID !== 'all')
-      loadSeriesData(purchasesRes);
+      loadSeriesData(purchasesRes, isMounted);
+    return () => {
+      isMounted = false;
+    };
   }, [farmDict, barsType, priceType, purchasesRes]);
 
-  function loadSeriesData(res) {
+  function loadSeriesData(res, isMounted) {
     let theData = res;
     setChartData(theData);
     console.log(theData);
@@ -171,10 +175,12 @@ function RevenueHighchart() {
       return set.size;
     });
 
-    setListOfNumCateg(uniqueBarVals);
-    setListOfBuyers(customers);
-    setCumuRevenue(revenue);
-    setDailyRevenue(dailyIncome);
+    if (isMounted) {
+      setListOfNumCateg(uniqueBarVals);
+      setListOfBuyers(customers);
+      setCumuRevenue(revenue);
+      setDailyRevenue(dailyIncome);
+    }
     // console.log("buyerContainer ", buyerContainer);
     // console.log("retuners ", oldCustomer);
     // console.log("NewBuyer ", newCustomer);

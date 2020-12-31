@@ -94,19 +94,21 @@ const dayInWeekArray = [
 
 function parseHours(hoursObject, setHoursObject) {
   const hours = [];
-  for (const day of dayInWeekArray) {
-    const startDelivery =
-      day in hoursObject ? hoursObject[day][0].slice(0, 5) : '';
-    const endDelivery =
-      day in hoursObject ? hoursObject[day][1].slice(0, 5) : '';
-    const newDeliveryObj = {
-      dayInWeek: day,
-      start: startDelivery,
-      end: endDelivery,
-      hours: hoursObject,
-      setHours: setHoursObject,
-    };
-    hours.push(newDeliveryObj);
+  if (hoursObject !== null) {
+    for (const day of dayInWeekArray) {
+      const startDelivery =
+        day in hoursObject ? hoursObject[day][0].slice(0, 5) : '';
+      const endDelivery =
+        day in hoursObject ? hoursObject[day][1].slice(0, 5) : '';
+      const newDeliveryObj = {
+        dayInWeek: day,
+        start: startDelivery,
+        end: endDelivery,
+        hours: hoursObject,
+        setHours: setHoursObject,
+      };
+      hours.push(newDeliveryObj);
+    }
   }
   return hours;
 }

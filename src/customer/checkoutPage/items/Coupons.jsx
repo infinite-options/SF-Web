@@ -96,8 +96,7 @@ export default function Coupons(props) {
     setAvaiCouponData(availableCoupons);
     setUnavaiCouponData(unavailableCoupons);
   }, [props.subtotal]);
-
-  useMemo(() => {
+  const loadCoupons = async () => {
     console.log('coupons fetched');
     const url =
       process.env.REACT_APP_SERVER_BASE_URI +
@@ -166,6 +165,10 @@ export default function Coupons(props) {
       .catch((e) => {
         console.log('Error getting coupons: ', e);
       });
+  };
+
+  useMemo(() => {
+    loadCoupons();
   }, [store.profile.email]);
 
   const CreateCouponCard = (coupProps) => {
