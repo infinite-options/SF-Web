@@ -104,7 +104,10 @@ const DeliveryLocationSearch = (props) => {
   };
 
   return (
-    <Box mt={10} width="50%" justifyContent="center">
+    <Box
+    //  mt={10} 
+    // width="50%" 
+    justifyContent="center">
       <h4 style={{ color: appColors.secondary }}>
         Local produce delivered to your doorstop
       </h4>
@@ -126,7 +129,7 @@ const DeliveryLocationSearch = (props) => {
               </InputAdornment>
             ),
           }}
-          style={{ width: '500px' }}
+          style={{ width: '300px' }}
         />
         <Box width="100%" justifyContent="center">
           <FormHelperText error={true} style={{ textAlign: 'center' }}>
