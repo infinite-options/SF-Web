@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import StorefrontIcon from '@material-ui/icons/Storefront';
 
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -34,8 +35,11 @@ export default function StoreNavBar(props) {
 
   var itemsAmount = store.cartTotal;
 
+  function handleStoreClick() {
+    if (props.storePage === 1) props.setStorePage(0);
+  }
   const handleCartClick = () => {
-    props.setStorePage(props.storePage === 1 ? 0 : 1);
+    if (props.storePage === 0) props.setStorePage(1);
   };
 
   const Logoclick = () => {
@@ -101,6 +105,13 @@ export default function StoreNavBar(props) {
               Login
             </Button>
           </Box> */}
+          <IconButton edge="end" className="link">
+            <StorefrontIcon
+              fontSize="large"
+              color={props.storePage === 0 ? 'primary' : 'default'}
+              onClick={handleStoreClick}
+            />
+          </IconButton>
           <IconButton edge="end" className="link">
             <Badge badgeContent={itemsAmount} color="primary">
               <ShoppingCartIcon

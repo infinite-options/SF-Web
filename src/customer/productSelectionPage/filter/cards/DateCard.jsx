@@ -126,7 +126,7 @@ const DateCard = (props) => {
   }
 
   useEffect(() => {
-    if (props.id !== productSelect.dayClicked) {
+    if (props.id !== productSelect.dayClicked || store.dayClicked === '') {
       setIsClicked(false);
     } else {
       setIsClicked(true);
@@ -140,7 +140,7 @@ const DateCard = (props) => {
           props.time
       );
     }
-  }, [productSelect.dayClicked]);
+  }, [productSelect.dayClicked, store.dayClicked]);
 
   // DONE: figure out a whether to do || or && for farms
   useEffect(() => {

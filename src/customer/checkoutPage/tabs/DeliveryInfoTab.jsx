@@ -56,6 +56,7 @@ export default function DeliveryInfoTab() {
   const [userInfo, setUserInfo] = useState(store.profile);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isPassFieldShown, setIsPassFieldShown] = useState(false);
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
 
   const [signUpErrorMessage, setSignUpErrorMessage] = useState('');
@@ -105,20 +106,7 @@ export default function DeliveryInfoTab() {
         AuthMethods.updatePushNotifications(userInfo.pushNotifications);
       }
       if (store.profile.email !== userInfo.email) {
-        let emailExists = await axios
-          .post(process.env.REACT_APP_SERVER_BASE_URI + 'AccountSalt', {
-            email: userInfo.email,
-          })
-          .then((res) => {
-            return res.data.code === 200;
-          });
-        if (emailExists) {
-          setEmailError('Exists');
-          setEmailErrorMessage(
-            'This email is already associated with an account, please try a different email.'
-          );
-          isEmailError = true;
-        }
+        isEmailError = await checkExistingEmail();
       }
 
       for (const field in userInfo) {
@@ -200,6 +188,23 @@ export default function DeliveryInfoTab() {
         'Your address Had not been validated, please validate before saving changes.'
       );
     }
+  };
+
+  const checkExistingEmail = async () => {
+    let emailExists = await axios
+      .post(process.env.REACT_APP_SERVER_BASE_URI + 'AccountSalt', {
+        email: userInfo.email,
+      })
+      .then((res) => {
+        return res.data.code === 200;
+      });
+    if (emailExists) {
+      setEmailError('Exists');
+      setEmailErrorMessage(
+        'This email is already associated with an account, please try a different email.'
+      );
+    }
+    return emailExists;
   };
 
   const onLoad = React.useCallback(function callback(map) {
@@ -312,6 +317,40 @@ export default function DeliveryInfoTab() {
     });
   };
 
+  const onPasswordClick = (event) => {
+    const { name, value } = event.target;
+
+    if (password === '') setIsPassFieldShown(!isPassFieldShown);
+    if (isPassFieldShown) {
+      setPasswordError('');
+      setConfirmPasswordError('');
+      setPasswordErrorMessage('');
+
+      if (password === '') {
+        setConfirmPassword('');
+        return;
+      }
+      if (password !== confirmPassword) {
+        setPasswordError('Not Equal');
+        setConfirmPasswordError('Not Equal');
+        setPasswordErrorMessage('These passwords do not match');
+        return;
+      }
+
+      AuthMethods.updatePassword({
+        customer_email: store.profile.email,
+        password: password,
+        customer_uid: '',
+      }).then((res) => {
+        if (res.code === 200) {
+          setConfirmPassword('');
+          setPassword('');
+          setIsPassFieldShown(false);
+        }
+      });
+    }
+  };
+
   useEffect(() => {
     setIsAddressConfirmed(
       userInfo.address === store.profile.address &&
@@ -334,7 +373,7 @@ export default function DeliveryInfoTab() {
           variant="outlined"
           size="small"
           fullWidth
-          onChange={onFieldChange}
+          onChange={props.onChange || onFieldChange}
         />
       </Box>
     );
@@ -362,16 +401,51 @@ export default function DeliveryInfoTab() {
               : '') + 'Email',
           disabled: store.profile.socialMedia !== 'NULL',
         })}
-        {/* {PlainTextField({
-          name: 'password',
-          label: 'Password',
-          type: 'password',
-        })}
-        {PlainTextField({
-          name: 'password',
-          label: 'Password',
-          type: 'password',
-        })} */}
+        <Box my={1} hidden={!isPassFieldShown}>
+          {PlainTextField({
+            value: password,
+            error: passwordError,
+            name: 'password',
+            label: 'Password',
+            type: 'password',
+            onChange: (e) => {
+              setPassword(e.target.value);
+              setPasswordError('');
+              setConfirmPasswordError('');
+            },
+          })}
+          {PlainTextField({
+            value: confirmPassword,
+            error: confirmPasswordError,
+            name: 'confirm password',
+            label: 'Confirm Password',
+            type: 'password',
+            onChange: (e) => {
+              setConfirmPassword(e.target.value);
+              setPasswordError('');
+              setConfirmPasswordError('');
+            },
+          })}
+        </Box>
+        <FormHelperText error={true} style={{ textAlign: 'center' }}>
+          {passwordErrorMessage}
+        </FormHelperText>
+        <Box my={1}>
+          <Button
+            className={classes.button}
+            variant="outlined"
+            size="small"
+            color="paragraphText"
+            onClick={onPasswordClick}
+          >
+            {isPassFieldShown
+              ? password.length === 0
+                ? 'Cancel'
+                : 'Save Password'
+              : 'Change Password'}
+          </Button>
+        </Box>
+
         {/* <Box
           display="flex"
           my={3}

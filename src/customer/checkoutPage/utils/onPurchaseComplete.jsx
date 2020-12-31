@@ -1,12 +1,14 @@
 export function onPurchaseComplete(props) {
   props.store.setCartItems({});
   props.store.setCartTotal(0);
-  localStorage.removeItem('selectedDay');
   props.store.setDayClicked('');
+  props.store.setStartDeliveryDate('');
   props.store.setFarmsClicked(new Set());
+  props.checkout.setPurchaseMade(props.checkout.purchaseMade + 1);
+  localStorage.removeItem('selectedDay');
   localStorage.removeItem('cartTotal');
   localStorage.removeItem('cartItems');
-  props.checkout.setPurchaseMade(props.checkout.purchaseMade + 1);
+  localStorage.removeItem('startDeliveryDate');
 
   props
     .confirm({

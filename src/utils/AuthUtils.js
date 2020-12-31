@@ -127,6 +127,31 @@ export default class AuthUtils {
       });
   };
 
+  updatePassword = async function (credentials) {
+    credentials.customer_uid = this.cookies.get('customer_uid');
+    return await axios
+      .post(this.BASE_URL + 'update_email_password', credentials, {
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+      })
+      .then((response) => {
+        if (response.data) {
+          if (response.data.code >= 200 && response.data.code < 300)
+            return Promise.resolve({ code: 200 });
+          else {
+            return Promise.resolve({ code: 400 });
+          }
+        } else {
+          return Promise.resolve({ code: 400 });
+        }
+      })
+      .catch((err) => {
+        console.log('Update Profile Error: ', err.response || err);
+        return Promise.resolve({ code: 400 });
+      });
+  };
+
   updatePushNotifications = async function (notificationValue) {
     const notificationData = {
       uid: this.cookies.get('customer_uid'),

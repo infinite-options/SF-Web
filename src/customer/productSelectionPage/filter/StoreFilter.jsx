@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
   filterCol: {
     width: '100px',
     textAlign: 'center',
+    color: appColors.paragraphText,
   },
 }));
 

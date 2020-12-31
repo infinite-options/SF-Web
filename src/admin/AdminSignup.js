@@ -44,7 +44,7 @@ function Signup(props) {
     event.preventDefault();
     // console.log('_onSubmit')
     // console.log(state);
-    if (state.password === state.confirmPassword) {
+    if (state.password === state.confirmPassword && state.password.length > 0) {
       axios
         .get('https://dev.virtualearth.net/REST/v1/Locations/', {
           params: {

@@ -32,7 +32,10 @@ class Signup extends Component {
     event.preventDefault();
     console.log('_onSubmit');
     console.log(this.state);
-    if (this.state.password === this.state.confirmPassword) {
+    if (
+      this.state.password === this.state.confirmPassword &&
+      this.state.password.length > 0
+    ) {
       axios
         .get('https://dev.virtualearth.net/REST/v1/Locations/', {
           params: {

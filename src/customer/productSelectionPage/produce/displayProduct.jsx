@@ -83,7 +83,9 @@ function DisplayProduct() {
           mb={2}
           style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
         >
-          <Box fontSize={22}>{displayMessage}</Box>
+          <Box fontSize={22} color={appColors.paragraphText}>
+            {displayMessage}
+          </Box>
           <Box mt={2} />
           <Paper
             elevation={0}

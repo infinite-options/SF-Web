@@ -83,7 +83,7 @@ export default function LandingNavBar({ ...props }) {
               </Badge>
             </IconButton>
           </Box>
-          <Box mr={4} />
+          <Box mr={4} hidden={auth.isAuth} />
           <Box hidden={auth.isAuth}>
             <Button
               className={classes.authButton}
