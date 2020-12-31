@@ -150,9 +150,14 @@ const Landing = ({ ...props }) => {
       </Box>
       {/* END: Login/SignUp Modal */}
       {/* START: landing Logo and Guest Login */}
-      <Box display="flex">
+      <Box 
+      // display="flex"
+      >
         {/* START: Landing Page Logo */}
-        <Box display="flex" width="50%" justifyContent="center">
+        <Box 
+        // display="flex" 
+        // width="50%"
+         justifyContent="center">
           <img
             alt="logo.png"
             height="300px"
