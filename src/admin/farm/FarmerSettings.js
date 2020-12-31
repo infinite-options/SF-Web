@@ -152,6 +152,10 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
   );
 
   useEffect(() => {
+    console.log(imageUpload);
+  }, [imageUpload]);
+
+  useEffect(() => {
     setRegularHoursObj(parseHours(regularHours, setRegularHours));
   }, [regularHours]);
   useEffect(() => {
@@ -847,7 +851,6 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
             </div>
             <div>
               <Button
-                onChange={handleImgChange}
                 variant="outlined"
                 size="small"
                 color="primary"
@@ -869,9 +872,10 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
               </Button>
             </div>
 
-            <div>
+            <Box mt={2}>
               <div>Email Address</div>
               <TextField
+                disabled
                 size="small"
                 margin="dense"
                 id="standard-read-only-input"
@@ -885,8 +889,8 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                   readOnly: true,
                 }}
               />
-              <div>New Password</div>
-              <TextField
+              {/* <div>New Password</div> */}
+              {/* <TextField
                 // error={errorStatus}
                 size="small"
                 margin="dense"
@@ -911,8 +915,8 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                 style={{ width: '300px' }}
                 onChange={handleChange}
                 // helperText={errorStatus?"Password not match":""}
-              />
-            </div>
+              /> */}
+            </Box>
           </Box>
         </div>
       </Box>

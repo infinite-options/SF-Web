@@ -96,7 +96,7 @@ export default function Coupons(props) {
     setAvaiCouponData(availableCoupons);
     setUnavaiCouponData(unavailableCoupons);
   }, [props.subtotal]);
-  const loadCoupons = async () => {
+  const loadCoupons = () => {
     console.log('coupons fetched');
     const url =
       process.env.REACT_APP_SERVER_BASE_URI +

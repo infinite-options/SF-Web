@@ -330,34 +330,61 @@ export default function FarmerReport({
     const { name } = event.currentTarget;
     let deliveryDate = nextDeliveryDay();
 
+    let string =
+      BASE_URL +
+      'farmer_revenue_inventory_report' +
+      (farmID === 'all' ? '_all' : '') +
+      '/' +
+      name +
+      ',' +
+      deliveryDate;
+
     if (deliveryDate !== '0000-01-01') {
-      axios
-        .post(BASE_URL + 'farmer_revenue_inventory_report/' + name, {
-          uid: farmID,
-          delivery_date: deliveryDate,
-        })
-        .then((res) => {
-          confirm({
-            variant: 'info',
-            catchOnCancel: true,
-            title: 'Email Sent',
-            description:
-              'Your ' +
-              name +
-              ' report has been successfully sent for ' +
-              deliveryDate,
+      if (farmID === 'all') {
+        window.location =
+          BASE_URL +
+          'farmer_revenue_inventory_report' +
+          (farmID === 'all' ? '_all' : '') +
+          '/' +
+          name +
+          ',' +
+          deliveryDate;
+      } else {
+        axios
+          .post(
+            BASE_URL +
+              'farmer_revenue_inventory_report' +
+              (farmID === 'all' ? '_all' : '') +
+              '/' +
+              name,
+            {
+              uid: farmID,
+              delivery_date: deliveryDate,
+            }
+          )
+          .then((res) => {
+            confirm({
+              variant: 'info',
+              catchOnCancel: true,
+              title: 'Email Sent',
+              description:
+                'Your ' +
+                name +
+                ' report has been successfully sent for ' +
+                deliveryDate,
+            });
+          })
+          .catch((err) => {
+            console.log('Error: ', err);
+            confirm({
+              variant: 'info',
+              catchOnCancel: true,
+              title: 'Error!',
+              description:
+                'There was an error in sending your ' + name + ' report',
+            });
           });
-        })
-        .catch((err) => {
-          console.log('Error: ', err);
-          confirm({
-            variant: 'info',
-            catchOnCancel: true,
-            title: 'Error!',
-            description:
-              'There was an error in sending your ' + name + ' report',
-          });
-        });
+      }
     } else {
       confirm({
         variant: 'info',
@@ -385,12 +412,13 @@ export default function FarmerReport({
       <div style={labelStyle}>
         <h2>Open Orders</h2>
       </div>
-      <div className={classes.reportButtonsSection}>
+      <Box display="flex" flexWrap="wrap">
         <a
           href={
-            (farmID === 'all'
-              ? 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/order_all,'
-              : 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/order,') +
+            BASE_URL +
+            'report_order_customer_pivot_detail/order' +
+            (farmID === 'all' ? '_all' : '') +
+            ',' +
             farmID +
             ',' +
             nextDeliveryDay()
@@ -399,15 +427,20 @@ export default function FarmerReport({
           rel="noreferrer"
           className={classes.reportLink}
         >
-          <Button variant="contained" className={classes.reportButtons}>
+          <Button
+            size="small"
+            variant="contained"
+            className={classes.reportButtons}
+          >
             Order Details
           </Button>
         </a>
         <a
           href={
-            (farmID === 'all'
-              ? 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/customer_all,'
-              : 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/customer,') +
+            BASE_URL +
+            'report_order_customer_pivot_detail/customer' +
+            (farmID === 'all' ? '_all' : '') +
+            ',' +
             farmID +
             ',' +
             nextDeliveryDay()
@@ -416,15 +449,20 @@ export default function FarmerReport({
           rel="noreferrer"
           className={classes.reportLink}
         >
-          <Button variant="contained" className={classes.reportButtons}>
+          <Button
+            size="small"
+            variant="contained"
+            className={classes.reportButtons}
+          >
             Customer Details
           </Button>
         </a>
         <a
           href={
-            (farmID === 'all'
-              ? 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/pivot_all,'
-              : 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/pivot,') +
+            BASE_URL +
+            'report_order_customer_pivot_detail/pivot' +
+            (farmID === 'all' ? '_all' : '') +
+            ',' +
             farmID +
             ',' +
             nextDeliveryDay()
@@ -433,66 +471,111 @@ export default function FarmerReport({
           rel="noreferrer"
           className={classes.reportLink}
         >
-          <Button variant="contained" className={classes.reportButtons}>
+          <Button
+            size="small"
+            variant="contained"
+            className={classes.reportButtons}
+          >
             Pivot Table
           </Button>
         </a>
-      </div>
-      <Box display="flex" justifyContent="flex-end">
-        {deliveryDays.length > 0 && (
-          <Box mt={-2}>
-            <FormHelperText>Delivery Day:</FormHelperText>
-            <Select
-              labelId="demo-controlled-open-select-label"
-              id="demo-controlled-open-select"
-              name="business"
-              value={selectedDay}
-              onChange={handleDaySelect}
+        <a
+          href={
+            BASE_URL +
+            'drivers_report_check_sort/' +
+            nextDeliveryDay() +
+            ',checking'
+          }
+          target="_blank"
+          rel="noreferrer"
+          className={classes.reportLink}
+        >
+          <Button
+            size="small"
+            variant="contained"
+            className={classes.reportButtons}
+          >
+            Driver Check
+          </Button>
+        </a>
+        <a
+          href={
+            BASE_URL +
+            'drivers_report_check_sort/' +
+            nextDeliveryDay() +
+            ',sorting'
+          }
+          target="_blank"
+          rel="noreferrer"
+          className={classes.reportLink}
+        >
+          <Button
+            size="small"
+            variant="contained"
+            className={classes.reportButtons}
+          >
+            Driver Sort
+          </Button>
+        </a>
+        <Box flexGrow={1} />
+        <Box display="flex" justifyContent="flex-end">
+          {deliveryDays.length > 0 && (
+            <Box mt={-2}>
+              <FormHelperText>Delivery Day:</FormHelperText>
+              <Select
+                labelId="demo-controlled-open-select-label"
+                id="demo-controlled-open-select"
+                name="business"
+                value={selectedDay}
+                onChange={handleDaySelect}
+              >
+                {deliveryDays.map((day) => {
+                  return (
+                    <MenuItem key={day} value={day}>
+                      {day}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </Box>
+          )}
+          <div className={classes.reportButtonsRightSection}>
+            <Button
+              variant="contained"
+              size="small"
+              name="summary"
+              className={classes.reportButtons}
+              onClick={handleSendReport}
             >
-              {deliveryDays.map((day) => {
-                return (
-                  <MenuItem key={day} value={day}>
-                    {day}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </Box>
-        )}
-        <div className={classes.reportButtonsRightSection}>
-          <Button
-            variant="contained"
-            name="summary"
-            className={classes.reportButtons}
-            onClick={handleSendReport}
-          >
-            Send Summary Report
-          </Button>
-          <Button
-            variant="contained"
-            name="packing"
-            className={classes.reportButtons}
-            onClick={handleSendReport}
-          >
-            Send Packing Report
-          </Button>
+              Send Summary Report
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              name="packing"
+              className={classes.reportButtons}
+              onClick={handleSendReport}
+            >
+              Send Packing Report
+            </Button>
+          </div>
+        </Box>
+        <OrdersTable
+          orders={orders}
+          farmID={farmID}
+          type="FALSE"
+          functions={buttonFunctions}
+        />
+        <div style={labelStyle}>
+          <h2>Delivered Orders</h2>
         </div>
+        <OrdersTable
+          orders={orders}
+          farmID={farmID}
+          type="TRUE"
+          functions={buttonFunctions}
+        />
       </Box>
-      <OrdersTable
-        orders={orders}
-        farmID={farmID}
-        type="FALSE"
-        functions={buttonFunctions}
-      />
-      <div style={labelStyle}>
-        <h2>Delivered Orders</h2>
-      </div>
-      <OrdersTable
-        orders={orders}
-        farmID={farmID}
-        type="TRUE"
-        functions={buttonFunctions}
-      />
     </div>
   );
 }

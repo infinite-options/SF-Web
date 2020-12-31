@@ -20,6 +20,11 @@ export default async function FindLongLatWithAddr(address, city, state, zip) {
          */
         let lat = location.bbox[0];
         let long = location.bbox[1];
+
+        if (location.bbox.length === 4) {
+          lat = location.bbox[2];
+          long = location.bbox[3];
+        }
         return Promise.resolve({
           status: 'found',
           longitude: long,

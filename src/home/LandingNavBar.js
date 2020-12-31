@@ -65,25 +65,6 @@ export default function LandingNavBar({ ...props }) {
         <Toolbar>
           <MenuNavButton />
           <Box flexGrow={1} />
-          <Box hidden={!(auth.isAuth || auth.isGuest)}>
-            <IconButton edge="end" className="link">
-              <StorefrontIcon
-                fontSize="large"
-                color={'default'}
-                onClick={handleCartClick}
-              />
-            </IconButton>
-            <IconButton edge="end" className="link">
-              <Badge badgeContent={badgeContent} color="primary">
-                <ShoppingCartIcon
-                  fontSize="large"
-                  color={'default'}
-                  onClick={handleStoreClick}
-                />
-              </Badge>
-            </IconButton>
-          </Box>
-          <Box mr={4} hidden={auth.isAuth} />
           <Box hidden={auth.isAuth}>
             <Button
               className={classes.authButton}
@@ -103,6 +84,25 @@ export default function LandingNavBar({ ...props }) {
             >
               Login
             </Button>
+          </Box>
+
+          <Box hidden={!(auth.isAuth || auth.isGuest)}>
+            <IconButton edge="end" className="link">
+              <StorefrontIcon
+                fontSize="large"
+                color={'default'}
+                onClick={handleCartClick}
+              />
+            </IconButton>
+            <IconButton edge="end" className="link">
+              <Badge badgeContent={badgeContent} color="primary">
+                <ShoppingCartIcon
+                  fontSize="large"
+                  color={'default'}
+                  onClick={handleStoreClick}
+                />
+              </Badge>
+            </IconButton>
           </Box>
         </Toolbar>
       </AppBar>
