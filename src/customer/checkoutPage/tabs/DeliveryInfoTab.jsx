@@ -320,7 +320,8 @@ export default function DeliveryInfoTab() {
   const onPasswordClick = (event) => {
     const { name, value } = event.target;
 
-    if (password === '') setIsPassFieldShown(!isPassFieldShown);
+    if (!isPassFieldShown) setIsPassFieldShown(true);
+    if (isPassFieldShown && password === '') setIsPassFieldShown(false);
     if (isPassFieldShown) {
       setPasswordError('');
       setConfirmPasswordError('');

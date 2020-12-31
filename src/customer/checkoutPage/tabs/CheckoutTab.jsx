@@ -103,7 +103,7 @@ export default function CheckoutTab() {
     const today = days[new Date().getDay()];
     if (store.profile.zone !== '')
       axios
-        .post(
+        .get(
           process.env.REACT_APP_SERVER_BASE_URI +
             'get_Fee_Tax/' +
             store.profile.zone +
@@ -111,8 +111,17 @@ export default function CheckoutTab() {
             today
         )
         .then((res) => {
-          setOrigDeliveryFee(parseInt(res.data.service_fee));
-          setOrigServiceFee(parseInt(res.data.delivery_fee));
+          setOrigDeliveryFee(
+            (parseFloat(res.data.result.delivery_fee) * 100) / 100
+          );
+          setOrigServiceFee(
+            (parseFloat(res.data.result.service_fee) * 100) / 100
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+          setOrigDeliveryFee(5);
+          setOrigServiceFee(1.5);
         });
   }, [store.profile.zone]);
   function getItemsCart() {

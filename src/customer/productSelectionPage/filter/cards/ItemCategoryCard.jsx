@@ -1,14 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
+import storeContext from '../../../storeContext';
 import ProdSelectContext from '../../ProdSelectContext';
 import iconSizes from '../../../../styles/IconSizes';
 import { Box } from '@material-ui/core';
 
 const ItemCategoryItem = (props) => {
   const productSelect = useContext(ProdSelectContext);
+  const store = useContext(storeContext);
 
   const [isClicked, setIsClicked] = useState(false);
   const [isShown, setIsShown] = useState(
-    productSelect.farmsClicked.size > 0 || productSelect.dayClicked === ''
+    productSelect.farmsClicked.size > 0 || store.dayClicked === ''
   );
 
   function onCategoryClicked() {
@@ -25,8 +27,8 @@ const ItemCategoryItem = (props) => {
   }
 
   useEffect(() => {
-    setIsShown(productSelect.dayClicked !== '');
-  }, [productSelect.farmsClicked, productSelect.dayClicked]);
+    setIsShown(store.dayClicked !== '');
+  }, [store.farmsClicked, store.dayClicked]);
 
   return (
     <Box hidden={!isShown} mb={1} m={0.5} p={0.5} width="100%">

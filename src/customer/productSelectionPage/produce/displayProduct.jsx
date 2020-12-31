@@ -50,7 +50,7 @@ function DisplayProduct() {
   // DONE: clear out expected delivery if unclicked
   useEffect(() => {
     let message = '';
-    if (productSelect.dayClicked === '') {
+    if (store.dayClicked === '') {
       message = 'Start by selecting a delivery date and time.';
 
       if (store.cartTotal > 0) {
@@ -65,7 +65,7 @@ function DisplayProduct() {
     }
     setDisplayMessage(message);
   }, [
-    productSelect.dayClicked,
+    store.dayClicked,
     store.products,
     store.productsLoading,
     store.cartTotal,
