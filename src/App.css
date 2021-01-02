@@ -36,3 +36,20 @@
     transform: rotate(360deg);
   }
 }
+
+/* landing page responsive 3 cols */
+
+.info-container {
+  display:flex;
+}
+
+@media only screen and (max-width: 600px) {
+  #mobileInfoSection {
+    width: 100%;
+    padding: 20px 0;
+  }
+
+  .info-container {
+    display:block;
+  }
+} 
