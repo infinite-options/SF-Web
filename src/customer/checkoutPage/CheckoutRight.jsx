@@ -62,7 +62,9 @@ export default function CheckoutRight() {
       location.state !== undefined &&
       location.state.rightTabChosen !== undefined
     )
-      setRightTabChosen(location.state.rightTabChosen);
+      setRightTabChosen(
+        store.storePage === 1 ? 0 : location.state.rightTabChosen
+      );
   }, [location]);
 
   const handleChange = (event, newValue) => {

@@ -309,14 +309,14 @@ export default function FarmerReport({
       });
   };
 
-  const nextDeliveryDay = () => {
+  const nextDeliveryDay = (day) => {
     let deliveryDate = '0000-01-01';
 
     var today = new Date();
     var dayIncr = 0;
     while (dayIncr < 7) {
       const fullDay = days[today.getDay()];
-      if (fullDay === selectedDay) {
+      if (fullDay === day) {
         deliveryDate = formatDate(today);
         break;
       }
@@ -328,7 +328,7 @@ export default function FarmerReport({
 
   const handleSendReport = (event) => {
     const { name } = event.currentTarget;
-    let deliveryDate = nextDeliveryDay();
+    let deliveryDate = nextDeliveryDay(selectedDay);
 
     let string =
       BASE_URL +
@@ -421,7 +421,7 @@ export default function FarmerReport({
             ',' +
             farmID +
             ',' +
-            nextDeliveryDay()
+            nextDeliveryDay(selectedDay)
           }
           target="_blank"
           rel="noreferrer"
@@ -443,7 +443,7 @@ export default function FarmerReport({
             ',' +
             farmID +
             ',' +
-            nextDeliveryDay()
+            nextDeliveryDay(selectedDay)
           }
           target="_blank"
           rel="noreferrer"
@@ -465,7 +465,7 @@ export default function FarmerReport({
             ',' +
             farmID +
             ',' +
-            nextDeliveryDay()
+            nextDeliveryDay(selectedDay)
           }
           target="_blank"
           rel="noreferrer"
@@ -483,7 +483,7 @@ export default function FarmerReport({
           href={
             BASE_URL +
             'drivers_report_check_sort/' +
-            nextDeliveryDay() +
+            nextDeliveryDay(selectedDay) +
             ',checking'
           }
           target="_blank"
@@ -502,7 +502,7 @@ export default function FarmerReport({
           href={
             BASE_URL +
             'drivers_report_check_sort/' +
-            nextDeliveryDay() +
+            nextDeliveryDay(selectedDay) +
             ',sorting'
           }
           target="_blank"
@@ -532,7 +532,7 @@ export default function FarmerReport({
                 {deliveryDays.map((day) => {
                   return (
                     <MenuItem key={day} value={day}>
-                      {day}
+                      {day + ' ' + nextDeliveryDay(day)}
                     </MenuItem>
                   );
                 })}
@@ -588,16 +588,17 @@ function OrdersTable({ orders, type, farmID, ...props }) {
       <Table aria-label="simple table">
         <TableHead>
           <TableRow>
+            <TableCell>Order Platform</TableCell>
             <TableCell>Purchase Date</TableCell>
             <TableCell>Delivery Date</TableCell>
             <TableCell>Name</TableCell>
             <TableCell>Email</TableCell>
             <TableCell>Address</TableCell>
             <TableCell>Phone</TableCell>
-            {auth.authLevel === 2 && <TableCell>Item Total ($)</TableCell>}
             <TableCell>Business Total ($)</TableCell>
+            {auth.authLevel === 2 && <TableCell>Item Total ($)</TableCell>}
+            <TableCell>Amount Paid</TableCell>
             <TableCell>Items</TableCell>
-            <TableCell>Payment Completed?</TableCell>
             <TableCell />
           </TableRow>
         </TableHead>
@@ -625,6 +626,26 @@ function OrdersTable({ orders, type, farmID, ...props }) {
       </Table>
     </TableContainer>
   );
+}
+
+function formatAmPm(date) {
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  var ampm = hours >= 12 ? 'pm' : 'am';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+  const dateComps = date.toString().split(' ');
+  var strTime = hours + ':' + minutes + ' ' + ampm;
+  var strDate =
+    dateComps[0] +
+    ', ' +
+    dateComps[1] +
+    ' ' +
+    dateComps[2] +
+    ', ' +
+    dateComps[3];
+  return strDate + ' at ' + strTime;
 }
 
 function OrderRow({ order, type, farmID, ...props }) {
@@ -670,14 +691,17 @@ function OrderRow({ order, type, farmID, ...props }) {
     return boolToString.charAt(0).toUpperCase() + boolToString.slice(1);
   })();
 
+  const purchaseDate = new Date(order.purchase_date + ' UTC');
+
   return (
     <React.Fragment>
       <TableRow>
+        <TableCell>{order.pur_business_uid}</TableCell>
         <TableCell component="th" scope="row">
-          {order.purchase_date}
+          {formatAmPm(purchaseDate)}
         </TableCell>
         <TableCell component="th" scope="row">
-          {order.start_delivery_date}
+          {formatAmPm(new Date(order.start_delivery_date))}
         </TableCell>
         <TableCell>
           {order.delivery_first_name + ' ' + order.delivery_last_name}
@@ -685,10 +709,11 @@ function OrderRow({ order, type, farmID, ...props }) {
         <TableCell>{order.delivery_email}</TableCell>
         <TableCell>{address}</TableCell>
         <TableCell>{order.delivery_phone_num}</TableCell>
-        {auth.authLevel === 2 && <TableCell>{'$' + itemTotal}</TableCell>}
         <TableCell>{'$' + businessTotal}</TableCell>
+        {auth.authLevel === 2 && <TableCell>{'$' + itemTotal}</TableCell>}
+        <TableCell>{'$' + order.amount_paid}</TableCell>
         <TableCell>{count}</TableCell>
-        <TableCell>{hasPaid}</TableCell>
+
         <TableCell>
           <Button
             size="small"
@@ -714,23 +739,31 @@ function OrderRow({ order, type, farmID, ...props }) {
             {type === 'FALSE' ? 'deliver' : 'cancel'}
           </Button>
           <br />
-          <Button
-            size="small"
-            variant="contained" // value="copy"
-            style={{ ...tinyButtonStyle, backgroundColor: '#17a2b8' }}
-            onClick={(e) => props.functions.handleCopy(e, order, props.index)}
-          >
-            copy
-          </Button>
-          <br />
-          <Button
-            size="small"
-            variant="contained" // value="delete"
-            style={{ ...tinyButtonStyle, backgroundColor: '#dc3545' }}
-            onClick={(e) => props.functions.handleDelete(e, order, props.index)}
-          >
-            delete
-          </Button>
+          {farmID === 'all' && (
+            <>
+              <Button
+                size="small"
+                variant="contained" // value="copy"
+                style={{ ...tinyButtonStyle, backgroundColor: '#17a2b8' }}
+                onClick={(e) =>
+                  props.functions.handleCopy(e, order, props.index)
+                }
+              >
+                copy
+              </Button>
+              <br />
+              <Button
+                size="small"
+                variant="contained" // value="delete"
+                style={{ ...tinyButtonStyle, backgroundColor: '#dc3545' }}
+                onClick={(e) =>
+                  props.functions.handleDelete(e, order, props.index)
+                }
+              >
+                delete
+              </Button>
+            </>
+          )}
           <br />
         </TableCell>
       </TableRow>
