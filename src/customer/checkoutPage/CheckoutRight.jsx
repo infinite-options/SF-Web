@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
@@ -50,7 +50,6 @@ export default function CheckoutRight() {
   const classes = useStyles();
   const store = useContext(storeContext);
   const location = useLocation();
-  const history = useHistory();
 
   const [rightTabChosen, setRightTabChosen] = useState(0);
 
@@ -64,9 +63,6 @@ export default function CheckoutRight() {
       location.state.rightTabChosen !== undefined
     ) {
       setRightTabChosen(location.state.rightTabChosen);
-      const state = { ...history.location.state };
-      delete state.rightTabChosen;
-      history.replace({ ...history.location, state });
     }
   }, [location]);
 

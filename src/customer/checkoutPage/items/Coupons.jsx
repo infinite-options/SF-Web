@@ -2,8 +2,9 @@ import React, { useContext, useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import Carousel from 'react-multi-carousel';
 import { Box } from '@material-ui/core';
-import storeContext from '../../storeContext';
 import { AuthContext } from '../../../auth/AuthContext';
+import storeContext from '../../storeContext';
+import checkoutContext from '../CheckoutContext';
 
 const responsive = {
   superLargeDesktop: {
@@ -31,6 +32,7 @@ const responsive = {
 export default function Coupons(props) {
   const store = useContext(storeContext);
   const auth = useContext(AuthContext);
+  const checkout = useContext(checkoutContext);
 
   // Coupon properties: Title, Message, Expiration, Saving
   // DONE:  if threshold is 0 "No minimum purchase"
@@ -55,6 +57,7 @@ export default function Coupons(props) {
 
     for (const coupon of allCoupons) {
       const couponData = {
+        id: coupon.id,
         index: coupon.index,
         title: coupon.title,
         threshold: coupon.threshold,
@@ -124,6 +127,7 @@ export default function Coupons(props) {
           const expDate = new Date(couponsRes[i].expire_date);
           if (today <= expDate) {
             const couponData = {
+              id: couponsRes[i].coupon_uid,
               index: i,
               title: couponsRes[i].notes,
               threshold: couponsRes[i].threshold,
@@ -174,6 +178,7 @@ export default function Coupons(props) {
   const CreateCouponCard = (coupProps) => {
     return (
       <Coupon
+        id={coupProps.id}
         key={coupProps.index}
         index={coupProps.index}
         status={coupProps.status}
@@ -205,6 +210,7 @@ export default function Coupons(props) {
             } else {
               props.setDeliveryFee(props.originalDeliveryFee);
               props.setPromoApplied(0);
+              checkout.setChosenCoupon('');
             }
           }
           newCouponData.push(newCoupon);
@@ -240,7 +246,7 @@ export default function Coupons(props) {
             <Box fontSize="10px">
               {/* +1 because JS date object function returns months from 0-11 and similarly for days */}
               Expires: {coupProps.expDate.getMonth() + 1}/
-              {coupProps.expDate.getDay() + 1}/{coupProps.expDate.getFullYear()}
+              {coupProps.expDate.getDate()}/{coupProps.expDate.getFullYear()}
             </Box>
             <Box
               hidden={
@@ -278,6 +284,7 @@ export default function Coupons(props) {
               (discountAmountOff * (coupon.discountPercent / 100)).toFixed(2)
             )
     );
+    checkout.setChosenCoupon(coupon.id);
   }
 
   function FindMaxSavingCouponsIndex(avaiCoupons) {

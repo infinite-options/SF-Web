@@ -341,7 +341,7 @@ export default function CheckoutTab() {
         <Box>${deliveryFee.toFixed(2)}</Box>
       </Box>
       <Box className={classes.section} display="flex">
-        <Box>Driver Tip</Box>
+        <Box>Driver Tip (Optional - Click to edit)</Box>
         <Box flexGrow={1} />
         <Box width="70px">
           <CurrencyTextField

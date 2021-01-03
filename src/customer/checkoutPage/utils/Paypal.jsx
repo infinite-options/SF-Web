@@ -18,10 +18,8 @@ const PayPal = ({ value, deliveryInstructions }) => {
   const confirm = useConfirmation();
 
   const [loaded, setLoaded] = useState(false);
-  const { paymentDetails } = useContext(checkoutContext);
-  const { profile, startDeliveryDate, cartItems, setCartTotal } = useContext(
-    storeContext
-  );
+  const { paymentDetails, chosenCoupon } = useContext(checkoutContext);
+  const { profile, startDeliveryDate, cartItems } = useContext(storeContext);
   let paypalRef = useRef();
   //[{"qty": "3", "name": "Opo Gourd", "price": "0.5", "item_uid": "310-000087", "itm_business_uid": "200-000005"}]
 
@@ -91,7 +89,7 @@ const PayPal = ({ value, deliveryInstructions }) => {
             delivery_longitude: profile.longitude,
             purchase_notes: 'purchase_notes',
             start_delivery_date: startDeliveryDate,
-            pay_coupon_id: '',
+            pay_coupon_id: chosenCoupon || 'undefined',
             amount_due: paymentDetails.amountDue.toString(),
             amount_discount: paymentDetails.discount.toString(),
             amount_paid: paymentDetails.amountDue.toString(),
