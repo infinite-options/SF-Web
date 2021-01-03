@@ -19,6 +19,7 @@ const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI;
 const cookies = new Cookies();
 
 const testDate = new Date();
+const BusiMethods = new BusiApiReqs();
 
 const fullDaysUpper = [
   'SUNDAY',
@@ -100,6 +101,8 @@ const Store = ({ ...props }) => {
   const Auth = useContext(AuthContext);
   const location = useLocation();
   const history = useHistory();
+
+  // const currenttime = setInterval(checkIfAccepting, 60000);
 
   const [profile, setProfile] = useState({
     email: '',
@@ -252,7 +255,6 @@ const Store = ({ ...props }) => {
   }, []);
   function getBusinesses(long, lat, updatedProfile) {
     if (long !== '' && lat !== '') {
-      const BusiMethods = new BusiApiReqs();
       BusiMethods.getLocationBusinessIds(long, lat).then((busiRes) => {
         // dictionary: business id with delivery days
         // show all if nothing selected
@@ -265,186 +267,202 @@ const Store = ({ ...props }) => {
           return;
         }
         setProductsLoading(true);
-        console.log('busiRes: ', busiRes);
-        const businessesRes = busiRes.result;
-        const businessUids = new Set();
-        const dateDict = {};
-        const _farmList = [];
-        const _dayTimeDict = {};
-        const _daytimeFarmDict = {};
-        const _farmDaytimeDict = {};
-        // get a list of buiness UIDs for the next req and
-        // the farms properties for the filter
-        for (const business of businessesRes) {
-          const today = testDate;
-          // const today = new Date();
-          const acceptDate = weekdayDatesDict[business.z_accepting_day];
-          const deliveryDate = new Date(
-            weekdayDatesDict[business.z_delivery_day].getTime()
-          );
-          const originalDeliveryDate =
-            weekdayDatesDict[business.z_delivery_day];
-
-          if (sameDay(today, acceptDate)) {
-            const acceptTimeComps = amPmTo24Hr(business.z_accepting_time).split(
-              ':'
-            );
-
-            const acceptHour = acceptTimeComps[0];
-            const acceptMinute = acceptTimeComps[1];
-            const todayHour = today.getHours().toString();
-            const todayMinute = today.getMinutes().toString();
-            const acceptTime = Date.parse(
-              '01/01/2020 ' + acceptHour + ':' + acceptMinute + ':00'
-            );
-            const todayTime = Date.parse(
-              '01/01/2020 ' + todayHour + ':' + todayMinute + ':00'
-            );
-            if (todayTime > acceptTime) {
-              deliveryDate.setDate(originalDeliveryDate.getDate() + 7);
-            }
-          } else if (acceptDate > deliveryDate) {
-            deliveryDate.setDate(originalDeliveryDate.getDate() + 7);
-          }
-          console.log(deliveryDate);
-
-          if (!businessUids.has(business.z_biz_id))
-            businessUids.add(business.z_biz_id);
-          const id = business.z_biz_id;
-          const day = business.z_delivery_day;
-          const time = business.z_delivery_time;
-          const date =
-            months[deliveryDate.getMonth()] +
-            '&' +
-            deliveryDate.getDate() +
-            '&' +
-            day +
-            '&' +
-            time;
-
-          // Put set of farms into a dictionary with day as key
-          // Set for faster lookups when inserting
-          if (!(date in _daytimeFarmDict)) {
-            _daytimeFarmDict[date] = new Set();
-            dateDict[date] = deliveryDate;
-          }
-          _daytimeFarmDict[date].add(id);
-
-          if (!(day in _dayTimeDict)) {
-            _dayTimeDict[day] = new Set();
-          }
-          _dayTimeDict[day].add(time);
-
-          // Put set of days into a dictionary with farm id as key
-          // Set for faster lookups when inserting
-          if (!(id in _farmDaytimeDict)) {
-            _farmDaytimeDict[id] = new Set();
-            _farmList.push({
-              id: id,
-              name: business.business_name,
-              image: business.business_image,
-              zone: business.zone,
-            });
-            updatedProfile.zone = business.zone;
-          }
-          _farmDaytimeDict[id].add(date);
-        }
-        const dateTimeDateDict = {};
-
-        // Check for rollover Dates and fill the later date if necessary
-        for (const currDate in _daytimeFarmDict) {
-          const dateComps = currDate.split('&');
-          const dayTime = dateComps[2] + '&' + dateComps[3];
-
-          if (!(dayTime in dateTimeDateDict)) {
-            dateTimeDateDict[dayTime] = currDate;
-          } else {
-            const seenDate = dateTimeDateDict[dayTime];
-            const fillDateString =
-              dateDict[currDate] > dateDict[seenDate] ? currDate : seenDate;
-            _daytimeFarmDict[fillDateString] = new Set([
-              ..._daytimeFarmDict[dateTimeDateDict[dayTime]],
-              ..._daytimeFarmDict[currDate],
-            ]);
-            _daytimeFarmDict[fillDateString].forEach((farmID) => {
-              _farmDaytimeDict[farmID].add(fillDateString);
-            });
-          }
-        }
-        setNumDeliveryTimes(Object.keys(_daytimeFarmDict).length);
-        setFarmsList(_farmList);
-        setDayTimeDict(_dayTimeDict);
-        setDaytimeFarmDict(_daytimeFarmDict);
-        setFarmDaytimeDict(_farmDaytimeDict);
-        if (_farmList.length > 0 && updatedProfile.zone !== profile.zone) {
-          localStorage.removeItem('selectedDay');
-          localStorage.removeItem('cartTotal');
-          localStorage.removeItem('cartItems');
-          setProfile(updatedProfile);
-        }
-
-        BusiMethods.getItems(
-          ['fruit', 'desert', 'vegetable', 'other'],
-          Array.from(businessUids)
-        ).then((itemRes) => {
-          const _products = [];
-          const itemDict = {};
-          if (itemRes !== undefined) {
-            for (const item of itemRes) {
-              setProductsLoading(true);
-              try {
-                if (item.item_status === 'Active') {
-                  const namePriceDesc =
-                    item.item_name + item.item_price + item.item_desc;
-                  // Business Price
-                  const bPrice = item.business_price;
-
-                  // if we've seen the the item before, check its business pricing and, if needed, creation date to take the lowest business price
-                  if (namePriceDesc in itemDict) {
-                    const itemIdx = itemDict[namePriceDesc];
-
-                    // keeps a list of the items business_uid(s) with the business' associated pricing
-                    _products[itemIdx].business_uids[item.itm_business_uid] =
-                      item.item_price;
-
-                    // checks for if the current iterated business has a lower price than the one previously seen
-                    if (bPrice < _products[itemIdx].lowest_price) {
-                      _products[itemIdx].lowest_price = bPrice;
-                      _products[itemIdx].lowest_price_business_uid =
-                        item.itm_business_uid;
-                    }
-
-                    // If the price is the same, take the one that was created first
-                    if (
-                      bPrice === _products[itemIdx].lowest_price &&
-                      new Date(item.created_at) <
-                        new Date(_products[itemIdx].created_at)
-                    )
-                      _products[itemIdx].lowest_price_business_uid =
-                        item.itm_business_uid;
-                  } else {
-                    // If we haven't seen it push it into the dictionary just in case we see it again
-                    itemDict[namePriceDesc] = _products.length;
-                    item.business_uids = {
-                      [item.itm_business_uid]: item.item_price,
-                    };
-                    item.lowest_price_business_uid = item.itm_business_uid;
-                    item.lowest_price = bPrice;
-
-                    // Push to products to have distinct products
-                    _products.push(item);
-                  }
-                }
-              } catch (error) {
-                console.error(error);
-              }
-            }
-          }
-          setProducts(_products);
-          setProductsLoading(false);
-        });
+        loadBusinesses(busiRes, updatedProfile);
       });
     }
+  }
+
+  const checkIfAccepting = () => {
+    const today = new Date();
+    const dayString =
+      months[today.getMonth()] +
+      '&' +
+      today.getDate() +
+      '&' +
+      months[today.getDay()] +
+      '&';
+    if (today) {
+    }
+  };
+
+  function loadBusinesses(busiRes, updatedProfile) {
+    console.log('busiRes: ', busiRes);
+    const businessesRes = busiRes.result;
+    const businessUids = new Set();
+    const dateDict = {};
+    const _farmList = [];
+    const _dayTimeDict = {};
+    const _daytimeFarmDict = {};
+    const _farmDaytimeDict = {};
+    // get a list of buiness UIDs for the next req and
+    // the farms properties for the filter
+    for (const business of businessesRes) {
+      const today = testDate;
+      // const today = new Date();
+      const acceptDate = weekdayDatesDict[business.z_accepting_day];
+      const deliveryDate = new Date(
+        weekdayDatesDict[business.z_delivery_day].getTime()
+      );
+      const originalDeliveryDate = weekdayDatesDict[business.z_delivery_day];
+
+      if (sameDay(today, acceptDate)) {
+        const acceptTimeComps = amPmTo24Hr(business.z_accepting_time).split(
+          ':'
+        );
+
+        const acceptHour = acceptTimeComps[0];
+        const acceptMinute = acceptTimeComps[1];
+        const todayHour = today.getHours().toString();
+        const todayMinute = today.getMinutes().toString();
+        const acceptTime = Date.parse(
+          '01/01/2020 ' + acceptHour + ':' + acceptMinute + ':00'
+        );
+        const todayTime = Date.parse(
+          '01/01/2020 ' + todayHour + ':' + todayMinute + ':00'
+        );
+        if (todayTime > acceptTime) {
+          deliveryDate.setDate(originalDeliveryDate.getDate() + 7);
+        }
+      } else if (acceptDate > deliveryDate) {
+        deliveryDate.setDate(originalDeliveryDate.getDate() + 7);
+      }
+      console.log(deliveryDate);
+
+      if (!businessUids.has(business.z_biz_id))
+        businessUids.add(business.z_biz_id);
+      const id = business.z_biz_id;
+      const day = business.z_delivery_day;
+      const time = business.z_delivery_time;
+      const date =
+        months[deliveryDate.getMonth()] +
+        '&' +
+        deliveryDate.getDate() +
+        '&' +
+        day +
+        '&' +
+        time;
+
+      // Put set of farms into a dictionary with day as key
+      // Set for faster lookups when inserting
+      if (!(date in _daytimeFarmDict)) {
+        _daytimeFarmDict[date] = new Set();
+        dateDict[date] = deliveryDate;
+      }
+      _daytimeFarmDict[date].add(id);
+
+      if (!(day in _dayTimeDict)) {
+        _dayTimeDict[day] = new Set();
+      }
+      _dayTimeDict[day].add(time);
+
+      // Put set of days into a dictionary with farm id as key
+      // Set for faster lookups when inserting
+      if (!(id in _farmDaytimeDict)) {
+        _farmDaytimeDict[id] = new Set();
+        _farmList.push({
+          id: id,
+          name: business.business_name,
+          image: business.business_image,
+          zone: business.zone,
+        });
+        updatedProfile.zone = business.zone;
+      }
+      _farmDaytimeDict[id].add(date);
+    }
+    const dateTimeDateDict = {};
+
+    // Check for rollover Dates and fill the later date if necessary
+    for (const currDate in _daytimeFarmDict) {
+      const dateComps = currDate.split('&');
+      const dayTime = dateComps[2] + '&' + dateComps[3];
+
+      if (!(dayTime in dateTimeDateDict)) {
+        dateTimeDateDict[dayTime] = currDate;
+      } else {
+        const seenDate = dateTimeDateDict[dayTime];
+        const fillDateString =
+          dateDict[currDate] > dateDict[seenDate] ? currDate : seenDate;
+        _daytimeFarmDict[fillDateString] = new Set([
+          ..._daytimeFarmDict[dateTimeDateDict[dayTime]],
+          ..._daytimeFarmDict[currDate],
+        ]);
+        _daytimeFarmDict[fillDateString].forEach((farmID) => {
+          _farmDaytimeDict[farmID].add(fillDateString);
+        });
+      }
+    }
+    setNumDeliveryTimes(Object.keys(_daytimeFarmDict).length);
+    setFarmsList(_farmList);
+    setDayTimeDict(_dayTimeDict);
+    setDaytimeFarmDict(_daytimeFarmDict);
+    setFarmDaytimeDict(_farmDaytimeDict);
+    if (_farmList.length > 0 && updatedProfile.zone !== profile.zone) {
+      localStorage.removeItem('selectedDay');
+      localStorage.removeItem('cartTotal');
+      localStorage.removeItem('cartItems');
+      setProfile(updatedProfile);
+    }
+
+    BusiMethods.getItems(
+      ['fruit', 'desert', 'vegetable', 'other'],
+      Array.from(businessUids)
+    ).then((itemRes) => {
+      const _products = [];
+      const itemDict = {};
+      if (itemRes !== undefined) {
+        for (const item of itemRes) {
+          setProductsLoading(true);
+          try {
+            if (item.item_status === 'Active') {
+              const namePriceDesc =
+                item.item_name + item.item_price + item.item_desc;
+              // Business Price
+              const bPrice = item.business_price;
+
+              // if we've seen the the item before, check its business pricing and, if needed, creation date to take the lowest business price
+              if (namePriceDesc in itemDict) {
+                const itemIdx = itemDict[namePriceDesc];
+
+                // keeps a list of the items business_uid(s) with the business' associated pricing
+                _products[itemIdx].business_uids[item.itm_business_uid] =
+                  item.item_price;
+
+                // checks for if the current iterated business has a lower price than the one previously seen
+                if (bPrice < _products[itemIdx].lowest_price) {
+                  _products[itemIdx].lowest_price = bPrice;
+                  _products[itemIdx].lowest_price_business_uid =
+                    item.itm_business_uid;
+                }
+
+                // If the price is the same, take the one that was created first
+                if (
+                  bPrice === _products[itemIdx].lowest_price &&
+                  new Date(item.created_at) <
+                    new Date(_products[itemIdx].created_at)
+                )
+                  _products[itemIdx].lowest_price_business_uid =
+                    item.itm_business_uid;
+              } else {
+                // If we haven't seen it push it into the dictionary just in case we see it again
+                itemDict[namePriceDesc] = _products.length;
+                item.business_uids = {
+                  [item.itm_business_uid]: item.item_price,
+                };
+                item.lowest_price_business_uid = item.itm_business_uid;
+                item.lowest_price = bPrice;
+
+                // Push to products to have distinct products
+                _products.push(item);
+              }
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      }
+      setProducts(_products);
+      setProductsLoading(false);
+    });
   }
 
   return (

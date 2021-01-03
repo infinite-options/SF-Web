@@ -14,14 +14,15 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import Zones from '../Zones';
 import FarmerHome from './FarmerHome';
 import FarmerReport from './FarmerReport';
 import FarmerSettings from './FarmerSettings';
 import Chart from './chart';
 import Revenue from './revenue';
 import Store from '../../customer/Store';
-import RevenueHighchart from './HighchartTemplate';
-import Analytics from './Analytics';
+import RevenueHighchart from '../HighchartTemplate';
+import Analytics from '../Analytics';
 import Notifications from './Notifications';
 // import FarmerNavBar from './FarmerNavBar';
 
@@ -59,7 +60,7 @@ export default function Farmer({ tab, ...props }) {
   //!The reason using css to display none is for the css file which can't be hidden by html
   const handleTab = () => {
     // 0 <= tab <= MAX_VALUE
-    const tabIsValid = tab >= 0 && tab <= 6; // If more tabs are added, change max value
+    const tabIsValid = tab >= 0 && tab <= 7; // If more tabs are added, change max value
     return (
       <React.Fragment>
         {/* if farmerTab is tampered with & is out of scope, defaults to FarmerHome */}
@@ -87,7 +88,8 @@ export default function Farmer({ tab, ...props }) {
           <RevenueHighchart farmID={farmID} farmName={farmName} />
         </div>
         <Notifications farmID={farmID} farmName={farmName} hidden={tab !== 5} />
-        <Store hidden={tab !== 6} />
+        {tab === 6 && <Store />}
+        {tab === 7 && <Zones />}
       </React.Fragment>
     );
   };

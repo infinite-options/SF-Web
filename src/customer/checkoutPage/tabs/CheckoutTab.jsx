@@ -98,36 +98,43 @@ export default function CheckoutTab() {
     'FRIDAY',
     'SATURDAY',
   ];
-
+  // TODO: Fee based on expected delivery day
   const loadFees = async () => {
-    const today = days[new Date().getDay()];
-    if (store.profile.zone !== '')
-      axios
-        .get(
-          process.env.REACT_APP_SERVER_BASE_URI +
-            'get_Fee_Tax/' +
-            store.profile.zone +
-            ',' +
-            today
-        )
-        .then((res) => {
-          setOrigDeliveryFee(
-            (parseFloat(res.data.result.delivery_fee) * 100) / 100
-          );
-          setOrigServiceFee(
-            (parseFloat(res.data.result.service_fee) * 100) / 100
-          );
-        })
-        .catch((err) => {
-          console.log(err);
-          setOrigDeliveryFee(5);
-          setOrigServiceFee(1.5);
-        });
+    if (store.expectedDelivery !== '') {
+      const deliveryDay = store.expectedDelivery.split(',')[0];
+      if (store.profile.zone !== '')
+        axios
+          .get(
+            process.env.REACT_APP_SERVER_BASE_URI +
+              'get_Fee_Tax/' +
+              store.profile.zone +
+              ',' +
+              deliveryDay.toUpperCase()
+          )
+          .then((res) => {
+            try {
+              const deliveryFee =
+                (parseFloat(res.data.result.delivery_fee) * 100) / 100;
+              const serviceFee =
+                (parseFloat(res.data.result.service_fee) * 100) / 100;
+              if (deliveryFee !== undefined && serviceFee !== undefined) {
+              }
+              setOrigDeliveryFee(deliveryFee);
+              setOrigServiceFee(serviceFee);
+            } catch {}
+          })
+          .catch((err) => {
+            console.log(err);
+            setOrigDeliveryFee(5);
+            setOrigServiceFee(1.5);
+          });
+    }
   };
 
   useMemo(() => {
     loadFees();
-  }, [store.profile.zone]);
+  }, [store.profile.zone, store.expectedDelivery]);
+
   function getItemsCart() {
     var result = [];
     for (const itemId in store.cartItems) {

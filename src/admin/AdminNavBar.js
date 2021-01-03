@@ -225,6 +225,17 @@ function AdminNavBar({ tab, setTab, ...props }) {
                   <Button
                     size={'small'}
                     className={classes.button}
+                    onClick={() => setTab(7)}
+                    style={{
+                      backgroundColor:
+                        tab === 7 ? appColors.componentBg : 'white',
+                    }}
+                  >
+                    Zones
+                  </Button>
+                  <Button
+                    size={'small'}
+                    className={classes.button}
                     onClick={() => setTab(5)}
                     style={{
                       backgroundColor:

@@ -13,7 +13,7 @@ import Box from '@material-ui/core/Box';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
-import { AdminFarmContext } from '../AdminFarmContext';
+import { AdminFarmContext } from './AdminFarmContext';
 
 require('highcharts/modules/exporting')(Highcharts);
 require('highcharts/modules/export-data')(Highcharts);

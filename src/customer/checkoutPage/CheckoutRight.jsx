@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
@@ -50,21 +50,24 @@ export default function CheckoutRight() {
   const classes = useStyles();
   const store = useContext(storeContext);
   const location = useLocation();
+  const history = useHistory();
 
   const [rightTabChosen, setRightTabChosen] = useState(0);
 
   useEffect(() => {
-    setRightTabChosen(0);
+    if (location.state === undefined) setRightTabChosen(0);
   }, [store.storePage]);
 
   useEffect(() => {
     if (
       location.state !== undefined &&
       location.state.rightTabChosen !== undefined
-    )
-      setRightTabChosen(
-        store.storePage === 1 ? 0 : location.state.rightTabChosen
-      );
+    ) {
+      setRightTabChosen(location.state.rightTabChosen);
+      const state = { ...history.location.state };
+      delete state.rightTabChosen;
+      history.replace({ ...history.location, state });
+    }
   }, [location]);
 
   const handleChange = (event, newValue) => {
@@ -122,12 +125,8 @@ export default function CheckoutRight() {
           <CheckoutTab />
         </Box>
         {/* rightTabChosen is 2 because the flex spacing takes up values 1 and 3 */}
-        <Box hidden={rightTabChosen !== 2}>
-          <HistoryTab />
-        </Box>
-        <Box hidden={rightTabChosen !== 4}>
-          <RefundTab />
-        </Box>
+        {rightTabChosen === 2 && <HistoryTab />}
+        {rightTabChosen === 4 && <RefundTab />}
       </Paper>
     </Paper>
   );

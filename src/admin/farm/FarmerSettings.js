@@ -121,14 +121,11 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
   const [settings, setSettings] = useState({});
   const [error, setError] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  // var businessID = "200-000004";
-  //use this state below to set up information of middle collumn
+
+  //use this state below to set up information of middle column
   const [businessAndFarmDetail, setBusFarm] = useState({});
   const [passwordHere, setPass] = useState('');
-  // const [errorStatus,setErrorPass]=useState(false);
-  // const [userChangePass,setNewChangePass]= usestate("");
-  // const [errorStatus,setErrorPass]=useState(false);
-  //this one is state of confirmPassword
+
   const [confirmPass, setConfirmPass] = useState('');
   const [saltPack, setSaltPack] = useState({});
   // const [image,setImage]=useState({});
