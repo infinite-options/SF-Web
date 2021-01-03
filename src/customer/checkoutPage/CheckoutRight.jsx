@@ -55,8 +55,8 @@ export default function CheckoutRight() {
   const [rightTabChosen, setRightTabChosen] = useState(0);
 
   useEffect(() => {
-    if (location.state === undefined) setRightTabChosen(0);
-  }, [store.storePage]);
+    setRightTabChosen(0);
+  }, [store.cartClicked]);
 
   useEffect(() => {
     if (

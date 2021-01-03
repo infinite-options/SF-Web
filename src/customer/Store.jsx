@@ -157,14 +157,11 @@ const Store = ({ ...props }) => {
     getBusinesses(profile.longitude, profile.latitude, { ...profile });
   }, [profile.latitude]);
 
-  // Toggles for the login and signup box to be passed in as props to the Landing Nav Bar
-  const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
-  const [isSignUpShown, setIsSignUpShown] = useState(false);
-
   // Options for which page is showing
   const [storePage, setStorePage] = useState(
     parseInt(localStorage.getItem('currentStorePage') || '0')
   );
+  const [cartClicked, setCartClicked] = useState(0);
 
   useEffect(() => {
     if (location.state !== undefined) {
@@ -491,11 +488,12 @@ const Store = ({ ...props }) => {
           setFarmsClicked,
           dayClicked,
           setDayClicked,
+          cartClicked,
+          setCartClicked,
         }}
       >
         <StoreNavBar
-          setIsLoginShown={setIsLoginShown}
-          setIsSignUpShown={setIsSignUpShown}
+
           storePage={storePage}
           setStorePage={setStorePage}
         />
