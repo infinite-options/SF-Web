@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
 import NumberFormat from 'react-number-format';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -168,6 +169,8 @@ export default function ZoneModal(props) {
   const ZoneCard = (zone) => {
     const classes = useStyles();
     const { farmDict } = useContext(AdminFarmContext);
+
+    const [errorMessage, setErrorMessage] = React.useState('');
     const [businesses, setBusinesses] = React.useState([]);
     const [businessPicked, setBusinessPicked] = React.useState([]);
     const [deliveryDay, setDeliveryDay] = useState('SUNDAY');
@@ -213,7 +216,7 @@ export default function ZoneModal(props) {
 
     const handleFieldPropsChange = (event) => {
       const { value, name } = event.target;
-      setFieldProps({ ...deliveryTime, [name]: value });
+      setFieldProps({ ...fieldProps, [name]: value });
     };
 
     const handleDeliveryDaySelect = (event) => {
@@ -234,6 +237,7 @@ export default function ZoneModal(props) {
       setAcceptDay(value);
     };
     const onSubmit = () => {
+      setErrorMessage('');
       const formattedDeliveryTime =
         deliveryTime.startTime +
         deliveryTime.startOption +
@@ -242,7 +246,7 @@ export default function ZoneModal(props) {
         deliveryTime.endOption;
       const formattedAcceptTime = acceptTime.startTime + acceptTime.startOption;
 
-      const ZoneData = {
+      const zoneData = {
         z_business_uid: '200-00001',
         area: fieldProps.area,
         zone: fieldProps.zone,
@@ -252,26 +256,40 @@ export default function ZoneModal(props) {
         z_delivery_time: formattedDeliveryTime,
         z_accepting_day: acceptDay,
         z_accepting_time: formattedAcceptTime,
-        service_fee: fieldProps.area,
-        delivery_fee: fieldProps.area,
-        tax_rate: fieldProps.area,
-        LB_long: fieldProps.BotLeftLong,
-        LB_lat: fieldProps.BotLeftLat,
-        LT_long: fieldProps.TopLeftLong,
-        LT_lat: fieldProps.TopLeftLat,
-        RT_long: fieldProps.TopRightLong,
-        RT_lat: fieldProps.TopRightLat,
-        RB_long: fieldProps.BotRightLong,
-        RB_lat: fieldProps.BotRightLat,
+        service_fee: fieldProps.service.toString(),
+        delivery_fee: fieldProps.delivery.toString(),
+        tax_rate: fieldProps.tax.toString(),
+        LB_long: fieldProps.BotLeftLong.toString(),
+        LB_lat: fieldProps.BotLeftLat.toString(),
+        LT_long: fieldProps.TopLeftLong.toString(),
+        LT_lat: fieldProps.TopLeftLat.toString(),
+        RT_long: fieldProps.TopRightLong.toString(),
+        RT_lat: fieldProps.TopRightLat.toString(),
+        RB_long: fieldProps.BotRightLong.toString(),
+        RB_lat: fieldProps.BotRightLat.toString(),
       };
 
-      const emptyInputs = ZoneData.filter((field) => ZoneData[field] === '');
-      if (emptyInputs.length > 0) return;
+      for (const field in zoneData) {
+        if (zoneData[field] === '' || zoneData[field] === undefined) {
+          setErrorMessage('Please provide a value for every field');
+          return;
+        }
+      }
+
+      axios
+        .post(
+          process.env.REACT_APP_SERVER_BASE_URI +
+            'update_zones/' +
+            props.option.toLowerCase(),
+          zoneData
+        )
+        .then(alert('zone successfully created'));
     };
 
     return (
-      <form onSubmit={onSubmit}>
-        <Paper className={classes.modalBody}>
+      <Paper className={classes.modalBody}>
+        {' '}
+        <form onSubmit={onSubmit}>
           <Box mb={2} fontSize={20} fontWeight="bold" textAlign="center">
             {props.option} Zone
           </Box>
@@ -281,6 +299,7 @@ export default function ZoneModal(props) {
               label="Zone Name"
               size="small"
               variant="outlined"
+              style={{ width: '235px' }}
               onChange={handleFieldPropsChange}
             />
             <Box flexGrow={1} />
@@ -512,7 +531,6 @@ export default function ZoneModal(props) {
               }}
             />
           </Box>
-
           {/* Top Right */}
           <Box display="flex" mt={3}>
             <CssTextField
@@ -539,7 +557,6 @@ export default function ZoneModal(props) {
               }}
             />
           </Box>
-
           {/* Top Left */}
           <Box display="flex" mt={1}>
             <CssTextField
@@ -566,7 +583,6 @@ export default function ZoneModal(props) {
               }}
             />
           </Box>
-
           {/* Bottom Left */}
           <Box display="flex" mt={4}>
             <CssTextField
@@ -593,7 +609,6 @@ export default function ZoneModal(props) {
               }}
             />
           </Box>
-
           {/* Bottom Right */}
           <Box display="flex" mt={1}>
             <CssTextField
@@ -620,16 +635,20 @@ export default function ZoneModal(props) {
               }}
             />
           </Box>
-          <Box display="flex" justifyContent="center" mt={3} width="100%">
+          <Box mt={3} />
+          <FormHelperText error={true} style={{ textAlign: 'center' }}>
+            {errorMessage}
+          </FormHelperText>
+          <Box display="flex" justifyContent="center" width="100%">
             <Button
               onClick={onSubmit}
               style={{ backgroundColor: appColors.componentBg, width: '200px' }}
             >
               {props.option}
             </Button>
-          </Box>
-        </Paper>
-      </form>
+          </Box>{' '}
+        </form>
+      </Paper>
     );
   };
 
