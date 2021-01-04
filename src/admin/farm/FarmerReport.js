@@ -53,8 +53,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function formatDate(date) {
-  var month = '' + (date.getMonth() + 1),
-    day = '' + date.getDate(),
+  var month = date.getMonth() + 1,
+    day = date.getDate(),
     year = date.getFullYear();
 
   if (month.length < 2) month = '0' + month;
@@ -73,6 +73,24 @@ const days = [
   'SATURDAY',
 ];
 
+// const testDate = new Date('2021-01-06 09:00:00');
+const testDate = new Date();
+
+const findWeekdayDates = () => {
+  const result = {};
+  // const today = new Date();
+  const today = new Date(testDate.getTime());
+  let i = 0;
+  while (i < 7) {
+    result[days[today.getDay()]] = formatDate(today);
+    today.setDate(today.getDate() + 1);
+    i += 1;
+  }
+  return result;
+};
+
+const weekdayDatesDict = findWeekdayDates();
+
 // TODO: Add auto-refresh
 // DONE: Add Photo to report
 // DONE: filter out farms
@@ -89,6 +107,7 @@ export default function FarmerReport({
   // const [responseData, setResponseData] = useState();
   const classes = useStyles();
   const confirm = useConfirmation();
+  const auth = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
   const [deliveryDays, setDeliveryDays] = useState([]);
   const [selectedDay, setSelectedDay] = useState('');
@@ -103,14 +122,28 @@ export default function FarmerReport({
             businessSet.add(business.z_delivery_day);
           }
           let dayList = [...businessSet];
+          // dayList = days;
+
+          if (dayList.length === 0 && farmID === 'all')
+            dayList = ['SUNDAY', 'WEDNESDAY'];
+
+          const dayDateList = [];
+          for (const day of dayList) {
+            dayDateList.push({ day: day, date: weekdayDatesDict[day] });
+          }
+          dayDateList.sort(function (a, b) {
+            const aDate = new Date(a.date);
+            const bDate = new Date(b.date);
+            return aDate < bDate ? -1 : aDate > bDate ? 1 : 0;
+          });
+          dayList = dayDateList.map((dayDate) => {
+            return dayDate.day;
+          });
+
           if (dayList.length > 0) {
             setSelectedDay(dayList[0]);
-          } else {
-            if (farmID === 'all') {
-              dayList = ['SUNDAY', 'WEDNESDAY'];
-              setSelectedDay(dayList[0]);
-            }
           }
+
           setDeliveryDays(dayList);
         } catch {
           console.log('Error with retrieving business delivery days');
@@ -309,14 +342,14 @@ export default function FarmerReport({
       });
   };
 
-  const nextDeliveryDay = () => {
+  const nextDeliveryDay = (day) => {
     let deliveryDate = '0000-01-01';
 
     var today = new Date();
     var dayIncr = 0;
     while (dayIncr < 7) {
       const fullDay = days[today.getDay()];
-      if (fullDay === selectedDay) {
+      if (fullDay === day) {
         deliveryDate = formatDate(today);
         break;
       }
@@ -328,36 +361,63 @@ export default function FarmerReport({
 
   const handleSendReport = (event) => {
     const { name } = event.currentTarget;
-    let deliveryDate = nextDeliveryDay();
+    let deliveryDate = nextDeliveryDay(selectedDay);
+
+    let string =
+      BASE_URL +
+      'farmer_revenue_inventory_report' +
+      (farmID === 'all' ? '_all' : '') +
+      '/' +
+      name +
+      ',' +
+      deliveryDate;
 
     if (deliveryDate !== '0000-01-01') {
-      axios
-        .post(BASE_URL + 'farmer_revenue_inventory_report/' + name, {
-          uid: farmID,
-          delivery_date: deliveryDate,
-        })
-        .then((res) => {
-          confirm({
-            variant: 'info',
-            catchOnCancel: true,
-            title: 'Email Sent',
-            description:
-              'Your ' +
-              name +
-              ' report has been successfully sent for ' +
-              deliveryDate,
+      if (farmID === 'all') {
+        window.location =
+          BASE_URL +
+          'farmer_revenue_inventory_report' +
+          (farmID === 'all' ? '_all' : '') +
+          '/' +
+          name +
+          ',' +
+          deliveryDate;
+      } else {
+        axios
+          .post(
+            BASE_URL +
+              'farmer_revenue_inventory_report' +
+              (farmID === 'all' ? '_all' : '') +
+              '/' +
+              name,
+            {
+              uid: farmID,
+              delivery_date: deliveryDate,
+            }
+          )
+          .then((res) => {
+            confirm({
+              variant: 'info',
+              catchOnCancel: true,
+              title: 'Email Sent',
+              description:
+                'Your ' +
+                name +
+                ' report has been successfully sent for ' +
+                deliveryDate,
+            });
+          })
+          .catch((err) => {
+            console.log('Error: ', err);
+            confirm({
+              variant: 'info',
+              catchOnCancel: true,
+              title: 'Error!',
+              description:
+                'There was an error in sending your ' + name + ' report',
+            });
           });
-        })
-        .catch((err) => {
-          console.log('Error: ', err);
-          confirm({
-            variant: 'info',
-            catchOnCancel: true,
-            title: 'Error!',
-            description:
-              'There was an error in sending your ' + name + ' report',
-          });
-        });
+      }
     } else {
       confirm({
         variant: 'info',
@@ -385,114 +445,176 @@ export default function FarmerReport({
       <div style={labelStyle}>
         <h2>Open Orders</h2>
       </div>
-      <div className={classes.reportButtonsSection}>
-        <a
-          href={
-            (farmID === 'all'
-              ? 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/order_all,'
-              : 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/order,') +
-            farmID +
-            ',' +
-            nextDeliveryDay()
-          }
-          target="_blank"
-          rel="noreferrer"
-          className={classes.reportLink}
-        >
-          <Button variant="contained" className={classes.reportButtons}>
-            Order Details
-          </Button>
-        </a>
-        <a
-          href={
-            (farmID === 'all'
-              ? 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/customer_all,'
-              : 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/customer,') +
-            farmID +
-            ',' +
-            nextDeliveryDay()
-          }
-          target="_blank"
-          rel="noreferrer"
-          className={classes.reportLink}
-        >
-          <Button variant="contained" className={classes.reportButtons}>
-            Customer Details
-          </Button>
-        </a>
-        <a
-          href={
-            (farmID === 'all'
-              ? 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/pivot_all,'
-              : 'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/report_order_customer_pivot_detail/pivot,') +
-            farmID +
-            ',' +
-            nextDeliveryDay()
-          }
-          target="_blank"
-          rel="noreferrer"
-          className={classes.reportLink}
-        >
-          <Button variant="contained" className={classes.reportButtons}>
-            Pivot Table
-          </Button>
-        </a>
-      </div>
-      <Box display="flex" justifyContent="flex-end">
-        {deliveryDays.length > 0 && (
-          <Box mt={-2}>
-            <FormHelperText>Delivery Day:</FormHelperText>
-            <Select
-              labelId="demo-controlled-open-select-label"
-              id="demo-controlled-open-select"
-              name="business"
-              value={selectedDay}
-              onChange={handleDaySelect}
+      <Box display="flex" flexWrap="wrap">
+        {/* Will Hide buttons */}
+        <Box hidden={auth.Authlevel !== 2}>
+          {/* Will Show buttons */}
+          {/* <Box> */}
+          <a
+            href={
+              BASE_URL +
+              'report_order_customer_pivot_detail/order' +
+              (farmID === 'all' ? '_all' : '') +
+              ',' +
+              farmID +
+              ',' +
+              nextDeliveryDay(selectedDay)
+            }
+            target="_blank"
+            rel="noreferrer"
+            className={classes.reportLink}
+          >
+            <Button
+              size="small"
+              variant="contained"
+              className={classes.reportButtons}
             >
-              {deliveryDays.map((day) => {
-                return (
-                  <MenuItem key={day} value={day}>
-                    {day}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </Box>
-        )}
-        <div className={classes.reportButtonsRightSection}>
-          <Button
-            variant="contained"
-            name="summary"
-            className={classes.reportButtons}
-            onClick={handleSendReport}
+              Order Details
+            </Button>
+          </a>
+          <a
+            href={
+              BASE_URL +
+              'report_order_customer_pivot_detail/customer' +
+              (farmID === 'all' ? '_all' : '') +
+              ',' +
+              farmID +
+              ',' +
+              nextDeliveryDay(selectedDay)
+            }
+            target="_blank"
+            rel="noreferrer"
+            className={classes.reportLink}
           >
-            Send Summary Report
-          </Button>
-          <Button
-            variant="contained"
-            name="packing"
-            className={classes.reportButtons}
-            onClick={handleSendReport}
+            <Button
+              size="small"
+              variant="contained"
+              className={classes.reportButtons}
+            >
+              Customer Details
+            </Button>
+          </a>
+          <a
+            href={
+              BASE_URL +
+              'report_order_customer_pivot_detail/pivot' +
+              (farmID === 'all' ? '_all' : '') +
+              ',' +
+              farmID +
+              ',' +
+              nextDeliveryDay(selectedDay)
+            }
+            target="_blank"
+            rel="noreferrer"
+            className={classes.reportLink}
           >
-            Send Packing Report
-          </Button>
+            <Button
+              size="small"
+              variant="contained"
+              className={classes.reportButtons}
+            >
+              Pivot Table
+            </Button>
+          </a>
+          <a
+            href={
+              BASE_URL +
+              'drivers_report_check_sort/' +
+              nextDeliveryDay(selectedDay) +
+              ',checking'
+            }
+            target="_blank"
+            rel="noreferrer"
+            className={classes.reportLink}
+          >
+            <Button
+              size="small"
+              variant="contained"
+              className={classes.reportButtons}
+            >
+              Driver Check
+            </Button>
+          </a>
+
+          <a
+            href={
+              BASE_URL +
+              'drivers_report_check_sort/' +
+              nextDeliveryDay(selectedDay) +
+              ',sorting'
+            }
+            target="_blank"
+            rel="noreferrer"
+            className={classes.reportLink}
+          >
+            <Button
+              size="small"
+              variant="contained"
+              className={classes.reportButtons}
+            >
+              Driver Sort
+            </Button>
+          </a>
+        </Box>
+        <Box flexGrow={1} />
+        <Box display="flex" justifyContent="flex-end">
+          {deliveryDays.length > 0 && (
+            <Box mt={-2}>
+              <FormHelperText>Delivery Day:</FormHelperText>
+              <Select
+                labelId="demo-controlled-open-select-label"
+                id="demo-controlled-open-select"
+                name="business"
+                value={selectedDay}
+                onChange={handleDaySelect}
+              >
+                {deliveryDays.map((day) => {
+                  return (
+                    <MenuItem key={day} value={day}>
+                      {day + ' ' + weekdayDatesDict[day]}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </Box>
+          )}
+          <div className={classes.reportButtonsRightSection}>
+            <Button
+              variant="contained"
+              size="small"
+              name="summary"
+              className={classes.reportButtons}
+              onClick={handleSendReport}
+            >
+              Send Summary Report
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              name="packing"
+              className={classes.reportButtons}
+              onClick={handleSendReport}
+            >
+              Send Packing Report
+            </Button>
+          </div>
+        </Box>
+        <OrdersTable
+          orders={orders}
+          farmID={farmID}
+          type="FALSE"
+          functions={buttonFunctions}
+        />
+        <div style={labelStyle}>
+          <h2>Delivered Orders</h2>
         </div>
+        <OrdersTable
+          orders={orders}
+          farmID={farmID}
+          type="TRUE"
+          functions={buttonFunctions}
+        />
       </Box>
-      <OrdersTable
-        orders={orders}
-        farmID={farmID}
-        type="FALSE"
-        functions={buttonFunctions}
-      />
-      <div style={labelStyle}>
-        <h2>Delivered Orders</h2>
-      </div>
-      <OrdersTable
-        orders={orders}
-        farmID={farmID}
-        type="TRUE"
-        functions={buttonFunctions}
-      />
     </div>
   );
 }
@@ -505,16 +627,17 @@ function OrdersTable({ orders, type, farmID, ...props }) {
       <Table aria-label="simple table">
         <TableHead>
           <TableRow>
+            <TableCell>Order Platform</TableCell>
             <TableCell>Purchase Date</TableCell>
             <TableCell>Delivery Date</TableCell>
             <TableCell>Name</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>Address</TableCell>
-            <TableCell>Phone</TableCell>
-            {auth.authLevel === 2 && <TableCell>Item Total ($)</TableCell>}
+            {auth.authLevel === 2 && <TableCell>Email</TableCell>}
+            {auth.authLevel === 2 && <TableCell>Address</TableCell>}
+            {auth.authLevel === 2 && <TableCell>Phone</TableCell>}
             <TableCell>Business Total ($)</TableCell>
+            {auth.authLevel === 2 && <TableCell>Item Total ($)</TableCell>}
+            {auth.authLevel === 2 && <TableCell>Amount Paid</TableCell>}
             <TableCell>Items</TableCell>
-            <TableCell>Payment Completed?</TableCell>
             <TableCell />
           </TableRow>
         </TableHead>
@@ -542,6 +665,26 @@ function OrdersTable({ orders, type, farmID, ...props }) {
       </Table>
     </TableContainer>
   );
+}
+
+function formatAmPm(date) {
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  var ampm = hours >= 12 ? 'pm' : 'am';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+  const dateComps = date.toString().split(' ');
+  var strTime = hours + ':' + minutes + ' ' + ampm;
+  var strDate =
+    dateComps[0] +
+    ', ' +
+    dateComps[1] +
+    ' ' +
+    dateComps[2] +
+    ', ' +
+    dateComps[3];
+  return strDate + ' at ' + strTime;
 }
 
 function OrderRow({ order, type, farmID, ...props }) {
@@ -587,25 +730,33 @@ function OrderRow({ order, type, farmID, ...props }) {
     return boolToString.charAt(0).toUpperCase() + boolToString.slice(1);
   })();
 
+  const purchaseDate = new Date(order.purchase_date + ' UTC');
+
   return (
     <React.Fragment>
       <TableRow>
+        <TableCell>{order.pur_business_uid}</TableCell>
         <TableCell component="th" scope="row">
-          {order.purchase_date}
+          {formatAmPm(purchaseDate)}
         </TableCell>
         <TableCell component="th" scope="row">
-          {order.start_delivery_date}
+          {formatAmPm(new Date(order.start_delivery_date))}
         </TableCell>
         <TableCell>
           {order.delivery_first_name + ' ' + order.delivery_last_name}
         </TableCell>
-        <TableCell>{order.delivery_email}</TableCell>
-        <TableCell>{address}</TableCell>
-        <TableCell>{order.delivery_phone_num}</TableCell>
-        {auth.authLevel === 2 && <TableCell>{'$' + itemTotal}</TableCell>}
+        {auth.authLevel === 2 && <TableCell>{order.delivery_email}</TableCell>}
+        {auth.authLevel === 2 && <TableCell>{address}</TableCell>}
+        {auth.authLevel === 2 && (
+          <TableCell>{order.delivery_phone_num}</TableCell>
+        )}
         <TableCell>{'$' + businessTotal}</TableCell>
+        {auth.authLevel === 2 && <TableCell>{'$' + itemTotal}</TableCell>}
+        {auth.authLevel === 2 && (
+          <TableCell>{'$' + order.amount_paid}</TableCell>
+        )}
         <TableCell>{count}</TableCell>
-        <TableCell>{hasPaid}</TableCell>
+
         <TableCell>
           <Button
             size="small"
@@ -631,23 +782,31 @@ function OrderRow({ order, type, farmID, ...props }) {
             {type === 'FALSE' ? 'deliver' : 'cancel'}
           </Button>
           <br />
-          <Button
-            size="small"
-            variant="contained" // value="copy"
-            style={{ ...tinyButtonStyle, backgroundColor: '#17a2b8' }}
-            onClick={(e) => props.functions.handleCopy(e, order, props.index)}
-          >
-            copy
-          </Button>
-          <br />
-          <Button
-            size="small"
-            variant="contained" // value="delete"
-            style={{ ...tinyButtonStyle, backgroundColor: '#dc3545' }}
-            onClick={(e) => props.functions.handleDelete(e, order, props.index)}
-          >
-            delete
-          </Button>
+          {farmID === 'all' && (
+            <>
+              <Button
+                size="small"
+                variant="contained" // value="copy"
+                style={{ ...tinyButtonStyle, backgroundColor: '#17a2b8' }}
+                onClick={(e) =>
+                  props.functions.handleCopy(e, order, props.index)
+                }
+              >
+                copy
+              </Button>
+              <br />
+              <Button
+                size="small"
+                variant="contained" // value="delete"
+                style={{ ...tinyButtonStyle, backgroundColor: '#dc3545' }}
+                onClick={(e) =>
+                  props.functions.handleDelete(e, order, props.index)
+                }
+              >
+                delete
+              </Button>
+            </>
+          )}
           <br />
         </TableCell>
       </TableRow>
@@ -671,28 +830,52 @@ function OrderRow({ order, type, farmID, ...props }) {
 
 function OrderItem({ order, item, deleteItem, ...props }) {
   const itemPrice = parseFloat(item.price);
+  const businessPrice = parseFloat(item.business_price);
+  const auth = useContext(AuthContext);
+  const { farmDict } = useContext(AdminFarmContext);
 
   return (
     // {...(props.hidden ? { display: "none" } : {})}
     <TableRow>
-      <TableCell colSpan={9}>
+      <TableCell colSpan={100}>
         <div style={{ border: '1px solid grey', padding: '0 10px' }}>
           <Box display="flex">
-            <img style={{ width: '115px', height: '115px' }} src={item.img} />
+            <img
+              alt="item"
+              style={{
+                marginTop: 'auto',
+                marginBottom: 'auto',
+                marginRight: '10px',
+                width: '130px',
+                height: '130px',
+              }}
+              src={item.img}
+            />
             <Box>
               <h3>
                 {item.name}{' '}
                 {item.unit !== undefined && item.unit !== ''
-                  ? '($' +
-                    itemPrice.toFixed(2) +
-                    ' ' +
+                  ? '- $' +
+                    businessPrice.toFixed(2) +
+                    (auth.authLevel === 2
+                      ? '(b) / $' + itemPrice.toFixed(2) + '(i) '
+                      : ' ') +
                     (item.unit === 'each' ? '' : '/ ') +
-                    item.unit +
-                    ')'
+                    item.unit
                   : ''}
               </h3>
-              <p>Quantity: {item.qty}</p>
-              <p>Revenue: ${(itemPrice * item.qty).toFixed(2)}</p>
+              {auth.authLevel === 2 && (
+                <Box>
+                  Business: {farmDict[item.itm_business_uid] || '(removed)'}
+                </Box>
+              )}
+              <Box>Quantity: {item.qty}</Box>
+              <Box>
+                Business Revenue: ${(businessPrice * item.qty).toFixed(2)}
+              </Box>
+              {auth.authLevel === 2 && (
+                <Box>Item Revenue: ${(itemPrice * item.qty).toFixed(2)}</Box>
+              )}
             </Box>
             <Box flexGrow={1} />
             <Button

@@ -55,14 +55,15 @@ export default function CheckoutRight() {
 
   useEffect(() => {
     setRightTabChosen(0);
-  }, [store.storePage]);
+  }, [store.cartClicked]);
 
   useEffect(() => {
     if (
       location.state !== undefined &&
       location.state.rightTabChosen !== undefined
-    )
+    ) {
       setRightTabChosen(location.state.rightTabChosen);
+    }
   }, [location]);
 
   const handleChange = (event, newValue) => {
@@ -120,12 +121,8 @@ export default function CheckoutRight() {
           <CheckoutTab />
         </Box>
         {/* rightTabChosen is 2 because the flex spacing takes up values 1 and 3 */}
-        <Box hidden={rightTabChosen !== 2}>
-          <HistoryTab />
-        </Box>
-        <Box hidden={rightTabChosen !== 4}>
-          <RefundTab />
-        </Box>
+        {rightTabChosen === 2 && <HistoryTab />}
+        {rightTabChosen === 4 && <RefundTab />}
       </Paper>
     </Paper>
   );

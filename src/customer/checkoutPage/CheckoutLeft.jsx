@@ -85,9 +85,7 @@ export default function CheckoutLeft({ ...props }) {
           overflow: 'auto',
         }}
       >
-        <Box hidden={leftTabChosen !== 0}>
-          <DeliveryInfo />
-        </Box>
+        {leftTabChosen === 0 && <DeliveryInfo />}
         {/* value is 2 because the flex spacing takes up values 1 and 3 */}
         <Box hidden={leftTabChosen !== 2}>
           <RewardsTab />

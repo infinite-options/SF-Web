@@ -55,9 +55,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function AdminNavBar({ tab, setTab, ...props }) {
-  const { farmID, farmList, setFarmList, handleChangeFarm } = useContext(
-    AdminFarmContext
-  );
+  const {
+    farmID,
+    farmList,
+    setFarmList,
+    handleChangeFarm,
+    farmDict,
+  } = useContext(AdminFarmContext);
 
   const [defaultFarm, setDefaultFarm] = useState(
     farmList.includes(localStorage.getItem('farmID'))
@@ -174,11 +178,20 @@ function AdminNavBar({ tab, setTab, ...props }) {
             </Box>
             {Auth.authLevel >= 1 && (
               <React.Fragment>
+                {Auth.authLevel === 1 && (
+                  <Box fontWeight="bold" mt={-0.5}>
+                    {farmDict[farmID]}
+                  </Box>
+                )}
                 {businessList()}
                 <Button
                   size={'small'}
                   className={classes.button}
                   onClick={() => setTab(0)}
+                  style={{
+                    backgroundColor:
+                      tab === 0 ? appColors.componentBg : 'white',
+                  }}
                 >
                   Home
                 </Button>
@@ -186,6 +199,10 @@ function AdminNavBar({ tab, setTab, ...props }) {
                   size={'small'}
                   className={classes.button}
                   onClick={() => setTab(1)}
+                  style={{
+                    backgroundColor:
+                      tab === 1 ? appColors.componentBg : 'white',
+                  }}
                 >
                   Reports
                 </Button>
@@ -193,6 +210,10 @@ function AdminNavBar({ tab, setTab, ...props }) {
                   size={'small'}
                   className={classes.button}
                   onClick={() => setTab(2)}
+                  style={{
+                    backgroundColor:
+                      tab === 2 ? appColors.componentBg : 'white',
+                  }}
                 >
                   Settings
                 </Button>
@@ -204,7 +225,22 @@ function AdminNavBar({ tab, setTab, ...props }) {
                   <Button
                     size={'small'}
                     className={classes.button}
+                    onClick={() => setTab(7)}
+                    style={{
+                      backgroundColor:
+                        tab === 7 ? appColors.componentBg : 'white',
+                    }}
+                  >
+                    Zones
+                  </Button>
+                  <Button
+                    size={'small'}
+                    className={classes.button}
                     onClick={() => setTab(5)}
+                    style={{
+                      backgroundColor:
+                        tab === 5 ? appColors.componentBg : 'white',
+                    }}
                   >
                     Messages
                   </Button>
@@ -212,6 +248,10 @@ function AdminNavBar({ tab, setTab, ...props }) {
                     size={'small'}
                     className={classes.button}
                     onClick={() => setTab(3)}
+                    style={{
+                      backgroundColor:
+                        tab === 3 ? appColors.componentBg : 'white',
+                    }}
                   >
                     Analytics
                   </Button>
@@ -219,6 +259,10 @@ function AdminNavBar({ tab, setTab, ...props }) {
                     size={'small'}
                     className={classes.button}
                     onClick={() => setTab(4)}
+                    style={{
+                      backgroundColor:
+                        tab === 4 ? appColors.componentBg : 'white',
+                    }}
                   >
                     Revenue
                   </Button>

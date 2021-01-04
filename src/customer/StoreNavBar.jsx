@@ -40,20 +40,13 @@ export default function StoreNavBar(props) {
   }
   const handleCartClick = () => {
     if (props.storePage === 0) props.setStorePage(1);
+    store.setCartClicked((prev) => {
+      return prev + 1;
+    });
   };
 
   const Logoclick = () => {
     window.location.href = `${window.location.origin.toString()}/`;
-  };
-
-  const loginClicked = () => {
-    props.setIsSignUpShown(false);
-    props.setIsLoginShown(!props.isLoginShown);
-  };
-
-  const signUpClicked = () => {
-    props.setIsLoginShown(false);
-    props.setIsSignUpShown(!props.isSignUpShown);
   };
 
   return (
@@ -84,27 +77,6 @@ export default function StoreNavBar(props) {
           </Box>
           <MenuNavButton />
           <Box flexGrow={1}></Box>
-          {/* <Box hidden={useContext(AuthContext).isAuth} display="flex">
-            <Button
-              className={classes.authButton}
-              variant="contained"
-              size="small"
-              color="primary"
-              onClick={signUpClicked}
-            >
-              Sign Up
-            </Button>
-            <Box ml={1} />
-            <Button
-              className={classes.authButton}
-              variant="contained"
-              size="small"
-              color="secondary"
-              onClick={loginClicked}
-            >
-              Login
-            </Button>
-          </Box> */}
           <IconButton edge="end" className="link">
             <StorefrontIcon
               fontSize="large"

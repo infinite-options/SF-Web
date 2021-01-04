@@ -1,4 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
+import LoadingOverlay from 'react-loading-overlay';
+
 import { Box } from '@material-ui/core';
 import CheckoutLeft from './CheckoutLeft';
 import CheckoutRight from './CheckoutRight';
@@ -33,7 +35,12 @@ export default function CheckoutPage() {
     process.env.NODE_ENV === 'production'
   );
   const [paymentProcessing, setPaymentProcessing] = useState(false);
+  const [chosenCoupon, setChosenCoupon] = useState('');
   const [leftTabChosen, setLeftTabChosen] = useState(4);
+
+  useEffect(() => {
+    console.log(chosenCoupon);
+  }, [chosenCoupon]);
 
   const [guestInfo, setGuestInfo] = useState({
     firstName: '',
@@ -57,9 +64,17 @@ export default function CheckoutPage() {
           setGuestInfo,
           purchaseMade,
           setPurchaseMade,
+          chosenCoupon,
+          setChosenCoupon,
         }}
       >
         <Elements stripe={stripePromise}>
+          <LoadingOverlay
+            active={paymentProcessing}
+            spinner
+            text="Processing Payment"
+          />
+
           <Box display="flex">
             <Box width="45%">
               <CheckoutLeft />

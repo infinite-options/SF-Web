@@ -11,6 +11,8 @@ import { AuthContext } from '../auth/AuthContext';
 //get selected farm from AdmiNavBar and use it in Farmer
 //to pass data easily, wrap AdminNavBar and Farmer in a Provider
 
+//TODO: order purchase amounts by business total, Item total, amount paid
+//TODO: Add date to delivery day
 function Admin() {
   const Auth = useContext(AuthContext);
   const [farmID, setFarmID] = useState('');
@@ -60,29 +62,6 @@ function Admin() {
         });
     } else {
       axios
-        .get(process.env.REACT_APP_SERVER_BASE_URI + 'all_businesses')
-        .then((res) => {
-          setFarmList(
-            res.data.result.sort(function (a, b) {
-              var textA = a.item_name.toUpperCase();
-              var textB = b.item_name.toUpperCase();
-              return textA < textB ? -1 : textA > textB ? 1 : 0;
-            })
-          );
-
-          const _farmDict = {};
-          for (const farm of res.data.result) {
-            _farmDict[farm.business_uid] = farm.business_name;
-          }
-          setFarmDict(_farmDict);
-        })
-        .catch((err) => {
-          if (err.response) {
-            console.log(err.response);
-          }
-          console.log(err);
-        });
-      axios
         .get(
           process.env.REACT_APP_SERVER_BASE_URI +
             'Profile/' +
@@ -90,6 +69,22 @@ function Admin() {
         )
         .then((response) => {
           let customerInfo = response.data.result[0];
+          setFarmID(customerInfo.role);
+          axios
+            .get(process.env.REACT_APP_SERVER_BASE_URI + 'all_businesses')
+            .then((res) => {
+              const _farmDict = {};
+              for (const farm of res.data.result) {
+                _farmDict[farm.business_uid] = farm.business_name;
+              }
+              setFarmDict(_farmDict);
+            })
+            .catch((err) => {
+              if (err.response) {
+                console.log(err.response);
+              }
+              console.log(err);
+            });
         })
         .catch((err) => {
           console.log(err);

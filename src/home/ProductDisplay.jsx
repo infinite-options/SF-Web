@@ -54,7 +54,7 @@ const ProductDisplay = () => {
     getItems();
   }, []);
 
-  const getItems = async () => {
+  const getItems = () => {
     BusiMethods.getItems(
       ['fruit', 'desert', 'vegetable', 'other'],
       ['200-000016', '200-000017']

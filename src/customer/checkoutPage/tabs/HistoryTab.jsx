@@ -45,7 +45,7 @@ const HistoryTab = () => {
   const [historyList, setHistoryList] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [message, setMessage] = useState(true);
-  async function loadHistory(setHistoryList, setHistoryLoading) {
+  function loadHistory(setHistoryList, setHistoryLoading) {
     axios
       .get(
         process.env.REACT_APP_SERVER_BASE_URI +

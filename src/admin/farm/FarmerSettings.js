@@ -121,14 +121,11 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
   const [settings, setSettings] = useState({});
   const [error, setError] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  // var businessID = "200-000004";
-  //use this state below to set up information of middle collumn
+
+  //use this state below to set up information of middle column
   const [businessAndFarmDetail, setBusFarm] = useState({});
   const [passwordHere, setPass] = useState('');
-  // const [errorStatus,setErrorPass]=useState(false);
-  // const [userChangePass,setNewChangePass]= usestate("");
-  // const [errorStatus,setErrorPass]=useState(false);
-  //this one is state of confirmPassword
+
   const [confirmPass, setConfirmPass] = useState('');
   const [saltPack, setSaltPack] = useState({});
   // const [image,setImage]=useState({});
@@ -150,6 +147,10 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
   const [deliveryTimeObj, setDeliveryTimeObj] = useState(
     parseHours(deliveryTime, setDeliveryTime)
   );
+
+  useEffect(() => {
+    console.log(imageUpload);
+  }, [imageUpload]);
 
   useEffect(() => {
     setRegularHoursObj(parseHours(regularHours, setRegularHours));
@@ -847,7 +848,6 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
             </div>
             <div>
               <Button
-                onChange={handleImgChange}
                 variant="outlined"
                 size="small"
                 color="primary"
@@ -869,9 +869,10 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
               </Button>
             </div>
 
-            <div>
+            <Box mt={2}>
               <div>Email Address</div>
               <TextField
+                disabled
                 size="small"
                 margin="dense"
                 id="standard-read-only-input"
@@ -885,8 +886,8 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                   readOnly: true,
                 }}
               />
-              <div>New Password</div>
-              <TextField
+              {/* <div>New Password</div> */}
+              {/* <TextField
                 // error={errorStatus}
                 size="small"
                 margin="dense"
@@ -911,8 +912,8 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                 style={{ width: '300px' }}
                 onChange={handleChange}
                 // helperText={errorStatus?"Password not match":""}
-              />
-            </div>
+              /> */}
+            </Box>
           </Box>
         </div>
       </Box>

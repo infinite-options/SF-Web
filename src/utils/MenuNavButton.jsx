@@ -104,6 +104,7 @@ function MenuListComposition(props) {
       default:
         break;
     }
+    setOpen(false);
   };
   const handleClose = (event) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {

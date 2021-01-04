@@ -110,8 +110,6 @@ function App() {
           switch (newAccountType) {
             case 'customer':
               return 0;
-            case 'farmer':
-              return 1;
             case 'admin':
               return 2;
             default:

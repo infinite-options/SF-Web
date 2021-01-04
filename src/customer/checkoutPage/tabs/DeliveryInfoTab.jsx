@@ -402,51 +402,54 @@ export default function DeliveryInfoTab() {
               : '') + 'Email',
           disabled: store.profile.socialMedia !== 'NULL',
         })}
-        <Box my={1} hidden={!isPassFieldShown}>
-          {PlainTextField({
-            value: password,
-            error: passwordError,
-            name: 'password',
-            label: 'Password',
-            type: 'password',
-            onChange: (e) => {
-              setPassword(e.target.value);
-              setPasswordError('');
-              setConfirmPasswordError('');
-            },
-          })}
-          {PlainTextField({
-            value: confirmPassword,
-            error: confirmPasswordError,
-            name: 'confirm password',
-            label: 'Confirm Password',
-            type: 'password',
-            onChange: (e) => {
-              setConfirmPassword(e.target.value);
-              setPasswordError('');
-              setConfirmPasswordError('');
-            },
-          })}
-        </Box>
-        <FormHelperText error={true} style={{ textAlign: 'center' }}>
-          {passwordErrorMessage}
-        </FormHelperText>
-        <Box my={1}>
-          <Button
-            className={classes.button}
-            variant="outlined"
-            size="small"
-            color="paragraphText"
-            onClick={onPasswordClick}
-          >
-            {isPassFieldShown
-              ? password.length === 0
-                ? 'Cancel'
-                : 'Save Password'
-              : 'Change Password'}
-          </Button>
-        </Box>
-
+        {store.profile.socialMedia === 'NULL' && (
+          <>
+            <Box my={1} hidden={!isPassFieldShown}>
+              {PlainTextField({
+                value: password,
+                error: passwordError,
+                name: 'password',
+                label: 'Password',
+                type: 'password',
+                onChange: (e) => {
+                  setPassword(e.target.value);
+                  setPasswordError('');
+                  setConfirmPasswordError('');
+                },
+              })}
+              {PlainTextField({
+                value: confirmPassword,
+                error: confirmPasswordError,
+                name: 'confirm password',
+                label: 'Confirm Password',
+                type: 'password',
+                onChange: (e) => {
+                  setConfirmPassword(e.target.value);
+                  setPasswordError('');
+                  setConfirmPasswordError('');
+                },
+              })}
+            </Box>
+            <FormHelperText error={true} style={{ textAlign: 'center' }}>
+              {passwordErrorMessage}
+            </FormHelperText>
+            <Box my={1}>
+              <Button
+                className={classes.button}
+                variant="outlined"
+                size="small"
+                color="paragraphText"
+                onClick={onPasswordClick}
+              >
+                {isPassFieldShown
+                  ? password.length === 0
+                    ? 'Cancel'
+                    : 'Save Password'
+                  : 'Change Password'}
+              </Button>
+            </Box>
+          </>
+        )}
         {/* <Box
           display="flex"
           my={3}
