@@ -94,6 +94,7 @@ export default function Coupons(props) {
         props.subtotal === 0 ? 0 : props.originalDeliveryFee
       );
       props.setPromoApplied(0);
+      checkout.setChosenCoupon('');
     }
 
     setAvaiCouponData(availableCoupons);
@@ -161,6 +162,12 @@ export default function Coupons(props) {
           availableCoupons[maxIndex].status = 'selected';
           ApplySaving(availableCoupons[maxIndex]);
           ArrayMove(availableCoupons, maxIndex, 0);
+        } else {
+          props.setDeliveryFee(
+            props.subtotal === 0 ? 0 : props.originalDeliveryFee
+          );
+          props.setPromoApplied(0);
+          checkout.setChosenCoupon('');
         }
 
         setAvaiCouponData(availableCoupons);
