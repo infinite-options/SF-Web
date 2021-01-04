@@ -151,13 +151,10 @@ const Landing = ({ ...props }) => {
       {/* END: Login/SignUp Modal */}
       {/* START: landing Logo and Guest Login */}
       <Box 
-      // display="flex"
+      className="hero-container"
       >
         {/* START: Landing Page Logo */}
-        <Box 
-        // display="flex" 
-        // width="50%"
-         justifyContent="center">
+        <Box>
           <img
             alt="logo.png"
             height="300px"
@@ -167,7 +164,9 @@ const Landing = ({ ...props }) => {
         </Box>
         {/* END: Landing Page Logo */}
         {/* START: Local Produce Search */}
-        <DeliveryLocationSearch />
+        <Box className="hero-right">
+          <DeliveryLocationSearch />
+        </Box>
         {/* END: Local Produce Search */}
       </Box>
 
@@ -180,8 +179,11 @@ const Landing = ({ ...props }) => {
       {/* START: Info Section */}
       <Box className={classes.title}>What We Do</Box>
       <Box mx="auto" className={classes.bar} />
-      <Box display="flex">
-        <Box className={classes.infoSection}>
+      <Box 
+      // display="flex"
+        className="info-container"
+      >
+        <Box className={classes.infoSection} id="mobileInfoSection">
           <Box className={classes.infoImg}>
             <img src="./landing/vegetables_info.png" alt="vegetables info" />
           </Box>
@@ -191,7 +193,7 @@ const Landing = ({ ...props }) => {
             doorstep. It's a farmer's market experience at your fingertips
           </div>
         </Box>
-        <Box className={classes.infoSection}>
+        <Box className={classes.infoSection} id="mobileInfoSection">
           <Box className={classes.infoImg}>
             <img src="./landing/farmer_info.png" alt="farmer info" />
           </Box>
@@ -202,7 +204,7 @@ const Landing = ({ ...props }) => {
             safest way possible.
           </div>
         </Box>
-        <Box className={classes.infoSection}>
+        <Box className={classes.infoSection} id="mobileInfoSection">
           <Box className={classes.infoImg}>
             <img src="./landing/student_info.png" alt="student info" />
           </Box>
