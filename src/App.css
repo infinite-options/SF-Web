@@ -37,7 +37,30 @@
   }
 }
 
-/* landing page responsive 3 cols */
+/* ----- responsive landing ----- */
+
+.hero-container {
+  display:flex;
+  width: 50%;
+  margin: 0 auto;
+}
+
+.hero-right {
+  padding: 80px 0 0 20px;
+}
+
+@media only screen and (max-width: 768px) {
+  .hero-container {
+    justify-content: center;
+    display:block;
+    width: 100%;
+  }
+  
+  .hero-right {
+    width: auto;
+    padding: 0;
+  }
+}
 
 .info-container {
   display:flex;
@@ -51,5 +74,33 @@
 
   .info-container {
     display:block;
+  }
+} 
+
+/* ----- responsive cart ----- */
+
+.checkout-container {
+  display:flex;
+  flex-direction: row-reverse;
+}
+
+.checkout-left {
+  width: 45%;
+  float:left;
+}
+.checkout-right {
+  width: 55%;
+}
+
+@media only screen and (max-width: 768px) {
+  .checkout-container {
+    display:block;
+  }
+  
+  .checkout-left, .checkout-right {
+    width: 100%;
+  }
+  .checkout-right {
+    width: 100%;
   }
 } 

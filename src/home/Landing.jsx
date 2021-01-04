@@ -151,13 +151,10 @@ const Landing = ({ ...props }) => {
       {/* END: Login/SignUp Modal */}
       {/* START: landing Logo and Guest Login */}
       <Box 
-      // display="flex"
+      className="hero-container"
       >
         {/* START: Landing Page Logo */}
-        <Box 
-        // display="flex" 
-        // width="50%"
-         justifyContent="center">
+        <Box>
           <img
             alt="logo.png"
             height="300px"
@@ -167,7 +164,9 @@ const Landing = ({ ...props }) => {
         </Box>
         {/* END: Landing Page Logo */}
         {/* START: Local Produce Search */}
-        <DeliveryLocationSearch />
+        <Box className="hero-right">
+          <DeliveryLocationSearch />
+        </Box>
         {/* END: Local Produce Search */}
       </Box>
 
