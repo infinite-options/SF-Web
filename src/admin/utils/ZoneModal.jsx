@@ -59,7 +59,7 @@ function NumberFormatCustom(props) {
         onChange({
           target: {
             name: props.name,
-            value: Math.abs(values.value),
+            value: Math.abs(values.value) || '',
           },
         });
       }}
@@ -79,7 +79,7 @@ function NumberFormatCustomPrice(props) {
         onChange({
           target: {
             name: props.name,
-            value: Math.abs(values.value),
+            value: Math.abs(values.value) || '',
           },
         });
       }}
@@ -100,7 +100,7 @@ function PercentFormatCustom(props) {
         onChange({
           target: {
             name: props.name,
-            value: Math.abs(values.value),
+            value: Math.abs(values.value) || '',
           },
         });
       }}
@@ -166,7 +166,7 @@ export default function ZoneModal(props) {
     props.setOpen(false);
   };
 
-  const ZoneCard = (selectedZone) => {
+  const ZoneCard = (selectedZone, setUpdateCount, setOpen) => {
     const classes = useStyles();
     const { farmDict } = useContext(AdminFarmContext);
 
@@ -192,14 +192,14 @@ export default function ZoneModal(props) {
       service: '',
       delivery: '',
       tax: '',
-      BotLeftLong: '',
-      BotLeftLat: '',
+      botLeftLong: '',
+      botLeftLat: '',
       TopLeftLong: '',
       TopLeftLat: '',
       TopRightLong: '',
       TopRightLat: '',
-      BotRightLong: '',
-      BotRightLat: '',
+      botRightLong: '',
+      botRightLat: '',
     });
 
     useEffect(() => {
@@ -213,21 +213,49 @@ export default function ZoneModal(props) {
     useEffect(() => {
       if (selectedZone) {
         setFieldProps({
-          name: selectedZone.zone_name,
-          area: selectedZone.area,
-          zone: selectedZone.zone,
-          service: selectedZone.service_fee,
-          delivery: selectedZone.delivery_fee,
-          tax: selectedZone.tax_rate,
-          BotLeftLong: selectedZone.LB_long,
-          BotLeftLat: selectedZone.LB_lat,
-          TopLeftLong: selectedZone.LT_long,
-          TopLeftLat: selectedZone.LT_lat,
-          TopRightLong: selectedZone.RT_long,
-          TopRightLat: selectedZone.RT_lat,
-          BotRightLong: selectedZone.RB_long,
-          BotRightLat: selectedZone.RB_lat,
+          name: selectedZone.zone_name || '',
+          area: selectedZone.area || '',
+          zone: selectedZone.zone || '',
+          service: selectedZone.service_fee || '',
+          delivery: selectedZone.delivery_fee || '',
+          tax: selectedZone.tax_rate || '',
+          botLeftLong: selectedZone.LB_long || '',
+          botLeftLat: selectedZone.LB_lat || '',
+          TopLeftLong: selectedZone.LT_long || '',
+          TopLeftLat: selectedZone.LT_lat || '',
+          TopRightLong: selectedZone.RT_long || '',
+          TopRightLat: selectedZone.RT_lat || '',
+          botRightLong: selectedZone.RB_long || '',
+          botRightLat: selectedZone.RB_lat || '',
         });
+        setBusinessPicked(JSON.parse(selectedZone.z_businesses || '[]'));
+        setDeliveryDay(selectedZone.z_delivery_day || '');
+        setAcceptDay(selectedZone.z_accepting_day || '');
+        if (selectedZone.z_delivery_time) {
+          const deliveryTimeComps = selectedZone.z_delivery_time.split(' - ');
+          setDeliveryTime({
+            startTime:
+              deliveryTimeComps[0].length === 3
+                ? deliveryTimeComps[0].substring(0, 1)
+                : deliveryTimeComps[0].substring(0, 2),
+            startOption:
+              deliveryTimeComps[0].indexOf('am') !== -1 ? 'am' : 'pm',
+            endTime:
+              deliveryTimeComps[1].length === 3
+                ? deliveryTimeComps[1].substring(0, 1)
+                : deliveryTimeComps[1].substring(0, 2),
+            endOption: deliveryTimeComps[0].indexOf('am') !== -1 ? 'am' : 'pm',
+          });
+        }
+        if (selectedZone.z_accepting_time)
+          setAcceptTime({
+            startTime:
+              selectedZone.z_accepting_time.length === 3
+                ? selectedZone.z_accepting_time.substring(0, 1)
+                : selectedZone.z_accepting_time.substring(0, 2),
+            startOption:
+              selectedZone.z_accepting_time.indexOf('am') !== -1 ? 'am' : 'pm',
+          });
       }
     }, [selectedZone]);
 
@@ -280,14 +308,14 @@ export default function ZoneModal(props) {
         service_fee: fieldProps.service.toString(),
         delivery_fee: fieldProps.delivery.toString(),
         tax_rate: fieldProps.tax.toString(),
-        LB_long: fieldProps.BotLeftLong.toString(),
-        LB_lat: fieldProps.BotLeftLat.toString(),
+        LB_long: fieldProps.botLeftLong.toString(),
+        LB_lat: fieldProps.botLeftLat.toString(),
         LT_long: fieldProps.TopLeftLong.toString(),
         LT_lat: fieldProps.TopLeftLat.toString(),
         RT_long: fieldProps.TopRightLong.toString(),
         RT_lat: fieldProps.TopRightLat.toString(),
-        RB_long: fieldProps.BotRightLong.toString(),
-        RB_lat: fieldProps.BotRightLat.toString(),
+        RB_long: fieldProps.botRightLong.toString(),
+        RB_lat: fieldProps.botRightLat.toString(),
       };
 
       for (const field in zoneData) {
@@ -297,6 +325,10 @@ export default function ZoneModal(props) {
         }
       }
 
+      if (props.option === 'Update') {
+        zoneData.zone_uid = selectedZone.zone_uid;
+      }
+
       axios
         .post(
           process.env.REACT_APP_SERVER_BASE_URI +
@@ -304,7 +336,10 @@ export default function ZoneModal(props) {
             props.option.toLowerCase(),
           zoneData
         )
-        .then(alert('zone successfully created'));
+        .then((res) => {
+          setUpdateCount((prev) => prev + 1);
+          setOpen(false);
+        });
     };
 
     return (
@@ -321,6 +356,7 @@ export default function ZoneModal(props) {
               size="small"
               variant="outlined"
               style={{ width: '235px' }}
+              value={fieldProps.name}
               onChange={handleFieldPropsChange}
             />
             <Box flexGrow={1} />
@@ -330,6 +366,7 @@ export default function ZoneModal(props) {
               size="small"
               variant="outlined"
               style={{ width: '100px' }}
+              value={fieldProps.zone}
               onChange={handleFieldPropsChange}
             />
             <Box flexGrow={1} />
@@ -339,6 +376,7 @@ export default function ZoneModal(props) {
               size="small"
               variant="outlined"
               style={{ width: '100px' }}
+              value={fieldProps.area}
               onChange={handleFieldPropsChange}
             />
           </Box>
@@ -522,6 +560,7 @@ export default function ZoneModal(props) {
               size="small"
               variant="outlined"
               style={{ width: '150px' }}
+              value={fieldProps.service}
               onChange={handleFieldPropsChange}
               InputProps={{
                 inputComponent: NumberFormatCustomPrice,
@@ -534,6 +573,7 @@ export default function ZoneModal(props) {
               size="small"
               variant="outlined"
               style={{ width: '150px' }}
+              value={fieldProps.delivery}
               onChange={handleFieldPropsChange}
               InputProps={{
                 inputComponent: NumberFormatCustomPrice,
@@ -546,13 +586,14 @@ export default function ZoneModal(props) {
               size="small"
               variant="outlined"
               style={{ width: '150px' }}
+              value={fieldProps.tax}
               onChange={handleFieldPropsChange}
               InputProps={{
                 inputComponent: PercentFormatCustom,
               }}
             />
           </Box>
-          {/* Top Right */}
+          {/* TopLeftLat and TopRightLat */}
           <Box display="flex" mt={3}>
             <CssTextField
               name="TopLeftLat"
@@ -560,6 +601,7 @@ export default function ZoneModal(props) {
               size="small"
               variant="outlined"
               style={{ width: '235px' }}
+              value={fieldProps.TopLeftLat}
               onChange={handleFieldPropsChange}
               InputProps={{
                 inputComponent: NumberFormatCustom,
@@ -572,13 +614,14 @@ export default function ZoneModal(props) {
               size="small"
               variant="outlined"
               style={{ width: '235px' }}
+              value={fieldProps.TopRightLat}
               onChange={handleFieldPropsChange}
               InputProps={{
                 inputComponent: NumberFormatCustom,
               }}
             />
           </Box>
-          {/* Top Left */}
+          {/* TopLeftLong and TopRightLong */}
           <Box display="flex" mt={1}>
             <CssTextField
               name="TopLeftLong"
@@ -586,6 +629,7 @@ export default function ZoneModal(props) {
               size="small"
               variant="outlined"
               style={{ width: '235px' }}
+              value={fieldProps.TopLeftLong}
               onChange={handleFieldPropsChange}
               InputProps={{
                 inputComponent: NumberFormatCustom,
@@ -598,6 +642,7 @@ export default function ZoneModal(props) {
               size="small"
               variant="outlined"
               style={{ width: '235px' }}
+              value={fieldProps.TopRightLong}
               onChange={handleFieldPropsChange}
               InputProps={{
                 inputComponent: NumberFormatCustom,
@@ -607,11 +652,12 @@ export default function ZoneModal(props) {
           {/* Bottom Left */}
           <Box display="flex" mt={4}>
             <CssTextField
-              name="BotLeftLat"
+              name="botLeftLat"
               label="Bottom Left Latitude"
               size="small"
               variant="outlined"
               style={{ width: '235px' }}
+              value={fieldProps.botLeftLat}
               onChange={handleFieldPropsChange}
               InputProps={{
                 inputComponent: NumberFormatCustom,
@@ -619,25 +665,27 @@ export default function ZoneModal(props) {
             />
             <Box flexGrow={1} />
             <CssTextField
-              name="BotRightLat"
+              name="botRightLat"
               label="Bottom Right Latitude"
               size="small"
               variant="outlined"
               style={{ width: '235px' }}
+              value={fieldProps.botRightLat}
               onChange={handleFieldPropsChange}
               InputProps={{
                 inputComponent: NumberFormatCustom,
               }}
             />
           </Box>
-          {/* Bottom Right */}
+          {/* botLeftLong and botRightLong */}
           <Box display="flex" mt={1}>
             <CssTextField
-              name="BotLeftLong"
+              name="botLeftLong"
               label="Bottom Left Longitude"
               size="small"
               variant="outlined"
               style={{ width: '235px' }}
+              value={fieldProps.botLeftLong}
               onChange={handleFieldPropsChange}
               InputProps={{
                 inputComponent: NumberFormatCustom,
@@ -645,11 +693,12 @@ export default function ZoneModal(props) {
             />
             <Box flexGrow={1} />
             <CssTextField
-              name="BotRightLong"
+              name="botRightLong"
               label="Bottom Right Longitude"
               size="small"
               variant="outlined"
               style={{ width: '235px' }}
+              value={fieldProps.botRightLong}
               onChange={handleFieldPropsChange}
               InputProps={{
                 inputComponent: NumberFormatCustom,
@@ -675,7 +724,7 @@ export default function ZoneModal(props) {
 
   return (
     <Modal open={props.open} onClose={handleCloseEditModel}>
-      {ZoneCard(props.selectedZone)}
+      {ZoneCard(props.selectedZone, props.setUpdateCount, props.setOpen)}
     </Modal>
   );
 }

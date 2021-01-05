@@ -112,6 +112,7 @@ const columns = [
 
 export default function Zones() {
   const classes = useStyles();
+  const [updateCount, setUpdateCount] = useState(0);
   const [showAddZoneModal, setShowAddZoneModal] = useState(false);
   const [zones, setZones] = useState([]);
   const [selectedZone, setSelectedZone] = useState({});
@@ -134,13 +135,13 @@ export default function Zones() {
             }) || []
           );
           const _zoneDict = {};
-          for (const zone in res.data.result) {
+          for (const zone of res.data.result) {
             _zoneDict[zone.zone_uid] = zone;
           }
           setZonesDict(_zoneDict);
         }
       });
-  }, [farmDict]);
+  }, [farmDict, updateCount]);
 
   return (
     <Box mt={3}>
@@ -153,17 +154,23 @@ export default function Zones() {
           + Create Zone
         </h2>
       </ButtonBase>
-      <ZoneModal
-        open={showAddZoneModal}
-        setOpen={setShowAddZoneModal}
-        option={'Create'}
-      />
-      <ZoneModal
-        open={showUpdateZoneModal}
-        setOpen={setShowUpdateZoneModal}
-        selectedZone={selectedZone}
-        option={'Update'}
-      />
+      {showAddZoneModal && (
+        <ZoneModal
+          open={showAddZoneModal}
+          setOpen={setShowAddZoneModal}
+          option={'Create'}
+          setUpdateCount={setUpdateCount}
+        />
+      )}
+      {showUpdateZoneModal && (
+        <ZoneModal
+          open={showUpdateZoneModal}
+          setOpen={setShowUpdateZoneModal}
+          selectedZone={selectedZone}
+          option={'Update'}
+          setUpdateCount={setUpdateCount}
+        />
+      )}
       <div style={{ height: 600, width: '100%' }}>
         {zones.length > 0 && (
           <DataGrid
