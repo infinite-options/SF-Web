@@ -499,7 +499,7 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
       });
   };
 
-  if (error && !loaded) {
+  if (error && !loaded && farmID !== 'all') {
     return <div>Loading Information...</div>;
   }
 
