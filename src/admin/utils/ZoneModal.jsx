@@ -166,7 +166,7 @@ export default function ZoneModal(props) {
     props.setOpen(false);
   };
 
-  const ZoneCard = (zone) => {
+  const ZoneCard = (selectedZone) => {
     const classes = useStyles();
     const { farmDict } = useContext(AdminFarmContext);
 
@@ -192,14 +192,14 @@ export default function ZoneModal(props) {
       service: '',
       delivery: '',
       tax: '',
-      TopLeftLat: '',
-      TopLeftLong: '',
-      TopRightLat: '',
-      TopRightLong: '',
-      BotLeftLat: '',
       BotLeftLong: '',
-      BotRightLat: '',
+      BotLeftLat: '',
+      TopLeftLong: '',
+      TopLeftLat: '',
+      TopRightLong: '',
+      TopRightLat: '',
       BotRightLong: '',
+      BotRightLat: '',
     });
 
     useEffect(() => {
@@ -209,6 +209,27 @@ export default function ZoneModal(props) {
       }
       setBusinesses(_businesses);
     }, [farmDict]);
+
+    useEffect(() => {
+      if (selectedZone) {
+        setFieldProps({
+          name: selectedZone.zone_name,
+          area: selectedZone.area,
+          zone: selectedZone.zone,
+          service: selectedZone.service_fee,
+          delivery: selectedZone.delivery_fee,
+          tax: selectedZone.tax_rate,
+          BotLeftLong: selectedZone.LB_long,
+          BotLeftLat: selectedZone.LB_lat,
+          TopLeftLong: selectedZone.LT_long,
+          TopLeftLat: selectedZone.LT_lat,
+          TopRightLong: selectedZone.RT_long,
+          TopRightLat: selectedZone.RT_lat,
+          BotRightLong: selectedZone.RB_long,
+          BotRightLat: selectedZone.RB_lat,
+        });
+      }
+    }, [selectedZone]);
 
     const handleChange = (event) => {
       setBusinessPicked(event.target.value);
@@ -654,7 +675,7 @@ export default function ZoneModal(props) {
 
   return (
     <Modal open={props.open} onClose={handleCloseEditModel}>
-      {ZoneCard()}
+      {ZoneCard(props.selectedZone)}
     </Modal>
   );
 }

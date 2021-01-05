@@ -114,13 +114,16 @@ export default function Zones() {
   const classes = useStyles();
   const [showAddZoneModal, setShowAddZoneModal] = useState(false);
   const [zones, setZones] = useState([]);
+  const [selectedZone, setSelectedZone] = useState({});
+  const [showUpdateZoneModal, setShowUpdateZoneModal] = useState(false);
+  const [zonesDict, setZonesDict] = useState({});
   const { farmDict } = useContext(AdminFarmContext);
 
   useEffect(() => {
     axios
       .post(process.env.REACT_APP_SERVER_BASE_URI + 'update_zones/get', {})
       .then((res) => {
-        if (res.data)
+        if (res.data) {
           setZones(
             res.data.result.map((zone) => {
               const businesses = JSON.parse(zone.z_businesses || '[]').map(
@@ -130,6 +133,12 @@ export default function Zones() {
               return { ...zone, id: zone.zone_uid, businesses: businesses };
             }) || []
           );
+          const _zoneDict = {};
+          for (const zone in res.data.result) {
+            _zoneDict[zone.zone_uid] = zone;
+          }
+          setZonesDict(_zoneDict);
+        }
       });
   }, [farmDict]);
 
@@ -149,36 +158,24 @@ export default function Zones() {
         setOpen={setShowAddZoneModal}
         option={'Create'}
       />
+      <ZoneModal
+        open={showUpdateZoneModal}
+        setOpen={setShowUpdateZoneModal}
+        selectedZone={selectedZone}
+        option={'Update'}
+      />
       <div style={{ height: 600, width: '100%' }}>
-        {zones.length > 0 && <DataGrid rows={zones} columns={columns} />}
+        {zones.length > 0 && (
+          <DataGrid
+            rows={zones}
+            columns={columns}
+            onSelectionChange={(newSelection) => {
+              setSelectedZone(zonesDict[newSelection.rowIds[0]]);
+              setShowUpdateZoneModal(true);
+            }}
+          />
+        )}
       </div>
-
-      {zones.map((zone) => (
-        <ZoneCard
-          key={zone.zone_uid || ''}
-          id={zone.zone_uid || ''}
-          businessUid={zone.z_business_uid || ''}
-          businesses={JSON.parse(zone.z_businesses || '[]')}
-          area={zone.area || ''}
-          zone={zone.zone || ''}
-          zoneName={zone.zone_name || ''}
-          deliveryDay={zone.z_delivery_day || ''}
-          deliveryTime={zone.z_delivery_time || ''}
-          acceptDay={zone.z_accepting_day || ''}
-          acceptTime={zone.z_accepting_time || ''}
-          serviceFee={zone.service_fee || ''}
-          deliveryFee={zone.delivery_fee || ''}
-          taxRate={zone.tax_rate || ''}
-          botLeftLong={zone.LB_long || ''}
-          botLeftLat={zone.LB_lat || ''}
-          topLeftLong={zone.LT_long || ''}
-          topLeftLat={zone.LT_lat || ''}
-          topRightLong={zone.RT_long || ''}
-          topRightLat={zone.RT_lat || ''}
-          botRightLong={zone.RB_long || ''}
-          botRightLat={zone.RB_lat || ''}
-        />
-      ))}
     </Box>
   );
 }
