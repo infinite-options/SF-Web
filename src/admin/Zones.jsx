@@ -6,7 +6,6 @@ import makeStyles from '@material-ui/styles/makeStyles';
 import { DataGrid } from '@material-ui/data-grid';
 
 import ZoneModal from './utils/ZoneModal';
-import ZoneCard from './utils/ZoneCard';
 import { AdminFarmContext } from './AdminFarmContext';
 
 const API_URL = process.env.REACT_APP_SERVER_BASE_URI;

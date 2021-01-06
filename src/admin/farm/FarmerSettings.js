@@ -864,7 +864,6 @@ export default function FarmerSettings({ farmID, farmName, ...props }) {
                   onChange={handleImgChange}
                   type="file"
                   accept="image/*"
-                  hidden
                 />
               </Button>
             </div>
