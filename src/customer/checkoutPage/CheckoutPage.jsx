@@ -75,13 +75,23 @@ export default function CheckoutPage() {
             text="Processing Payment"
           />
 
-          <Box display="flex">
-            <Box width="45%">
-              <CheckoutLeft />
-            </Box>
-            <Box width="55%">
+          <Box 
+          // display="flex"
+          className="checkout-container"
+          >
+            
+            <Box 
+            // width="55%"
+            >
               <CheckoutRight />
             </Box>
+            <Box 
+            // width="45%"
+            className="checkout-left"
+            >
+              <CheckoutLeft />
+            </Box>
+            
           </Box>
         </Elements>
       </CheckoutContext.Provider>
