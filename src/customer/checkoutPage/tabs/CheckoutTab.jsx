@@ -252,15 +252,21 @@ export default function CheckoutTab() {
   }
 
   return (
-    <Box display="flex" flexDirection="column" height="90%" px={8}>
+    <Box 
+    className="responsive-checkout-tab"
+    display="flex" flexDirection="column" 
+    // height="90%"
+    // px={8}
+     >
       {/* START: Expected Delivery */}
       <Box hidden={store.expectedDelivery !== ''} m={2} />
       <Box hidden={store.expectedDelivery === ''}>
         <Box
           className={classes.section}
-          height="100px"
+          // height="100px"
           display="flex"
-          lineHeight="100px"
+          // lineHeight="100px"
+          id="responsiveExpectedDelivery"
         >
           <Box color={appColors.secondary}>Expected Delivery</Box>
           <Box flexGrow={1} />
@@ -290,11 +296,11 @@ export default function CheckoutTab() {
 
         {cartItems.length > 0 && (
           <Box className={classes.section} display="flex">
-            <Box width="130px"></Box>
-            <Box width="40%" textAlign="left">
+            {/* <Box width="130px"></Box> */}
+            <Box width="52%" textAlign="left">
               Name
             </Box>
-            <Box width="50%" textAlign="center">
+            <Box width="38%" textAlign="center">
               Quantity
             </Box>
             <Box width="10%" textAlign="left">

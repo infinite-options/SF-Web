@@ -81,7 +81,7 @@ export default function CheckoutLeft({ ...props }) {
         style={{
           marginTop: 10,
           backgroundColor: 'white',
-          maxHeight: '92%',
+          // maxHeight: '92%',
           overflow: 'auto',
         }}
       >
