@@ -222,7 +222,10 @@ const PaymentTab = () => {
   //TODO: Add recipient label
   //TODO: If guest, give message: 'enter a password and sign up to be eligible for history and additional coupons press continue to create your account or cancel to skip'
   return (
-    <Box pt={3} px={10}>
+    <Box pt={3} 
+    // px={10}
+    className="responsive-payment-tab"
+    >
       {paymentProcessing && (
         <p className={classes.notify}>
           Please Enter Your {auth.isAuth ? '' : 'Contact and'} Credit Card

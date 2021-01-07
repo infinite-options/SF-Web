@@ -85,7 +85,7 @@ export default function CheckoutRight() {
     <Paper
       elevation={0}
       className={classes.root}
-      style={{ height: windowHeight - 95 }}
+      // style={{ height: windowHeight - 95 }}
     >
       <StyledTabs
         value={rightTabChosen}
