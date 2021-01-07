@@ -79,9 +79,6 @@ export default function DeliveryInfoTab() {
     setLocErrorMessage('');
     setEmailError('');
     setEmailErrorMessage('');
-    setPasswordError('');
-    setConfirmPasswordError('');
-    setPasswordErrorMessage('');
   }
 
   const { paymentProcessing, setLeftTabChosen } = useContext(checkoutContext);
@@ -127,9 +124,10 @@ export default function DeliveryInfoTab() {
       }
 
       if (
-        password !== confirmPassword ||
-        password.length === 0 ||
-        confirmPassword.length === 0
+        !auth.isAuth &&
+        (password !== confirmPassword ||
+          password.length === 0 ||
+          confirmPassword.length === 0)
       ) {
         setPasswordError('not matching');
         setConfirmPasswordError('not matching');
@@ -297,11 +295,9 @@ export default function DeliveryInfoTab() {
 
   const onPasswordChange = (event) => {
     const { name, value } = event.target;
-    if (passwordError !== '') {
-      setPasswordError('');
-      setConfirmPasswordError('');
-      setPasswordErrorMessage('');
-    }
+    setPasswordError('');
+    setConfirmPasswordError('');
+    setPasswordErrorMessage('');
     if (name === 'confirm') {
       setConfirmPassword(value);
     } else {
@@ -331,6 +327,7 @@ export default function DeliveryInfoTab() {
         setConfirmPassword('');
         return;
       }
+
       if (password !== confirmPassword) {
         setPasswordError('Not Equal');
         setConfirmPasswordError('Not Equal');

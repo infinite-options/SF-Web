@@ -53,13 +53,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function formatDate(date) {
-  var month = date.getMonth() + 1,
-    day = date.getDate(),
-    year = date.getFullYear();
+  var month = (date.getMonth() + 1).toString(),
+    day = date.getDate().toString(),
+    year = date.getFullYear().toString();
 
-  if (month.length < 2) month = '0' + month;
-  if (day.length < 2) day = '0' + day;
-
+  if (month.length === 1) month = '0' + month;
+  if (day.length === 1) day = '0' + day;
   return [year, month, day].join('-');
 }
 
@@ -447,7 +446,7 @@ export default function FarmerReport({
       </div>
       <Box display="flex" flexWrap="wrap">
         {/* Will Hide buttons */}
-        <Box hidden={auth.Authlevel !== 2}>
+        <Box hidden={auth.authLevel !== 2}>
           {/* Will Show buttons */}
           {/* <Box> */}
           <a
