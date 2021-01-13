@@ -252,6 +252,7 @@ export default function FarmerReport({
       });
   };
   const handleCopy = (event, order, index) => {
+    const deliveryDay = weekdayDatesDict[deliveryDays[0]];
     const copiedOrder = {
       pur_customer_uid: order.pur_customer_uid,
       pur_business_uid: order.pur_business_uid,
@@ -271,7 +272,7 @@ export default function FarmerReport({
       delivery_latitude: order.delivery_latitude,
       delivery_longitude: order.delivery_longitude,
       purchase_notes: order.purchase_notes,
-      start_delivery_date: '',
+      start_delivery_date: deliveryDay,
       pay_coupon_id: '',
       amount_due: '',
       amount_discount: '',
@@ -283,6 +284,7 @@ export default function FarmerReport({
       cc_zip: '',
       charge_id: '',
       payment_type: '',
+      isCopy: 'True',
     };
     console.log(copiedOrder);
     axios
