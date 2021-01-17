@@ -53,7 +53,8 @@ export default function StoreNavBar(props) {
     <div className={classes.root}>
       <AppBar
         color="white"
-        position="static"
+        // position="static"
+        position="fixed" // sticky nav
         elevation={0}
         style={{
           borderBottom: '1px solid ' + appColors.secondary,

@@ -463,7 +463,7 @@ const Store = ({ ...props }) => {
   }
 
   return (
-    <div hidden={props.hidden}>
+    <div hidden={props.hidden} style={{paddingTop:'60px'}} >
       <storeContext.Provider
         value={{
           cartTotal,
@@ -493,12 +493,14 @@ const Store = ({ ...props }) => {
         }}
       >
         <StoreNavBar
-
           storePage={storePage}
           setStorePage={setStorePage}
         />
         <Box hidden={storePage !== 0}>
-          <Box display="flex">
+          <Box 
+          // display="flex"
+            className="responsive-store"
+          >
             <ProductSelectionPage farms={farmsList} />
           </Box>
         </Box>
