@@ -18,7 +18,7 @@
     "@testing-library/user-event": "^7.2.1",
     "@unicef/material-ui-currency-textfield": "^0.8.6",
     "apexcharts": "^3.22.0",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "clsx": "^1.1.1",
     "google-map-react": "^2.1.9",
     "highcharts": "^8.2.2",
