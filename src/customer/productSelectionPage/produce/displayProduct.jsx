@@ -75,13 +75,14 @@ function DisplayProduct() {
     return (
       <>
         <Box
-          width="100%"
+          className="responsive-display-produce"
+          // width="100%"
           height={windowHeight - 165}
-          ml={2}
-          p={3}
-          pb={5}
+          // ml={2}
+          // p={3}
+          // pb={5}
           mb={2}
-          style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
+          style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom: '95px' }}
         >
           <Box fontSize={22} color={appColors.paragraphText}>
             {displayMessage}
@@ -97,7 +98,10 @@ function DisplayProduct() {
             }}
           >
             <Box width="97%" justifyContent="center">
-              <Grid container direction="row" justify="flex-start" spacing={5}>
+              <Grid container direction="row" justify="flex-start" 
+              // spacing={5}
+              spacing={2}
+              >
                 {store.products.map(createProduct2)}
               </Grid>
             </Box>

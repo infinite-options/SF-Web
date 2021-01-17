@@ -123,3 +123,28 @@
   }
 } 
 
+/* ----- responsive store -----*/
+
+.responsive-store {
+  display:flex;
+}
+.responsive-display-produce {
+  margin-left: 20px;
+  padding: 30px;
+}
+
+@media only screen and (max-width: 768px) {
+  .responsive-store {
+    display:block;
+  }
+  .responsive-display-produce {
+    margin-left: 0;
+    padding:10px 4px;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .responsive-display-produce {
+    padding: 10px 0;
+  }
+}
