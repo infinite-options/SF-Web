@@ -28,7 +28,7 @@ export function FarmerLogin() {
   };
   const verifyLoginInfo = (e) => {
     console.log('Email: ' + emailValue);
-    // console.log('Password: ' + passwordValue);
+    console.log('Password: ' + passwordValue);
   };
   return (
     <div>
