@@ -11,8 +11,8 @@ import storeContext from '../../../storeContext';
 const useStyles = makeStyles((theme) => ({
   card: {
     backgroundColor: '#e0e6e6',
-    width: 70,
-    height: 75,
+    width: 75,
+    height: 78,
     borderRadius: 10,
     cursor: 'pointer',
   },
@@ -29,6 +29,10 @@ const useStyles = makeStyles((theme) => ({
   time: {
     textAlign: 'center',
     fontSize: 10,
+  },
+  accept: {
+    textAlign: 'center',
+    fontSize: 9,
   },
 }));
 const amPmTo24Hr = (time) => {
@@ -193,6 +197,14 @@ const DateCard = (props) => {
               }}
             >
               {props.time}
+            </Box>
+            <Box
+              className={classes.accept}
+              style={{
+                color: isClicked ? appColors.primary : 'purple',
+              }}
+            >
+              order by {}{props.accept_hr.charAt(0) + props.accept_hr.substring(1).toLowerCase()}
             </Box>
           </Box>
         </div>

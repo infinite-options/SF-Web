@@ -20,10 +20,15 @@ const useStyles = makeStyles((theme) => ({
 // DONE: Make day exclusive
 const DaysCategory = () => {
   const filter = useContext(FilterContext);
-
+  const store = useContext(storeContext);
   const createDateCard = (props) => {
+    let acceptingString = ''
+    if (store.acceptDayHour[props.weekDayFullUpper]){
+      acceptingString = store.acceptDayHour[props.weekDayFullUpper]
+    }
     return (
       <DateCard
+        accept_hr = {acceptingString}
         weekDay={props.weekDay}
         month={props.month}
         day={props.day}

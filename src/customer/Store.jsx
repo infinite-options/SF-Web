@@ -139,6 +139,7 @@ const Store = ({ ...props }) => {
   const [dayClicked, setDayClicked] = useState(
     localStorage.getItem('selectedDay') || ''
   );
+  const [acceptDayHour, setAcceptDayHour] = useState({});
 
   useEffect(() => {
     localStorage.setItem('startDeliveryDate', startDeliveryDate);
@@ -291,6 +292,7 @@ const Store = ({ ...props }) => {
     const _dayTimeDict = {};
     const _daytimeFarmDict = {};
     const _farmDaytimeDict = {};
+    const _acceptDayHour = {};
     // get a list of buiness UIDs for the next req and
     // the farms properties for the filter
     for (const business of businessesRes) {
@@ -302,7 +304,12 @@ const Store = ({ ...props }) => {
       );
       const originalDeliveryDate = weekdayDatesDict[business.z_delivery_day];
 
-      if (sameDay(today, acceptDate)) {
+      if (!_acceptDayHour[business.z_delivery_day]){
+        
+        _acceptDayHour[business.z_delivery_day] = business.z_accepting_day.slice(0,3)+ ' ' +business.z_accepting_time 
+      }
+
+     if (sameDay(today, acceptDate)) {
         const acceptTimeComps = amPmTo24Hr(business.z_accepting_time).split(
           ':'
         );
@@ -393,6 +400,7 @@ const Store = ({ ...props }) => {
     setDayTimeDict(_dayTimeDict);
     setDaytimeFarmDict(_daytimeFarmDict);
     setFarmDaytimeDict(_farmDaytimeDict);
+    setAcceptDayHour(_acceptDayHour);
     if (_farmList.length > 0 && updatedProfile.zone !== profile.zone) {
       localStorage.removeItem('selectedDay');
       localStorage.removeItem('cartTotal');
@@ -480,6 +488,7 @@ const Store = ({ ...props }) => {
           dayTimeDict,
           daytimeFarmDict,
           farmDaytimeDict,
+          acceptDayHour,
           expectedDelivery,
           setExpectedDelivery,
           startDeliveryDate,
