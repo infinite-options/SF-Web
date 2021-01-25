@@ -471,7 +471,7 @@ const Store = ({ ...props }) => {
   }
 
   return (
-    <div hidden={props.hidden} style={{paddingTop:'60px'}} >
+    <div hidden={props.hidden}>
       <storeContext.Provider
         value={{
           cartTotal,
