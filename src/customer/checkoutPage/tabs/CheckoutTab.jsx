@@ -249,8 +249,9 @@ export default function CheckoutTab() {
       };
     });
     console.log('items: ', items);
+    
   }
-
+  console.log('cartitems####333',cartItems)
   return (
     <Box 
     className="responsive-checkout-tab"

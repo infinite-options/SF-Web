@@ -434,9 +434,14 @@ const Store = ({ ...props }) => {
 
                 // checks for if the current iterated business has a lower price than the one previously seen
                 if (bPrice < _products[itemIdx].lowest_price) {
+                  console.log('in comparing*********', _products[itemIdx].item_uid, item.item_uid)
                   _products[itemIdx].lowest_price = bPrice;
                   _products[itemIdx].lowest_price_business_uid =
                     item.itm_business_uid;
+                  _products[itemIdx].item_uid = item.item_uid;
+                  _products[itemIdx].item_photo = item.item_photo;
+                  _products[itemIdx].business_price = item.business_price;
+
                 }
 
                 // If the price is the same, take the one that was created first
@@ -447,6 +452,9 @@ const Store = ({ ...props }) => {
                 )
                   _products[itemIdx].lowest_price_business_uid =
                     item.itm_business_uid;
+                  _products[itemIdx].item_uid = item.item_uid;
+                  _products[itemIdx].item_photo = item.item_photo;
+                  _products[itemIdx].business_price = item.business_price;
               } else {
                 // If we haven't seen it push it into the dictionary just in case we see it again
                 itemDict[namePriceDesc] = _products.length;
@@ -466,6 +474,7 @@ const Store = ({ ...props }) => {
         }
       }
       setProducts(_products);
+      console.log('productsssssss----',_products)
       setProductsLoading(false);
     });
   }
