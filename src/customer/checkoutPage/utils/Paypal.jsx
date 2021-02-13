@@ -89,7 +89,7 @@ const PayPal = ({ value, deliveryInstructions }) => {
             delivery_longitude: profile.longitude,
             purchase_notes: 'purchase_notes',
             start_delivery_date: startDeliveryDate,
-            pay_coupon_id: chosenCoupon || 'undefined',
+            pay_coupon_id: chosenCoupon || ' ',
             amount_due: paymentDetails.amountDue.toString(),
             amount_discount: paymentDetails.discount.toString(),
             amount_paid: paymentDetails.amountDue.toString(),
