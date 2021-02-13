@@ -152,7 +152,7 @@ const StripeCheckout = (props) => {
         pur_customer_uid: auth.isAuth ? cookies.get('customer_uid') : 'GUEST',
         pur_business_uid: 'WEB',
         items,
-        order_instructions: 'fast',
+        order_instructions: '',
         delivery_instructions: props.deliveryInstructions,
         order_type: 'produce',
         delivery_first_name: profile.firstName,
