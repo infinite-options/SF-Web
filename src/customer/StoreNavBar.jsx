@@ -83,6 +83,8 @@ export default function StoreNavBar(props) {
               fontSize="large"
               color={props.storePage === 0 ? 'primary' : 'default'}
               onClick={handleStoreClick}
+              aria-hidden="false"
+              aria-label = 'Shop Search'
             />
           </IconButton>
           <IconButton edge="end" className="link">
@@ -92,6 +94,8 @@ export default function StoreNavBar(props) {
                 key={props.storePage || ''}
                 color={props.storePage === 1 ? 'primary' : 'default'}
                 onClick={handleCartClick}
+                aria-hidden="false"
+                aria-label = 'Shopping cart'
               />
             </Badge>
           </IconButton>

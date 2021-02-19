@@ -153,8 +153,11 @@ function MenuListComposition(props) {
           aria-haspopup="true"
           onClick={handleToggle}
         >
-          <MenuIcon color="secondary" />
-        </IconButton>
+            <MenuIcon color="secondary" 
+              aria-hidden="false"
+              aria-label = 'Menu list'
+            />
+          </IconButton>
         <Popper
           open={open}
           anchorEl={anchorRef.current}

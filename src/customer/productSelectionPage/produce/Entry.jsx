@@ -102,19 +102,10 @@ function Entry(props) {
           alignItems="flex-start"
           position="relative"
           zIndex="modal"
-          style={{
-            width: '170px',
-            height: '170px',
-            backgroundImage: `url(${props.img.replace(' ', '%20')} )`,
-            backgroundSize: '100% 100%',
-            backgroundPosition: 'center center',
-            backgroundRepeat: 'no-repeat',
-            borderRadius: 5,
-            borderBottomRightRadius: 10,
-            borderBottomLeftRadius: 10,
-            border: '1px solid ' + appColors.border,
-          }}
-        />
+        >
+          <img src={props.img.replace(' ', '%20')} width='170' height='170' alt={props.name}></img>
+        </Box>
+        
         <Box position="relative" zIndex="tooltip" top={-91} height={110}>
           <Box
             className={classes.button}
