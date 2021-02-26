@@ -19,9 +19,20 @@ const useStyles = makeStyles((theme) => ({
 // BUG: day is indicated a unselected when it is active
 // DONE: Make day exclusive
 const DaysCategory = () => {
+
   const filter = useContext(FilterContext);
   const store = useContext(storeContext);
+  let keysRev = Object.keys(filter.shownDays).reverse()
+  let i = keysRev.length - 1
+  let tmp = []
+  for (let [key, prop] of Object.entries(filter.shownDays)) {
+    
+    prop["unq"] = key
+    filter.shownDays[key] = prop;
+  }
+  
   const createDateCard = (props) => {
+    console.log("showndays", filter.shownDays)
     let acceptingString = ''
     if (store.acceptDayHour[props.weekDayFullUpper]){
       acceptingString = store.acceptDayHour[props.weekDayFullUpper]
@@ -40,6 +51,7 @@ const DaysCategory = () => {
         weekDayFullUpper={props.weekDayFullUpper}
         id={props.index}
         key={props.index}
+        unq = {props.unq}
       />
     );
   };
