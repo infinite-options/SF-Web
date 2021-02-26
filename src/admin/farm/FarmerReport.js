@@ -432,6 +432,58 @@ export default function FarmerReport({
     }
   };
 
+
+  const handleDriverRoute = () => {
+    console.log("In driver route", selectedDay, weekdayDatesDict[selectedDay])
+    axios
+      .post('https://rqiber37a4.execute-api.us-west-1.amazonaws.com/dev/api/v2/GetRoutes', {
+        
+          "farm_address":"1375 Blossom Hill Road",
+          "farm_city":"San Jose",
+          "farm_state":"CA",
+          "farm_zip":"95118",
+          "delivery_date": weekdayDatesDict[selectedDay] + " 10:00:00",
+          //"delivery_date" : "2021-02-24 10:00:00",
+          "db":"sf"
+      
+      })
+      .then((response) => {
+        console.log(response);
+        console.log("hello", response["data"])
+        if (response['data']['code'] == 280){
+        confirm({
+          variant: 'info',
+          catchOnCancel: true,
+          title: 'Route Generated',
+          description:
+            response['data']['message']
+        });
+      }
+      else{
+        confirm({
+          variant: 'info',
+          catchOnCancel: true,
+          title: 'Error',
+          description:
+          response['message']
+        });
+      }
+      })
+      .catch((err) => {
+        console.log("xxx",err.response["data"]["code"]);
+        console.log(err.response || err);
+        confirm({
+          variant: 'info',
+          catchOnCancel: true,
+          title: 'Error',
+          description:
+          err.response['data']['message']
+        });
+        
+      });
+
+  }
+
   const buttonFunctions = {
     handleShowOrders,
     handleDeliver,
@@ -556,7 +608,20 @@ export default function FarmerReport({
               Driver Sort
             </Button>
           </a>
+          <Button
+              size="small"
+              variant="contained"
+              className={classes.reportButtons}
+              onClick={handleDriverRoute}
+            >
+              Driver Route
+            </Button>
+        
         </Box>
+
+        
+
+
         <Box flexGrow={1} />
         <Box display="flex" justifyContent="flex-end">
           {deliveryDays.length > 0 && (
