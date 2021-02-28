@@ -8,6 +8,9 @@ import AlertDialog from '../../../../utils/dialog';
 import ProdSelectContext from '../../ProdSelectContext';
 import storeContext from '../../../storeContext';
 
+
+
+
 const useStyles = makeStyles((theme) => ({
   card: {
     backgroundColor: '#e0e6e6',
@@ -69,7 +72,6 @@ const DateCard = (props) => {
         clearCartAndDay();
       }
     } else {
-      console.log('store.cartTotal: ', store.cartTotal);
       if (store.dayClicked != '' && store.cartTotal !== 0) {
         displayDialog(changeDay);
       } else {
@@ -144,6 +146,15 @@ const DateCard = (props) => {
       );
     }
   }, [store.dayClicked]);
+  
+
+ useEffect(() => {
+   if (props.unq == 0){
+   console.log("---On mount once",props)
+  cardClicked()
+}
+   },[])
+
 
   // DONE: figure out a whether to do || or && for farms
   useEffect(() => {

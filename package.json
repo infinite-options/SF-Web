@@ -17,6 +17,7 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "@unicef/material-ui-currency-textfield": "^0.8.6",
+    "@y0c/react-datepicker": "^1.0.4",
     "apexcharts": "^3.22.0",
     "axios": "^0.21.1",
     "clsx": "^1.1.1",
@@ -41,6 +42,7 @@
     "react-places-autocomplete": "^7.3.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.0",
+    "rsuite": "^4.8.9",
     "stripe": "^8.129.0",
     "universal-cookie": "^4.0.4"
   },
