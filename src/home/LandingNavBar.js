@@ -93,7 +93,7 @@ export default function LandingNavBar({ ...props }) {
                   color={'default'}
                   onClick={handleCartClick}
                   aria-hidden="false"
-                  aria-label = 'Go to shop list'
+                  aria-label = 'Go to store'
               />
             </IconButton>
             <IconButton edge="end" className="link">
