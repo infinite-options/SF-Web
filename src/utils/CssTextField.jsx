@@ -6,11 +6,12 @@ const CssTextField = withStyles({
   root: {
     backgroundColor: '#fcfcfb',
     '& label.Mui-focused': {
+      border: '3px solid' + appColors.secondary,
       color: appColors.secondary,
     },
     '& .MuiOutlinedInput-root': {
       '&.Mui-focused fieldset': {
-        borderColor: appColors.secondary,
+        border: '3px solid' + appColors.secondary,
       },
     },
     '&:hover': {

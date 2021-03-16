@@ -49,6 +49,7 @@ function CartItem(props) {
   return (
     <Box
       display="flex"
+      justifyContent="space-evenly"
       mb={2}
       py={1}
       style={{ borderBottom: '1px solid' + appColors.border }}
@@ -56,13 +57,14 @@ function CartItem(props) {
       <Box
         className="center-cropped"
         style={{
-          width: '90px',
-          height: '90px',
+          width: '50px',
+          height: '50px',
           backgroundImage: `url(${props.img})`,
           backgroundSize: '100% 100%',
-          backgroundPosition: 'center center',
+          backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
           borderRadius: 15,
+          marginTop: 35,
         }}
       />
       <Box display="flex" flexGrow={1} py={4.5}>
@@ -77,7 +79,7 @@ function CartItem(props) {
             textAlign: 'left',
           }}
         >
-          {props.name}{' '}
+          {props.name} <br></br>
           {props.unit !== undefined && props.unit !== ''
             ? '($' +
               itemPrice.toFixed(2) +
@@ -95,10 +97,11 @@ function CartItem(props) {
                 cursor="pointer"
                 color="primary"
                 onClick={decrease}
+                style={{ backgroundColor: '#136D74', borderRadius: '10px' }}
               />
             </Box>
           )}
-          <Box mx={1} color={appColors.primary}>
+          <Box mx={1} color="#000000" fontWeight="500" fontSize="20px">
             {props.count}
           </Box>
           {props.isCountChangeable && (
@@ -108,6 +111,7 @@ function CartItem(props) {
                 cursor="pointer"
                 color="primary"
                 onClick={increase}
+                style={{ backgroundColor: '#136D74', borderRadius: '10px' }}
               />
             </Box>
           )}

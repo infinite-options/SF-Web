@@ -17,7 +17,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: 'white',
-    marginBottom: '20px',
   },
   authButton: {
     color: 'white',
@@ -84,29 +83,6 @@ export default function LandingNavBar({ ...props }) {
             >
               Login
             </Button>
-          </Box>
-
-          <Box hidden={!(auth.isAuth || auth.isGuest)}>
-            <IconButton edge="end" className="link">
-              <StorefrontIcon
-                  fontSize="large"
-                  color={'default'}
-                  onClick={handleCartClick}
-                  aria-hidden="false"
-                  aria-label = 'Go to store'
-              />
-            </IconButton>
-            <IconButton edge="end" className="link">
-              <Badge badgeContent={badgeContent} color="primary">
-                <ShoppingCartIcon
-                  fontSize="large"
-                  color={'default'}
-                  onClick={handleStoreClick}
-                  aria-hidden="false"
-                  aria-label = 'Go to shopping cart'
-                />
-              </Badge>
-            </IconButton>
           </Box>
         </Toolbar>
       </AppBar>

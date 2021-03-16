@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     height: '150px',
   },
 }));
-const DeliveryLocationSearch = (props) => {
+const Order = (props) => {
   const classes = useStyles();
   const history = useHistory();
   const auth = useContext(AuthContext);
@@ -102,8 +102,8 @@ const DeliveryLocationSearch = (props) => {
       width="100%"
       //justifyContent="space-evenly"
     >
-      <Row noGutters={true}>
-        <Col md={3.5} lg={true} style={{ padding: 0 }}>
+      <Row noGutters={true} style={{ marginBottom: '30px' }}>
+        <Col md={5} lg={true} style={{ padding: 0 }}>
           <CssTextField
             error={errorValue}
             value={deliverylocation}
@@ -141,7 +141,7 @@ const DeliveryLocationSearch = (props) => {
         <Col>
           <h10
             style={{
-              color: appColors.buttonText,
+              color: appColors.primary,
               fontSize: '30px',
               fontWeight: '700',
               //marginTop: '0px',
@@ -150,7 +150,7 @@ const DeliveryLocationSearch = (props) => {
             OR
           </h10>
         </Col>
-        <Col md={3.5} lg={true} style={{ paddingLeft: 0, paddingRight: 0 }}>
+        <Col md={5} lg={true} style={{ paddingLeft: 0, paddingRight: 0 }}>
           <CssTextField
             error={errorValue}
             value={deliverylocation}
@@ -184,7 +184,9 @@ const DeliveryLocationSearch = (props) => {
             </FormHelperText>
           </Box>
         </Col>
-        <Col md={3} lg={true} style={{ padding: 0 }}>
+      </Row>
+      <Row>
+        <Col lg={true} style={{ padding: 0 }}>
           <Button
             size="large"
             variant="contained"
@@ -203,4 +205,4 @@ const DeliveryLocationSearch = (props) => {
     </Container>
   );
 };
-export default DeliveryLocationSearch;
+export default Order;

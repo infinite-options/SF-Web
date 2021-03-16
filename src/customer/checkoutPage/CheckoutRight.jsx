@@ -26,7 +26,7 @@ const StyledTabs = withStyles({
     justifyContent: 'center',
     backgroundColor: 'transparent',
     '& > span': {
-      maxWidth: 40,
+      maxWidth: 80,
       width: '100%',
       backgroundColor: appColors.secondary,
     },
@@ -36,7 +36,8 @@ const StyledTabs = withStyles({
 const StyledTab = withStyles((theme) => ({
   root: {
     textTransform: 'none',
-    color: appColors.paragraphText,
+    color: appColors.secondary,
+
     fontWeight: theme.typography.fontWeightRegular,
     fontSize: theme.typography.pxToRem(15),
     marginRight: theme.spacing(1),
@@ -85,6 +86,13 @@ export default function CheckoutRight() {
     <Paper
       elevation={0}
       className={classes.root}
+      style={{
+        border: '3px solid #136D74',
+        borderRadius: '20px',
+        width: '500px',
+        float: 'right',
+        marginRight: '20px',
+      }}
       // style={{ height: windowHeight - 95 }}
     >
       <StyledTabs
@@ -95,11 +103,20 @@ export default function CheckoutRight() {
         aria-label="styled tabs example"
         centered
       >
-        <StyledTab label="Checkout" />
+        <StyledTab
+          label="Cart"
+          style={{ fontSize: '20px', fontWeight: '700' }}
+        />
         <Box flexGrow={1} />
-        <StyledTab label="History" />
+        <StyledTab
+          label="History"
+          style={{ fontSize: '20px', fontWeight: '700' }}
+        />
         <Box flexGrow={1} />
-        <StyledTab label="Refund" />
+        <StyledTab
+          label="Refund"
+          style={{ fontSize: '20px', fontWeight: '700' }}
+        />
       </StyledTabs>
       {/*
       Hi Quang, I changed it back to hidden just so that the

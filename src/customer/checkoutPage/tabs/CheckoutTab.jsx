@@ -249,29 +249,42 @@ export default function CheckoutTab() {
       };
     });
     console.log('items: ', items);
-    
   }
-  console.log('cartitems####333',cartItems)
+  console.log('cartitems####333', cartItems);
   return (
-    <Box 
-    className="responsive-checkout-tab"
-    display="flex" flexDirection="column" 
-    // height="90%"
-    // px={8}
-     >
+    <Box
+      className="responsive-checkout-tab"
+      display="flex"
+      flexDirection="column"
+
+      // height="90%"
+      // px={8}
+    >
       {/* START: Expected Delivery */}
       <Box hidden={store.expectedDelivery !== ''} m={2} />
       <Box hidden={store.expectedDelivery === ''}>
         <Box
           className={classes.section}
           // height="100px"
-          display="flex"
+          display="inline"
           // lineHeight="100px"
           id="responsiveExpectedDelivery"
         >
-          <Box color={appColors.secondary}>Expected Delivery</Box>
+          <Box
+            color={appColors.secondary}
+            fontSize="20px"
+            textAlign="left"
+            fontWeight="700"
+            paddingTop="20px"
+            paddingBottom="20px"
+          >
+            Expected Delivery:
+          </Box>
           <Box flexGrow={1} />
-          <Box>{store.expectedDelivery}</Box>
+
+          <Box textAlign="left" paddingTop="20px" paddingBottom="20px">
+            {store.expectedDelivery}
+          </Box>
         </Box>
       </Box>
       {/* END: Expected Delivery */}
@@ -279,8 +292,8 @@ export default function CheckoutTab() {
       {/* START: Order Items */}
       <Box className={classes.section}>
         <Box display="flex">
-          <Box fontWeight="bold" lineHeight={1.8}>
-            Your Order:
+          <Box fontWeight="700" lineHeight={1.8} fontSize="20px">
+            Your Order
           </Box>
           <Box flexGrow={1} />
           <Button
@@ -289,26 +302,13 @@ export default function CheckoutTab() {
             variant="contained"
             color="primary"
             onClick={onAddItemsClicked}
+            style={{ borderRadius: '15px' }}
           >
             <AddIcon fontSize="small" />
             Add Items
           </Button>
         </Box>
 
-        {cartItems.length > 0 && (
-          <Box className={classes.section} display="flex">
-            {/* <Box width="130px"></Box> */}
-            <Box width="52%" textAlign="left">
-              Name
-            </Box>
-            <Box width="38%" textAlign="center">
-              Quantity
-            </Box>
-            <Box width="10%" textAlign="left">
-              Price
-            </Box>
-          </Box>
-        )}
         <Box my={1} px={1}>
           {cartItems.map(listItem)}
         </Box>
@@ -318,29 +318,19 @@ export default function CheckoutTab() {
 
       {/* START: Coupons */}
       <Coupons
-        setDeliveryFee={setDeliveryFee}
         setPromoApplied={setPromoApplied}
-        subtotal={subtotal}
         originalDeliveryFee={origDeliveryFee}
+        setDeliveryFee={setDeliveryFee}
+        subtotal={subtotal}
         classes={classes}
       />
       {/* END: Coupons */}
 
       {/* START: Pricing */}
       <Box className={classes.section} display="flex">
-        <Box>Subtotal</Box>
-        <Box flexGrow={1} />
-        <Box>${subtotal.toFixed(2)}</Box>
-      </Box>
-      <Box className={classes.section} display="flex">
-        <Box color={appColors.secondary}>Promo Applied</Box>
+        <Box color={appColors.secondary}>Coupon Applied</Box>
         <Box flexGrow={1} />
         <Box>-${promoApplied.toFixed(2)}</Box>
-      </Box>
-      <Box className={classes.section} display="flex">
-        <Box>Service Fee</Box>
-        <Box flexGrow={1} />
-        <Box>${serviceFee.toFixed(2)}</Box>
       </Box>
       <Box className={classes.section} display="flex">
         <Box>Delivery Fee</Box>
@@ -348,7 +338,54 @@ export default function CheckoutTab() {
         <Box>${deliveryFee.toFixed(2)}</Box>
       </Box>
       <Box className={classes.section} display="flex">
-        <Box>Driver Tip (Optional - Click to edit)</Box>
+        <Box>Service Fee</Box>
+        <Box flexGrow={1} />
+        <Box>${serviceFee.toFixed(2)}</Box>
+      </Box>
+      <Box className={classes.section} display="flex">
+        <Box>Driver Tip:</Box>
+      </Box>
+      <Box className={classes.section} display="flex">
+        <Button
+          className={classes.button}
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={setDriverTip}
+          style={{ borderRadius: '15px', textTransform: 'none' }}
+        >
+          No Tip
+        </Button>
+        <Button
+          className={classes.button}
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={setDriverTip}
+          style={{ borderRadius: '15px' }}
+        >
+          $2
+        </Button>
+        <Button
+          className={classes.button}
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={setDriverTip}
+          style={{ borderRadius: '15px' }}
+        >
+          $3
+        </Button>
+        <Button
+          className={classes.button}
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={setDriverTip}
+          style={{ borderRadius: '15px' }}
+        >
+          $5
+        </Button>
         <Box flexGrow={1} />
         <Box width="70px">
           <CurrencyTextField
@@ -366,11 +403,21 @@ export default function CheckoutTab() {
           ></CurrencyTextField>
         </Box>
       </Box>
+
       <Box className={classes.section} display="flex">
         <Box>Taxes</Box>
         <Box flexGrow={1} />
         <Box>${tax.toFixed(2)}</Box>
       </Box>
+
+      <Box className={classes.section} display="flex">
+        <Box fontWeight="700" fontSize="20px">
+          Subtotal
+        </Box>
+        <Box flexGrow={1} />
+        <Box>${subtotal.toFixed(2)}</Box>
+      </Box>
+
       <Box className={classes.section} fontWeight="bold" display="flex">
         <Box>Total</Box>
         <Box flexGrow={1} />
@@ -386,8 +433,43 @@ export default function CheckoutTab() {
           onClick={() => {
             setLeftTabChosen(4);
           }}
+          style={{ textTransform: 'none' }}
         >
-          Click to pay with Stripe or PayPal on the Payments Details page
+          Proceed as guest
+        </Button>
+      </Box>
+      <Box display="flex" my={2} flexDirection="column" px="2%">
+        <p style={{ color: appColors.secondary, fontWeight: 500 }}>
+          Already have an account?
+        </p>
+        <Button
+          className={classes.button}
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            setLeftTabChosen(4);
+          }}
+          style={{ textTransform: 'none' }}
+        >
+          Login
+        </Button>
+      </Box>
+      <Box display="flex" my={2} flexDirection="column" px="2%">
+        <p style={{ color: appColors.secondary, fontWeight: 500 }}>
+          Save time and create an account?
+        </p>
+        <Button
+          className={classes.button}
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            setLeftTabChosen(4);
+          }}
+          style={{ textTransform: 'none' }}
+        >
+          Sign Up
         </Button>
       </Box>
     </Box>

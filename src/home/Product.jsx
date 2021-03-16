@@ -12,33 +12,36 @@ const Product = (props) => {
           display="flex"
           alignItems="flex-start"
           position="relative"
-        > 
-          <img 
-              src={props.img} 
-              alt={props.name}
-              style={{
-                width: '170px',
-                height: '170px',
-              }}
-            />
+        >
+          <img
+            src={props.img}
+            alt={props.name}
+            style={{
+              width: '300px',
+              height: '300px',
+              borderRadius: '10px',
+            }}
+          />
         </Box>
         <Box
-          width="168px"
+          width="300px"
           p={0.1}
           style={{
             fontSize: '12px',
             backgroundColor: 'white',
-            borderRadius: 5,
-            border: '1px solid ' + appColors.border,
+            borderRadius: '10px',
+            paddingBottom: '5px',
+            textFont: ' SFProDisplay-Regular',
+            //border: '1px solid ' + appColors.border,
           }}
         >
           <Box display="flex">
-            <Box textAlign="left">{props.name}</Box>
-            <Box flexGrow={1} />
-            <Box textAlign="right">
-              $ {props.price} {props.unit === 'each' ? '' : '/ '}
-              {props.unit}
+            <Box textAlign="left" padding="4px">
+              {props.name}({props.unit === 'each' ? '' : 'per '}
+              {props.unit})
             </Box>
+            <Box flexGrow={1} />
+            <Box textAlign="right">$ {props.price}</Box>
           </Box>
         </Box>
       </Grid>
