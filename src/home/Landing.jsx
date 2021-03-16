@@ -346,7 +346,7 @@ const Landing = ({ ...props }) => {
                 <img
                   src="./landing/farmer_pic.jpg"
                   alt="farmer info"
-                  style={{ width: '287px', height: '366px' }}
+                  style={{ width: '400px', height: '510px' }}
                 />
                 <Box
                   className={classes.farmTitle}
