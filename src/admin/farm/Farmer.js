@@ -15,7 +15,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Zones from '../Zones';
-import ReplaceProduce from '../ReplaceProduce';
+import PriceCompare from '../Price_Compare/PriceCompare';
 import FarmerHome from './FarmerHome';
 import FarmerReport from './FarmerReport';
 import FarmerSettings from './FarmerSettings';
@@ -61,7 +61,6 @@ export default function Farmer({ tab, ...props }) {
   //!The reason using css to display none is for the css file which can't be hidden by html
   const handleTab = () => {
     // 0 <= tab <= MAX_VALUE
-    
     const tabIsValid = tab >= 0 && tab <= 8; // If more tabs are added, change max value
     return (
       <React.Fragment>
@@ -92,7 +91,7 @@ export default function Farmer({ tab, ...props }) {
         <Notifications farmID={farmID} farmName={farmName} hidden={tab !== 5} />
         {tab === 6 && <Store />}
         {tab === 7 && <Zones />}
-        {tab === 8 && <ReplaceProduce />}
+        {tab === 8 && <PriceCompare />}
       </React.Fragment>
     );
   };
