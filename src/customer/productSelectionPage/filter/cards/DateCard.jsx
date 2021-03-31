@@ -54,7 +54,7 @@ const DateCard = (props) => {
   const store = useContext(storeContext);
   const confirm = useConfirmation();
 
-  const [isClicked, setIsClicked] = useState(true);
+  const [isClicked, setIsClicked] = useState(false);
   const [showCard, setShowCard] = useState(
     productSelect.farmsClicked.size == 0 ? true : false
   );
