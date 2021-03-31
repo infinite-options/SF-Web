@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
   organicBtnLI: {
     display: 'flex',
     justifyContent: 'center',
+    marginBottom: theme.spacing(2),
   },
 
   organicBtn: {
