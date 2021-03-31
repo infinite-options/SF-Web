@@ -12,19 +12,16 @@ const Product = (props) => {
           display="flex"
           alignItems="flex-start"
           position="relative"
-          style={{
-            width: '170px',
-            height: '170px',
-            backgroundImage: `url(${props.img})`,
-            backgroundSize: '100% 100%',
-            backgroundPosition: 'center center',
-            backgroundRepeat: 'no-repeat',
-            borderRadius: 5,
-            borderBottomRightRadius: 10,
-            borderBottomLeftRadius: 10,
-            border: '1px solid ' + appColors.border,
-          }}
-        />
+        > 
+          <img 
+              src={props.img} 
+              alt={props.name}
+              style={{
+                width: '170px',
+                height: '170px',
+              }}
+            />
+        </Box>
         <Box
           width="168px"
           p={0.1}

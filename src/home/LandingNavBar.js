@@ -89,9 +89,11 @@ export default function LandingNavBar({ ...props }) {
           <Box hidden={!(auth.isAuth || auth.isGuest)}>
             <IconButton edge="end" className="link">
               <StorefrontIcon
-                fontSize="large"
-                color={'default'}
-                onClick={handleCartClick}
+                  fontSize="large"
+                  color={'default'}
+                  onClick={handleCartClick}
+                  aria-hidden="false"
+                  aria-label = 'Go to store'
               />
             </IconButton>
             <IconButton edge="end" className="link">
@@ -100,6 +102,8 @@ export default function LandingNavBar({ ...props }) {
                   fontSize="large"
                   color={'default'}
                   onClick={handleStoreClick}
+                  aria-hidden="false"
+                  aria-label = 'Go to shopping cart'
                 />
               </Badge>
             </IconButton>

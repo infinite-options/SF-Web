@@ -29,7 +29,11 @@
     "material-ui-upload": "^1.2.1",
     "react": "^16.13.1",
     "react-apexcharts": "^1.3.7",
+<<<<<<< HEAD
     "react-day-picker": "^7.4.8",
+=======
+    "react-bootstrap-carousel": "^4.1.1",
+>>>>>>> c08a3978020e2c0a9e9a973269edb9c4ac438769
     "react-dom": "^16.13.1",
     "react-facebook-login": "^4.1.1",
     "react-google-login": "^5.1.21",

@@ -125,7 +125,10 @@ const DeliveryLocationSearch = (props) => {
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <LocationOnIcon color="secondary" />
+                <LocationOnIcon color="secondary" 
+                  aria-hidden="false"
+                  aria-label = 'Enter delivery location'
+                />
               </InputAdornment>
             ),
           }}
