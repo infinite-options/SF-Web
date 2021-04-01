@@ -5,8 +5,12 @@ import {AdminFarmContext} from '../AdminFarmContext';
 import CompareGraph from './CompareGraph';
 import CompareTable from './CompareTable';
 
+import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import ListItem from '@material-ui/core/ListItem';
@@ -78,12 +82,22 @@ const useStyles = makeStyles((theme) => ({
     width: btnWidth,
     marginBottom: theme.spacing(1),
   },
+
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
 }));
 
 /**
  * @param {*} setFoodMap
+ * @param {*} setFoodArr
  */
-function fetchFoodsEndpoint(setFoodMap) {
+function fetchFoodsEndpoint(setFoodMap, setFoodArr) {
   fetch(`https://kfc19k33sc.execute-api.us-west-1.amazonaws.com/dev/api/v2/priceComparison`, {
     method: 'GET',
   })
@@ -96,11 +110,18 @@ function fetchFoodsEndpoint(setFoodMap) {
       .then((json) => {
         const foodMappings = {};
         const foodsComps = json.result;
+        const foodArr = [];
+        const noDuplicates = {};
 
         // console.warn('FoodsComp');
         // console.log(foodsComps);
 
         for (const foodComp of foodsComps) {
+          if (noDuplicates[foodComp.item_name] == undefined) {
+            foodArr.push(foodComp.item_name);
+            noDuplicates[foodComp.item_name] = 0;
+          }
+
           if (foodMappings[foodComp.item_name] == undefined) {
             foodMappings[foodComp.item_name] = {};
             foodMappings[foodComp.item_name]['farm_price'] = foodComp.farm_price;
@@ -114,10 +135,13 @@ function fetchFoodsEndpoint(setFoodMap) {
             foodComp.market_item_name, foodComp.market_price]); 
         }
 
+        foodArr.sort();
+
         // console.warn('Food Mappings log');
         // console.log(foodMappings);
 
         setFoodMap(foodMappings);
+        setFoodArr(foodArr);
       })
       .catch((error) => {
         console.error(error);
@@ -132,6 +156,7 @@ function PriceCompare() {
   const isInitialMount = React.useRef(true);
 
   const [foodMap, setFoodMap] = React.useState({});
+  const [foodArr, setFoodArr] = React.useState([]);
   const [data, setData] = React.useState(null);
   const [foodSelected, setFoodSelected] = React.useState(null);
   const [display, setDisplay] = React.useState('graph');
@@ -140,7 +165,7 @@ function PriceCompare() {
   const classes = useStyles();
 
   React.useEffect(() => {
-    fetchFoodsEndpoint(setFoodMap);
+    fetchFoodsEndpoint(setFoodMap, setFoodArr);
   }, ([]));
 
   React.useEffect(() => {
@@ -151,12 +176,18 @@ function PriceCompare() {
     }
   }, ([organicFilter]));
 
-  const foodInputted = (e) => {
-    setFoodSelected(e.target.value);
+  const foodInputted = (event) => {
+    console.warn('event');
+    console.log(event);
+    // console.warn('food selected target');
+    // console.log(event.target);
+    // console.warn('food selected target value');
+    // console.log(event.target['value']);
+    setFoodSelected(event.target.value);
   };
 
   const updateData = (displayType) => {
-    if (foodSelected == null) {
+    if (foodSelected == null || foodSelected == "") {
       console.error(`Food selected has truthy value of false. Exiting updateData().`);
       return;
     }
@@ -265,6 +296,28 @@ function PriceCompare() {
   return (
     <Box className = {classes.priceCompareContainer}>
       <Box className = {classes.dataInfoFilter}>
+        <FormControl className={classes.formControl}>
+          <InputLabel
+            htmlFor="food-native-simple"
+            onKeyDown={keyPressed}
+          >
+            Enter food
+          </InputLabel>
+          <Select
+            native
+            value={foodSelected}
+            onChange = {foodInputted}
+            input={<Input id="food-native-simple" />}
+          >
+            <option value = {""} />
+            {
+              foodArr.map((food) =>
+                <option value = {food}>{food}</option>
+              )
+            }
+          </Select>
+        </FormControl>
+
         <TextField
           className={classes.margin}
           placeholder="Enter food"
