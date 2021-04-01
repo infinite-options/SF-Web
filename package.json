@@ -19,7 +19,12 @@
     "@unicef/material-ui-currency-textfield": "^0.8.6",
     "@y0c/react-datepicker": "^1.0.4",
     "apexcharts": "^3.22.0",
+<<<<<<< HEAD
     "axios": "0.21.1",
+=======
+    "axios": "^0.21.1",
+    "chart.js": "^2.9.4",
+>>>>>>> feadebd7c20a3ee3dd784088f17df79aa25dd0ad
     "clsx": "^1.1.1",
     "google-map-react": "^2.1.9",
     "highcharts": "^8.2.2",
@@ -31,6 +36,8 @@
     "react-apexcharts": "^1.3.7",
     "react-auto-complete-address-fields": "^1.0.1",
     "react-bootstrap-carousel": "^4.1.1",
+    "react-chartjs-2": "^2.11.1",
+    "react-day-picker": "^7.4.8",
     "react-dom": "^16.13.1",
     "react-facebook-login": "^4.1.1",
     "react-geocode": "0.2.3",
