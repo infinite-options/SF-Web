@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
 
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120,
+    width: btnWidth,
   },
 
   selectEmpty: {
@@ -317,20 +317,6 @@ function PriceCompare() {
             }
           </Select>
         </FormControl>
-
-        <TextField
-          className={classes.margin}
-          placeholder="Enter food"
-          onChange = {foodInputted}
-          onKeyDown = {keyPressed}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
 
         <Box className = {classes.graphTypeBtnBar}>
           <Button
