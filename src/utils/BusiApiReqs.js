@@ -33,4 +33,15 @@ export default class BusiApiReqs {
         console.log(err.response || err);
       });
   };
+  
+  getProduceByLocation = async function (lng, lat) {
+    return await axios
+      .get(this.BASE_URL + 'ProduceByLocation/' + lng + ',' + lat)
+      .then((response) => {
+        return Promise.resolve(response.length !== 0 ? response.data : {});
+      })
+      .catch((err) => {
+        console.log(err.response || err);
+      });
+  };
 }

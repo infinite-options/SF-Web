@@ -1,0 +1,173 @@
+<head>
+  <title>Neon Storm</title>
+  <meta description="A unique lightscript that combines a storm theme with the neon color scheme." />
+  <meta publisher="Alex Krastev" />
+  <meta
+    property="color1"
+    label="Color 1"
+    type="color"
+    min="0"
+    max="360"
+    default="#f000ff"
+  />
+  <meta
+    property="color2"
+    label="Color 2"
+    type="color"
+    min="0"
+    max="360"
+    default="#00ffff"
+  />
+  <meta
+    property="bgColor"
+    label="Background Color"
+    type="color"
+    min="0"
+    max="360"
+    default="#001723"
+  />
+  <meta
+    property="flashes"
+    label="Lighting flashes"
+    type="boolean"
+    default="1"
+  />
+  <meta property="bolts" label="Lighting bolts" type="boolean" default="1" />
+  <meta property="rain" label="Raindrops" type="boolean" default="1" />
+  <meta property="cloud" label="Raincloud" type="boolean" default="1" />
+</head>
+
+<body style="margin: 0; padding: 0">
+  <canvas id="exCanvas" width="320" height="200"></canvas>
+</body>
+
+<script>
+  var c = document.getElementById("exCanvas");
+  var ctx = c.getContext("2d");
+  var width = 320;
+  var height = 200;
+  var effects = [];
+  var overlays = [];
+
+  function update() {
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, 320, 200);
+
+    if (effects.length < 20) {
+      effects.push(new Bolt());
+      effects.push(new Drop());
+      effects.push(new Drop());
+      effects.push(new Drop());
+      effects.push(new Drop());
+      effects.push(new Drop());
+      effects.push(new Drop());
+      effects.push(new Drop());
+      effects.push(new Drop());
+      effects.push(new Drop());
+      effects.push(new Drop());
+      effects.push(new Drop()); //11
+    }
+
+    if (overlays.length < 1) {
+      if (flashes) {
+        overlays.push(new Wipe());
+      }
+    }
+
+    for (i = 0; i < effects.length; i++) {
+      effects[i].draw();
+      effects[i].update();
+    }
+
+    for (i = 0; i < effects.length; i++) {
+      if (effects[i].lifetime <= 0) {
+        effects.splice(i, 1);
+      }
+    }
+
+    if (cloud) {
+      ctx.fillStyle = color1;
+      ctx.fillRect(0, 0, 320, 30);
+    }
+
+    for (i = 0; i < overlays.length; i++) {
+      overlays[i].draw();
+      overlays[i].update();
+    }
+
+    for (i = 0; i < overlays.length; i++) {
+      if (overlays[i].lifetime <= 0) {
+        overlays.splice(i, 1);
+      }
+    }
+
+    window.requestAnimationFrame(update);
+  }
+
+  function Bolt() {
+    this.x = Math.random() * 320;
+    this.y = 0;
+    this.lifetime = Math.random() * 20 + 10;
+    this.total = this.lifetime;
+
+    this.draw = function () {
+      if (this.lifetime / this.total > 0.5) {
+        ctx.fillStyle = color2 + "CC";
+      } else {
+        ctx.fillStyle = color1 + "CC";
+      }
+      if (bolts) {
+        ctx.fillRect(this.x, 0, 10, 200);
+      }
+    };
+
+    this.update = function () {
+      this.lifetime--;
+    };
+  }
+
+  function Drop() {
+    this.x = Math.random() * 320;
+    this.y = Math.random() * 200;
+    this.lifetime = 1
+    this.rnd = Math.round(Math.random() * 2);
+    this.rndEnd = Math.random() * 100 + 200;
+
+    this.draw = function () {
+      if (this.rnd > 0.9) {
+        ctx.fillStyle = color2 + "CC";
+      } else {
+        ctx.fillStyle = color1 + "CC";
+      }
+      if (rain) {
+        ctx.fillRect(this.x, this.y, 10, 10);
+      }
+    };
+
+    this.update = function () {
+      if(this.y > this.rndEnd){
+        this.lifetime = 0;
+      }
+      this.y += 5;
+    };
+  }
+
+  function Wipe() {
+    this.lifetime = 200;
+    this.y = 0;
+
+    this.draw = function () {
+      ctx.fillStyle = color2;
+      ctx.fillRect(0, this.y - 50, 320, this.y);
+      ctx.fillStyle = color1;
+      ctx.fillRect(0, this.y - 30, 320, this.y - 25);
+    };
+
+    this.update = function () {
+      this.lifetime--;
+      this.y += 10;
+    };
+  }
+
+  window.requestAnimationFrame(update);
+</script>

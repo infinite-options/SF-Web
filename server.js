@@ -37,7 +37,7 @@ app.get('/stripe/payment-intent', async (req, res) => {
   res.json({ client_secret: intent.client_secret });
 });
 
-if (process.env.SUDO_USER != undefined) {
+if (process.env.SUDO_USER !== undefined) {
   options['key'] = fs.readFileSync(key_url);
   options['cert'] = fs.readFileSync(cert_url);
   http

@@ -1,0 +1,107 @@
+<Container
+      fluid={true}
+      className={classes.locationContainer}
+      display="flex"
+      //  mt={10}
+      width="100%"
+      //justifyContent="space-evenly"
+    >
+      <Row noGutters={true}>
+        <Col md={3.5} lg={true} style={{ padding: 0 }}>
+          <CssTextField
+            error={errorValue}
+            value={deliverylocation}
+            className={classes.margin}
+            id="input-with-icon-textfield"
+            size="small"
+            placeholder="Search for your address"
+            variant="outlined"
+            fullWidth
+            onChange={onFieldChange}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LocationOnIcon
+                    color="secondary"
+                    aria-hidden="false"
+                    aria-label="Enter delivery location"
+                  />
+                </InputAdornment>
+              ),
+            }}
+            style={{
+              width: '250px',
+              border: '2px solid' + appColors.secondary,
+              borderRadius: '5px',
+            }}
+          />
+
+          <Box width="100%" justifyContent="center">
+            <FormHelperText error={true} style={{ textAlign: 'center' }}>
+              {errorMessage}
+            </FormHelperText>
+          </Box>
+        </Col>
+        <Col>
+          <h10
+            style={{
+              color: appColors.buttonText,
+              fontSize: '30px',
+              fontWeight: '700',
+              //marginTop: '0px',
+            }}
+          >
+            OR
+          </h10>
+        </Col>
+        <Col md={3.5} lg={true} style={{ paddingLeft: 0, paddingRight: 0 }}>
+          <CssTextField
+            error={errorValue}
+            value={deliverylocation}
+            className={classes.margin}
+            id="input-with-icon-textfield"
+            size="small"
+            placeholder="Enter Zip Code"
+            variant="outlined"
+            fullWidth
+            onChange={onFieldChange}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LocationOnIcon
+                    color="secondary"
+                    aria-hidden="false"
+                    aria-label="Enter delivery location"
+                  />
+                </InputAdornment>
+              ),
+            }}
+            style={{
+              width: '250px',
+              border: '2px solid' + appColors.secondary,
+              borderRadius: '5px',
+            }}
+          />
+          <Box width="100%">
+            <FormHelperText error={true} style={{ textAlign: 'center' }}>
+              {errorMessage}
+            </FormHelperText>
+          </Box>
+        </Col>
+        <Col md={3} lg={true} style={{ padding: 0 }}>
+          <Button
+            size="large"
+            variant="contained"
+            color="secondary"
+            onClick={onFindProduceClicked}
+            style={{
+              width: '300px',
+              height: '50px',
+              textTransform: 'none',
+            }}
+          >
+            Find Local Produce
+          </Button>
+        </Col>
+      </Row>
+    </Container>

@@ -1,49 +1,49 @@
-import React, { useState, useEffect } from 'react';
-import Carousel from 'react-multi-carousel';
-import { Box } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import appColors from '../styles/AppColors';
-import BusiApiReqs from '../utils/BusiApiReqs';
-import Product from './Product';
+import React, { useState, useEffect } from "react";
+import Carousel from "react-multi-carousel";
+import { Box } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import appColors from "../styles/AppColors";
+import BusiApiReqs from "../utils/BusiApiReqs";
+import Product from "./Product";
 
 const responsive = {
   superLargeDesktop: {
     breakpoint: { max: 3000, min: 1430 },
-    items: 4.5,
+    items: 4.5
   },
   desktop: {
     breakpoint: { max: 1430, min: 1150 },
-    items: 3,
+    items: 3
   },
   tablet: {
     breakpoint: { max: 1150, min: 800 },
-    items: 2,
+    items: 2
   },
   mobile: {
     breakpoint: { max: 800, min: 0 },
-    items: 2,
-  },
+    items: 2
+  }
 };
 
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: appColors.componentBg,
-    width: '100%',
-    height: 'auto',
-    paddingTop: '30px',
-    paddingBottom: '30px',
+    width: "100%",
+    height: "auto",
+    paddingTop: "30px",
+    paddingBottom: "30px"
   },
 
   title: {
     color: appColors.secondary,
-    fontSize: '40px',
-    fontWeight: '700',
+    fontSize: "40px",
+    fontWeight: "700"
   },
   bar: {
-    borderBottom: '4px solid ' + appColors.secondary,
-    marginBottom: '50px',
-    width: '410px',
-  },
+    borderBottom: "4px solid " + appColors.secondary,
+    marginBottom: "50px",
+    width: "410px"
+  }
 }));
 
 const BusiMethods = new BusiApiReqs();
@@ -58,8 +58,8 @@ const ProductDisplay = () => {
 
   const getItems = () => {
     BusiMethods.getItems(
-      ['fruit', 'desert', 'vegetable', 'other'],
-      ['200-000016', '200-000017']
+      ["fruit", "desert", "vegetable", "other"],
+      ["200-000016", "200-000017"]
     ).then((itemsData) => {
       const itemsSet = new Set();
       const _itemList = [];
@@ -75,7 +75,7 @@ const ProductDisplay = () => {
 
   return (
     <Box className={classes.root}>
-      <Box className={classes.title} style={{ paddingTop: '30px' }}>
+      <Box className={classes.title} style={{ paddingTop: "30px" }}>
         Weekly Fresh Produce
       </Box>
       <Box mx="auto" className={classes.bar} />
