@@ -4,6 +4,7 @@ import StoreFilter from './filter';
 import ProdSelectContext from './ProdSelectContext';
 import axios from 'axios';
 import storeContext from '../storeContext';
+import Box from '@material-ui/core/Box';
 
 const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI + '';
 
@@ -47,22 +48,24 @@ const ProductSelectionPage = (props) => {
   const [categoriesClicked, setCategoriesClicked] = useState(new Set());
 
   return (
-    <ProdSelectContext.Provider
-      value={{
-        itemError,
-        itemIsLoading,
-        farms,
-        busIsLoad,
-        busError,
-        farmsClicked,
-        setFarmsClicked,
-        categoriesClicked,
-        setCategoriesClicked,
-      }}
-    >
-      <StoreFilter />
-      <DisplayProduce />
-    </ProdSelectContext.Provider>
+    <Box style = {{border: '2px solid red', display: 'flex', flexDirection: 'column'}}>
+      <ProdSelectContext.Provider
+        value={{
+          itemError,
+          itemIsLoading,
+          farms,
+          busIsLoad,
+          busError,
+          farmsClicked,
+          setFarmsClicked,
+          categoriesClicked,
+          setCategoriesClicked,
+        }}
+      >
+        <StoreFilter />
+        <DisplayProduce />
+      </ProdSelectContext.Provider>
+    </Box>
   );
 };
 

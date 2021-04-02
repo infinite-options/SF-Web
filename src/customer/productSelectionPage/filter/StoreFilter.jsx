@@ -20,6 +20,10 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     color: appColors.paragraphText,
   },
+
+  deliveryDates: {
+    color: '#397D87',
+  },
 }));
 
 // Fixed: When all of the days, farms, and items are selected, KEM Farms - Berries produce stays up
@@ -135,36 +139,28 @@ const StoreFilter = () => {
 
   return (
     <FilterContext.Provider value={{ shownDays }}>
-      <Box width="300px">
+      <Box style = {{display: 'flex', flexDirection: 'row'}}>
         <Box
           display="flex"
+          flexDirection = 'column'
           justifyContent="center"
           p={1}
           mb={1}
-          style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
+          style={{ backgroundColor: appColors.componentBg, borderRadius: 10, border: '2px solid green', flexGrow: 1, flexBasis: 'auto' }}
         >
-          <Box p={1} className={clsx(classes.borderCol, classes.filterCol)}>
-            Delivery Days
+          <Box p={1} className={clsx(classes.deliveryDates, classes.filterCol)}>
+            Delivery dates available
           </Box>
-          <Box p={1} className={clsx(classes.borderCol, classes.filterCol)}>
-            Farms
-          </Box>
-          <Box p={1} className={classes.filterCol}>
-            Item Category
+          <Box style = {{border: '2px solid magenta'}}>
+            {ItemStack(DaysCategory)}
           </Box>
         </Box>
         <Box
           display="flex"
           justifyContent="center"
           p={1}
-          style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
+          style={{ backgroundColor: appColors.componentBg, borderRadius: 10, border: '2px solid red', flexGrow: 1, flexBasis: 'auto' }}
         >
-          <Box className={clsx(classes.borderCol, classes.filterCol)}>
-            {ItemStack(DaysCategory)}
-          </Box>
-          <Box className={clsx(classes.borderCol, classes.filterCol)}>
-            {ItemStack(FarmCategory)}
-          </Box>
           <Box className={classes.filterCol}>{ItemStack(ItemCategory)}</Box>
         </Box>
       </Box>

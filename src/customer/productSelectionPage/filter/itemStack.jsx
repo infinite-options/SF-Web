@@ -1,14 +1,15 @@
 import React from 'react';
-import { Grid, Paper } from '@material-ui/core';
+import { Grid, Paper, Box } from '@material-ui/core';
 import appColors from '../../../styles/AppColors';
 
 const ItemStack = (Items) => {
+  console.error('items binky');
+  console.log(Items);
+
   return (
-    <Grid container>
-      <Grid container item>
-        <Items />
-      </Grid>
-    </Grid>
+    <Box style = {{display: 'flex', flexDirection: 'row'}}>
+      <Items style = {{border:'2px solid green'}}/>
+    </Box>
   );
 };
 

@@ -45,7 +45,7 @@ const ItemCategoryItem = (props) => {
           alt={props.altName}
         />
       </Box>
-      <div style={{ width: '100%', fontSize: 12, textAlign: 'center' }}>
+      <div style={{width: '100%', fontSize: 12, textAlign: 'center' }}>
         {props.label}
       </div>
     </Box>

@@ -1,13 +1,17 @@
 import React, { useState, useContext, useEffect } from 'react';
 import storeContext from '../../storeContext';
-import { Box, Button, Grid } from '@material-ui/core';
+import { Box, Button, Card, Grid, Icon, IconButton, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
+import InfoIcon from '@material-ui/icons/Info';
 import AddIcon from '@material-ui/icons/Add';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import RemoveIcon from '@material-ui/icons/Remove';
 import appColors from '../../../styles/AppColors';
 import ProduceSelectContext from '../ProdSelectContext';
+import { CallMissedSharp } from '@material-ui/icons';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   button: {
     border: '1px solid' + appColors.border,
     borderRadius: 5,
@@ -15,7 +19,72 @@ const useStyles = makeStyles({
     color: appColors.primary,
     opacity: 0.9,
   },
-});
+
+  foodNameTypography: {
+    fontWeight: 'bold',
+  },
+
+  itemCountAndPrice: {
+    marginTop: theme.spacing(4),
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    display: 'grid',
+    alignItems: 'center',
+    gridTemplateColumns: '1fr 2fr',
+  },
+
+  itemCount: {
+    display: 'grid',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gridTemplateColumns: '1fr 1fr 1fr',
+  },
+
+  itemCountBtn: {
+    color: "#E88330",
+    background: '#397D87',
+    width: '60px',
+    height: '40px',
+    variant: 'contained',
+    borderRadius: '0px',
+  },
+
+  itemCountTypog: {
+    fontWeight: 'bold',
+    marginLeft: theme.spacing(1.5),
+    marginRight: theme.spacing(1.5),
+  },
+
+  itemPrice: {
+    fontWeight: 'bold',
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+    textAlign: 'end',
+  },
+
+  test: {
+    backgroundColor: '#397D87',
+    color: '#E88330',
+    fontSize: '2em',
+  },
+
+  checkoutInfo: {
+    borderRadius: '12px',
+    border: '1px solid #e8cfba',
+  },
+
+  itemInfo: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+  },
+
+  itemInfoCard: {
+    width: '60px',
+    height: '60px',
+    borderRadius: '10px',
+  },
+}));
 
 function Entry(props) {
   const classes = useStyles();
@@ -24,6 +93,7 @@ function Entry(props) {
   const productSelect = useContext(ProduceSelectContext);
 
   const [isShown, setIsShown] = useState(false);
+  const [hearted, setHearted] = useState(false);
 
   useEffect(() => {
     let isInDay = false;
@@ -93,87 +163,178 @@ function Entry(props) {
     store.setCartTotal(store.cartTotal + 1);
   }
 
+  const toggleHearted = () => {
+    setHearted(!hearted);
+  };
+
   return (
-    <>
-      <Grid hidden={!isShown} item>
-        <Box
-          className="center-cropped"
-          display="flex"
-          alignItems="flex-start"
-          position="relative"
-          zIndex="modal"
-        >
-          <img src={props.img.replace(' ', '%20')} width='170' height='170' alt={props.name}></img>
+    <Grid xs = {4} hidden = {!isShown} item style = {{
+      width: '40px',
+    }}>
+      <Box className = {classes.itemInfo}>
+        <Box>
+          <Card className = {classes.itemInfoCard}>
+            <IconButton
+              className = {classes.itemInfoBtn}
+              onClick = {toggleHearted}
+            >
+              {
+                hearted ?
+                  <FavoriteIcon style = {{color: '#E88330'}} fontSize = 'large'/> :
+                  <FavoriteBorderIcon style = {{color: '#E88330'}} fontSize = 'large'/>
+              }
+            </IconButton>
+          </Card>
         </Box>
+        <Box style = {{display: 'flex', justifyContent: 'flex-end'}}>
+          <Card className = {classes.itemInfoCard} style = {{justifyContent: 'flex-end'}}>
+            <IconButton className = {classes.itemInfoBtn}>
+              <InfoIcon fontSize = 'large' style = {{color: '#397D87'}}/>
+            </IconButton>
+          </Card>
+        </Box>
+      </Box>
+
+      <Card
+        style = {{
+          backgroundImage: `url(${props.img.replace(' ', '%20')})`,
+          height: '180px',
+          borderRadius: '12px',
+      }}>
+        <img src = {`${props.img.replace(' ', '%20')}`} style = {{width: '100%', height: '100%'}} />
+      </Card>
+
+      <Card className = {classes.checkoutInfo}>
+        <Typography className = {classes.foodNameTypography}>
+          {props.name}
+        </Typography>
+
+        <Box className = {classes.itemCountAndPrice}>
+          <Box className = {classes.itemCount}>
+            <IconButton
+              style = {{
+                color: "#E88330",
+                background: '#397D87',
+                borderRadius: '5px',
+                width: '40px',
+                height: '30px',
+                variant: 'contained',
+              }}
+              onClick = {decrease}
+            >
+              <RemoveIcon fontSize = 'large'/>
+            </IconButton>
+
+            <Typography className = {classes.itemCountTypog}>
+              {props.id in store.cartItems
+                ? store.cartItems[props.id]['count']
+                : 0}
+            </Typography>
+
+            <IconButton
+              style = {{
+                color: "#E88330",
+                background: '#397D87',
+                borderRadius: '5px',
+                width: '40px',
+                height: '30px',
+                variant: 'contained',
+              }}
+              onClick = {increase}
+            >
+              <AddIcon fontSize = 'large'/>
+            </IconButton>
+          </Box>
+
+          <Typography className = {classes.itemPrice}>
+            {
+              `$${props.price.toFixed(2)} ${props.unit === 'each'
+                ? '(' + props.unit + ')' : '/ ' + props.unit}`
+            }
+          </Typography>
+        </Box>
+      </Card>
+    </Grid>
+    // <>
+    //   <Grid hidden={!isShown} item>
+    //     <Box
+    //       className="center-cropped"
+    //       display="flex"
+    //       alignItems="flex-start"
+    //       position="relative"
+    //       zIndex="modal"
+    //     >
+    //       <img src={props.img.replace(' ', '%20')} width='170' height='170' alt={props.name}></img>
+    //     </Box>
         
-        <Box position="relative" zIndex="tooltip" top={-91} height={110}>
-          <Box
-            className={classes.button}
-            width={30}
-            height={30}
-            ml={17.5}
-            mt={-10.1}
-            mb={13.7}
-            lineHeight="30px"
-          >
-            {props.id in store.cartItems
-              ? store.cartItems[props.id]['count']
-              : 0}
-          </Box>
-          <Box display="flex" alignItems="flex-start">
-            <Button
-              className={classes.button}
-              variant="contained"
-              size="small"
-              onClick={decrease}
-              style={{
-                width: '86px',
-                borderTopLeftRadius: 10,
-                borderBottomLeftRadius: 10,
-                borderTopRightRadius: 0,
-                borderBottomRightRadius: 0,
-              }}
-            >
-              <RemoveIcon fontSize="small" cursor="pointer" color="primary" />
-            </Button>
-            <Button
-              className={classes.button}
-              variant="contained"
-              size="small"
-              onClick={increase}
-              style={{
-                width: '86px',
-                borderTopRightRadius: 10,
-                borderBottomRightRadius: 10,
-                borderTopLeftRadius: 0,
-                borderBottomLeftRadius: 0,
-              }}
-            >
-              <AddIcon fontSize="small" cursor="pointer" color="primary" />
-            </Button>
-          </Box>
-          <Box
-            width="168px"
-            p={0.1}
-            style={{
-              fontSize: '12px',
-              backgroundColor: 'white',
-              borderRadius: 5,
-              border: '1px solid ' + appColors.border,
-            }}
-          >
-            <Box display="flex">
-              <Box textAlign="left">{props.name}</Box>
-              <Box flexGrow={1} />
-              <Box textAlign="right">
-                $ {props.price.toFixed(2)} {props.unit === 'each' ? '' : '/ '}
-                {props.unit}
-              </Box>
-            </Box>
-          </Box>
-        </Box>
-      </Grid>
-    </>
+    //     <Box position="relative" zIndex="tooltip" top={-91} height={110}>
+    //       <Box
+    //         className={classes.button}
+    //         width={30}
+    //         height={30}
+    //         ml={17.5}
+    //         mt={-10.1}
+    //         mb={13.7}
+    //         lineHeight="30px"
+    //       >
+            // {props.id in store.cartItems
+            //   ? store.cartItems[props.id]['count']
+            //   : 0}
+    //       </Box>
+    //       <Box display="flex" alignItems="flex-start">
+    //         <Button
+    //           className={classes.button}
+    //           variant="contained"
+    //           size="small"
+    //           onClick={decrease}
+    //           style={{
+    //             width: '86px',
+    //             borderTopLeftRadius: 10,
+    //             borderBottomLeftRadius: 10,
+    //             borderTopRightRadius: 0,
+    //             borderBottomRightRadius: 0,
+    //           }}
+    //         >
+    //           <RemoveIcon fontSize="small" cursor="pointer" color="primary" />
+    //         </Button>
+    //         <Button
+    //           className={classes.button}
+    //           variant="contained"
+    //           size="small"
+    //           onClick={increase}
+    //           style={{
+    //             width: '86px',
+    //             borderTopRightRadius: 10,
+    //             borderBottomRightRadius: 10,
+    //             borderTopLeftRadius: 0,
+    //             borderBottomLeftRadius: 0,
+    //           }}
+    //         >
+    //           <AddIcon fontSize="small" cursor="pointer" color="primary" />
+    //         </Button>
+    //       </Box>
+    //       <Box
+    //         width="168px"
+    //         p={0.1}
+    //         style={{
+    //           fontSize: '12px',
+    //           backgroundColor: 'white',
+    //           borderRadius: 5,
+    //           border: '1px solid ' + appColors.border,
+    //         }}
+    //       >
+    //         <Box display="flex">
+    //           <Box textAlign="left">{props.name}</Box>
+    //           <Box flexGrow={1} />
+    //           <Box textAlign="right">
+                // $ {props.price.toFixed(2)} {props.unit === 'each' ? '' : '/ '}
+                // {props.unit}
+    //           </Box>
+    //         </Box>
+    //       </Box>
+    //     </Box>
+    //   </Grid>
+    // </>
   );
 }
 
