@@ -474,7 +474,7 @@ const Store = ({ ...props }) => {
         }
       }
       setProducts(_products);
-      console.log('productsssssss----',_products)
+      // console.log('productsssssss----',_products)
       setProductsLoading(false);
     });
   }
@@ -515,10 +515,7 @@ const Store = ({ ...props }) => {
           setStorePage={setStorePage}
         />
         <Box hidden={storePage !== 0}>
-          <Box 
-          // display="flex"
-            className="responsive-store"
-          >
+          <Box>
             <ProductSelectionPage farms={farmsList} />
           </Box>
         </Box>

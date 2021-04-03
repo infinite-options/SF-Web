@@ -1,15 +1,20 @@
 import React, { useState, useContext, useEffect } from 'react';
 import storeContext from '../../storeContext';
-import { Box, Button, Card, Grid, Icon, IconButton, Typography } from '@material-ui/core';
+import { Box, Button, Card, Grid, Icon, IconButton, Typography, SvgIcon } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import InfoIcon from '@material-ui/icons/Info';
-import AddIcon from '@material-ui/icons/Add';
+// import InfoIcon from '@material-ui/icons/Info';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import RemoveIcon from '@material-ui/icons/Remove';
 import appColors from '../../../styles/AppColors';
 import ProduceSelectContext from '../ProdSelectContext';
 import { CallMissedSharp } from '@material-ui/icons';
+
+import {ReactComponent as AddIcon } from '../../../sf-svg-icons/sfcolored-plus.svg';
+import {ReactComponent as RemoveIcon } from '../../../sf-svg-icons/sfcolored-minus.svg';
+
+import FavoriteSrc from '../../../sf-svg-icons/heart-whitebackground.svg';
+import FavoriteBorderedSrc from '../../../sf-svg-icons/heart-whitebackground-bordered.svg';
+import InfoSrc from '../../../sf-svg-icons/info-whitebackground.svg';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -168,40 +173,59 @@ function Entry(props) {
   };
 
   return (
-    <Grid xs = {4} hidden = {!isShown} item style = {{
-      width: '40px',
+    <Grid xs = {6} md = {4} lg = {3} xl = {2} hidden = {!isShown} item style = {{
     }}>
-      <Box className = {classes.itemInfo}>
-        <Box>
-          <Card className = {classes.itemInfoCard}>
-            <IconButton
+      <Card
+        style = {{borderRadius: '12px',}}
+      >
+        <Box className = {classes.itemInfo}>
+          <Box style = {{
+            display: 'flex', justifyContent: 'flex-start',
+          }}>
+            <Button
               className = {classes.itemInfoBtn}
               onClick = {toggleHearted}
             >
-              {
-                hearted ?
-                  <FavoriteIcon style = {{color: '#E88330'}} fontSize = 'large'/> :
-                  <FavoriteBorderIcon style = {{color: '#E88330'}} fontSize = 'large'/>
-              }
-            </IconButton>
-          </Card>
-        </Box>
-        <Box style = {{display: 'flex', justifyContent: 'flex-end'}}>
-          <Card className = {classes.itemInfoCard} style = {{justifyContent: 'flex-end'}}>
-            <IconButton className = {classes.itemInfoBtn}>
-              <InfoIcon fontSize = 'large' style = {{color: '#397D87'}}/>
-            </IconButton>
-          </Card>
-        </Box>
-      </Box>
+              <img src = {hearted ? FavoriteSrc : FavoriteBorderedSrc} />
+            </Button>
+          </Box>
 
-      <Card
-        style = {{
-          backgroundImage: `url(${props.img.replace(' ', '%20')})`,
+          <Box style = {{
+            display: 'flex', justifyContent: 'flex-end',
+          }}>
+            <Button
+              className = {classes.itemInfoBtn}
+            >
+              <img src = {InfoSrc} />
+            </Button>
+          </Box>
+          {/* <Box>
+            <Card className = {classes.itemInfoCard}>
+              <IconButton
+                className = {classes.itemInfoBtn}
+                onClick = {toggleHearted}
+              >
+                {
+                  hearted ?
+                    <FavoriteIcon style = {{color: '#E88330'}} fontSize = 'large'/> :
+                    <FavoriteBorderIcon style = {{color: '#E88330'}} fontSize = 'large'/>
+                }
+              </IconButton>
+            </Card>
+          </Box> */}
+          {/* <Box style = {{display: 'flex', justifyContent: 'flex-end'}}>
+            <Card className = {classes.itemInfoCard} style = {{justifyContent: 'flex-end'}}>
+              <IconButton className = {classes.itemInfoBtn}>
+                <InfoIcon fontSize = 'large' style = {{color: '#397D87'}}/>
+              </IconButton>
+            </Card>
+          </Box> */}
+        </Box>
+        <Box style = {{
           height: '180px',
-          borderRadius: '12px',
-      }}>
-        <img src = {`${props.img.replace(' ', '%20')}`} style = {{width: '100%', height: '100%'}} />
+        }}>
+          <img src = {`${props.img.replace(' ', '%20')}`} style = {{width: '100%', height: '100%'}} />
+        </Box>
       </Card>
 
       <Card className = {classes.checkoutInfo}>
@@ -213,16 +237,11 @@ function Entry(props) {
           <Box className = {classes.itemCount}>
             <IconButton
               style = {{
-                color: "#E88330",
-                background: '#397D87',
-                borderRadius: '5px',
-                width: '40px',
-                height: '30px',
-                variant: 'contained',
+                padding: '0px'
               }}
               onClick = {decrease}
             >
-              <RemoveIcon fontSize = 'large'/>
+              <SvgIcon component = {RemoveIcon} fontSize = 'large'/>
             </IconButton>
 
             <Typography className = {classes.itemCountTypog}>
@@ -231,18 +250,8 @@ function Entry(props) {
                 : 0}
             </Typography>
 
-            <IconButton
-              style = {{
-                color: "#E88330",
-                background: '#397D87',
-                borderRadius: '5px',
-                width: '40px',
-                height: '30px',
-                variant: 'contained',
-              }}
-              onClick = {increase}
-            >
-              <AddIcon fontSize = 'large'/>
+            <IconButton onClick = {increase} style = {{padding: '0px'}}>
+              <SvgIcon component = {AddIcon} fontSize = 'large'/>
             </IconButton>
           </Box>
 

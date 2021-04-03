@@ -4,7 +4,7 @@ import FarmCategory from './Farm';
 import DaysCategory from './Days';
 import ItemStack from './itemStack';
 import appColors from '../../../styles/AppColors';
-import { Box } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import storeContext from '../../storeContext';
@@ -12,17 +12,34 @@ import ProdSelectContext from '../ProdSelectContext';
 import FilterContext from './FilterContext';
 
 const useStyles = makeStyles((theme) => ({
+  storeFilterContainer: {
+    marginLeft: theme.spacing(5),
+    marginRight: theme.spacing(9),
+  },
   borderCol: {
     borderRight: '1px solid ' + appColors.secondary,
   },
   filterCol: {
-    width: '100px',
-    textAlign: 'center',
     color: appColors.paragraphText,
   },
 
   deliveryDates: {
     color: '#397D87',
+    fontWeight: 'bold',
+    fontSize: '14px',
+    textAlign: 'start',
+  },
+
+  filterItemsGrid: {
+    display: 'grid',
+    justifyContent: "center",
+
+    [theme.breakpoints.up('sm')]: {
+      gridTemplateColumns: '1fr 1fr',
+    },
+    [theme.breakpoints.down('xs')]: {
+      gridTemplateColumns: '1fr',
+    },
   },
 }));
 
@@ -139,29 +156,21 @@ const StoreFilter = () => {
 
   return (
     <FilterContext.Provider value={{ shownDays }}>
-      <Box style = {{display: 'flex', flexDirection: 'row'}}>
-        <Box
-          display="flex"
-          flexDirection = 'column'
-          justifyContent="center"
-          p={1}
-          mb={1}
-          style={{ backgroundColor: appColors.componentBg, borderRadius: 10, border: '2px solid green', flexGrow: 1, flexBasis: 'auto' }}
-        >
-          <Box p={1} className={clsx(classes.deliveryDates, classes.filterCol)}>
+      <Box className = {classes.storeFilterContainer}>
+        <Typography className={clsx(classes.deliveryDates, classes.filterCol)}>
             Delivery dates available
-          </Box>
-          <Box style = {{border: '2px solid magenta'}}>
+        </Typography>
+
+        <Box
+          className = {classes.filterItemsGrid}
+          mb={1}
+        >
+          <Box display = 'flex' flexDirection = 'row'>
             {ItemStack(DaysCategory)}
           </Box>
-        </Box>
-        <Box
-          display="flex"
-          justifyContent="center"
-          p={1}
-          style={{ backgroundColor: appColors.componentBg, borderRadius: 10, border: '2px solid red', flexGrow: 1, flexBasis: 'auto' }}
-        >
-          <Box className={classes.filterCol}>{ItemStack(ItemCategory)}</Box>
+          <Box display = 'flex' flexDirection = 'row' style = {{justifyContent: 'flex-end'}}>
+            {ItemStack(ItemCategory)}
+          </Box>
         </Box>
       </Box>
     </FilterContext.Provider>

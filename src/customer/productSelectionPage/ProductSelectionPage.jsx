@@ -48,7 +48,7 @@ const ProductSelectionPage = (props) => {
   const [categoriesClicked, setCategoriesClicked] = useState(new Set());
 
   return (
-    <Box style = {{border: '2px solid red', display: 'flex', flexDirection: 'column'}}>
+    <Box style = {{display: 'flex', flexDirection: 'column'}}>
       <ProdSelectContext.Provider
         value={{
           itemError,

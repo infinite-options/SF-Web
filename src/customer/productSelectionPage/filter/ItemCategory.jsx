@@ -55,6 +55,13 @@ const ItemCategory = () => {
       label: 'Others',
       type: 'other',
     },
+    {
+      onAsset: '../../footer_icon/orangeHeart.png',
+      offAsset: '../../footer_icon/tealHeart.png',
+      altName: 'heart-img',
+      label: 'Favorites',
+      type: 'favorite',
+    },
   ];
 
   return (

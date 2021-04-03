@@ -2,9 +2,26 @@ import React, { useContext, useEffect, useState } from 'react';
 import Entry from './Entry';
 import ProdSelectContext from '../ProdSelectContext';
 import storeContext from '../../storeContext';
-import { Box, Grid, Paper } from '@material-ui/core';
+import { Box, Grid, Paper, Typography } from '@material-ui/core';
 import appColors from '../../../styles/AppColors';
 import { set } from 'js-cookie';
+import {makeStyles} from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+  itemDisplayContainer: {
+    backgroundColor: appColors.componentBg,
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    paddingLeft: theme.spacing(5),
+    paddingRight: theme.spacing(5),
+    marginBottom: theme.spacing(2),
+  },
+
+  productsPaperContainer: {
+    backgroundColor: appColors.componentBg,
+    marginTop: theme.spacing(2),
+  },
+}));
 
 // DONE: add unit, each is as is, anything else is '/' or 'per'
 function createProduct2(product) {
@@ -30,6 +47,7 @@ function createProduct2(product) {
 // If Identical still then we should select the one with the earliest created_at date
 
 function DisplayProduct() {
+  const classes = useStyles();
   const productSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
 
@@ -73,51 +91,31 @@ function DisplayProduct() {
 
   if (!store.productsLoading && !productSelect.itemError) {
     return (
-      <>
-        <Box
-          className="responsive-display-produce"
-          // width="100%"
-          height={windowHeight - 165}
-          // ml={2}
-          // p={3}
-          // pb={5}
-          mb={2}
-          style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom: '95px' }}
+      <Box
+        className = {classes.itemDisplayContainer}
+      >
+        <Paper
+          elevation={0}
+          className = {classes.productsPaperContainer}
         >
-          <Box fontSize={22} color={appColors.paragraphText}>
-            {displayMessage}
-          </Box>
-          <Box mt={2} />
-          <Paper
-            elevation={0}
-            style={{
-              backgroundColor: appColors.componentBg,
-              maxHeight: '100%',
-              width: '100%',
-              overflow: 'auto',
-            }}
-          >
-            <Box width="97%" justifyContent="center">
-              <Grid container direction="row" justify="flex-start" 
+          <Box justifyContent="center">
+            <Grid container direction="row" justify="flex-start" 
               // spacing={5}
               spacing={2}
-              >
-                {store.products.map(createProduct2)}
-              </Grid>
-            </Box>
-          </Paper>
-        </Box>
-      </>
+            >
+              {store.products.map(createProduct2)}
+            </Grid>
+          </Box>
+        </Paper>
+      </Box>
     );
   } else {
     return (
       <Box
-        ml={2}
         p={2}
-        width="100%"
-        style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
+        style={{ display: 'flex', backgroundColor: appColors.componentBg, borderRadius: 10}}
       >
-        <div>Thank you for waiting, we are loading the products for you.</div>
+        <Typography>Thank you for waiting, we are loading the products for you.</Typography>
       </Box>
     );
   }

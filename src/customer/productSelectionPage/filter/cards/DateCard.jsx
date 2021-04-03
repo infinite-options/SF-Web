@@ -12,8 +12,15 @@ import storeContext from '../../../storeContext';
 
 
 const useStyles = makeStyles((theme) => ({
+  dateCardContainer: {
+    justifyContent: 'center',
+    marginTop: theme.spacing(.5),
+    marginBottom: theme.spacing(.5),
+    marginRight: theme.spacing(2),
+  },
+
   card: {
-    backgroundColor: '#e0e6e6',
+    backgroundColor: props => props.clicked ? appColors.primary : '#e0e6e6',
     width: 75,
     height: 78,
     borderRadius: 10,
@@ -26,6 +33,8 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
   },
   date: {
+    fontWeight: 'bold',
+    color: props => props.clicked ? 'white' : appColors.secondary,
     textAlign: 'center',
     fontSize: 16,
   },
@@ -50,11 +59,12 @@ const amPmTo24Hr = (time) => {
   }
 };
 const DateCard = (props) => {
+  const [isClicked, setIsClicked] = useState(true);
+  const classes = useStyles({clicked: isClicked});
   const productSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
   const confirm = useConfirmation();
 
-  const [isClicked, setIsClicked] = useState(true);
   const [showCard, setShowCard] = useState(
     productSelect.farmsClicked.size == 0 ? true : false
   );
@@ -78,6 +88,8 @@ const DateCard = (props) => {
         changeDay();
       }
     }
+
+    console.warn('Clickerino');
   };
 
   function displayDialog(action) {
@@ -176,51 +188,36 @@ const DateCard = (props) => {
     _showCard = showCount === productSelect.farmsClicked.size;
     setShowCard(_showCard);
   }, [productSelect.farmsClicked]);
-  const classes = useStyles();
 
   // IMPORTANT: if you're going to use the hidden field, make sure you either
   //            put a conditional on the display prop, wrap it alone in a Box tag,
   //            not use display
   return (
-    <>
-      <Box
-        hidden={!showCard}
-        justifyContent="center"
-        width="100%"
-        m={0.5}
-        p={0.5}
-      >
-        <div className={classes.card} onClick={cardClicked}>
-          <div className={classes.weekDay}>{props.weekDay}</div>
+    <Box
+      hidden={!showCard}
+      className = {classes.dateCardContainer}
+    >
+      <div className={classes.card} onClick={cardClicked}>
+        <div className={classes.weekDay}>{props.weekDay}</div>
+        <Box
+          mt={1}
+          className={classes.date}
+        >
+          {props.month} {props.day}
+          <br />
           <Box
-            mt={1}
-            className={classes.date}
-            style={{
-              color: isClicked ? appColors.primary : appColors.secondary,
-            }}
+            className={classes.time}
           >
-            {props.month} {props.day}
-            <br />
-            <Box
-              className={classes.time}
-              style={{
-                color: isClicked ? appColors.primary : appColors.secondary,
-              }}
-            >
-              {props.time}
-            </Box>
-            <Box
-              className={classes.accept}
-              style={{
-                color: isClicked ? appColors.primary : 'purple',
-              }}
-            >
-              order by {}{props.accept_hr.charAt(0) + props.accept_hr.substring(1).toLowerCase()}
-            </Box>
+            {props.time}
           </Box>
-        </div>
-      </Box>
-    </>
+          <Box
+            className={classes.accept}
+          >
+            order by {props.accept_hr.charAt(0) + props.accept_hr.substring(1).toLowerCase()}
+          </Box>
+        </Box>
+      </div>
+    </Box>
   );
 };
 
