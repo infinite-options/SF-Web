@@ -11,7 +11,7 @@ import HistoryTab from './tabs/HistoryTab';
 import RefundTab from './tabs/RefundTab';
 import appColors from '../../styles/AppColors';
 import storeContext from '../storeContext';
-
+//
 const useStyles = makeStyles({
   root: {
     flexGrow: 1,
@@ -89,9 +89,7 @@ export default function CheckoutRight() {
       style={{
         border: '3px solid #136D74',
         borderRadius: '20px',
-        width: '500px',
-        float: 'right',
-        marginRight: '20px',
+        margin: '10px',
       }}
       // style={{ height: windowHeight - 95 }}
     >
@@ -131,7 +129,6 @@ export default function CheckoutRight() {
           marginTop: 10,
           backgroundColor: appColors.componentBg,
           maxHeight: '92%',
-          overflow: 'auto',
         }}
       >
         <Box hidden={rightTabChosen !== 0}>

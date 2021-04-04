@@ -21,6 +21,8 @@ const ItemCategoryItem = (props) => {
   const productSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
 
+  console.warn(store);
+
   const [isClicked, setIsClicked] = useState(false);
   const [isShown, setIsShown] = useState(
     productSelect.farmsClicked.size > 0 || store.dayClicked === ''
@@ -34,7 +36,8 @@ const ItemCategoryItem = (props) => {
     } else {
       newCategoriesClicked.add(props.type);
     }
-    console.log('newCategoriesClicked: ', newCategoriesClicked);
+    // console.log('newCategoriesClicked: ', newCategoriesClicked);
+    // console.warn(productSelect);
     productSelect.setCategoriesClicked(newCategoriesClicked);
     setIsClicked(!isClicked);
   }

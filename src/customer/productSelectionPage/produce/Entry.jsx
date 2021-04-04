@@ -25,18 +25,30 @@ const useStyles = makeStyles((theme) => ({
     opacity: 0.9,
   },
 
+  foodGridItem: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+  },
+
   foodNameTypography: {
+    marginTop: theme.spacing(2),
     fontWeight: 'bold',
   },
 
   itemCountAndPrice: {
-    marginTop: theme.spacing(4),
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-    marginBottom: theme.spacing(1),
     display: 'grid',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     gridTemplateColumns: '1fr 2fr',
+    flexGrow: 1,
+    flexBasis: 1,
+    paddingBottom: theme.spacing(1),
   },
 
   itemCount: {
@@ -77,6 +89,10 @@ const useStyles = makeStyles((theme) => ({
   checkoutInfo: {
     borderRadius: '12px',
     border: '1px solid #e8cfba',
+    width: '250px',
+    height: '120px',
+    display: 'flex',
+    flexDirection: 'column',
   },
 
   itemInfo: {
@@ -172,11 +188,15 @@ function Entry(props) {
     setHearted(!hearted);
   };
 
-  return (
-    <Grid xs = {6} md = {4} lg = {3} xl = {2} hidden = {!isShown} item style = {{
-    }}>
+  return ( isShown ?
+    <Grid xs = {6} md = {4} lg = {4} item className = {classes.foodGridItem}>
       <Card
-        style = {{borderRadius: '12px',}}
+        style = {{
+          borderRadius: '12px', backgroundImage: `url("${props.img.replace(' ', '%20')}")`,
+          height: '200px', width: '250px',
+          backgroundSize: '250px 200px',
+        }}
+        backgroundImage = {`url("${props.img.replace(' ', '%20')}")`}
       >
         <Box className = {classes.itemInfo}>
           <Box style = {{
@@ -199,33 +219,12 @@ function Entry(props) {
               <img src = {InfoSrc} />
             </Button>
           </Box>
-          {/* <Box>
-            <Card className = {classes.itemInfoCard}>
-              <IconButton
-                className = {classes.itemInfoBtn}
-                onClick = {toggleHearted}
-              >
-                {
-                  hearted ?
-                    <FavoriteIcon style = {{color: '#E88330'}} fontSize = 'large'/> :
-                    <FavoriteBorderIcon style = {{color: '#E88330'}} fontSize = 'large'/>
-                }
-              </IconButton>
-            </Card>
-          </Box> */}
-          {/* <Box style = {{display: 'flex', justifyContent: 'flex-end'}}>
-            <Card className = {classes.itemInfoCard} style = {{justifyContent: 'flex-end'}}>
-              <IconButton className = {classes.itemInfoBtn}>
-                <InfoIcon fontSize = 'large' style = {{color: '#397D87'}}/>
-              </IconButton>
-            </Card>
-          </Box> */}
         </Box>
-        <Box style = {{
+        {/* <Box style = {{
           height: '180px',
         }}>
           <img src = {`${props.img.replace(' ', '%20')}`} style = {{width: '100%', height: '100%'}} />
-        </Box>
+        </Box> */}
       </Card>
 
       <Card className = {classes.checkoutInfo}>
@@ -263,7 +262,7 @@ function Entry(props) {
           </Typography>
         </Box>
       </Card>
-    </Grid>
+    </Grid> : ''
     // <>
     //   <Grid hidden={!isShown} item>
     //     <Box

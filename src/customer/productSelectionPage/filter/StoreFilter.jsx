@@ -14,7 +14,7 @@ import FilterContext from './FilterContext';
 const useStyles = makeStyles((theme) => ({
   storeFilterContainer: {
     marginLeft: theme.spacing(5),
-    marginRight: theme.spacing(9),
+    marginRight: theme.spacing(1),
   },
   borderCol: {
     borderRight: '1px solid ' + appColors.secondary,
@@ -28,6 +28,8 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     fontSize: '14px',
     textAlign: 'start',
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
   },
 
   filterItemsGrid: {

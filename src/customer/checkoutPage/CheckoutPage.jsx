@@ -7,6 +7,8 @@ import CheckoutRight from './CheckoutRight';
 import CheckoutContext from './CheckoutContext';
 import { Elements, CardElement, useStripe } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import ProdSelectContext from '../productSelectionPage/ProdSelectContext';
+import storeContext from '../storeContext';
 // import storeContext from "customer/storeContext";
 // import axios from "axios";
 
@@ -19,6 +21,8 @@ const stripePromise = loadStripe(
 );
 
 export default function CheckoutPage() {
+  const {test} = React.useContext(storeContext);
+
   const [paymentDetails, setPaymentDetails] = useState({
     amountPaid: 0,
     amountDue: 0,
@@ -51,51 +55,30 @@ export default function CheckoutPage() {
   });
 
   return (
-    <>
-      <CheckoutContext.Provider
-        value={{
-          paymentDetails,
-          setPaymentDetails,
-          paymentProcessing,
-          setPaymentProcessing,
-          leftTabChosen,
-          setLeftTabChosen,
-          guestInfo,
-          setGuestInfo,
-          purchaseMade,
-          setPurchaseMade,
-          chosenCoupon,
-          setChosenCoupon,
-        }}
-      >
-        <Elements stripe={stripePromise}>
-          <LoadingOverlay
-            active={paymentProcessing}
-            spinner
-            text="Processing Payment"
-          />
-
-          <Box 
-          // display="flex"
-          className="checkout-container"
-          >
-            
-            <Box 
-            // width="55%"
-            className="checkout-right"
-            >
-              <CheckoutRight />
-            </Box>
-            <Box 
-            // width="45%"
-            className="checkout-left"
-            >
-              <CheckoutLeft />
-            </Box>
-            
-          </Box>
-        </Elements>
-      </CheckoutContext.Provider>
-    </>
+    <CheckoutContext.Provider
+      value={{
+        paymentDetails,
+        setPaymentDetails,
+        paymentProcessing,
+        setPaymentProcessing,
+        leftTabChosen,
+        setLeftTabChosen,
+        guestInfo,
+        setGuestInfo,
+        purchaseMade,
+        setPurchaseMade,
+        chosenCoupon,
+        setChosenCoupon,
+      }}
+    >
+      <Elements stripe={stripePromise}>
+        <LoadingOverlay
+          active={paymentProcessing}
+          spinner
+          text="Processing Payment"
+        />
+        <CheckoutRight />
+      </Elements>
+    </CheckoutContext.Provider>
   );
 }

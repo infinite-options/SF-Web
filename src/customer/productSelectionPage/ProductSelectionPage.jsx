@@ -1,10 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react';
 import DisplayProduce from './produce/displayProduct';
+import CheckoutPage from '../checkoutPage/CheckoutPage.jsx';
 import StoreFilter from './filter';
 import ProdSelectContext from './ProdSelectContext';
 import axios from 'axios';
 import storeContext from '../storeContext';
-import Box from '@material-ui/core/Box';
+import { Box, Grid, Dialog, Button, Hidden, IconButton } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 
 const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI + '';
 
@@ -25,8 +27,13 @@ function calTotal() {
 
 const ProductSelectionPage = (props) => {
   const store = useContext(storeContext);
+  const {checkingOut, setCheckingOut} =
+    useContext(storeContext);
+
   const profile = store.profile;
 
+  const [loggingIn, setLoggingIn] = React.useState(false);
+  const [signingUp, setSigningUp] = React.useState(false);
   const [itemError, setHasError] = useState(false);
   const [itemIsLoading, setIsLoading] = useState(false);
 
@@ -48,9 +55,11 @@ const ProductSelectionPage = (props) => {
   const [categoriesClicked, setCategoriesClicked] = useState(new Set());
 
   return (
-    <Box style = {{display: 'flex', flexDirection: 'column'}}>
+    <Box>
       <ProdSelectContext.Provider
         value={{
+          loggingIn, setLoggingIn,
+          signingUp, setSigningUp,
           itemError,
           itemIsLoading,
           farms,
@@ -60,10 +69,36 @@ const ProductSelectionPage = (props) => {
           setFarmsClicked,
           categoriesClicked,
           setCategoriesClicked,
+          store,
         }}
       >
-        <StoreFilter />
-        <DisplayProduce />
+        <Grid container>
+          <Grid item xs = {12} lg = {8} style = {{display: 'flex', flexDirection: 'column'}}>
+            <StoreFilter />
+            <DisplayProduce />
+          </Grid>
+
+          <Hidden mdDown>
+            <Grid item lg = {4}>
+              <CheckoutPage />
+            </Grid>
+          </Hidden>
+        </Grid>
+
+        <Hidden lgUp>
+          <Dialog fullScreen open = {checkingOut}>
+            <Box mt = {2} style = {{display: 'flex', justifyContent: 'flex-end'}}>
+              <IconButton onClick = {() => setCheckingOut(false)} style = {{
+                width: '120px', color: 'teal',
+                borderRadius: '0px',
+              }}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+
+            <CheckoutPage />
+          </Dialog>
+        </Hidden>
       </ProdSelectContext.Provider>
     </Box>
   );

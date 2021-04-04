@@ -104,6 +104,10 @@ const Store = ({ ...props }) => {
 
   // const currenttime = setInterval(checkIfAccepting, 60000);
 
+  const [loggingIn, setLoggingIn] = React.useState(false);
+  const [signingUp, setSigningUp] = React.useState(false);
+  const [checkingOut, setCheckingOut] = React.useState(false);
+
   const [profile, setProfile] = useState({
     email: '',
     firstName: '',
@@ -483,6 +487,9 @@ const Store = ({ ...props }) => {
     <div hidden={props.hidden}>
       <storeContext.Provider
         value={{
+          checkingOut, setCheckingOut,
+          loggingIn, setLoggingIn,
+          signingUp, setSigningUp,
           cartTotal,
           setCartTotal,
           cartItems,
@@ -515,12 +522,7 @@ const Store = ({ ...props }) => {
           setStorePage={setStorePage}
         />
         <Box hidden={storePage !== 0}>
-          <Box>
-            <ProductSelectionPage farms={farmsList} />
-          </Box>
-        </Box>
-        <Box hidden={storePage !== 1}>
-          <CheckoutPage />
+          <ProductSelectionPage farms={farmsList} />
         </Box>
       </storeContext.Provider>
     </div>

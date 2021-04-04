@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import { Box } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import { useConfirmation } from '../../../../services/ConfirmationService';
 import appColors from '../../../../styles/AppColors';
 import AlertDialog from '../../../../utils/dialog';
@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 10,
     color: 'white',
     textAlign: 'center',
+    fontWeight: 'bold',
   },
   date: {
     fontWeight: 'bold',
@@ -88,8 +89,6 @@ const DateCard = (props) => {
         changeDay();
       }
     }
-
-    console.warn('Clickerino');
   };
 
   function displayDialog(action) {
@@ -201,20 +200,14 @@ const DateCard = (props) => {
         <div className={classes.weekDay}>{props.weekDay}</div>
         <Box
           mt={1}
-          className={classes.date}
         >
-          {props.month} {props.day}
-          <br />
-          <Box
-            className={classes.time}
-          >
-            {props.time}
-          </Box>
-          <Box
-            className={classes.accept}
-          >
-            order by {props.accept_hr.charAt(0) + props.accept_hr.substring(1).toLowerCase()}
-          </Box>
+          <Typography className={classes.date}>
+            {props.month}
+          </Typography>
+
+          <Typography className={classes.date}>
+            {props.day}
+          </Typography>
         </Box>
       </div>
     </Box>

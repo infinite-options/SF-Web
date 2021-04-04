@@ -89,6 +89,9 @@ function DisplayProduct() {
     store.cartTotal,
   ]);
 
+  console.error('storeproducts');
+  console.warn(store.products);
+
   if (!store.productsLoading && !productSelect.itemError) {
     return (
       <Box
@@ -101,7 +104,6 @@ function DisplayProduct() {
           <Box justifyContent="center">
             <Grid container direction="row" justify="flex-start" 
               // spacing={5}
-              spacing={2}
             >
               {store.products.map(createProduct2)}
             </Grid>

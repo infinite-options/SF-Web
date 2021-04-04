@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { useElements, CardElement } from '@stripe/react-stripe-js';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { Box, TextField, Button, Paper } from '@material-ui/core';
+import { Box, TextField, Button, Paper, Dialog } from '@material-ui/core';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import AddIcon from '@material-ui/icons/Add';
 import appColors from '../../../styles/AppColors';
@@ -71,8 +71,11 @@ function listItem(item) {
 export default function CheckoutTab() {
   const classes = useStyles();
   const store = useContext(storeContext);
+  const {
+    loggingIn, setLoggingIn,
+    signingUp, setSigningUp,
+  } = useContext(storeContext);
   const checkout = useContext(checkoutContext);
-  const elements = useElements();
 
   const {
     setPaymentProcessing,
@@ -449,6 +452,7 @@ export default function CheckoutTab() {
           color="primary"
           onClick={() => {
             setLeftTabChosen(4);
+            setLoggingIn(true);
           }}
           style={{ textTransform: 'none' }}
         >
@@ -466,12 +470,45 @@ export default function CheckoutTab() {
           color="primary"
           onClick={() => {
             setLeftTabChosen(4);
+            setSigningUp(true);
           }}
           style={{ textTransform: 'none' }}
         >
           Sign Up
         </Button>
       </Box>
+
+      {/* Login dialog opens here based on login state */}
+      <Dialog fullScreen open = {loggingIn} onClose = {() => setLoggingIn(false)} style = {{
+        width: '100%', height: '100%',
+      }}>
+        <Box mt = {1} style = {{
+                     justifyContent: 'center', display: 'flex', height: '100%',
+                     alignItems: 'center',
+        }}>
+          <Button color = 'primary' variant = 'contained' onClick = {() => setLoggingIn(false)} style = {{
+            width: '120px',
+          }}>
+            Close
+          </Button>
+        </Box>
+      </Dialog>
+
+      {/* Sign up dialog opens here based on signUp state */}
+      <Dialog fullScreen open = {signingUp} onClose = {() => setSigningUp(false)} style = {{
+        width: '100%', height: '100%',
+      }}>
+        <Box mt = {1} style = {{
+          justifyContent: 'center', display: 'flex', height: '100%',
+          alignItems: 'center',
+        }}>
+          <Button color = 'primary' variant = 'contained' onClick = {() => setSigningUp(false)} style = {{
+            width: '120px',
+          }}>
+            Close
+          </Button>
+        </Box>
+      </Dialog>
     </Box>
   );
 }
