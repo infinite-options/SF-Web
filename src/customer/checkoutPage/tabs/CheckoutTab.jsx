@@ -12,6 +12,8 @@ import checkoutContext from '../CheckoutContext';
 import PlaceOrder from '../PlaceOrder';
 import Coupons from '../items/Coupons';
 
+import SignUp from '../SignUp/SignUp';
+
 const useStyles = makeStyles({
   root: {
     flexGrow: 1,
