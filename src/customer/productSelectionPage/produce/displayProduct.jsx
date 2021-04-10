@@ -89,9 +89,6 @@ function DisplayProduct() {
     store.cartTotal,
   ]);
 
-  console.error('storeproducts');
-  console.warn(store.products);
-
   if (!store.productsLoading && !productSelect.itemError) {
     return (
       <Box

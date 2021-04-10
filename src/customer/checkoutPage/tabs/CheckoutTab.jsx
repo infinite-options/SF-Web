@@ -14,7 +14,7 @@ import Coupons from '../items/Coupons';
 
 import SignUp from '../SignUp/SignUp';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
@@ -23,8 +23,20 @@ const useStyles = makeStyles({
     marginBottom: '10px',
     paddingBottom: '10px',
   },
+  driverTipBox: {
+    borderBottom: '1px solid' + appColors.checkoutSectionBorder,
+    marginBottom: '10px',
+    paddingBottom: '10px',
+    justifyContent: 'center',
+
+    display: 'flex',
+    [theme.breakpoints.only('lg')]: {
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+  },
   button: { color: appColors.buttonText, marginBottom: '10px' },
-});
+}));
 
 const CssTextField = withStyles({
   root: {
@@ -253,17 +265,14 @@ export default function CheckoutTab() {
         itm_business_uid: item.business_uid,
       };
     });
-    console.log('items: ', items);
+    // console.log('items: ', items);
   }
-  console.log('cartitems####333', cartItems);
+  // console.log('cartitems####333', cartItems);
   return (
     <Box
       className="responsive-checkout-tab"
       display="flex"
       flexDirection="column"
-
-      // height="90%"
-      // px={8}
     >
       {/* START: Expected Delivery */}
       <Box hidden={store.expectedDelivery !== ''} m={2} />
@@ -350,47 +359,49 @@ export default function CheckoutTab() {
       <Box className={classes.section} display="flex">
         <Box>Driver Tip:</Box>
       </Box>
-      <Box className={classes.section} display="flex">
-        <Button
-          className={classes.button}
-          size="small"
-          variant="contained"
-          color="primary"
-          onClick={setDriverTip}
-          style={{ borderRadius: '15px', textTransform: 'none' }}
-        >
-          No Tip
-        </Button>
-        <Button
-          className={classes.button}
-          size="small"
-          variant="contained"
-          color="primary"
-          onClick={setDriverTip}
-          style={{ borderRadius: '15px' }}
-        >
-          $2
-        </Button>
-        <Button
-          className={classes.button}
-          size="small"
-          variant="contained"
-          color="primary"
-          onClick={setDriverTip}
-          style={{ borderRadius: '15px' }}
-        >
-          $3
-        </Button>
-        <Button
-          className={classes.button}
-          size="small"
-          variant="contained"
-          color="primary"
-          onClick={setDriverTip}
-          style={{ borderRadius: '15px' }}
-        >
-          $5
-        </Button>
+      <Box className={classes.driverTipBox}>
+        <Box>
+          <Button
+            className={classes.button}
+            size="small"
+            variant="contained"
+            color="primary"
+            onClick={() => setDriverTip(0)}
+            style={{ borderRadius: '15px', textTransform: 'none' }}
+          >
+            No Tip
+          </Button>
+          <Button
+            className={classes.button}
+            size="small"
+            variant="contained"
+            color="primary"
+            onClick={() => setDriverTip(2)}
+            style={{ borderRadius: '15px' }}
+          >
+            $2
+          </Button>
+          <Button
+            className={classes.button}
+            size="small"
+            variant="contained"
+            color="primary"
+            onClick={() => setDriverTip(3)}
+            style={{ borderRadius: '15px' }}
+          >
+            $3
+          </Button>
+          <Button
+            className={classes.button}
+            size="small"
+            variant="contained"
+            color="primary"
+            onClick={() => setDriverTip(5)}
+            style={{ borderRadius: '15px' }}
+          >
+            $5
+          </Button>
+        </Box>
         <Box flexGrow={1} />
         <Box width="70px">
           <CurrencyTextField
@@ -479,6 +490,10 @@ export default function CheckoutTab() {
           Sign Up
         </Button>
       </Box>
+
+      {/* <Box hidden =  {loggingIn}>
+        <SignUp />
+      </Box> */}
 
       {/* Login dialog opens here based on login state */}
       <Dialog fullScreen open = {loggingIn} onClose = {() => setLoggingIn(false)} style = {{

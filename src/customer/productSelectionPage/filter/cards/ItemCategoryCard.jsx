@@ -21,8 +21,6 @@ const ItemCategoryItem = (props) => {
   const productSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
 
-  console.warn(store);
-
   const [isClicked, setIsClicked] = useState(false);
   const [isShown, setIsShown] = useState(
     productSelect.farmsClicked.size > 0 || store.dayClicked === ''

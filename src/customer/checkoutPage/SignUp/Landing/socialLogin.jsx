@@ -16,209 +16,6 @@ import FacebookLogin from "react-facebook-login";
 import {makeStyles} from '@material-ui/core/styles';
 import './landing.module.css';
 
-// const useStyles = makeStyles(() => ({
-//   root: {
-//     height: 'inherit',
-//     width: 'inherit',
-//     /* background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
-//       url("../../images/landing.png"); */
-//     /* background-color: white; */
-//     backgroundSize: 'cover',
-//     display: 'flex',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//     borderRadius: '20px',
-//   },
-  
-//   mainLogin: {
-//     height: '100%',
-//   },
-
-//   mealHeader: {
-//     height: '300px',
-//     textAlign: 'center',
-//     padding: '4.5rem 0rem 0rem 0rem',
-//   },
-  
-//   'p:nth-of-type(1)': {
-//     fontSize: '30px',
-//     color: 'white',
-//     padding: '0px 80px',
-//   },
-//   'p:nth-of-type(2)': {
-//     marginTop: '20px',
-//     fontSize: '15px',
-//     color: '#fdca3e',
-//     padding: '5px 40px',
-//     fontWeight: '600',
-//   },
-  
-//   headerItemContainer: {
-//     display: 'flex',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//     flexDirection: 'row',
-//     flexWrap: 'wrap',
-//   },
-  
-//   headerItem: {
-//     flex: 1,
-//   },
-  
-//   'headerItem:nth-of-type(1)': {
-//     flex: 3,
-//   },
-  
-//   loginSectionContainer: {
-//     display: 'flex',
-//     textAlign: 'center',
-//     flexWrap: 'wrap',
-//     padding: '55px 0px 0px 0px',
-//   },
-
-//   socialLogin: {
-//     display: 'flex',
-//     width: '50%',
-//     margin: 'auto',
-//     textAlign: 'center',
-//     justifyContent: 'space-evenly',
-//     padding: '0px',
-//   },
-
-//   'socialLogin > button & socialLogin > span > button & socialLogin > div > button': {
-//     marginLeft: '20px',
-//     marginRight: '20px',
-//   },
-
-//   googleBtn: {
-//     backgroundColor: 'none',
-//     border: 'none',
-//     cursor: 'pointer',
-//     borderRadius: '50%',
-//     padding: '0px',
-//     height: '32.9px',
-//     width: '32.9px',
-//   },
-  
-//   googleBtn: {
-//     '&::before': {
-//       content: 'url(./google-plus.svg)',
-//     }
-//   },
-  
-//   appleLogin: {
-//     backgroundColor: 'black',
-//     border: 'none',
-//     cursor: 'pointer',
-//     borderRadius: '50%',
-//     padding: '0px',
-//     height: '32.9px',
-//     width: '32.9px',
-//   },
-  
-//   fbLogin: {
-//     backgroundColor: 'none',
-//     border: 'none',
-//     cursor: 'pointer',
-//     borderRadius: '50%',
-//     padding: '0px',
-//     height: '32.9px',
-//     width: '32.9px',
-//     color: 'transparent',
-//   },
-  
-//   fbLogin: 
-//   {
-//     '&::before': {
-//       content: 'url(./facebook.svg)',
-//     }
-//   },
-  
-//   loginSectionItem: {
-//     flex: '1 100%',
-//     margin: '7px 10px',
-//     width: '100%',
-//     display: 'flex',
-//     flexDirection: 'column',
-//     alignItems: 'center',
-//   },
-  
-//   loginSectionInput: {
-//     width: '270px',
-//     height: '31px',
-//     padding: '0px 15px',
-//     borderRadius: '18px',
-//     backgroundColor: '#ffffffd0',
-//     border: 'none',
-//     boxShadow: '0px 3px 6px #00000029',
-//     /* margin-bottom: 5px; */
-//   },
-  
-//   loginSectionInput: {
-//     '&::focus': {
-//       outline: 'none',
-//     }
-//   },
-  
-//   'loginSectionInput > input': {
-//     width: '85%',
-//     float: 'left',
-//     backgroundColor: 'transparent',
-//     paddingTop: '3px',
-//     height: '90%',
-//     border: 'none',
-//   },
-  
-//   'loginSectionInput > input': {
-//     '&::hover': {
-//       outline: 'none',
-//       border: 'none',
-//     }
-//   },
-  
-//   'loginSectionInput > a': {
-//     cursor: 'pointer',
-//     height: '100%',
-//     width: '10%',
-//     textDecoration: 'none',
-//     display: 'inline-flex',
-//     margin: '0px !important',
-//     padding: '0.5rem',
-//     textAlign: 'center',
-//     justifyItems: 'center',
-//   },
-  
-//   buttonContainer: {
-//     marginTop: '10px',
-//     display: 'flex',
-//     flexWrap: 'wrap',
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//     textAlign: 'center',
-//   },
-  
-//   button: {
-//     width: '110px',
-//     height: '45px',
-//     color: '#000000',
-//     border: 'none',
-//     backgroundColor: '#ff9e19',
-//     borderRadius: '25px',
-//     padding: '10px',
-//     fontSize: '1rem',
-//     fontWeight: '500',
-//     margin: '0rem 0.8rem',
-//   },
-  
-//   socialLoginItem: {
-//     margin: '20px',
-//     padding: '5px',
-//     height: '30px',
-//   },
-// }));
-
-
 class SocialLogin extends Component {
 
   successLogin = page => {
@@ -347,29 +144,29 @@ class SocialLogin extends Component {
 }
 
 SocialLogin.propTypes = {
-    // bypassLogin: PropTypes.func.isRequired,
-    // changeEmail: PropTypes.func.isRequired,
-    // changePassword: PropTypes.func.isRequired,
-    // loginAttempt: PropTypes.func.isRequired,
-    socialLoginAttempt: PropTypes.func.isRequired,
-    // email: PropTypes.string.isRequired,
-    // password: PropTypes.string.isRequired
-  };
-  
-  // const mapStateToProps = state => ({
-  //   email: state.login.email,
-  //   password: state.login.password,
-  //   error: state.login.error
-  // });
+  // bypassLogin: PropTypes.func.isRequired,
+  // changeEmail: PropTypes.func.isRequired,
+  // changePassword: PropTypes.func.isRequired,
+  // loginAttempt: PropTypes.func.isRequired,
+  socialLoginAttempt: PropTypes.func.isRequired,
+  // email: PropTypes.string.isRequired,
+  // password: PropTypes.string.isRequired
+};
 
-  const mapStateToProps = state => ({});
-  
-  const functionList = {
-    // bypassLogin,
-    // changeEmail,
-    // changePassword,
-    // loginAttempt,
-    socialLoginAttempt
-  };
- 
-  export default connect(mapStateToProps, functionList)(withRouter(SocialLogin));
+// const mapStateToProps = state => ({
+//   email: state.login.email,
+//   password: state.login.password,
+//   error: state.login.error
+// });
+
+const mapStateToProps = state => ({});
+
+const functionList = {
+  // bypassLogin,
+  // changeEmail,
+  // changePassword,
+  // loginAttempt,
+  socialLoginAttempt
+};
+
+export default connect(mapStateToProps, functionList)(withRouter(SocialLogin));

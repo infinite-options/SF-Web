@@ -156,6 +156,8 @@ const StoreFilter = () => {
     setShownDays(createDefault7Day());
   }, [store.dayTimeDict, store.daytimeFarmDict]);
 
+  console.warn(store.dayTimeDict);
+
   return (
     <FilterContext.Provider value={{ shownDays }}>
       <Box className = {classes.storeFilterContainer}>
