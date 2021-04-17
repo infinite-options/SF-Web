@@ -193,6 +193,7 @@ const Store = ({ ...props }) => {
     JSON.parse(localStorage.getItem('cartItems') || '{}')
   );
 
+
   useEffect(() => {
     console.log('cartTotal: ', cartTotal);
     localStorage.setItem('cartTotal', cartTotal);

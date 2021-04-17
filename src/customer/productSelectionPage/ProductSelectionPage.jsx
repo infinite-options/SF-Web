@@ -5,8 +5,8 @@ import StoreFilter from './filter';
 import ProdSelectContext from './ProdSelectContext';
 import axios from 'axios';
 import storeContext from '../storeContext';
-import { Box, Grid, Dialog, Button, Hidden, IconButton } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import { Box, Badge, Grid, Dialog, Button, Hidden, IconButton, Drawer } from '@material-ui/core';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 
 const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI + '';
 
@@ -54,6 +54,8 @@ const ProductSelectionPage = (props) => {
   // this state will notify if one of the days is clicked or not
   const [categoriesClicked, setCategoriesClicked] = useState(new Set());
 
+  const itemsAmount = store.cartTotal;
+
   return (
     <Box>
       <ProdSelectContext.Provider
@@ -86,18 +88,22 @@ const ProductSelectionPage = (props) => {
         </Grid>
 
         <Hidden lgUp>
-          <Dialog fullScreen open = {checkingOut}>
-            <Box mt = {2} style = {{display: 'flex', justifyContent: 'flex-end'}}>
-              <IconButton onClick = {() => setCheckingOut(false)} style = {{
-                width: '120px', color: 'teal',
-                borderRadius: '0px',
-              }}>
-                <CloseIcon />
+          <Drawer variant = 'temporary' anchor = 'bottom' open = {checkingOut}>
+            <Box mt = {2} pr = {1} style = {{display: 'flex', justifyContent: 'flex-end'}}>
+              <IconButton onClick = {() => setCheckingOut(false)
+              }>
+                <Badge badgeContent={itemsAmount} color="primary">
+                  <ShoppingCartIcon
+                    fontSize="large"
+                    aria-hidden="false"
+                    aria-label = 'Shopping cart'
+                  />
+                </Badge>
               </IconButton>
             </Box>
 
             <CheckoutPage />
-          </Dialog>
+          </Drawer>
         </Hidden>
       </ProdSelectContext.Provider>
     </Box>

@@ -156,13 +156,50 @@ const StoreFilter = () => {
     setShownDays(createDefault7Day());
   }, [store.dayTimeDict, store.daytimeFarmDict]);
 
-  console.warn(store.dayTimeDict);
+  const getDeliveryDate = () => {
+    if (store.dayClicked === '') {
+      return '';
+    }
+
+    // const deliveryDeadline = store.acceptDayHour[];
+    const dayClickedArr = store.dayClicked.split('&');
+    const dayUpper = dayClickedArr[2];
+    if (store.acceptDayHour[dayUpper] == undefined) {
+      return '';
+    }
+    const deadlineInfo = dayUpper ? store.acceptDayHour[dayUpper].split(' ') : '';
+    const time = deadlineInfo[1];
+    const dayShortUpper = deadlineInfo[0];
+    let day = '';
+
+    const fullDays = [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+    ];
+
+    for (const fullDay of fullDays) {
+      if (fullDay.substring(0, dayShortUpper.length).toUpperCase() == dayShortUpper) {
+        day = fullDay;
+      }
+    }
+
+    const orderBy = `(Order by ${time}, ${day})`;
+
+    return orderBy;
+  };
+  // console.warn(acceptingString);
+  // console.warn(store.dayClicked);
 
   return (
     <FilterContext.Provider value={{ shownDays }}>
       <Box className = {classes.storeFilterContainer}>
         <Typography className={clsx(classes.deliveryDates, classes.filterCol)}>
-            Delivery dates available
+            Delivery dates available {getDeliveryDate()}
         </Typography>
 
         <Box

@@ -93,6 +93,7 @@ const useStyles = makeStyles((theme) => ({
     height: '120px',
     display: 'flex',
     flexDirection: 'column',
+    background: props => (props.hearted || props.id != 0) ? '#F4860933' : 'white',
   },
 
   itemInfo: {
@@ -108,13 +109,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Entry(props) {
-  const classes = useStyles();
-
+  const [hearted, setHearted] = useState(false);
   const store = useContext(storeContext);
+  const stylesProps = {
+    'id': props.id in store.cartItems
+      ? store.cartItems[props.id]['count']
+      : 0,
+    'hearted': hearted,
+  }
+
+  const classes = useStyles(stylesProps);
+
   const productSelect = useContext(ProduceSelectContext);
 
   const [isShown, setIsShown] = useState(false);
-  const [hearted, setHearted] = useState(false);
 
   useEffect(() => {
     let isInDay = false;
@@ -182,9 +190,35 @@ function Entry(props) {
       [props.id]: item,
     });
     store.setCartTotal(store.cartTotal + 1);
+
+    console.warn(store.cartItems);
   }
 
   const toggleHearted = () => {
+    // console.warn(store.products);
+    // const itemCount = props.id in store.cartItems ?
+    //   store.cartItems[props.id]['count'] :
+    //   false;
+
+    // const item =
+    // props.id in store.cartItems
+    //   ? { ...props, count: 'count' in store.items[props.id] ? itemCount : undefined,
+    //       favorited: !store.cartItems[props.id]['favorited']}
+    //   : { ...props, favorited: true};
+    // console.warn(item);
+
+    // store.setCartItems({
+    //   ...store.cartItems,
+    //   [props.id]: item,
+    // });
+
+    for (let i = 0; i < store.products.length; i++) {
+      if (store.products[i].item_uid == props.id) {
+        store.products[i].favorite = store.products[i].favorite == "FALSE" ?
+        "TRUE" : "FALSE";
+      }
+    }
+
     setHearted(!hearted);
   };
 
@@ -220,11 +254,6 @@ function Entry(props) {
             </Button>
           </Box>
         </Box>
-        {/* <Box style = {{
-          height: '180px',
-        }}>
-          <img src = {`${props.img.replace(' ', '%20')}`} style = {{width: '100%', height: '100%'}} />
-        </Box> */}
       </Card>
 
       <Card className = {classes.checkoutInfo}>
@@ -263,86 +292,6 @@ function Entry(props) {
         </Box>
       </Card>
     </Grid> : ''
-    // <>
-    //   <Grid hidden={!isShown} item>
-    //     <Box
-    //       className="center-cropped"
-    //       display="flex"
-    //       alignItems="flex-start"
-    //       position="relative"
-    //       zIndex="modal"
-    //     >
-    //       <img src={props.img.replace(' ', '%20')} width='170' height='170' alt={props.name}></img>
-    //     </Box>
-        
-    //     <Box position="relative" zIndex="tooltip" top={-91} height={110}>
-    //       <Box
-    //         className={classes.button}
-    //         width={30}
-    //         height={30}
-    //         ml={17.5}
-    //         mt={-10.1}
-    //         mb={13.7}
-    //         lineHeight="30px"
-    //       >
-            // {props.id in store.cartItems
-            //   ? store.cartItems[props.id]['count']
-            //   : 0}
-    //       </Box>
-    //       <Box display="flex" alignItems="flex-start">
-    //         <Button
-    //           className={classes.button}
-    //           variant="contained"
-    //           size="small"
-    //           onClick={decrease}
-    //           style={{
-    //             width: '86px',
-    //             borderTopLeftRadius: 10,
-    //             borderBottomLeftRadius: 10,
-    //             borderTopRightRadius: 0,
-    //             borderBottomRightRadius: 0,
-    //           }}
-    //         >
-    //           <RemoveIcon fontSize="small" cursor="pointer" color="primary" />
-    //         </Button>
-    //         <Button
-    //           className={classes.button}
-    //           variant="contained"
-    //           size="small"
-    //           onClick={increase}
-    //           style={{
-    //             width: '86px',
-    //             borderTopRightRadius: 10,
-    //             borderBottomRightRadius: 10,
-    //             borderTopLeftRadius: 0,
-    //             borderBottomLeftRadius: 0,
-    //           }}
-    //         >
-    //           <AddIcon fontSize="small" cursor="pointer" color="primary" />
-    //         </Button>
-    //       </Box>
-    //       <Box
-    //         width="168px"
-    //         p={0.1}
-    //         style={{
-    //           fontSize: '12px',
-    //           backgroundColor: 'white',
-    //           borderRadius: 5,
-    //           border: '1px solid ' + appColors.border,
-    //         }}
-    //       >
-    //         <Box display="flex">
-    //           <Box textAlign="left">{props.name}</Box>
-    //           <Box flexGrow={1} />
-    //           <Box textAlign="right">
-                // $ {props.price.toFixed(2)} {props.unit === 'each' ? '' : '/ '}
-                // {props.unit}
-    //           </Box>
-    //         </Box>
-    //       </Box>
-    //     </Box>
-    //   </Grid>
-    // </>
   );
 }
 
