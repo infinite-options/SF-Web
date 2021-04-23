@@ -126,28 +126,24 @@ function Entry(props) {
 
   useEffect(() => {
     let isInDay = false;
-    let isInFarm = false;
     let isInCategory = false;
+
+    const isFavoritedAndInFavorites = productSelect.categoriesClicked.has("favorite") != undefined &&
+      props.favorite == "TRUE";
+
     for (const farm in props.business_uids) {
       store.farmDaytimeDict[farm].forEach((daytime) => {
         if (store.dayClicked === daytime) isInDay = true;
       });
     }
 
-    productSelect.farmsClicked.forEach((farm) => {
-      if (farm in props.business_uids) {
-        isInFarm = true;
-      }
-    });
     if (productSelect.categoriesClicked.has(props.type)) isInCategory = true;
 
     setIsShown(
-      (isInDay && isInFarm && isInCategory) ||
-        (isInDay &&
-          productSelect.farmsClicked.size == 0 &&
-          productSelect.categoriesClicked.size == 0) ||
-        (isInDay && productSelect.farmsClicked.size == 0 && isInCategory) ||
-        (isInDay && isInFarm && productSelect.categoriesClicked.size == 0)
+      isInDay && (
+        (productSelect.categoriesClicked.size == 0) ||
+        isInCategory || isFavoritedAndInFavorites
+      )
     );
   }, [
     store.dayClicked,
@@ -214,7 +210,7 @@ function Entry(props) {
 
     for (let i = 0; i < store.products.length; i++) {
       if (store.products[i].item_uid == props.id) {
-        store.products[i].favorite = store.products[i].favorite == "FALSE" ?
+        store.products[i].favorite = props.favorite == "FALSE" ?
         "TRUE" : "FALSE";
       }
     }

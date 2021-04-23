@@ -25,8 +25,10 @@ const useStyles = makeStyles((theme) => ({
 
 // DONE: add unit, each is as is, anything else is '/' or 'per'
 function createProduct2(product) {
+  console.warn(product);
   return (
     <Entry
+      favorite = {product.favorite}
       name={product.item_name}
       desc={product.item_desc}
       price={product.item_price}
