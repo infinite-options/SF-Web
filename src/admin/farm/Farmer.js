@@ -62,7 +62,7 @@ export default function Farmer({ tab, ...props }) {
   //!The reason using css to display none is for the css file which can't be hidden by html
   const handleTab = () => {
     // 0 <= tab <= MAX_VALUE
-    const tabIsValid = tab >= 0 && tab <= 8; // If more tabs are added, change max value
+    const tabIsValid = tab >= 0 && tab <= 9; // If more tabs are added, change max value
     return (
       <React.Fragment>
         {/* if farmerTab is tampered with & is out of scope, defaults to FarmerHome */}
