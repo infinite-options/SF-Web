@@ -16,6 +16,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import Zones from '../Zones';
 import PriceCompare from '../Price_Compare/PriceCompare';
+import ReplaceProduce from '../ReplaceProduce';
 import FarmerHome from './FarmerHome';
 import FarmerReport from './FarmerReport';
 import FarmerSettings from './FarmerSettings';
@@ -92,6 +93,7 @@ export default function Farmer({ tab, ...props }) {
         {tab === 6 && <Store />}
         {tab === 7 && <Zones />}
         {tab === 8 && <PriceCompare />}
+        {tab === 9 && <ReplaceProduce />}
       </React.Fragment>
     );
   };
