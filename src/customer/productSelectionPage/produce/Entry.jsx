@@ -33,11 +33,13 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
+    opacity: props => props.isInDay ? '1' : '.6',
   },
 
   foodNameTypography: {
     marginTop: theme.spacing(2),
     fontWeight: 'bold',
+    fontSize: '14px',
   },
 
   itemCountAndPrice: {
@@ -110,25 +112,27 @@ const useStyles = makeStyles((theme) => ({
 
 function Entry(props) {
   const [hearted, setHearted] = useState(false);
+  const [isShown, setIsShown] = useState(false);
+  const [isInDay, setIsInDay] = useState(false);
   const store = useContext(storeContext);
   const stylesProps = {
     'id': props.id in store.cartItems
       ? store.cartItems[props.id]['count']
       : 0,
     'hearted': hearted,
+    'isInDay': isInDay,
   }
 
   const classes = useStyles(stylesProps);
 
   const productSelect = useContext(ProduceSelectContext);
 
-  const [isShown, setIsShown] = useState(false);
 
   useEffect(() => {
     let isInDay = false;
     let isInCategory = false;
 
-    const isFavoritedAndInFavorites = productSelect.categoriesClicked.has("favorite") != undefined &&
+    const isFavoritedAndInFavorites = productSelect.categoriesClicked.has("favorite") &&
       props.favorite == "TRUE";
 
     for (const farm in props.business_uids) {
@@ -140,11 +144,11 @@ function Entry(props) {
     if (productSelect.categoriesClicked.has(props.type)) isInCategory = true;
 
     setIsShown(
-      isInDay && (
         (productSelect.categoriesClicked.size == 0) ||
         isInCategory || isFavoritedAndInFavorites
-      )
     );
+
+    setIsInDay(isInDay);
   }, [
     store.dayClicked,
     productSelect.farmsClicked,
@@ -186,12 +190,9 @@ function Entry(props) {
       [props.id]: item,
     });
     store.setCartTotal(store.cartTotal + 1);
-
-    console.warn(store.cartItems);
   }
 
   const toggleHearted = () => {
-    // console.warn(store.products);
     // const itemCount = props.id in store.cartItems ?
     //   store.cartItems[props.id]['count'] :
     //   false;
@@ -201,7 +202,6 @@ function Entry(props) {
     //   ? { ...props, count: 'count' in store.items[props.id] ? itemCount : undefined,
     //       favorited: !store.cartItems[props.id]['favorited']}
     //   : { ...props, favorited: true};
-    // console.warn(item);
 
     // store.setCartItems({
     //   ...store.cartItems,
@@ -225,6 +225,8 @@ function Entry(props) {
           borderRadius: '12px', backgroundImage: `url("${props.img.replace(' ', '%20')}")`,
           height: '200px', width: '250px',
           backgroundSize: '250px 200px',
+          display: 'flex',
+          flexDirection: 'column',
         }}
         backgroundImage = {`url("${props.img.replace(' ', '%20')}")`}
       >
@@ -235,6 +237,7 @@ function Entry(props) {
             <Button
               className = {classes.itemInfoBtn}
               onClick = {toggleHearted}
+              disabled = {!isInDay}
             >
               <img src = {hearted ? FavoriteSrc : FavoriteBorderedSrc} />
             </Button>
@@ -245,10 +248,20 @@ function Entry(props) {
           }}>
             <Button
               className = {classes.itemInfoBtn}
+              disabled = {!isInDay}
             >
               <img src = {InfoSrc} />
             </Button>
           </Box>
+        </Box>
+
+        <Box style = {{flexGrow: '1'}}>
+          <Typography hidden = {isInDay} style = {{fontWeight: 'bold'}}>
+            {store.dayClicked ? `Product unavailable on
+             ${store.dayClicked.split('&')[0]}
+            ${store.dayClicked.split('&')[1]}` : `Date not selected`
+            }
+          </Typography>
         </Box>
       </Card>
 
@@ -263,6 +276,7 @@ function Entry(props) {
               style = {{
                 padding: '0px'
               }}
+              disabled = {!isInDay}
               onClick = {decrease}
             >
               <SvgIcon component = {RemoveIcon} fontSize = 'large'/>
@@ -274,7 +288,11 @@ function Entry(props) {
                 : 0}
             </Typography>
 
-            <IconButton onClick = {increase} style = {{padding: '0px'}}>
+            <IconButton
+              onClick = {increase}
+              style = {{padding: '0px'}}
+              disabled = {!isInDay}
+            >
               <SvgIcon component = {AddIcon} fontSize = 'large'/>
             </IconButton>
           </Box>

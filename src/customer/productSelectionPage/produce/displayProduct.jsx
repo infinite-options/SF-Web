@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
 
 // DONE: add unit, each is as is, anything else is '/' or 'per'
 function createProduct2(product) {
-  console.warn(product);
   return (
     <Entry
       favorite = {product.favorite}
@@ -65,6 +64,8 @@ function DisplayProduct() {
   };
 
   const [displayMessage, setDisplayMessage] = useState('');
+
+  console.warn(store);
 
   // DONE: add date to expected delivery
   // DONE: clear out expected delivery if unclicked
