@@ -209,9 +209,11 @@ const StoreFilter = () => {
           <Box display = 'flex' flexDirection = 'row'>
             {ItemStack(DaysCategory)}
           </Box>
+       
           <Box display = 'flex' flexDirection = 'row' style = {{justifyContent: 'flex-end'}}>
             {ItemStack(ItemCategory)}
           </Box>
+          
         </Box>
       </Box>
     </FilterContext.Provider>

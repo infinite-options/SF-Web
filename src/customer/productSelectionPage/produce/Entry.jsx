@@ -5,9 +5,10 @@ import { makeStyles } from '@material-ui/styles';
 // import InfoIcon from '@material-ui/icons/Info';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import axios from 'axios';
 import appColors from '../../../styles/AppColors';
 import ProduceSelectContext from '../ProdSelectContext';
-import { CallMissedSharp } from '@material-ui/icons';
+import { CallMissedSharp, InfoOutlined } from '@material-ui/icons';
 
 import {ReactComponent as AddIcon } from '../../../sf-svg-icons/sfcolored-plus.svg';
 import {ReactComponent as RemoveIcon } from '../../../sf-svg-icons/sfcolored-minus.svg';
@@ -15,6 +16,11 @@ import {ReactComponent as RemoveIcon } from '../../../sf-svg-icons/sfcolored-min
 import FavoriteSrc from '../../../sf-svg-icons/heart-whitebackground.svg';
 import FavoriteBorderedSrc from '../../../sf-svg-icons/heart-whitebackground-bordered.svg';
 import InfoSrc from '../../../sf-svg-icons/info-whitebackground.svg';
+
+import busiRes from '../../../utils/BusiApiReqs'
+
+const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI;
+
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -36,7 +42,12 @@ const useStyles = makeStyles((theme) => ({
   },
 
   foodNameTypography: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(1),
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    display: 'flex',
+    overflow:'hidden',
+    whiteSpace:'nowrap',
     fontWeight: 'bold',
   },
 
@@ -90,7 +101,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '12px',
     border: '1px solid #e8cfba',
     width: '250px',
-    height: '120px',
+    height: '88px',
     display: 'flex',
     flexDirection: 'column',
     background: props => (props.hearted || props.id != 0) ? '#F4860933' : 'white',
@@ -111,6 +122,9 @@ const useStyles = makeStyles((theme) => ({
 function Entry(props) {
   const [hearted, setHearted] = useState(false);
   const store = useContext(storeContext);
+  const BusiApiMethods = new busiRes();
+  var favoriteArray = [];
+
   const stylesProps = {
     'id': props.id in store.cartItems
       ? store.cartItems[props.id]['count']
@@ -128,26 +142,35 @@ function Entry(props) {
     let isInDay = false;
     let isInFarm = false;
     let isInCategory = false;
+
+    const isFavoritedAndInFavorites = productSelect.categoriesClicked.has("favorite") != undefined &&
+    props.favorite == "TRUE";
+
     for (const farm in props.business_uids) {
       store.farmDaytimeDict[farm].forEach((daytime) => {
         if (store.dayClicked === daytime) isInDay = true;
       });
     }
 
-    productSelect.farmsClicked.forEach((farm) => {
-      if (farm in props.business_uids) {
-        isInFarm = true;
-      }
-    });
+    // productSelect.farmsClicked.forEach((farm) => {
+    //   if (farm in props.business_uids) {
+    //     isInFarm = true;
+    //   }
+    // });
     if (productSelect.categoriesClicked.has(props.type)) isInCategory = true;
 
     setIsShown(
-      (isInDay && isInFarm && isInCategory) ||
-        (isInDay &&
-          productSelect.farmsClicked.size == 0 &&
-          productSelect.categoriesClicked.size == 0) ||
-        (isInDay && productSelect.farmsClicked.size == 0 && isInCategory) ||
-        (isInDay && isInFarm && productSelect.categoriesClicked.size == 0)
+      // (isInDay && isInFarm && isInCategory) ||
+      //   (isInDay &&
+      //     productSelect.farmsClicked.size == 0 &&
+      //     productSelect.categoriesClicked.size == 0) ||
+      //   (isInDay && productSelect.farmsClicked.size == 0 && isInCategory) ||
+      //   (isInDay && isInFarm && productSelect.categoriesClicked.size == 0)
+
+      isInDay && (
+        (productSelect.categoriesClicked.size == 0) ||
+        isInCategory || isFavoritedAndInFavorites
+      )
     );
   }, [
     store.dayClicked,
@@ -214,13 +237,79 @@ function Entry(props) {
 
     for (let i = 0; i < store.products.length; i++) {
       if (store.products[i].item_uid == props.id) {
-        store.products[i].favorite = store.products[i].favorite == "FALSE" ?
-        "TRUE" : "FALSE";
+       store.products[i].favorite = store.products[i].favorite == "FALSE" ?
+   //       store.products[i].favorite = props.favorite == "FALSE" ?     
+          "TRUE" : "FALSE";
+          console.log('FavoriteItems Products:',store.products[i].item_name)
+          favoriteArray.push(store.products[i].item_name)
+   
       }
     }
 
+    console.log('FavoriteItems Customer:',props.business_uids)
+
+    
+    let reqBodyPost = {
+      customer_uid: props.id,
+      favorite:favoriteArray
+    };
+
+    let reqBodyGet = {
+      customer_uid: props.id,
+    };
+
+    const postRequest = async() => {
+
+      try{
+      const response = await axios.post(BASE_URL + 'favorite_produce/post', reqBodyPost)
+        console.log('Favorite Items:', response);
+        }catch(err) {
+          console.log(err.response || err);
+        }
+    }
+
+    const getRequest = async() => {
+
+      try{
+      const response = await axios.post(BASE_URL + 'favorite_produce/get', reqBodyGet)
+        console.log('Favorite Items:', response);
+        }catch(err) {
+          console.log(err.response || err);
+        }
+    }
+
+    postRequest();
+    getRequest();
+
+
+    for (let i = 0; i < store.productsFruit.length; i++) {
+      if (store.productsFruit[i].item_uid == props.id) {
+       store.productsFruit[i].favorite = store.productsFruit[i].favorite == "FALSE" ?
+   //       store.products[i].favorite = props.favorite == "FALSE" ?     
+          "TRUE" : "FALSE";
+      }
+    }
+
+    for (let i = 0; i < store.productsVegetable.length; i++) {
+      if (store.productsVegetable[i].item_uid == props.id) {
+       store.productsVegetable[i].favorite = store.productsVegetable[i].favorite == "FALSE" ?
+   //       store.products[i].favorite = props.favorite == "FALSE" ?     
+          "TRUE" : "FALSE";
+      }
+  }
+
+  for (let i = 0; i < store.productsDessert.length; i++) {
+    if (store.productsDessert[i].item_uid == props.id) {
+     store.productsDessert[i].favorite = store.productsDessert[i].favorite == "FALSE" ?
+ //       store.products[i].favorite = props.favorite == "FALSE" ?     
+        "TRUE" : "FALSE";
+    }
+}
     setHearted(!hearted);
   };
+
+
+ 
 
   return ( isShown ?
     <Grid xs = {6} md = {4} lg = {4} item className = {classes.foodGridItem}>
@@ -229,6 +318,7 @@ function Entry(props) {
           borderRadius: '12px', backgroundImage: `url("${props.img.replace(' ', '%20')}")`,
           height: '200px', width: '250px',
           backgroundSize: '250px 200px',
+          
         }}
         backgroundImage = {`url("${props.img.replace(' ', '%20')}")`}
       >

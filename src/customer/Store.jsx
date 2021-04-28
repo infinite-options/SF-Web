@@ -126,6 +126,10 @@ const Store = ({ ...props }) => {
     socialMedia: '',
   }); // checks if user is logged in
   const [products, setProducts] = useState([]);
+  const [productsFruit, setProductsFruit] = useState([]);
+  const [productsVegetable, setProductsVegetable] = useState([]);
+  const [productsDessert, setProductsDessert] = useState([]);
+
   const [productsLoading, setProductsLoading] = useState(true);
 
   const [farmsList, setFarmsList] = useState([]);
@@ -414,16 +418,22 @@ const Store = ({ ...props }) => {
     }
 
     BusiMethods.getItems(
-      ['fruit', 'desert', 'vegetable', 'other'],
-      Array.from(businessUids)
+    //  ['fruit', 'desert', 'vegetable', 'other'],
+    ['Fruits','Dairy','Vegetables','Snacks'], 
+    Array.from(businessUids)
     ).then((itemRes) => {
       const _products = [];
+      const _vegetable = [];
+      const _fruit = [];
+      const _dessert = [];
       const itemDict = {};
       if (itemRes !== undefined) {
         for (const item of itemRes) {
           setProductsLoading(true);
           try {
             if (item.item_status === 'Active') {
+              
+              console.log(item.item_type.toString())
               const namePriceDesc =
                 item.item_name + item.item_price + item.item_desc;
               // Business Price
@@ -470,7 +480,23 @@ const Store = ({ ...props }) => {
                 item.lowest_price = bPrice;
 
                 // Push to products to have distinct products
-                _products.push(item);
+                if(item.item_type.toString() === 'Vegetables'){
+                  //_products.push(item);
+                  _vegetable.push(item)
+
+                }else if(item.item_type.toString() === 'Fruits')  {                  
+                  
+                  _fruit.push(item);
+                
+                }else if (item.item_type.toString() === 'Dairy') {
+
+                  _dessert.push(item);
+
+                }else if (item.item_type.toString() === 'Snacks') {
+
+                  _products.push(item);
+                
+                }
               }
             }
           } catch (error) {
@@ -478,7 +504,10 @@ const Store = ({ ...props }) => {
           }
         }
       }
-      setProducts(_products);
+      setProducts(_products.sort());
+      setProductsFruit(_fruit.sort());
+      setProductsVegetable(_vegetable.sort());
+      setProductsDessert(_dessert.sort());
       // console.log('productsssssss----',_products)
       setProductsLoading(false);
     });
@@ -498,6 +527,9 @@ const Store = ({ ...props }) => {
           profile,
           setProfile,
           products,
+          productsFruit,
+          productsVegetable,
+          productsDessert,
           productsLoading,
           storePage,
           setStorePage,

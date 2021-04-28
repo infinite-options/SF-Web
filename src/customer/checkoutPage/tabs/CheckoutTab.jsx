@@ -11,6 +11,10 @@ import storeContext from '../../storeContext';
 import checkoutContext from '../CheckoutContext';
 import PlaceOrder from '../PlaceOrder';
 import Coupons from '../items/Coupons';
+import MapComponent from '../../MapComponent';
+import TipImage from '../../../images/TipBackground.svg'
+import LocationSearchInput from '../../../utils/LocationSearchInput'
+
 
 import SignUp from '../SignUp/SignUp';
 
@@ -23,19 +27,20 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '10px',
     paddingBottom: '10px',
   },
+
   driverTipBox: {
-    borderBottom: '1px solid' + appColors.checkoutSectionBorder,
+   
     marginBottom: '10px',
     paddingBottom: '10px',
-    justifyContent: 'center',
 
     display: 'flex',
     [theme.breakpoints.only('lg')]: {
       flexDirection: 'column',
-      alignItems: 'center',
+      justifyContent:'space-between',
     },
   },
-  button: { color: appColors.buttonText, marginBottom: '10px' },
+  button: { color: appColors.buttonText, marginBottom: '10px', marginRight:'10px' },
+
 }));
 
 const CssTextField = withStyles({
@@ -101,6 +106,8 @@ export default function CheckoutTab() {
 
   // cartItems is a dictonary, need to convert it into an array
   const [cartItems, setCartItems] = useState(getItemsCart());
+
+  var isBackgroundSelected = true;
 
   useEffect(() => {
     setCartItems(getItemsCart());
@@ -285,28 +292,33 @@ export default function CheckoutTab() {
           id="responsiveExpectedDelivery"
         >
           <Box
-            color={appColors.secondary}
-            fontSize="20px"
+            color={appColors.primary}
+            fontSize="18px"
             textAlign="left"
             fontWeight="700"
             paddingTop="20px"
-            paddingBottom="20px"
+            paddingBottom="10px"
           >
             Expected Delivery:
           </Box>
           <Box flexGrow={1} />
 
-          <Box textAlign="left" paddingTop="20px" paddingBottom="20px">
+          <Box fontSize="14px" fontWeight="bold"  textAlign="left" paddingBottom="10px">
             {store.expectedDelivery}
           </Box>
+
+          <textarea style={{ display:"flex", type:"text", value:"text", width:"355px", height:"51px"}}  placeholder= "Delivery Instructions (ex: gate code, leave on porch)"
+          autoComplete="on" maxLength="100" cols="20" row="5" borderRadius="2rem">
+           
+          </textarea>
         </Box>
       </Box>
       {/* END: Expected Delivery */}
 
       {/* START: Order Items */}
       <Box className={classes.section}>
-        <Box display="flex">
-          <Box fontWeight="700" lineHeight={1.8} fontSize="20px">
+        <Box display="flex" paddingTop="18px">
+          <Box fontWeight="700" lineHeight={1.8} fontSize="20px" >
             Your Order
           </Box>
           <Box flexGrow={1} />
@@ -326,11 +338,32 @@ export default function CheckoutTab() {
         <Box my={1} px={1}>
           {cartItems.map(listItem)}
         </Box>
+
+        <Box className={classes.section} display="flex">
+        <Box fontWeight="700" fontSize="22px">
+          Subtotal
+        </Box>
+        <Box flexGrow={1} />
+        <Box>${subtotal.toFixed(2)}</Box>
       </Box>
+
+    
+      <Box display="flex"  fontWeight="700" fontSize="16px">
+            Enter Full Address   
+      </Box>
+     
       <Box flexGrow={1} />
+
+      </Box>
       {/* END: Order Items */}
+      <Box>
+      <MapComponent/>
+
+      </Box>
 
       {/* START: Coupons */}
+      <Box>
+
       <Coupons
         setPromoApplied={setPromoApplied}
         originalDeliveryFee={origDeliveryFee}
@@ -338,6 +371,7 @@ export default function CheckoutTab() {
         subtotal={subtotal}
         classes={classes}
       />
+      </Box>
       {/* END: Coupons */}
 
       {/* START: Pricing */}
@@ -356,55 +390,55 @@ export default function CheckoutTab() {
         <Box flexGrow={1} />
         <Box>${serviceFee.toFixed(2)}</Box>
       </Box>
-      <Box className={classes.section} display="flex">
-        <Box>Driver Tip:</Box>
+      <Box style={{marginBottom:'10px', paddingBottom:'10px'}} display="flex">
+        Driver Tip:
       </Box>
       <Box className={classes.driverTipBox}>
-        <Box>
+        <Box style={{display:"flex"}}>
           <Button
             className={classes.button}
             size="small"
-            variant="contained"
-            color="primary"
+            variant="outlined"
+            color="secondary"
             onClick={() => setDriverTip(0)}
-            style={{ borderRadius: '15px', textTransform: 'none' }}
+            style={{ borderRadius: '5px', textTransform: 'none', color:"#000000"}}
           >
             No Tip
           </Button>
           <Button
             className={classes.button}
             size="small"
-            variant="contained"
-            color="primary"
-            onClick={() => setDriverTip(2)}
-            style={{ borderRadius: '15px' }}
+            variant="outlined"
+            color="secondary"
+            onClick={() => setDriverTip(2), isBackgroundSelected="#ff8500" }
+            style={{ borderRadius: '5px', color:"#000000",  backgroundColor: isBackgroundSelected ? "#ffffff": "#ff8500"}}
           >
             $2
           </Button>
           <Button
             className={classes.button}
             size="small"
-            variant="contained"
-            color="primary"
+            variant="outlined"
+            color="secondary"
             onClick={() => setDriverTip(3)}
-            style={{ borderRadius: '15px' }}
+            style={{ borderRadius: '5px', color:"#000000",backgroundColor: isBackgroundSelected ? "#ff8500" : "#ffffff" }}
           >
             $3
           </Button>
           <Button
             className={classes.button}
             size="small"
-            variant="contained"
-            color="primary"
+            variant="outlined"
+            color="secondary"
             onClick={() => setDriverTip(5)}
-            style={{ borderRadius: '15px' }}
+            style={{ borderRadius: '5px', color:"#000000" }}
           >
             $5
           </Button>
-        </Box>
-        <Box flexGrow={1} />
-        <Box width="70px">
+
+          <Box width="70px">
           <CurrencyTextField
+            
             variant="standard"
             modifyValueOnWheel={false}
             value={driverTip}
@@ -417,7 +451,13 @@ export default function CheckoutTab() {
               setDriverTip(value);
             }}
           ></CurrencyTextField>
+        
         </Box>
+          </Box>
+          
+        
+        <Box flexGrow={1} />
+   
       </Box>
 
       <Box className={classes.section} display="flex">
@@ -426,14 +466,14 @@ export default function CheckoutTab() {
         <Box>${tax.toFixed(2)}</Box>
       </Box>
 
-      <Box className={classes.section} display="flex">
-        <Box fontWeight="700" fontSize="20px">
-          Subtotal
-        </Box>
-        <Box flexGrow={1} />
-        <Box>${subtotal.toFixed(2)}</Box>
+      <Box display="flex" width="100%" height="2rem" marginTop="1rem" marginBottom="1rem">
+        <Button variant="outlined" > Enter Ambassador Code </Button>
+        <Button style={{backgroundImage:`url(${
+              './info_icon.png'
+            })` , height:"2rem",backgroundSize: '75% 100%',
+            backgroundPosition: 'center center',
+            backgroundRepeat: 'no-repeat',marginLeft:'1rem'}}> </Button>
       </Box>
-
       <Box className={classes.section} fontWeight="bold" display="flex">
         <Box>Total</Box>
         <Box flexGrow={1} />
@@ -454,7 +494,7 @@ export default function CheckoutTab() {
           Proceed as guest
         </Button>
       </Box>
-      <Box display="flex" my={2} flexDirection="column" px="2%">
+      <Box display="flex" flexDirection="column" px="2%">
         <p style={{ color: appColors.secondary, fontWeight: 500 }}>
           Already have an account?
         </p>
@@ -472,7 +512,7 @@ export default function CheckoutTab() {
           Login
         </Button>
       </Box>
-      <Box display="flex" my={2} flexDirection="column" px="2%">
+      <Box display="flex"  flexDirection="column" px="2%">
         <p style={{ color: appColors.secondary, fontWeight: 500 }}>
           Save time and create an account?
         </p>

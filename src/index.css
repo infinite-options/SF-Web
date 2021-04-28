@@ -7,7 +7,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-@font-face {
+/* @font-face {
   font-family: "SFProDisplay-Regular";
   src: local("SFProDisplay-Regular"),
     url(@material-ui/core/styles/SFProDisplay-Regular.ttf) format("truetype");
@@ -16,7 +16,7 @@ body {
   font-family: "SFProText-RegularItalic";
   src: local("SFProText-RegularItalic"),
     url(@material-ui/core/styles/SFProText-RegularItalic.ttf) format("truetype");
-}
+} */
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",

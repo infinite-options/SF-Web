@@ -1,20 +1,26 @@
 import React, { useContext, useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import Carousel from 'react-multi-carousel';
-import { Box } from '@material-ui/core';
+import { Box, makeStyles } from '@material-ui/core';
 import { AuthContext } from '../../../auth/AuthContext';
 import storeContext from '../../storeContext';
 import checkoutContext from '../CheckoutContext';
+import UnavaImg from '../../../images/couponUnavaliable.svg';
+import AvaImg from '../../../images/couponAvaliable.svg';
+import OnSelectImg from '../../../images/couponOnSelect.svg';
+
+import { map, theme } from 'highcharts';
 
 const responsive = {
   superLargeDesktop: {
     breakpoint: { max: 3000, min: 1650 },
-    items: 3,
+    items: 1,
     partialVisibilityGutter: 30,
   },
   desktop: {
-    breakpoint: { max: 1650, min: 1400 },
-    items: 2,
+    breakpoint: { max: 1600, min: 1024 },
+    items: 1,
+    slidesToSlide: 1,
     partialVisibilityGutter: 90,
   },
   tablet: {
@@ -29,10 +35,22 @@ const responsive = {
   },
 };
 
+const useStyles = makeStyles((theme) => ({
+
+  imageItem: {
+    marginBottom:"10px"
+  },
+
+}))
+
 export default function Coupons(props) {
+  
+  const classes = useStyles();
+
   const store = useContext(storeContext);
   const auth = useContext(AuthContext);
   const checkout = useContext(checkoutContext);
+  var imageId = AvaImg;
 
   // Coupon properties: Title, Message, Expiration, Saving
   // DONE:  if threshold is 0 "No minimum purchase"
@@ -54,6 +72,7 @@ export default function Coupons(props) {
     console.log('allCoupons: ', allCoupons);
     const availableCoupons = [];
     const unavailableCoupons = [];
+
 
     for (const coupon of allCoupons) {
       const couponData = {
@@ -203,6 +222,7 @@ export default function Coupons(props) {
 
   const Coupon = (coupProps) => {
     function onCouponClick() {
+      imageId = OnSelectImg
       if (coupProps.status !== 'unavailable') {
         const newCouponData = [];
         for (const coupon of avaiCouponData) {
@@ -226,13 +246,18 @@ export default function Coupons(props) {
       }
     }
 
+  
+
+   
+
     return (
-      <Box key={props.key} height="115px" mt={2} property="div" mx={1}>
+      <Box key={props.key} height="124px" mt={2} property="div" mx={1}  >
         <Box
           onClick={onCouponClick}
           style={{
-            width: '220px',
-            height: '96px',
+            width: '212px',
+            height: '115px',
+           // backgroundImage: coupProps.status == 'unavailable' ? `url(${UnavaImg})` : `url(${imageId})`,
             backgroundImage: `url(${
               './coupon_img/' + coupProps.status + '.png'
             })`,
@@ -280,6 +305,7 @@ export default function Coupons(props) {
   };
 
   function ApplySaving(coupon) {
+
     const deliveryOff = props.originalDeliveryFee - coupon.discountShipping;
     props.setDeliveryFee(deliveryOff <= 0 ? 0 : deliveryOff);
     const discountAmountOff = props.subtotal - coupon.discountAmount;
@@ -338,13 +364,13 @@ export default function Coupons(props) {
     <>
       {(avaiCouponData.length > 0 || unavaiCouponData.length > 0) && (
         <Box className={props.classes.section}>
-          <Box fontWeight="bold" textAlign="left" mb={1} lineHeight={1.8}>
-            Choose one of the eligible promos to apply:
+          <Box fontWeight="bold" textAlign="left" mb={1} style = {{marginTop:'30px'}}>
+            Coupons:
           </Box>
           <Carousel
-            arrows={true}
+            itemClass={classes.imageItem}
             swipeable={true}
-            partialVisible={true}
+            partialVisible = {true}
             draggable={true}
             showDots={true}
             responsive={responsive}
