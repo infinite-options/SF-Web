@@ -6,6 +6,7 @@ import 'slick-carousel/slick/slick-theme.css';
 //import './styles.css';
 
 import Slider from 'react-slick';
+import Card from "react-bootstrap/Card";
 
 export default function Testimonial() {
   const test = () =>
@@ -25,34 +26,51 @@ export default function Testimonial() {
           'Orci porta non pulvinar neque laoreet.  incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laboriscommodo consequat.',
         customer: 'Billie Eilish',
       },
-      {
-        text:
-          'Bibendum neque egestas congue quisque.  incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laboris commodo consequat.',
-        customer: 'Lizzo',
-      },
-      {
-        text:
-          'Mattis rhoncus urna neque viverra justo.  incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laboris commodo consequat.',
-        customer: 'Harry Styles',
-      },
+      // {
+      //   text:
+      //     'Bibendum neque egestas congue quisque.  incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laboris commodo consequat.',
+      //   customer: 'Lizzo',
+      // },
+      // {
+      //   text:
+      //     'Mattis rhoncus urna neque viverra justo.  incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laboris commodo consequat.',
+      //   customer: 'Harry Styles',
+      // },
     ].map((x, num) => (
+      
+      <Card key="{num}" style={{ float:'left' , width: '26rem', margin:'10px', padding:'12px'}} >
+      
+      
+      <Card.Body>
+        
+      <Card.Title style={{color:'black',fontWeight:'bold',fontSize:'25px',float:'left'}}>{x.text}</Card.Title>
       <div>
-        <h3>{x.text}</h3>
-        <h3> - {x.customer}</h3>
+      <div style={{textAlign:'center',color:'rgb(35,109,115)',fontWeight:'bold',fontSize:'20px'}}>-{x.customer}</div>
+      
       </div>
+
+          </Card.Body>
+      </Card>
+            // <div style={{width:'30%',float:'left',margin:'100px',left:'140px',height:'169px'}}>
+            // <div>{x.text}</div>
+            // <div>{x.customer}</div>
+            // </div>
+          
+      
     ));
 
   return (
-    <div className="Testimonial">
-      <Slider
-        dots={true}
-        slidesToShow={1}
-        slidesToScroll={1}
-        autoplay={true}
-        autoplaySpeed={8000}
+    
+      <div style={{width:'100%'}}
+        // dots={true}
+        // slidesToShow={1}
+        // slidesToScroll={1}
+        // autoplay={false}
+        // autoplaySpeed={8000}
       >
-        {test()}
-      </Slider>
-    </div>
+       {test()}
+        
+      </div>
+    
   );
 }
