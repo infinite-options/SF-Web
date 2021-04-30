@@ -18,12 +18,12 @@ export default function Testimonial() {
       },
       {
         text:
-          'Lorem Ipsum adipiscing elit ipsum. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        'Tortor consequat id porta nibh venenatis cras sed felis. Massa sapien faucibus et molestie ac feugiat. Ac felis donec et odipellentesque diam volutpat commodo. Orci dapibus ultrices iniaculis.',
         customer: 'Dua Lipa',
       },
       {
         text:
-          'Orci porta non pulvinar neque laoreet.  incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laboriscommodo consequat.',
+        'Tortor consequat id porta nibh venenatis cras sed felis. Massa sapien faucibus et molestie ac feugiat. Ac felis donec et odipellentesque diam volutpat commodo. Orci dapibus ultrices iniaculis.',
         customer: 'Billie Eilish',
       },
       // {
@@ -38,7 +38,7 @@ export default function Testimonial() {
       // },
     ].map((x, num) => (
       
-      <Card key="{num}" style={{ float:'left' , width: '26rem', margin:'10px', padding:'12px'}} >
+      <Card key="{num}" style={{ float:'left' , width: '30%', margin:'10px', padding:'12px'}} >
       
       
       <Card.Body>

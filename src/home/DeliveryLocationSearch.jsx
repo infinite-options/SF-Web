@@ -41,6 +41,14 @@ const useStyles = makeStyles((theme) => ({
     height: '150px',
   },
 }));
+let guestProfile = {
+  longitude: '',
+  latitude: '',
+  address: '',
+  city: '',
+  state: '',
+  zip: '',
+}
 
 const DeliveryLocationSearch = (props) => {
   const [address, setAddress] = React.useState("");
@@ -54,13 +62,13 @@ const [coordinates, setCoordinates] = React.useState({
 
   // // For Guest Procedure
   // const [deliverylocation, setDeliverylocation] = useState('');
-  // const [errorValue, setError] = useState('');
-  // const [errorMessage, setErrorMessage] = useState('');
+  const [errorValue, setError] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  // function createError(message) {
-  //   setError('Invalid Input');
-  //   setErrorMessage(message);
-  // }
+  function createError(message) {
+    setError('Invalid Input');
+    setErrorMessage(message);
+  }
   // const onFieldChange = (event) => {
   //   const { value } = event.target;
   //   setDeliverylocation(value);
@@ -109,19 +117,35 @@ const [coordinates, setCoordinates] = React.useState({
     const results = await geocodeByAddress(value);
     const latLng = await getLatLng(results[0]);
     setAddress(value);
+    
     setCoordinates(latLng);
+    let addr=(value.split(','));
+    
+   
+    guestProfile.city=addr[1];
+    guestProfile.state=addr[2];
+    guestProfile.address=addr[1];
+    guestProfile.longitude=coordinates.lng;
+    guestProfile.latitude=coordinates.lat;
+
+
   };
 
-  const searchAddress= async()=>{
+  const searchAddress= async ()=>{
+    if (!(coordinates.lng) ) {
+      alert('Please Enter full address')
+      return;
+    }
     const res= await BusiMethods.getLocationBusinessIds(coordinates.lng,coordinates.lat);
-    const guestProfile = {
-              longitude: coordinates.lng,
-              latitude: coordinates.lat,
-              // address: address,
-              // city: city,
-              // state: state,
-              // zip: zip,
-            };
+    const formatMessage =
+      'Please use the following format: Address, City, State Zipcode';
+    // const locationProps = value.split(',');
+    // if (locationProps.length !== 3) {
+    //   createError(formatMessage);
+    //   return;
+    // }
+    console.log(guestProfile);
+    console.log(res)
     modalProp=(!(res.result.length));
     console.log(modalProp)
     if(modalProp){
@@ -139,7 +163,7 @@ const [coordinates, setCoordinates] = React.useState({
 
   return (
     <div style={{backgroundColor:'orange',height:'auto'}}>
-    <div style={{width:'49%',float:'left',border:'1px solid blue'}}>
+    <div style={{width:'49%',float:'left'}}>
       <PlacesAutocomplete
         value={address}
         onChange={setAddress}
@@ -178,7 +202,7 @@ const [coordinates, setCoordinates] = React.useState({
         )}
       </PlacesAutocomplete>
       </div>
-      <div style={{width:'50%',float:'right',border:'1px solid black'}}>
+      <div style={{width:'50%',float:'right'}}>
       <Button
                 size="large"
                 variant="contained"

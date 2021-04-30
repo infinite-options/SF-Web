@@ -144,7 +144,7 @@ const Landing = ({ ...props }) => {
   };
 
   return (
-    
+    <>
       <div className="contentWrap">
         {/* <Box
           style={{
@@ -250,7 +250,7 @@ const Landing = ({ ...props }) => {
 
           <Box
             className="hero-right"
-            style={{ background: 'rgba(0244, 134, 9, 0.85)',minHeight:'300px',maxHeight:'500px'}}
+            style={{ background: 'rgba(0244, 134, 9, 0.85)',minHeight:'350px',maxHeight:'500px'}}
           >
             {/* <ZipcodeSearch/> */}
             <p
@@ -475,7 +475,7 @@ const Landing = ({ ...props }) => {
               </Box>
             </Box>
           </Box>
-          <Box className={classes.testimonial} style={{backgroundColor:'#F1F4F4',height:'400px'}}>
+          <Box className={classes.testimonial} style={{backgroundColor:'#F1F4F4',height:'300px'}}>
             <Box
               className={classes.title}
               style={{
@@ -487,18 +487,24 @@ const Landing = ({ ...props }) => {
               }}
             >
               <u>Testimonials</u>
-              
+              <Testimonial></Testimonial>
             </Box>
-            <Testimonial></Testimonial>
+            
           </Box>
 
           {/* END: Info Section */}
           
           
         {/* </Box> */}
-        <Order />
-        <Footer />
+        
       </div>
+
+      <Box style={{height:'300px'}}><Order/></Box>
+      
+      
+      <Footer />
+      
+      </>
       
     
     

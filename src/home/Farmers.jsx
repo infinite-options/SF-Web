@@ -14,11 +14,11 @@ var responsive = {
   superLargeDesktop: {
     // the naming can be any, depends on you.
     breakpoint: { max: 4000, min: 3000 },
-    items: 7
+    items: 5
   },
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
-    items: 7
+    items: 5
   },
   tablet: {
     breakpoint: { max: 1024, min: 464 },
@@ -172,7 +172,7 @@ export default function Farmers() {
       },
     ].map((x, i) => (
       <Card key="{i}" style={{ float:'left' , width: '10rem', margin:'10px', padding:'12px'}} className='classes.Farmers'>
-      <Card.Img  src={x.farmerimg} style={{width:'10rem',height:'15rem',border:'2px solid rgb(242,151,56)',objectFit:'fill'}}/>
+      <Card.Img  src={x.farmerimg} style={{width:'15rem',height:'15rem',border:'2px solid rgb(242,151,56)',aspectRatio:'1/1'}}/>
       
       <Card.Body>
         
