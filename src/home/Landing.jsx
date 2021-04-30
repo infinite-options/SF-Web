@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   infoTitle: {
     color: appColors.primary,
     marginBottom: '10px',
-    fontWeight: '700',
+    fonteight: '700',
   },
   infoDesc: {
     paddingLeft: '20%',
@@ -144,17 +144,17 @@ const Landing = ({ ...props }) => {
   };
 
   return (
-    <div className="pageContainer">
+    <>
       <div className="contentWrap">
-        <Box
+        {/* <Box
           style={{
             backgroundSize: 'cover',
 
-            backgroundImage: `url(${'transparent-landing-bg.png'})`,
+            // backgroundImage: `url(${'transparent-landing-bg.png'})`,
             opacity: 1,
             paddingBottom: '100px',
           }}
-        >
+        > */}
           <LandingNavBar
             isLoginShown={isLoginShown}
             setIsLoginShown={setIsLoginShown}
@@ -250,7 +250,7 @@ const Landing = ({ ...props }) => {
 
           <Box
             className="hero-right"
-            style={{ background: 'rgba(244, 134, 9, 0.85)' }}
+            style={{ background: 'rgba(0244, 134, 9, 0.85)',minHeight:'350px',maxHeight:'500px'}}
           >
             {/* <ZipcodeSearch/> */}
             <p
@@ -260,6 +260,7 @@ const Landing = ({ ...props }) => {
                 textAlign: 'center',
                 fontWeight: '700',
                 marginLeft: '20px',
+                marginBottom:'50px'
               }}
             >
               Local produce delivered to your doorstep
@@ -269,7 +270,7 @@ const Landing = ({ ...props }) => {
 
           {/* START: Info Section */}
 
-          <Box className={classes.title} style={{ paddingTop: '30px' }}>
+          <Box className={classes.title} style={{ paddingTop: '30px',position:'sticky' }}>
             Why try Serving Fresh
           </Box>
           <Box mx="auto" className={classes.bar} />
@@ -319,7 +320,7 @@ const Landing = ({ ...props }) => {
           </Box>
           {/* END: Local Produce Search */}
           {/* START: Farmer information */}
-          <Container
+          {/* <Container
             fluid
             style={{
               paddingLeft: 0,
@@ -399,17 +400,17 @@ const Landing = ({ ...props }) => {
                 </div>
               </Col>
             </Row>
-          </Container>
+          </Container> */}
           <Box className={classes.farmer}>
             <Box
               className={classes.title}
               style={{
-                textAlign: 'center',
-                marginLeft: '150px',
-                paddingBottom: '50px',
+                textAlign: 'left',
+                marginLeft: '50px',
+                paddingBottom: '20px',
               }}
             >
-              Meet the Farmers
+              <u>Meet the Farmers</u>
             </Box>
             <Farmers />
           </Box>
@@ -474,52 +475,39 @@ const Landing = ({ ...props }) => {
               </Box>
             </Box>
           </Box>
-          <Box className={classes.testimonial}>
+          <Box className={classes.testimonial} style={{backgroundColor:'#F1F4F4',height:'300px'}}>
             <Box
               className={classes.title}
               style={{
-                textAlign: 'center',
-                marginLeft: '150px',
-                paddingBottom: '50px',
+                
+                marginLeft: '50px',
+                paddingBottom: '20px',
+                textAlign:'left',
+                backgroundColor:'#F1F4F4'
               }}
             >
-              Testimonials
+              <u>Testimonials</u>
+              <Testimonial></Testimonial>
             </Box>
-            <Testimonial />
+            
           </Box>
 
           {/* END: Info Section */}
-          <Box className="hero-left">
-            {/* <ZipcodeSearch/> */}
-            <p
-              style={{
-                color: appColors.secondary,
-                fontSize: '40px',
-                textAlign: 'center',
-                fontWeight: '700',
-                marginLeft: '20px',
-              }}
-            >
-              Ready to Order?
-            </p>
-            <p
-              style={{
-                color: appColors.primary,
-                fontSize: '30px',
-                textAlign: 'center',
-                fontWeight: '700',
-                marginLeft: '20px',
-                marginTop: 0,
-              }}
-            >
-              Fresh, oraganic produce delivered
-            </p>
-            <Order />
-          </Box>
-          <Footer />
-        </Box>
+          
+          
+        {/* </Box> */}
+        
       </div>
-    </div>
+
+      <Box style={{height:'300px'}}><Order/></Box>
+      
+      
+      <Footer />
+      
+      </>
+      
+    
+    
   );
 };
 
