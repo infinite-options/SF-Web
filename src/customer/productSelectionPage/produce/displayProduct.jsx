@@ -118,6 +118,7 @@ function DisplayProduct() {
     } else {
       message = 'Produce available for delivery on ' + store.expectedDelivery;
     }
+    console.log("store length",store.products.length)
     if (store.products.length === 0 && !store.productsLoading) {
       message =
         'Sorry, we could not find any produce that can be delivered to your provided address';
@@ -129,27 +130,6 @@ function DisplayProduct() {
     store.productsLoading,
     store.cartTotal,
   ]);
-
-
-
-  function handleClick() {
-    return(
-
-   <Paper
-          elevation={0}
-          className = {classes.productsPaperContainer}
-        >
-          <Box justifyContent="center">
-            <Grid container direction="row" justify="flex-start"  
-              // spacing={5}
-            >
-              {store.productsFruit.map(createProduct2)}
-            </Grid>
-          </Box>
-        </Paper>
-   
-    );
-  }
 
 
   if (!store.productsLoading && !productSelect.itemError) {
@@ -220,9 +200,9 @@ function DisplayProduct() {
             </Box>
           </Paper>
 
-          <div>
+         {/* <div>
 
-        <h1 style={{display:"flex"}}> Diary </h1>
+         <h1 style={{display:"flex"}}> Diary </h1>
         <span style={{width:'100%',height:"1px",backgroundColor:"#000000",display:"block"}} /> 
         </div>
           <Paper
@@ -244,10 +224,10 @@ function DisplayProduct() {
                 {store.productsDessert.map(createProduct2)}
               </Grid>
             </Box>
-          </Paper>
+          </Paper> */}
 
           <div>
-          <h1 style={{display:"flex"}}> Snacks </h1>
+          <h1 style={{display:"flex"}}> Other </h1>
         <span style={{width:'100%',height:"1px",backgroundColor:"#000000",display:"block"}} /> 
         </div>
           <Paper
@@ -363,27 +343,4 @@ function DisplayProduct() {
 
 export default DisplayProduct;
 
-export class Simple  extends React.Component{
- //  store = useContext(storeContext);
 
-    constructor(props){
-      super(props)    
-      this.state = {msg : 'Hello'}
-      this.handleClick = this.handleClick.bind(this)
-    }
-    
-    handleClick(){
-            this.setState({msg :"Success"})
-    }
-    render(){
-      return (
-        <div>
-          <h2>Message :</h2>
-            <p>{this.state.msg}</p>
-              <button onClick={this.handleClick}>
-            Click here!
-          </button>
-        </div>
-      )
-    }
- }

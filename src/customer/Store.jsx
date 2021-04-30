@@ -418,8 +418,8 @@ const Store = ({ ...props }) => {
     }
 
     BusiMethods.getItems(
-    //  ['fruit', 'desert', 'vegetable', 'other'],
-    ['Fruits','Dairy','Vegetables','Snacks'], 
+      ['fruit', 'desert', 'vegetable', 'other'],
+    //['Fruits','Dairy','Vegetables','Snacks'], 
     Array.from(businessUids)
     ).then((itemRes) => {
       const _products = [];
@@ -430,6 +430,7 @@ const Store = ({ ...props }) => {
       if (itemRes !== undefined) {
         for (const item of itemRes) {
           setProductsLoading(true);
+          console.log("Response on Item",item.item_name.toString())
           try {
             if (item.item_status === 'Active') {
               
@@ -480,11 +481,11 @@ const Store = ({ ...props }) => {
                 item.lowest_price = bPrice;
 
                 // Push to products to have distinct products
-                if(item.item_type.toString() === 'Vegetables'){
+                if(item.item_type.toString() === 'vegetable'){
                   //_products.push(item);
                   _vegetable.push(item)
 
-                }else if(item.item_type.toString() === 'Fruits')  {                  
+                }else if(item.item_type.toString() === 'fruit')  {                  
                   
                   _fruit.push(item);
                 
@@ -492,7 +493,7 @@ const Store = ({ ...props }) => {
 
                   _dessert.push(item);
 
-                }else if (item.item_type.toString() === 'Snacks') {
+                }else  {
 
                   _products.push(item);
                 

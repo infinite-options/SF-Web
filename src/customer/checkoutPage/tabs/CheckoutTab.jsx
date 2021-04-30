@@ -39,7 +39,14 @@ const useStyles = makeStyles((theme) => ({
       justifyContent:'space-between',
     },
   },
-  button: { color: appColors.buttonText, marginBottom: '10px', marginRight:'10px' },
+  button: { color: appColors.buttonText, marginRight:'10px' 
+
+  ,backgroundColor:" ",
+  "&:hover":{
+    backgroundColor:"#ff8500"
+  }
+
+  },
 
 }));
 
@@ -106,8 +113,8 @@ export default function CheckoutTab() {
 
   // cartItems is a dictonary, need to convert it into an array
   const [cartItems, setCartItems] = useState(getItemsCart());
+  const [background, setBackground] = useState();
 
-  var isBackgroundSelected = true;
 
   useEffect(() => {
     setCartItems(getItemsCart());
@@ -335,7 +342,7 @@ export default function CheckoutTab() {
           </Button>
         </Box>
 
-        <Box my={1} px={1}>
+        <Box my={1} px={1} >
           {cartItems.map(listItem)}
         </Box>
 
@@ -410,8 +417,8 @@ export default function CheckoutTab() {
             size="small"
             variant="outlined"
             color="secondary"
-            onClick={() => setDriverTip(2), isBackgroundSelected="#ff8500" }
-            style={{ borderRadius: '5px', color:"#000000",  backgroundColor: isBackgroundSelected ? "#ffffff": "#ff8500"}}
+            onClick={() => setDriverTip(2) }
+            style={{ borderRadius: '5px', color:"#000000",  backgroundColor: " "}}
           >
             $2
           </Button>
@@ -421,7 +428,7 @@ export default function CheckoutTab() {
             variant="outlined"
             color="secondary"
             onClick={() => setDriverTip(3)}
-            style={{ borderRadius: '5px', color:"#000000",backgroundColor: isBackgroundSelected ? "#ff8500" : "#ffffff" }}
+            style={{ borderRadius: '5px', color:"#000000"}}
           >
             $3
           </Button>
@@ -467,10 +474,10 @@ export default function CheckoutTab() {
       </Box>
 
       <Box display="flex" width="100%" height="2rem" marginTop="1rem" marginBottom="1rem">
-        <Button variant="outlined" > Enter Ambassador Code </Button>
-        <Button style={{backgroundImage:`url(${
+        <Button variant="outlined" color="secondary" className={classes.button} style={{ color:"#000000"}} > Enter Ambassador Code </Button>
+        <Button variant="outlined" style={{backgroundImage:`url(${
               './info_icon.png'
-            })` , height:"2rem",backgroundSize: '75% 100%',
+            })` ,backgroundSize: '75% 100%',
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',marginLeft:'1rem'}}> </Button>
       </Box>

@@ -97,11 +97,11 @@ function CartItem(props) {
                 cursor="pointer"
                 color="primary"
                 onClick={decrease}
-                style={{ backgroundColor: '#136D74', borderRadius: '10px' }}
+                style={{ backgroundColor: '#136D74', borderRadius: '5px' }}
               />
             </Box>
           )}
-          <Box mx={1} color="#000000" fontWeight="500" fontSize="20px">
+          <Box mx={1}  color="#000000" fontWeight="500" fontSize="14px">
             {props.count}
           </Box>
           {props.isCountChangeable && (
@@ -111,7 +111,7 @@ function CartItem(props) {
                 cursor="pointer"
                 color="primary"
                 onClick={increase}
-                style={{ backgroundColor: '#136D74', borderRadius: '10px' }}
+                style={{ backgroundColor: '#136D74', borderRadius: '5px' }}
               />
             </Box>
           )}

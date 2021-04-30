@@ -246,7 +246,7 @@ function Entry(props) {
       }
     }
 
-    console.log('FavoriteItems Customer:',props.business_uids)
+    // console.log('FavoriteItems Customer:',props.business_uids)
 
     
     let reqBodyPost = {
@@ -314,11 +314,13 @@ function Entry(props) {
   return ( isShown ?
     <Grid xs = {6} md = {4} lg = {4} item className = {classes.foodGridItem}>
       <Card
+    
         style = {{
           borderRadius: '12px', backgroundImage: `url("${props.img.replace(' ', '%20')}")`,
           height: '200px', width: '250px',
           backgroundSize: '250px 200px',
-          
+          opacity:props.isInDay == store.dayClicked?'30%':'100%',
+
         }}
         backgroundImage = {`url("${props.img.replace(' ', '%20')}")`}
       >
@@ -381,7 +383,7 @@ function Entry(props) {
           </Typography>
         </Box>
       </Card>
-    </Grid> : ''
+    </Grid> : ' '
   );
 }
 
