@@ -217,11 +217,33 @@ function AdminNavBar({ tab, setTab, ...props }) {
                 >
                   Settings
                 </Button>
+                <Button
+                  size={'small'}
+                  className={classes.button}
+                  onClick={() => setTab(9)}
+                  style={{
+                    backgroundColor:
+                      tab === 9 ? appColors.componentBg : 'white',
+                  }}
+                >
+                  Replace Product
+                </Button>
               </React.Fragment>
             )}
             <div className={classes.rightButtons}>
               {Auth.authLevel >= 2 && (
                 <React.Fragment>
+                  <Button
+                    size={'small'}
+                    className={classes.button}
+                    onClick={() => setTab(8)}
+                    style={{
+                      backgroundColor:
+                        tab === 8 ? appColors.componentBg : 'white',
+                    }}
+                  >
+                    Price Compare
+                  </Button>
                   <Button
                     size={'small'}
                     className={classes.button}

@@ -60,12 +60,14 @@ const amPmTo24Hr = (time) => {
   }
 };
 const DateCard = (props) => {
-  const [isClicked, setIsClicked] = useState(true);
+  const [isClicked, setIsClicked] = useState(false);
+  // const [isClicked, setIsClicked] = useState(true);
   const classes = useStyles({clicked: isClicked});
   const productSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
   const confirm = useConfirmation();
 
+  // const [isClicked, setIsClicked] = useState(false);
   const [showCard, setShowCard] = useState(
     productSelect.farmsClicked.size == 0 ? true : false
   );
