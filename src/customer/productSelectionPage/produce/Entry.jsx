@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
+    opacity: props => props.isInDay ? '1' : '.6',
   },
 
   foodNameTypography: {
@@ -49,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
     overflow:'hidden',
     whiteSpace:'nowrap',
     fontWeight: 'bold',
+    fontSize: '14px',
   },
 
   itemCountAndPrice: {
@@ -121,6 +123,8 @@ const useStyles = makeStyles((theme) => ({
 
 function Entry(props) {
   const [hearted, setHearted] = useState(false);
+  const [isShown, setIsShown] = useState(false);
+  const [isInDay, setIsInDay] = useState(false);
   const store = useContext(storeContext);
   const BusiApiMethods = new busiRes();
   var favoriteArray = [];
@@ -130,21 +134,20 @@ function Entry(props) {
       ? store.cartItems[props.id]['count']
       : 0,
     'hearted': hearted,
+    'isInDay': isInDay,
   }
 
   const classes = useStyles(stylesProps);
 
   const productSelect = useContext(ProduceSelectContext);
 
-  const [isShown, setIsShown] = useState(false);
 
   useEffect(() => {
     let isInDay = false;
-    let isInFarm = false;
     let isInCategory = false;
 
-    const isFavoritedAndInFavorites = productSelect.categoriesClicked.has("favorite") != undefined &&
-    props.favorite == "TRUE";
+    const isFavoritedAndInFavorites = productSelect.categoriesClicked.has("favorite") &&
+      props.favorite == "TRUE";
 
     for (const farm in props.business_uids) {
       store.farmDaytimeDict[farm].forEach((daytime) => {
@@ -152,26 +155,14 @@ function Entry(props) {
       });
     }
 
-    // productSelect.farmsClicked.forEach((farm) => {
-    //   if (farm in props.business_uids) {
-    //     isInFarm = true;
-    //   }
-    // });
     if (productSelect.categoriesClicked.has(props.type)) isInCategory = true;
 
     setIsShown(
-      // (isInDay && isInFarm && isInCategory) ||
-      //   (isInDay &&
-      //     productSelect.farmsClicked.size == 0 &&
-      //     productSelect.categoriesClicked.size == 0) ||
-      //   (isInDay && productSelect.farmsClicked.size == 0 && isInCategory) ||
-      //   (isInDay && isInFarm && productSelect.categoriesClicked.size == 0)
-
-      isInDay && (
         (productSelect.categoriesClicked.size == 0) ||
         isInCategory || isFavoritedAndInFavorites
-      )
     );
+
+    setIsInDay(isInDay);
   }, [
     store.dayClicked,
     productSelect.farmsClicked,
@@ -213,12 +204,9 @@ function Entry(props) {
       [props.id]: item,
     });
     store.setCartTotal(store.cartTotal + 1);
-
-    console.warn(store.cartItems);
   }
 
   const toggleHearted = () => {
-    // console.warn(store.products);
     // const itemCount = props.id in store.cartItems ?
     //   store.cartItems[props.id]['count'] :
     //   false;
@@ -228,7 +216,6 @@ function Entry(props) {
     //   ? { ...props, count: 'count' in store.items[props.id] ? itemCount : undefined,
     //       favorited: !store.cartItems[props.id]['favorited']}
     //   : { ...props, favorited: true};
-    // console.warn(item);
 
     // store.setCartItems({
     //   ...store.cartItems,
@@ -237,12 +224,8 @@ function Entry(props) {
 
     for (let i = 0; i < store.products.length; i++) {
       if (store.products[i].item_uid == props.id) {
-       store.products[i].favorite = store.products[i].favorite == "FALSE" ?
-   //       store.products[i].favorite = props.favorite == "FALSE" ?     
-          "TRUE" : "FALSE";
-          console.log('FavoriteItems Products:',store.products[i].item_name)
-          favoriteArray.push(store.products[i].item_name)
-   
+        store.products[i].favorite = props.favorite == "FALSE" ?
+        "TRUE" : "FALSE";
       }
     }
 
@@ -319,8 +302,8 @@ function Entry(props) {
           borderRadius: '12px', backgroundImage: `url("${props.img.replace(' ', '%20')}")`,
           height: '200px', width: '250px',
           backgroundSize: '250px 200px',
-          opacity:props.isInDay == store.dayClicked?'30%':'100%',
-
+          display: 'flex',
+          flexDirection: 'column',
         }}
         backgroundImage = {`url("${props.img.replace(' ', '%20')}")`}
       >
@@ -331,6 +314,7 @@ function Entry(props) {
             <Button
               className = {classes.itemInfoBtn}
               onClick = {toggleHearted}
+              disabled = {!isInDay}
             >
               <img src = {hearted ? FavoriteSrc : FavoriteBorderedSrc} />
             </Button>
@@ -341,10 +325,20 @@ function Entry(props) {
           }}>
             <Button
               className = {classes.itemInfoBtn}
+              disabled = {!isInDay}
             >
               <img src = {InfoSrc} />
             </Button>
           </Box>
+        </Box>
+
+        <Box style = {{flexGrow: '1'}}>
+          <Typography hidden = {isInDay} style = {{fontWeight: 'bold'}}>
+            {store.dayClicked ? `Product unavailable on
+             ${store.dayClicked.split('&')[0]}
+            ${store.dayClicked.split('&')[1]}` : `Date not selected`
+            }
+          </Typography>
         </Box>
       </Card>
 
@@ -359,6 +353,7 @@ function Entry(props) {
               style = {{
                 padding: '0px'
               }}
+              disabled = {!isInDay}
               onClick = {decrease}
             >
               <SvgIcon component = {RemoveIcon} fontSize = 'large'/>
@@ -370,7 +365,11 @@ function Entry(props) {
                 : 0}
             </Typography>
 
-            <IconButton onClick = {increase} style = {{padding: '0px'}}>
+            <IconButton
+              onClick = {increase}
+              style = {{padding: '0px'}}
+              disabled = {!isInDay}
+            >
               <SvgIcon component = {AddIcon} fontSize = 'large'/>
             </IconButton>
           </Box>

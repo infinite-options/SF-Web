@@ -105,6 +105,8 @@ function DisplayProduct() {
 
   const [displayMessage, setDisplayMessage] = useState('');
 
+  console.warn(store);
+
   // DONE: add date to expected delivery
   // DONE: clear out expected delivery if unclicked
   useEffect(() => {

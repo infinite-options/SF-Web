@@ -55,7 +55,7 @@ const ProductSelectionPage = (props) => {
   const [categoriesClicked, setCategoriesClicked] = useState(new Set());
 
   const itemsAmount = store.cartTotal;
-  console.warn(store);   
+  console.warn(store);
 
   return (
     <Box>
