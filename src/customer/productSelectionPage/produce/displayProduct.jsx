@@ -148,7 +148,7 @@ function DisplayProduct() {
 <Box
 className="responsive-display-produce"
 // width="100%"
-//hidden ={!OtherDisplayType}
+// hidden ={!OtherDisplayType}
 height={windowHeight - 165}
 // ml={2}
 // p={3}

@@ -4,11 +4,9 @@ import appColors from '../../../styles/AppColors';
 
 const ItemStack = (Items) => {
   return (
-    <Grid container>
-      <Grid container item>
+   
         <Items />
-      </Grid>
-    </Grid>
+   
   );
 };
 
