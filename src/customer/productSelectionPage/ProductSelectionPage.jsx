@@ -1,9 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react';
 import DisplayProduce from './produce/displayProduct';
+import CheckoutPage from '../checkoutPage/CheckoutPage.jsx';
 import StoreFilter from './filter';
+import { Box, Badge, Grid, Dialog, Button, Hidden, IconButton, Drawer } from '@material-ui/core';
 import ProdSelectContext from './ProdSelectContext';
 import axios from 'axios';
 import storeContext from '../storeContext';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 
 const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI + '';
 
@@ -24,6 +27,9 @@ function calTotal() {
 
 const ProductSelectionPage = (props) => {
   const store = useContext(storeContext);
+
+  const {checkingOut, setCheckingOut} =
+  useContext(storeContext);
   const profile = store.profile;
 
   const [itemError, setHasError] = useState(false);
@@ -39,6 +45,9 @@ const ProductSelectionPage = (props) => {
   // this state will notify if one of the farm is clicked or not
   const [farmsClicked, setFarmsClicked] = useState(store.farmsClicked);
 
+  const [loggingIn, setLoggingIn] = React.useState(false);
+  const [signingUp, setSigningUp] = React.useState(false);
+
   useEffect(() => {
     setFarmsClicked(store.farmsClicked);
   }, [store.farmsClicked]);
@@ -46,9 +55,15 @@ const ProductSelectionPage = (props) => {
   // this state will notify if one of the days is clicked or not
   const [categoriesClicked, setCategoriesClicked] = useState(new Set());
 
+  const itemsAmount = store.cartTotal;
+
+
   return (
+    <Box>
     <ProdSelectContext.Provider
       value={{
+        loggingIn, setLoggingIn,
+        signingUp, setSigningUp,
         itemError,
         itemIsLoading,
         farms,
@@ -60,9 +75,36 @@ const ProductSelectionPage = (props) => {
         setCategoriesClicked,
       }}
     >
-      <StoreFilter />
-      <DisplayProduce />
-    </ProdSelectContext.Provider>
+         <Grid container>
+          <Grid item xs = {12} lg = {8} style = {{display: 'flex', flexDirection: 'column'}}>
+            <StoreFilter />
+            <DisplayProduce />
+          </Grid>
+
+              <CheckoutPage />
+        </Grid>
+
+        <Hidden lgUp>
+          <Drawer variant = 'temporary' anchor = 'bottom' open = {checkingOut}>
+            <Box mt = {2} pr = {1} style = {{display: 'flex', justifyContent: 'flex-end'}}>
+              <IconButton onClick = {() => setCheckingOut(false)
+              }>
+                <Badge badgeContent={itemsAmount} color="primary">
+                  <ShoppingCartIcon
+                    fontSize="large"
+                    aria-hidden="false"
+                    aria-label = 'Shopping cart'
+                  />
+                </Badge>
+              </IconButton>
+            </Box>
+
+            <CheckoutPage />
+          </Drawer>
+        </Hidden>
+      </ProdSelectContext.Provider>
+    </Box>
+     
   );
 };
 

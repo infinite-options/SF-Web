@@ -81,7 +81,7 @@ export default function CheckoutPage() {
           >
             
             <Box 
-            // width="55%"
+            width="55%"
             className="checkout-right"
             >
               <CheckoutRight />

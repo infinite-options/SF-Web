@@ -2,10 +2,53 @@ import React, { useContext, useEffect, useState } from 'react';
 import Entry from './Entry';
 import ProdSelectContext from '../ProdSelectContext';
 import storeContext from '../../storeContext';
-import { Box, Grid, Paper } from '@material-ui/core';
+import { Box, Button, ButtonBase, Grid, Paper, Typography } from '@material-ui/core';
 import appColors from '../../../styles/AppColors';
 import { set } from 'js-cookie';
+import {makeStyles} from '@material-ui/core/styles';
+import ItemCategory from '../filter/ItemCategory';
+import Carousel from 'react-multi-carousel';
 
+
+const responsive = {
+  superLargeDesktop: {
+    breakpoint: { max: 3000, min: 1430 },
+    items: 4.5,
+  },
+  desktop: {
+    breakpoint: { max: 1430, min: 1150 },
+    items: 3,
+  },
+  tablet: {
+    breakpoint: { max: 1150, min: 800 },
+    items: 2,
+  },
+  mobile: {
+    breakpoint: { max: 800, min: 0 },
+    items: 2,
+  },
+  };
+  
+  const useStyles = makeStyles((theme) => ({
+  itemDisplayContainer: {
+    backgroundColor:'#F1F4F4',
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    paddingLeft: theme.spacing(5),
+    paddingRight: theme.spacing(5),
+    marginBottom: theme.spacing(2),
+  },
+  
+  productsPaperContainer: {
+    backgroundColor: appColors.componentBg,
+    marginTop: theme.spacing(2),
+  },
+  
+  imageItem: {
+    marginLeft: '6rem',
+    },
+  }));
+  
 // DONE: add unit, each is as is, anything else is '/' or 'per'
 function createProduct2(product) {
   return (
@@ -30,8 +73,13 @@ function createProduct2(product) {
 // If Identical still then we should select the one with the earliest created_at date
 
 function DisplayProduct() {
+  const classes = useStyles();
+
   const productSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
+
+  const [OtherDisplayType, setOtherDisplayType] = useState(false); 
+
 
   const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
 
@@ -71,10 +119,71 @@ function DisplayProduct() {
     store.cartTotal,
   ]);
 
+  function handleClickOther(){
+    setOtherDisplayType(!OtherDisplayType);
+  }
+  
+
   if (!store.productsLoading && !productSelect.itemError) {
     return (
       <>
-        <Box
+
+<Box>
+
+<div style={{display:"flex", justifyContent:"space-between" }}>  
+<h1 style={{textDecoration:"underline", color:appColors.secondary, paddingLeft:'2rem', paddingRight:'2rem'}}> Others </h1>
+<Button style={{color:"#ff8500"}}  onClick = {handleClickOther}> See all Others </Button>
+</div>
+{/* <Box hidden={ OtherDisplayType  }>
+
+<Carousel
+    itemClass={classes.imageItem}
+    centerMode={true} 
+    responsive={responsive}>
+  
+  {store.products.map(createProduct2)}
+    
+  </Carousel> 
+  </Box>  */}
+<Box
+className="responsive-display-produce"
+// width="100%"
+//hidden ={!OtherDisplayType}
+height={windowHeight - 165}
+// ml={2}
+// p={3}
+// pb={5}
+mb={2}
+style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom: '95px' }}
+>
+
+<Box mt={2} />
+
+<Paper
+  elevation={0}
+  style={{
+    backgroundColor: appColors.componentBg,
+    maxHeight: '100%',
+    width: '100%',
+    overflow: 'auto',
+  
+  }}
+>
+  <Box  width="97%" justifyContent="center">
+    
+    <Grid container direction="row" justify="flex-start" 
+    // spacing={5}
+    spacing={2}
+    >
+      {store.products.map(createProduct2)}
+    </Grid>
+  </Box>
+</Paper>
+  </Box>
+  </Box>
+  </>
+    );
+        {/* <Box
           className="responsive-display-produce"
           // width="100%"
           height={windowHeight - 165}
@@ -120,7 +229,20 @@ function DisplayProduct() {
         <div>Thank you for waiting, we are loading the products for you.</div>
       </Box>
     );
-  }
+  } */}
 }
+
+else {
+  return (
+    <Box
+      p={2}
+      style={{ display: 'flex', backgroundColor: appColors.componentBg, borderRadius: 10}}
+    >
+      <Typography>Thank you for waiting, we are loading the products for you.</Typography>
+    </Box>
+  );
+}
+}
+
 
 export default DisplayProduct;

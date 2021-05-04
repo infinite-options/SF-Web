@@ -4,7 +4,7 @@ import FarmCategory from './Farm';
 import DaysCategory from './Days';
 import ItemStack from './itemStack';
 import appColors from '../../../styles/AppColors';
-import { Box } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import storeContext from '../../storeContext';
@@ -19,6 +19,26 @@ const useStyles = makeStyles((theme) => ({
     width: '100px',
     textAlign: 'center',
     color: appColors.paragraphText,
+  },
+  deliveryDates: {
+    color: '#397D87',
+    fontWeight: 'bold',
+    fontSize: '14px',
+    textAlign: 'start',
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
+  },
+
+  filterItemsGrid: {
+    display: 'grid',
+    justifyContent: "center",
+
+    [theme.breakpoints.up('sm')]: {
+      gridTemplateColumns: '1fr 1fr',
+    },
+    [theme.breakpoints.down('xs')]: {
+      gridTemplateColumns: '1fr',
+    },
   },
 }));
 
@@ -133,43 +153,103 @@ const StoreFilter = () => {
     setShownDays(createDefault7Day());
   }, [store.dayTimeDict, store.daytimeFarmDict]);
 
+  const getDeliveryDate = () => {
+    if (store.dayClicked === '') {
+      return '';
+    }
+
+    // const deliveryDeadline = store.acceptDayHour[];
+    const dayClickedArr = store.dayClicked.split('&');
+    const dayUpper = dayClickedArr[2];
+    if (store.acceptDayHour[dayUpper] == undefined) {
+      return '';
+    }
+    const deadlineInfo = dayUpper ? store.acceptDayHour[dayUpper].split(' ') : '';
+    const time = deadlineInfo[1];
+    const dayShortUpper = deadlineInfo[0];
+    let day = '';
+
+    const fullDays = [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+    ];
+
+    for (const fullDay of fullDays) {
+      if (fullDay.substring(0, dayShortUpper.length).toUpperCase() == dayShortUpper) {
+        day = fullDay;
+      }
+    }
+
+    const orderBy = `(Order by ${time}, ${day})`;
+
+    return orderBy;
+  };
+  // console.warn(acceptingString);
+  // console.warn(store.dayClicked);
+
   return (
     <FilterContext.Provider value={{ shownDays }}>
-      <Box width="300px">
+      <Box className = {classes.storeFilterContainer}>
+        <Typography className={clsx(classes.deliveryDates, classes.filterCol)}>
+            Delivery dates available {getDeliveryDate()}
+        </Typography>
+
         <Box
-          display="flex"
-          justifyContent="center"
-          p={1}
+          className = {classes.filterItemsGrid}
           mb={1}
-          style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
         >
-          <Box p={1} className={clsx(classes.borderCol, classes.filterCol)}>
-            Delivery Days
-          </Box>
-          <Box p={1} className={clsx(classes.borderCol, classes.filterCol)}>
-            Farms
-          </Box>
-          <Box p={1} className={classes.filterCol}>
-            Item Category
-          </Box>
-        </Box>
-        <Box
-          display="flex"
-          justifyContent="center"
-          p={1}
-          style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
-        >
-          <Box className={clsx(classes.borderCol, classes.filterCol)}>
+          <Box display = 'flex' >
             {ItemStack(DaysCategory)}
           </Box>
-          <Box className={clsx(classes.borderCol, classes.filterCol)}>
-            {ItemStack(FarmCategory)}
+          <Box display = 'flex' flexDirection = 'row' style = {{justifyContent: 'flex-end'}}>
+            {ItemStack(ItemCategory)}
           </Box>
-          <Box className={classes.filterCol}>{ItemStack(ItemCategory)}</Box>
         </Box>
       </Box>
     </FilterContext.Provider>
   );
+  // return (
+  //   <FilterContext.Provider value={{ shownDays }}>
+  //     <Box width="300px">
+  //       <Box
+  //         display="flex"
+  //         justifyContent="center"
+  //         p={1}
+  //         mb={1}
+  //         style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
+  //       >
+  //         <Box p={1} className={clsx(classes.borderCol, classes.filterCol)}>
+  //           Delivery Days
+  //         </Box>
+  //         <Box p={1} className={clsx(classes.borderCol, classes.filterCol)}>
+  //           Farms
+  //         </Box>
+  //         <Box p={1} className={classes.filterCol}>
+  //           Item Category
+  //         </Box>
+  //       </Box>
+  //       <Box
+  //         display="flex"
+  //         justifyContent="center"
+  //         p={1}
+  //         style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
+  //       >
+  //         <Box className={clsx(classes.borderCol, classes.filterCol)}>
+  //           {ItemStack(DaysCategory)}
+  //         </Box>
+  //         <Box className={clsx(classes.borderCol, classes.filterCol)}>
+  //           {ItemStack(FarmCategory)}
+  //         </Box>
+  //         <Box className={classes.filterCol}>{ItemStack(ItemCategory)}</Box>
+  //       </Box>
+  //     </Box>
+  //   </FilterContext.Provider>
+  // );
 };
 
 export default StoreFilter;

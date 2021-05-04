@@ -71,8 +71,13 @@ function listItem(item) {
 export default function CheckoutTab() {
   const classes = useStyles();
   const store = useContext(storeContext);
+//  const checkout = useContext(checkoutContext);
+
+  const {
+    loggingIn, setLoggingIn,
+    signingUp, setSigningUp,
+  } = useContext(storeContext);
   const checkout = useContext(checkoutContext);
-  const elements = useElements();
 
   const {
     setPaymentProcessing,
