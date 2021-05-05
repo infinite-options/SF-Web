@@ -104,6 +104,10 @@ const Store = ({ ...props }) => {
 
   // const currenttime = setInterval(checkIfAccepting, 60000);
 
+  const [loggingIn, setLoggingIn] = React.useState(false);
+  const [signingUp, setSigningUp] = React.useState(false);
+  const [checkingOut, setCheckingOut] = React.useState(false);
+
   const [profile, setProfile] = useState({
     email: '',
     firstName: '',
@@ -473,7 +477,7 @@ const Store = ({ ...props }) => {
           }
         }
       }
-      setProducts(_products);
+      setProducts(_products.sort());
       console.log('productsssssss----',_products)
       setProductsLoading(false);
     });
@@ -483,6 +487,9 @@ const Store = ({ ...props }) => {
     <div hidden={props.hidden}>
       <storeContext.Provider
         value={{
+          checkingOut, setCheckingOut,
+          loggingIn, setLoggingIn,
+          signingUp, setSigningUp,
           cartTotal,
           setCartTotal,
           cartItems,

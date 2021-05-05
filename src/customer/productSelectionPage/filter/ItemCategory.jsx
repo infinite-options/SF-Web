@@ -49,11 +49,11 @@ const ItemCategory = () => {
     //   type: 'dessert',
     // },
     {
-      onAsset: '../../footer_icon/orangeOthers.png',
-      offAsset: '../../footer_icon/Asset 5.png',
-      altName: 'bread-img',
-      label: 'Others',
-      type: 'other',
+      onAsset: '../../footer_icon/orangeHeart.png',
+      offAsset: '../../footer_icon/tealHeart.png',
+      altName: 'heart-img',
+      label: 'Favorites',
+      type: 'favorite',
     },
   ];
 

@@ -12,12 +12,15 @@ import ProdSelectContext from '../ProdSelectContext';
 import FilterContext from './FilterContext';
 
 const useStyles = makeStyles((theme) => ({
+  storeFilterContainer: {
+    marginLeft: theme.spacing(5),
+    marginRight: theme.spacing(1),
+  },
   borderCol: {
     borderRight: '1px solid ' + appColors.secondary,
   },
   filterCol: {
-    width: '100px',
-    textAlign: 'center',
+   
     color: appColors.paragraphText,
   },
   deliveryDates: {
@@ -30,8 +33,8 @@ const useStyles = makeStyles((theme) => ({
   },
 
   filterItemsGrid: {
-    display: 'grid',
-    justifyContent: "center",
+    display: 'flex',
+    justifyContent: "space-between",
 
     [theme.breakpoints.up('sm')]: {
       gridTemplateColumns: '1fr 1fr',

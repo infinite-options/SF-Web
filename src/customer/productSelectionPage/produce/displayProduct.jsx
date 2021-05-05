@@ -8,25 +8,27 @@ import { set } from 'js-cookie';
 import {makeStyles} from '@material-ui/core/styles';
 import ItemCategory from '../filter/ItemCategory';
 import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
 
 
 const responsive = {
   superLargeDesktop: {
-    breakpoint: { max: 3000, min: 1430 },
-    items: 4.5,
+    // the naming can be any, depends on you.
+    breakpoint: { max: 4000, min: 3000 },
+    items: 5
   },
   desktop: {
-    breakpoint: { max: 1430, min: 1150 },
-    items: 3,
+    breakpoint: { max: 3000, min: 1024 },
+    items: 3
   },
   tablet: {
-    breakpoint: { max: 1150, min: 800 },
-    items: 2,
+    breakpoint: { max: 1024, min: 464 },
+    items: 2
   },
   mobile: {
-    breakpoint: { max: 800, min: 0 },
-    items: 2,
-  },
+    breakpoint: { max: 464, min: 0 },
+    items: 1
+  }
   };
   
   const useStyles = makeStyles((theme) => ({
@@ -45,7 +47,7 @@ const responsive = {
   },
   
   imageItem: {
-    marginLeft: '6rem',
+    backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom: '95px' 
     },
   }));
   
@@ -53,6 +55,7 @@ const responsive = {
 function createProduct2(product) {
   return (
     <Entry
+      favorite = {product.favorite}
       name={product.item_name}
       desc={product.item_desc}
       price={product.item_price}
@@ -134,21 +137,21 @@ function DisplayProduct() {
 <h1 style={{textDecoration:"underline", color:appColors.secondary, paddingLeft:'2rem', paddingRight:'2rem'}}> Others </h1>
 <Button style={{color:"#ff8500"}}  onClick = {handleClickOther}> See all Others </Button>
 </div>
-{/* <Box hidden={ OtherDisplayType  }>
+<Box hidden={OtherDisplayType  }>
 
-<Carousel
+{/* <Carousel
     itemClass={classes.imageItem}
     centerMode={true} 
     responsive={responsive}>
-  
-  {store.products.map(createProduct2)}
     
-  </Carousel> 
-  </Box>  */}
+   {store.products.map(createProduct2)} 
+ 
+  </Carousel>  */}
+  </Box> 
 <Box
 className="responsive-display-produce"
 // width="100%"
-// hidden ={!OtherDisplayType}
+ hidden ={!OtherDisplayType}
 height={windowHeight - 165}
 // ml={2}
 // p={3}

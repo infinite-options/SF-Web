@@ -16,6 +16,9 @@ import MenuNavButton from '../utils/MenuNavButton';
 import { AuthContext } from 'auth/AuthContext';
 import { Pointer } from 'highcharts';
 
+import useWindowsDimensions from './WindowDimensions';
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -32,6 +35,9 @@ const useStyles = makeStyles((theme) => ({
 export default function StoreNavBar(props) {
   const classes = useStyles();
   const store = useContext(storeContext);
+
+  const {setCheckingOut} = useContext(storeContext);
+  const {width} = useWindowsDimensions();
 
   var itemsAmount = store.cartTotal;
 
@@ -78,7 +84,33 @@ export default function StoreNavBar(props) {
           </Box>
           <MenuNavButton />
           <Box flexGrow={1}></Box>
+
           <IconButton edge="end" className="link">
+            <StorefrontIcon
+              fontSize="large"
+              color={props.storePage === 0 ? 'primary' : 'default'}
+              onClick={handleStoreClick}
+              aria-hidden="false"
+              aria-label = 'Shop Search'
+            />
+          </IconButton>
+          <IconButton edge="end" className="link" onClick = {() => {
+              if (width < 1280) {
+                setCheckingOut(true)
+              }
+            }
+          }>
+            <Badge badgeContent={itemsAmount} color="primary">
+              <ShoppingCartIcon
+                fontSize="large"
+                key={props.storePage || ''}
+                aria-hidden="false"
+                aria-label = 'Shopping cart'
+              />
+            </Badge>
+          </IconButton>
+
+          {/* <IconButton edge="end" className="link">
             <StorefrontIcon
               fontSize="large"
               color={props.storePage === 0 ? 'primary' : 'default'}
@@ -98,7 +130,7 @@ export default function StoreNavBar(props) {
                 aria-label = 'Shopping cart'
               />
             </Badge>
-          </IconButton>
+          </IconButton> */}
         </Toolbar>
       </AppBar>
     </div>

@@ -4,9 +4,7 @@ import appColors from '../../../styles/AppColors';
 
 const ItemStack = (Items) => {
   return (
-   
         <Items />
-   
   );
 };
 

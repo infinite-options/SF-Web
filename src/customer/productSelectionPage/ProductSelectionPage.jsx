@@ -82,6 +82,8 @@ const ProductSelectionPage = (props) => {
             <StoreFilter />
             <DisplayProduce />
           </Grid>
+      
+          
 
           <Hidden mdDown>
             <Grid item lg = {4}>
@@ -105,6 +107,7 @@ const ProductSelectionPage = (props) => {
               </IconButton>
             </Box>
 
+            <CheckoutPage />
           </Drawer>
         </Hidden>
       </ProdSelectContext.Provider>

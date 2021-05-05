@@ -3,8 +3,22 @@ import storeContext from '../../../storeContext';
 import ProdSelectContext from '../../ProdSelectContext';
 import iconSizes from '../../../../styles/IconSizes';
 import { Box } from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
+
+
+const useStyles = makeStyles((theme) => ({
+  itemCatCardContainer: {
+    marginTop: theme.spacing(.5),
+    marginBottom: theme.spacing(.5),
+    marginLeft: theme.spacing(4),
+    marginRight: theme.spacing(4),
+
+    padding: theme.spacing(.5),
+  },
+}));
 
 const ItemCategoryItem = (props) => {
+  const classes = useStyles();
   const productSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
 
@@ -31,7 +45,7 @@ const ItemCategoryItem = (props) => {
   }, [store.farmsClicked, store.dayClicked]);
 
   return (
-    <Box hidden={!isShown} mb={1} m={0.5} p={0.5} width="100%">
+    <Box hidden={!isShown}className = {classes.itemCatCardContainer}>
       <Box
         display="flex"
         justifyContent="center"

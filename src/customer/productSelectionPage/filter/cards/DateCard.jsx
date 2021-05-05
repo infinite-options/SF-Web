@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import { Box } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import { useConfirmation } from '../../../../services/ConfirmationService';
 import appColors from '../../../../styles/AppColors';
 import AlertDialog from '../../../../utils/dialog';
@@ -12,8 +12,14 @@ import storeContext from '../../../storeContext';
 
 
 const useStyles = makeStyles((theme) => ({
+  dateCardContainer: {
+    justifyContent: 'center',
+    marginTop: theme.spacing(.5),
+    marginBottom: theme.spacing(.5),
+    marginRight: theme.spacing(2),
+  },
   card: {
-    backgroundColor: '#e0e6e6',
+    backgroundColor: props => props.clicked ? appColors.primary : '#e0e6e6',
     width: 75,
     height: 78,
     borderRadius: 10,
@@ -24,8 +30,11 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 10,
     color: 'white',
     textAlign: 'center',
+    fontWeight: 'bold',
   },
   date: {
+    fontWeight: 'bold',
+    color: props => props.clicked ? 'white' : appColors.secondary,
     textAlign: 'center',
     fontSize: 16,
   },
@@ -183,7 +192,26 @@ const DateCard = (props) => {
   //            not use display
   return (
     <>
-      <Box
+    <Box
+      hidden={!showCard}
+      className = {classes.dateCardContainer}
+    >
+      <div className={classes.card} onClick={cardClicked}>
+        <div className={classes.weekDay}>{props.weekDay}</div>
+        <Box
+          mt={1}
+        >
+          <Typography className={classes.date}>
+            {props.month}
+          </Typography>
+
+          <Typography className={classes.date}>
+            {props.day}
+          </Typography>
+        </Box>
+      </div>
+    </Box>
+      {/* <Box
         hidden={!showCard}
         justifyContent="center"
         width="100%"
@@ -219,7 +247,7 @@ const DateCard = (props) => {
             </Box>
           </Box>
         </div>
-      </Box>
+      </Box> */}
     </>
   );
 };
