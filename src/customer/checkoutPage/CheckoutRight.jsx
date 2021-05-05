@@ -85,6 +85,11 @@ export default function CheckoutRight() {
     <Paper
       elevation={0}
       className={classes.root}
+      style={{
+        border: '3px solid #136D74',
+        borderRadius: '20px',
+        margin: '10px',
+      }}
       // style={{ height: windowHeight - 95 }}
     >
       <StyledTabs
@@ -95,11 +100,25 @@ export default function CheckoutRight() {
         aria-label="styled tabs example"
         centered
       >
-        <StyledTab label="Checkout" />
+        {/* <StyledTab label="Checkout" />
         <Box flexGrow={1} />
         <StyledTab label="History" />
         <Box flexGrow={1} />
-        <StyledTab label="Refund" />
+        <StyledTab label="Refund" /> */}
+        <StyledTab
+          label="Cart"
+          style={{ fontSize: '20px', fontWeight: '700' }}
+        />
+        <Box flexGrow={1} />
+        <StyledTab
+          label="History"
+          style={{ fontSize: '20px', fontWeight: '700' }}
+        />
+        <Box flexGrow={1} />
+        <StyledTab
+          label="Refund"
+          style={{ fontSize: '20px', fontWeight: '700' }}
+        />
       </StyledTabs>
       {/*
       Hi Quang, I changed it back to hidden just so that the

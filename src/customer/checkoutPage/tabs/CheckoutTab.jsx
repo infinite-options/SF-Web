@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { useElements, CardElement } from '@stripe/react-stripe-js';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { Box, TextField, Button, Paper } from '@material-ui/core';
+import { Box, TextField, Button, Paper, Dialog } from '@material-ui/core';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import AddIcon from '@material-ui/icons/Add';
 import appColors from '../../../styles/AppColors';
@@ -11,8 +11,14 @@ import storeContext from '../../storeContext';
 import checkoutContext from '../CheckoutContext';
 import PlaceOrder from '../PlaceOrder';
 import Coupons from '../items/Coupons';
+import MapComponent from '../../MapComponent';
+//import TipImage from '../../../images/TipBackground.svg'
+import LocationSearchInput from '../../../utils/LocationSearchInput'
 
-const useStyles = makeStyles({
+
+//import SignUp from '../SignUp/SignUp';
+
+const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
@@ -22,7 +28,26 @@ const useStyles = makeStyles({
     paddingBottom: '10px',
   },
   button: { color: appColors.buttonText, marginBottom: '10px' },
-});
+  driverTipBox: {
+   
+    marginBottom: '10px',
+    paddingBottom: '10px',
+
+    display: 'flex',
+    [theme.breakpoints.only('lg')]: {
+      flexDirection: 'column',
+      justifyContent:'space-between',
+    },
+  },
+  button: { color: appColors.buttonText
+  ,backgroundColor:" ",
+  "&:hover":{
+    backgroundColor:"#ff8500"
+  }
+}
+
+
+}));
 
 const CssTextField = withStyles({
   root: {
@@ -89,6 +114,8 @@ export default function CheckoutTab() {
 
   // cartItems is a dictonary, need to convert it into an array
   const [cartItems, setCartItems] = useState(getItemsCart());
+
+  const [background, setBackground] = useState();
 
   useEffect(() => {
     setCartItems(getItemsCart());
@@ -269,22 +296,46 @@ export default function CheckoutTab() {
       <Box hidden={store.expectedDelivery === ''}>
         <Box
           className={classes.section}
-          // height="100px"
           display="flex"
+          flexDirection="column"
           // lineHeight="100px"
           id="responsiveExpectedDelivery"
         >
-          <Box color={appColors.secondary}>Expected Delivery</Box>
-          <Box flexGrow={1} />
-          <Box>{store.expectedDelivery}</Box>
+          <Box  color={appColors.primary}
+            fontSize="18px"
+            textAlign="left"
+            fontWeight="700"
+           >Expected Delivery</Box>
+         
+          <Box fontSize="14px" fontWeight="bold"  textAlign="left" >
+            {store.expectedDelivery}
+          </Box>
         </Box>
       </Box>
       {/* END: Expected Delivery */}
 
+
+      <Box className={classes.section} display="flex"  fontWeight="700" fontSize="16px">
+            Enter Full Address 
+            <Box>
+      {/* <MapComponent/> */}
+
+      </Box>  
+      </Box>
+
+
+      <Box>
+        <input style={{ display:"flex", type:"text", value:"text", width:"100%", height:"2rem"}}  placeholder= "Delivery Instructions (ex: gate code, leave on porch)"
+          autoComplete="on" maxLength="100" cols="20" row="5" borderRadius="2rem">
+           
+          </input>
+        </Box>
+    
+
       {/* START: Order Items */}
       <Box className={classes.section}>
-        <Box display="flex">
-          <Box fontWeight="bold" lineHeight={1.8}>
+        <Box display="flex" paddingTop="2rem">
+          <Box fontWeight="bold" lineHeight={1.8} fontSize="20px">
             Your Order:
           </Box>
           <Box flexGrow={1} />
@@ -294,16 +345,18 @@ export default function CheckoutTab() {
             variant="contained"
             color="primary"
             onClick={onAddItemsClicked}
+            style={{ borderRadius: '24px' }}
+
           >
             <AddIcon fontSize="small" />
             Add Items
           </Button>
         </Box>
 
-        {cartItems.length > 0 && (
-          <Box className={classes.section} display="flex">
+        {/* {cartItems.length > 0 && (
+          <Box className={classes.section} display="flex"> */}
             {/* <Box width="130px"></Box> */}
-            <Box width="52%" textAlign="left">
+            {/* <Box width="52%" textAlign="left">
               Name
             </Box>
             <Box width="38%" textAlign="center">
@@ -313,12 +366,26 @@ export default function CheckoutTab() {
               Price
             </Box>
           </Box>
-        )}
+        )} */}
         <Box my={1} px={1}>
           {cartItems.map(listItem)}
         </Box>
+        
+        <Box  display="flex" paddingTop="2rem">
+        <Box fontWeight="700" fontSize="22px">
+          Subtotal
+        </Box>
+        <Box flexGrow={1} />
+        <Box>${subtotal.toFixed(2)}</Box>
       </Box>
+
+    
+     
       <Box flexGrow={1} />
+      </Box>
+      
+     
+      {/* <Box flexGrow={1} /> */}
       {/* END: Order Items */}
 
       {/* START: Coupons */}
@@ -332,11 +399,11 @@ export default function CheckoutTab() {
       {/* END: Coupons */}
 
       {/* START: Pricing */}
-      <Box className={classes.section} display="flex">
+      {/* <Box className={classes.section} display="flex">
         <Box>Subtotal</Box>
         <Box flexGrow={1} />
         <Box>${subtotal.toFixed(2)}</Box>
-      </Box>
+      </Box> */}
       <Box className={classes.section} display="flex">
         <Box color={appColors.secondary}>Promo Applied</Box>
         <Box flexGrow={1} />
@@ -352,7 +419,76 @@ export default function CheckoutTab() {
         <Box flexGrow={1} />
         <Box>${deliveryFee.toFixed(2)}</Box>
       </Box>
-      <Box className={classes.section} display="flex">
+
+      <Box className={classes.driverTipBox}>
+        <Box display="flex" fontWeight="700" marginBottom='1rem' > Driver Tip </Box>
+        <Box style={{display:"flex" , justifyContent:'space-between'}}>
+          <Button
+            className={classes.button}
+            size="small"
+            variant="outlined"
+            color="secondary"
+            onClick={() => setDriverTip(0)}
+            style={{ borderRadius: '5px', textTransform: 'none', color:"#000000"}}
+          >
+            No Tip
+          </Button>
+          <Button
+            className={classes.button}
+            size="small"
+            variant="outlined"
+            color="secondary"
+            onClick={() => setDriverTip(2) }
+            style={{ borderRadius: '5px', color:"#000000",  backgroundColor: " "}}
+          >
+            $2
+          </Button>
+          <Button
+            className={classes.button}
+            size="small"
+            variant="outlined"
+            color="secondary"
+            onClick={() => setDriverTip(3)}
+            style={{ borderRadius: '5px', color:"#000000"}}
+          >
+            $3
+          </Button>
+          <Button
+            className={classes.button}
+            size="small"
+            variant="outlined"
+            color="secondary"
+            onClick={() => setDriverTip(5)}
+            style={{ borderRadius: '5px', color:"#000000" }}
+          >
+            $5
+          </Button>
+
+          <Box width="70px">
+          <CurrencyTextField
+            
+            disabled={true}
+            variant="standard"
+            modifyValueOnWheel={false}
+            value={driverTip}
+            currencySymbol="$"
+            minimumValue="0"
+            outputFormat="string"
+            decimalCharacter="."
+            digitGroupSeparator=","
+            onChange={(event, value) => {
+              setDriverTip(value);
+            }}
+          ></CurrencyTextField>
+        
+        </Box>
+          </Box>
+          
+        
+        <Box flexGrow={1} />
+   
+      </Box>
+      {/* <Box className={classes.section} display="flex">
         <Box>Driver Tip (Optional - Click to edit)</Box>
         <Box flexGrow={1} />
         <Box width="70px">
@@ -370,7 +506,7 @@ export default function CheckoutTab() {
             }}
           ></CurrencyTextField>
         </Box>
-      </Box>
+      </Box> */}
       <Box className={classes.section} display="flex">
         <Box>Taxes</Box>
         <Box flexGrow={1} />

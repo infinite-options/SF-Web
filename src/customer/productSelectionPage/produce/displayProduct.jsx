@@ -47,7 +47,8 @@ const responsive = {
   },
   
   imageItem: {
-    backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom: '95px' 
+    backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom: '95px',
+
     },
   }));
   
@@ -139,7 +140,7 @@ function DisplayProduct() {
 </div>
 <Box hidden={OtherDisplayType  }>
 
-{/* <Carousel
+ {/* <Carousel
     itemClass={classes.imageItem}
     centerMode={true} 
     responsive={responsive}>

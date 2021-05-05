@@ -5,6 +5,8 @@ import { Box } from '@material-ui/core';
 import { AuthContext } from '../../../auth/AuthContext';
 import storeContext from '../../storeContext';
 import checkoutContext from '../CheckoutContext';
+import {makeStyles} from '@material-ui/core/styles';
+
 
 const responsive = {
   superLargeDesktop: {
@@ -29,10 +31,21 @@ const responsive = {
   },
 };
 
+const useStyles = makeStyles((theme) => ({
+  imageItem: {
+
+      marginLeft:'2rem'
+
+    },
+  }));
+
 export default function Coupons(props) {
   const store = useContext(storeContext);
   const auth = useContext(AuthContext);
   const checkout = useContext(checkoutContext);
+
+  const classes = useStyles();
+
 
   // Coupon properties: Title, Message, Expiration, Saving
   // DONE:  if threshold is 0 "No minimum purchase"
@@ -339,12 +352,12 @@ export default function Coupons(props) {
       {(avaiCouponData.length > 0 || unavaiCouponData.length > 0) && (
         <Box className={props.classes.section}>
           <Box fontWeight="bold" textAlign="left" mb={1} lineHeight={1.8}>
-            Choose one of the eligible promos to apply:
+            Coupons
           </Box>
           <Carousel
+            itemClass={classes.imageItem}
             arrows={true}
             swipeable={true}
-            partialVisible={true}
             draggable={true}
             showDots={true}
             responsive={responsive}

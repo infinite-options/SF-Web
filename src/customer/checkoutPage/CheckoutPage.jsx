@@ -68,7 +68,15 @@ export default function CheckoutPage() {
           setChosenCoupon,
         }}
       >
-        <Elements stripe={stripePromise}>
+          <Elements stripe={stripePromise}>
+        <LoadingOverlay
+          active={paymentProcessing}
+          spinner
+          text="Processing Payment"
+        />
+        <CheckoutRight />
+      </Elements>
+        {/* <Elements stripe={stripePromise}>
           <LoadingOverlay
             active={paymentProcessing}
             spinner
@@ -94,7 +102,7 @@ export default function CheckoutPage() {
             </Box>
             
           </Box>
-        </Elements>
+        </Elements> */}
       </CheckoutContext.Provider>
     </>
   );
