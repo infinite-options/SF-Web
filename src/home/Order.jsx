@@ -43,16 +43,16 @@ const useStyles = makeStyles((theme) => ({
     height: '150px',
   },
 }));
+let guestProfile = {
+  longitude: '',
+  latitude: '',
+  address: '',
+  city: '',
+  state: '',
+  zip: '',
+}
 
-// let guestProfile={
-//   longitude: '',
-//   latitude: '',
-//   address: '',
-//   city: '',
-//   state: '',
-//   zip: '',
-// }
-const DeliveryLocationSearch = (props) => {
+const Order = (props) => {
   const [address, setAddress] = React.useState("");
 const [coordinates, setCoordinates] = React.useState({
   lat: null,
@@ -60,20 +60,19 @@ const [coordinates, setCoordinates] = React.useState({
 });
 const [modalError, setModalErrorMessage] = useState('');
 const [modalSuccess, setModalSuccessMessage] = useState('');
-let guestProfile={};
   // const classes = useStyles();
   const history = useHistory();
   const auth = useContext(AuthContext);
 
   // // For Guest Procedure
   // const [deliverylocation, setDeliverylocation] = useState('');
-  // const [errorValue, setError] = useState('');
-  // const [errorMessage, setErrorMessage] = useState('');
+  const [errorValue, setError] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  // function createError(message) {
-  //   setError('Invalid Input');
-  //   setErrorMessage(message);
-  // }
+  function createError(message) {
+    setError('Invalid Input');
+    setErrorMessage(message);
+  }
   // const onFieldChange = (event) => {
   //   const { value } = event.target;
   //   setDeliverylocation(value);
@@ -118,70 +117,76 @@ let guestProfile={};
   //       createError('Sorry, we could not find this location');
   //     }
   //   });
-
-  
-
   const handleSelect = async value => {
     const results = await geocodeByAddress(value);
     const latLng = await getLatLng(results[0]);
     setAddress(value);
+    
     setCoordinates(latLng);
+    let addr=(value.split(','));
+    
+   
+    guestProfile.city=addr[1];
+    guestProfile.state=addr[2];
+    guestProfile.address=addr[1];
+    guestProfile.longitude=coordinates.lng;
+    guestProfile.latitude=coordinates.lat;
+
+
   };
 
-  const searchAddress= async()=>{
+  const searchAddress= async ()=>{
+    if (!(coordinates.lng) ) {
+      alert('Please Enter full address')
+      return;
+    }
     const res= await BusiMethods.getLocationBusinessIds(coordinates.lng,coordinates.lat);
-     guestProfile = {
-              longitude: coordinates.lng,
-              latitude: coordinates.lat,
-              // address: address,
-              // city: city,
-              // state: state,
-              // zip: zip,
-            };
-          
+    const formatMessage =
+      'Please use the following format: Address, City, State Zipcode';
+    // const locationProps = value.split(',');
+    // if (locationProps.length !== 3) {
+    //   createError(formatMessage);
+    //   return;
+    // }
+    guestProfile = {
+      longitude: coordinates.lng,
+      latitude: coordinates.lat,
+      // address: address,
+      // city: city,
+      // state: state,
+      // zip: zip,
+    };
+    console.log(guestProfile);
+    console.log(res)
     modalProp=(!(res.result.length));
     console.log(modalProp)
     if(modalProp){
       setModalErrorMessage({
-      title:"Still Growing…",
-      body:'Sorry, it looks like we don’t deliver to your neighborhood yet. Enter your email address and we will let you know as soon as we come to your neighborhood.'});
+        title:"Still Growing…",
+        body:'Sorry, it looks like we don’t deliver to your neighborhood yet. Enter your email address and we will let you know as soon as we come to your neighborhood.'});
     }
     else{
-      setModalSuccessMessage({title:"Hooray!",body:'Looks like we deliver to your address. Click the button below to see the variety of fresh organic fruits and vegetables we offer.'});
+      alert("We deliver at your location");
       localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
-      auth.setIsGuest(true);
-      history.push('/store');
-      
-      console.log(guestProfile)
+        auth.setIsGuest(true);
+        history.push('/store');
     }
     console.log(modalSample)
 
   }
-
-  const login=()=>{
-      //  localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
-      //   auth.setIsGuest(true);
-      //   history.push('/store');
-      console.log(guestProfile)
-  }
-
   const errorHandleModal=()=>{
     setModalErrorMessage(null);
   }
-
-
   return (
-    <div style={{backgroundColor:'orange',height:'auto',zIndex:'100'}}>
-      
-    <div style={{width:'49%',float:'left'}}>
-    {modalError && <Mymodal title={modalError.title} body={modalError.body} onConfirm={errorHandleModal}></Mymodal>}
-    {modalSuccess && <SuccessModal title={modalSuccess.title} body={modalSuccess.body} onConfirm={login}></SuccessModal>}
+    <div style={{backgroundColor:'white',height:'auto',marginTop:'30px',width:'100%'}}>
+      {modalError && <Mymodal title={modalError.title} body={modalError.body} onConfirm={errorHandleModal}></Mymodal>}
+      <div style={{marginRight:'auto',marginLeft:'auto'}}><h1 style={{color:'rgb(54,97,102)',float:'center',marginLeft:'auto',marginRight:'auto',marginBottom:'5px',fontSize:'42px',fontWeight:'bold'}}>Ready to Order</h1></div>
+      <div style={{marginRight:'auto',marginLeft:'auto'}}><h3 style={{color:'rgb(251,132,0)',float:'center',marginLeft:'auto',marginRight:'auto',marginBottom:'35px',fontSize:'24px'}}>Fresh Organic Produce Delivered</h3></div>
+    <div style={{width:'100%',marginLeft:'auto',marginRight:'auto',marginBottom:'25px',marginTop:'30px'}}>
       <PlacesAutocomplete
         value={address}
         onChange={setAddress}
         onSelect={handleSelect}
-        style={{ position: "absolute",
-        zIndex: 1000}}
       >
         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
           <div>
@@ -202,10 +207,7 @@ let guestProfile={};
                   height: suggestion.active ? "50px" : "50px",
                   border:suggestion.active ? '1px solid black':'1px solid black',
                   color:suggestion.active?'white':'black',
-                  zIndex:suggestion.active?'1000':'1000',
-                  position:suggestion.active?'active':'active'
-                  // float:suggestion.active?'right':'right'
-                  
+
                   // float:suggestion.active ? 'right':'right'
 
                 };
@@ -222,7 +224,6 @@ let guestProfile={};
         )}
       </PlacesAutocomplete>
       </div>
-      <div style={{width:'50%',float:'right'}}>
       <Button
                 size="large"
                 variant="contained"
@@ -231,14 +232,16 @@ let guestProfile={};
                 style={{
                   width: '300px',
                   textTransform: 'none',
-                  float:'left'
+                  float:'center'
                 }}
               >
                 Find Local Produce
               </Button>
+      <div style={{width:'100%',float:'right',marginLeft:'auto',marginRight:'auto',marginBottom:'25px'}}>
+      
       </div>
       <div>
-      
+      {modalSample}
       </div>
     
     </div>
@@ -247,4 +250,4 @@ let guestProfile={};
     
   )
 };
-export default DeliveryLocationSearch;
+export default Order;

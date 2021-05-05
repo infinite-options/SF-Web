@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Container, Row, Col } from 'react-grid-system';
 import Carousel from 'react-multi-carousel';
 import { Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -30,17 +31,20 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: appColors.componentBg,
     width: '100%',
     height: '300px',
-    paddingTop: '10px',
+    paddingTop: '0px',
   },
   title: {
     color: appColors.secondary,
     fontSize: '22px',
     fontWeight: 'bold',
+    
+
   },
   bar: {
     borderBottom: '4px solid ' + appColors.secondary,
     marginBottom: '30px',
     width: '230px',
+    
   },
 }));
 
@@ -72,9 +76,11 @@ const ProductDisplay = () => {
   };
 
   return (
-    <Box className={classes.root}>
-      <Box className={classes.title}>Weekly Fresh Produce </Box>
-      <Box mx="auto" className={classes.bar} />
+    <Box className={classes.root} style={{backgroundColor:'#2F787F26',height:'300px'}}>
+      
+      {/* <Row className={classes.title} style={{border:'1px solid black'}}>Weekly Fresh Produce </Row> */}
+      {/* <Box mx="auto" className={classes.bar} /> */}
+      
       <Carousel
         arrows={true}
         swipeable={true}
@@ -98,6 +104,7 @@ const ProductDisplay = () => {
           );
         })}
       </Carousel>
+      
     </Box>
   );
 };
