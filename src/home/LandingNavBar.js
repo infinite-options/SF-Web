@@ -12,12 +12,13 @@ import { Box, Button, IconButton, Badge } from '@material-ui/core';
 import appColors from 'styles/AppColors';
 import MenuNavButton from '../utils/MenuNavButton';
 import { AuthContext } from '../auth/AuthContext';
+import sf from '../icon/sfnav.svg';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    backgroundColor: 'white',
-    marginBottom: '20px',
+    backgroundColor: '#2F787F',
+    marginBottom: '0px',
   },
   authButton: {
     color: 'white',
@@ -53,7 +54,7 @@ export default function LandingNavBar({ ...props }) {
   }
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} style={{backgroundColor:'#2F787F'}}>
       <AppBar
         color="white"
         position="static"
@@ -62,10 +63,16 @@ export default function LandingNavBar({ ...props }) {
           borderBottom: '1px solid ' + appColors.secondary,
         }}
       >
-        <Toolbar>
-          <MenuNavButton />
-          <Box flexGrow={1} />
+        
+
+        <Toolbar style={{backgroundColor:'#2F787F'}}>
+        
+          <MenuNavButton style={{border:'1px solid black',color:'white'}}/>
+          
+          <Box flexGrow={1} ><div style={{left:'30%'}}><img style={{float:'center'}} src={sf}></img></div></Box>
+          
           <Box hidden={auth.isAuth}>
+          
             <Button
               className={classes.authButton}
               variant="contained"
@@ -79,7 +86,7 @@ export default function LandingNavBar({ ...props }) {
               className={classes.authButton}
               variant="contained"
               size="small"
-              color="secondary"
+              color="primary"
               onClick={loginClicked}
             >
               Login
@@ -87,7 +94,7 @@ export default function LandingNavBar({ ...props }) {
           </Box>
 
           <Box hidden={!(auth.isAuth || auth.isGuest)}>
-            <IconButton edge="end" className="link">
+            {/* <IconButton edge="end" className="link">
               <StorefrontIcon
                   fontSize="large"
                   color={'default'}
@@ -106,7 +113,7 @@ export default function LandingNavBar({ ...props }) {
                   aria-label = 'Go to shopping cart'
                 />
               </Badge>
-            </IconButton>
+            </IconButton> */}
           </Box>
         </Toolbar>
       </AppBar>

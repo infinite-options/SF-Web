@@ -2,45 +2,62 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import appColors from 'styles/AppColors';
+import Card from "react-bootstrap/Card";
+import {Button} from 'react-bootstrap'
 
 const Product = (props) => {
   return (
-    <Box key={props.key} property="div">
+
+
+    
+
+
+
+    <Box key={props.key} property="div" style={{margin:'20px',padding:'0px'}}>
       <Grid item>
         <Box
           className="center-cropped"
           display="flex"
           alignItems="flex-start"
           position="relative"
-        > 
-          <img 
-              src={props.img} 
-              alt={props.name}
-              style={{
-                width: '170px',
-                height: '170px',
-              }}
-            />
+        >
+          <img
+            src={props.img}
+            alt={props.name}
+            style={{
+              width: '170px',
+              height: '170px',
+              borderRadius: '10px',
+            }}
+          />
         </Box>
+        <div >
         <Box
-          width="168px"
+          width="300px"
           p={0.1}
           style={{
             fontSize: '12px',
-            backgroundColor: 'white',
-            borderRadius: 5,
-            border: '1px solid ' + appColors.border,
+            
+            borderRadius: '10px',
+            paddingBottom: '5px',
+            textFont: ' SFProDisplay-Regular',
+            
+            
+            //border: '1px solid ' + appColors.border,
           }}
         >
           <Box display="flex">
-            <Box textAlign="left">{props.name}</Box>
-            <Box flexGrow={1} />
-            <Box textAlign="right">
-              $ {props.price} {props.unit === 'each' ? '' : '/ '}
-              {props.unit}
+            <Box style={{float:'left',fontWeight:'bold'}}>
+              {props.name}({props.unit === 'each' ? '' : 'per '}
+              {props.unit})
             </Box>
-          </Box>
+            </Box>
+            {/* <Box flexGrow={1} /> */}
+            <div style={{width:'175px',float:'center',fontWeight:'bold'}}>
+            <Box style={{float:'left',fontWeight:'bold',}}>${props.price}</Box>
+            </div>
         </Box>
+        </div>
       </Grid>
     </Box>
   );
