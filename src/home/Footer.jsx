@@ -10,7 +10,7 @@ import InstagramIcon from '@material-ui/icons/Instagram';
 
 const Footer = () => {
   return (
-    <div className="containerFooter" style={{ margin: 0 }}>
+    <div className="containerFooter" style={{ margin: 0 ,height:'200px'}}>
       <div className="container">
         <Container>
           <Row>
@@ -18,11 +18,12 @@ const Footer = () => {
               <Hidden md sm xs>
                 <img
                   alt="logo.png"
-                  height="200px"
-                  width="200px"
+                  height="130px"
+                  width="130px"
                   src="./logos/SF.png"
                   style={{
                     float: 'left',
+                    marginTop:'35px'
                   }}
                 />
               </Hidden>

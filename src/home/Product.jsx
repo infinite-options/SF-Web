@@ -2,7 +2,8 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import appColors from 'styles/AppColors';
-
+import Card from "react-bootstrap/Card";
+import {Button} from 'react-bootstrap'
 
 const Product = (props) => {
   return (
@@ -12,7 +13,7 @@ const Product = (props) => {
 
 
 
-    <Box key={props.key} property="div" style={{margin:'20px',padding:'20px'}}>
+    <Box key={props.key} property="div" style={{margin:'20px',padding:'0px'}}>
       <Grid item>
         <Box
           className="center-cropped"

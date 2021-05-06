@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Container, Row, Col } from 'react-grid-system';
 import { useHistory } from 'react-router-dom';
 import { Visible, Hidden } from 'react-grid-system';
@@ -43,14 +43,6 @@ const useStyles = makeStyles((theme) => ({
     height: '150px',
   },
 }));
-let guestProfile = {
-  longitude: '',
-  latitude: '',
-  address: '',
-  city: '',
-  state: '',
-  zip: '',
-}
 
 const Order = (props) => {
   const [address, setAddress] = React.useState("");
@@ -60,6 +52,7 @@ const [coordinates, setCoordinates] = React.useState({
 });
 const [modalError, setModalErrorMessage] = useState('');
 const [modalSuccess, setModalSuccessMessage] = useState('');
+var guestProfile={};
   // const classes = useStyles();
   const history = useHistory();
   const auth = useContext(AuthContext);
@@ -68,7 +61,7 @@ const [modalSuccess, setModalSuccessMessage] = useState('');
   // const [deliverylocation, setDeliverylocation] = useState('');
   const [errorValue, setError] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
+  const classes = useStyles();
   function createError(message) {
     setError('Invalid Input');
     setErrorMessage(message);
@@ -120,65 +113,78 @@ const [modalSuccess, setModalSuccessMessage] = useState('');
   const handleSelect = async value => {
     const results = await geocodeByAddress(value);
     const latLng = await getLatLng(results[0]);
+    
+    console.log(guestProfile);
+    console.log(coordinates.lat)
     setAddress(value);
     
     setCoordinates(latLng);
-    let addr=(value.split(','));
+    const res= await BusiMethods.getLocationBusinessIds(coordinates.lng,coordinates.lat);
+    searchAddress(res);
     
-   
-    guestProfile.city=addr[1];
-    guestProfile.state=addr[2];
-    guestProfile.address=addr[1];
-    guestProfile.longitude=coordinates.lng;
-    guestProfile.latitude=coordinates.lat;
-
+  //  guestProfile({
+  //    city:addr[1],
+  //    state:addr[2],
+  //    address:addr[0],
+  //    longitude:coordinates.lng,
+  //    latitude:coordinates.lat
+  //  })
+    
 
   };
-
-  const searchAddress= async ()=>{
-    if (!(coordinates.lng) ) {
-      alert('Please Enter full address')
-      return;
-    }
-    const res= await BusiMethods.getLocationBusinessIds(coordinates.lng,coordinates.lat);
-    const formatMessage =
-      'Please use the following format: Address, City, State Zipcode';
-    // const locationProps = value.split(',');
-    // if (locationProps.length !== 3) {
-    //   createError(formatMessage);
-    //   return;
-    // }
-    guestProfile = {
-      longitude: coordinates.lng,
-      latitude: coordinates.lat,
-      // address: address,
-      // city: city,
-      // state: state,
-      // zip: zip,
-    };
-    console.log(guestProfile);
-    console.log(res)
-    modalProp=(!(res.result.length));
-    console.log(modalProp)
+  
+  const searchAddress= async (res)=>{
+    // console.log(value);
+    // let addr=(value.split(','));
+    // console.log(addr);
+    // guestProfile.city=addr[1];
+    // guestProfile.state=addr[2];
+    // guestProfile.address=addr[1];
+    // guestProfile.longitude=coordinates.lng;
+    // guestProfile.latitude=coordinates.lat;
+    
+    
+    (modalProp=(!(res.result.length)));
+    console.log(res);
+    // console.log(modalProp)
     if(modalProp){
       setModalErrorMessage({
         title:"Still Growing…",
         body:'Sorry, it looks like we don’t deliver to your neighborhood yet. Enter your email address and we will let you know as soon as we come to your neighborhood.'});
     }
     else{
-      alert("We deliver at your location");
+      setModalSuccessMessage({title:"Hooray!",body:'Looks like we deliver to your address. Click the button below to see the variety of fresh organic fruits and vegetables we offer.'});
       localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
-        auth.setIsGuest(true);
-        history.push('/store');
-    }
+      auth.setIsGuest(true);}
+    //   // alert("We deliver at your location");
+    //   // localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
+    //   //   auth.setIsGuest(true);
+    //   //   history.push('/store');
+    // }
     console.log(modalSample)
 
   }
+  const login=async ()=>{
+    const res= await BusiMethods.getLocationBusinessIds(coordinates.lng,coordinates.lat);
+    
+    
+    localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
+      auth.setIsGuest(true);
+      history.push('/store');
+      //  localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
+      //   auth.setIsGuest(true);
+      //   history.push('/store');
+      console.log(guestProfile)
+  }
+
   const errorHandleModal=()=>{
     setModalErrorMessage(null);
+    setModalSuccessMessage(null);
+    
   }
   return (
     <div style={{backgroundColor:'white',height:'auto',marginTop:'30px',width:'100%'}}>
+      {modalSuccess && <SuccessModal title={modalSuccess.title} body={modalSuccess.body} onConfirm={login} modalClear={errorHandleModal}></SuccessModal>}
       {modalError && <Mymodal title={modalError.title} body={modalError.body} onConfirm={errorHandleModal}></Mymodal>}
       <div style={{marginRight:'auto',marginLeft:'auto'}}><h1 style={{color:'rgb(54,97,102)',float:'center',marginLeft:'auto',marginRight:'auto',marginBottom:'5px',fontSize:'42px',fontWeight:'bold'}}>Ready to Order</h1></div>
       <div style={{marginRight:'auto',marginLeft:'auto'}}><h3 style={{color:'rgb(251,132,0)',float:'center',marginLeft:'auto',marginRight:'auto',marginBottom:'35px',fontSize:'24px'}}>Fresh Organic Produce Delivered</h3></div>
@@ -192,7 +198,32 @@ const [modalSuccess, setModalSuccessMessage] = useState('');
           <div>
           
 
-            <input style={{width:'300px',marginLeft:'auto',marginRight:'auto', display: 'block',height:'40px'}}{...getInputProps({ placeholder: "Search for your address" })} />
+            {/* <input style={{width:'300px',marginLeft:'auto',marginRight:'auto', display: 'block',height:'40px'}}{...getInputProps({ placeholder: "Search for your address" })} /> */}
+
+            <CssTextField className={classes.margin}
+            id="input-with-icon-textfield"
+            size="small"
+            placeholder="Search for your address"
+            variant="outlined"
+            
+            InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LocationOnIcon
+                         style={{color:"rgb(74,124,133)"}}
+                          aria-hidden="false"
+                          aria-label="Enter delivery location"
+                        />
+                      </InputAdornment>
+                    ),
+                  }}{...getInputProps({ placeholder: "Search for your address" })} 
+                  style={{
+                    width: '300px',
+                    border: '2px solid' + appColors.secondary,
+                    borderRadius: '5px',
+                    left:"0%"
+                  }}
+                  />
 
             
               {loading ? <div>...loading</div> : null}

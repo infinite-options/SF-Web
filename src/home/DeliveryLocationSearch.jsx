@@ -24,6 +24,13 @@ import BusiApiReqs from '../utils/BusiApiReqs';
 import ProductDisplay from './ProductDisplay';
 import Mymodal from './Modal';
 import SuccessModal from './SuccessModal';
+import TextField from '@material-ui/core/TextField';
+
+import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
+
+
+
+
 let modalProp=true;
 let modalSample="";
 const BusiMethods = new BusiApiReqs();
@@ -61,7 +68,7 @@ const [coordinates, setCoordinates] = React.useState({
 const [modalError, setModalErrorMessage] = useState('');
 const [modalSuccess, setModalSuccessMessage] = useState('');
 let guestProfile={};
-  // const classes = useStyles();
+  const classes = useStyles();
   const history = useHistory();
   const auth = useContext(AuthContext);
 
@@ -126,6 +133,26 @@ let guestProfile={};
     const latLng = await getLatLng(results[0]);
     setAddress(value);
     setCoordinates(latLng);
+   
+    // console.log(coordinates.lat,coordinates.lng);
+    // const res= await BusiMethods.getLocationBusinessIds(coordinates.lng,coordinates.lat);
+    // console.log(!(res.result.length));
+    // modalProp=(!(res.result.length));
+    // console.log(modalProp);
+    // if(modalProp){
+    //   setModalErrorMessage({
+    //   title:"Still Growing…",
+    //   body:'Sorry, it looks like we don’t deliver to your neighborhood yet. Enter your email address and we will let you know as soon as we come to your neighborhood.'});
+    // }
+    // else{
+    //   setModalSuccessMessage({title:"Hooray!",body:'Looks like we deliver to your address. Click the button below to see the variety of fresh organic fruits and vegetables we offer.'});
+    //   localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
+    //   auth.setIsGuest(true);
+    //   history.push('/store');
+      
+    //   console.log(guestProfile)
+    // }
+
   };
 
   const searchAddress= async()=>{
@@ -148,9 +175,7 @@ let guestProfile={};
     }
     else{
       setModalSuccessMessage({title:"Hooray!",body:'Looks like we deliver to your address. Click the button below to see the variety of fresh organic fruits and vegetables we offer.'});
-      localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
-      auth.setIsGuest(true);
-      history.push('/store');
+      
       
       console.log(guestProfile)
     }
@@ -158,7 +183,19 @@ let guestProfile={};
 
   }
 
-  const login=()=>{
+  const login=async ()=>{
+    const res= await BusiMethods.getLocationBusinessIds(coordinates.lng,coordinates.lat);
+    guestProfile = {
+             longitude: coordinates.lng,
+             latitude: coordinates.lat,
+             // address: address,
+             // city: city,
+             // state: state,
+             // zip: zip,
+           };
+    localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
+      auth.setIsGuest(true);
+      history.push('/store');
       //  localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
       //   auth.setIsGuest(true);
       //   history.push('/store');
@@ -167,27 +204,53 @@ let guestProfile={};
 
   const errorHandleModal=()=>{
     setModalErrorMessage(null);
+    setModalSuccessMessage(null);
   }
 
 
   return (
-    <div style={{backgroundColor:'orange',height:'auto',zIndex:'100'}}>
+    <div style={{backgroundColor:'rgb(236,137,51)',height:'auto'}}>
       
     <div style={{width:'49%',float:'left'}}>
     {modalError && <Mymodal title={modalError.title} body={modalError.body} onConfirm={errorHandleModal}></Mymodal>}
-    {modalSuccess && <SuccessModal title={modalSuccess.title} body={modalSuccess.body} onConfirm={login}></SuccessModal>}
+    {modalSuccess && <SuccessModal title={modalSuccess.title} body={modalSuccess.body} onConfirm={login} modalClear={errorHandleModal}></SuccessModal>}
+     <div style={{ 
+          zIndex:'100',position:'absolute',left:'25%',marginRight:'auto',marginLeft:'auto'
+              }}>
       <PlacesAutocomplete
         value={address}
         onChange={setAddress}
         onSelect={handleSelect}
-        style={{ position: "absolute",
-        zIndex: 1000}}
+        
       >
         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
           <div>
           
 
-            <input style={{width:'300px',marginLeft:'auto',marginRight:'auto', display: 'block',height:'40px'}}{...getInputProps({ placeholder: "Search for your address" })} />
+          <CssTextField className={classes.margin}
+            id="input-with-icon-textfield"
+            size="small"
+            placeholder="Search for your address"
+            variant="outlined"
+            
+            InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LocationOnIcon
+                          style={{color:"rgb(74,124,133)"}}
+                          aria-hidden="false"
+                          aria-label="Enter delivery location"
+                        />
+                      </InputAdornment>
+                    ),
+                  }}{...getInputProps({ placeholder: "Search for your address" })} 
+                  style={{
+                    width: '300px',
+                    border: '2px solid' + appColors.secondary,
+                    borderRadius: '5px',
+                    
+                  }}
+                  />
 
             
               {loading ? <div>...loading</div> : null}
@@ -203,7 +266,8 @@ let guestProfile={};
                   border:suggestion.active ? '1px solid black':'1px solid black',
                   color:suggestion.active?'white':'black',
                   zIndex:suggestion.active?'1000':'1000',
-                  position:suggestion.active?'active':'active'
+                  position:suggestion.active?'active':'active',
+                  left:suggestion.active?'00%':'0%',
                   // float:suggestion.active?'right':'right'
                   
                   // float:suggestion.active ? 'right':'right'
@@ -221,6 +285,7 @@ let guestProfile={};
           
         )}
       </PlacesAutocomplete>
+      </div>
       </div>
       <div style={{width:'50%',float:'right'}}>
       <Button

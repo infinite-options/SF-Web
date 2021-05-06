@@ -9,15 +9,16 @@
   }
   
   .modal {
-    position: fixed;
-    top: 30vh;
+    position: absolute;
+    top: 25%;
     left: 40%;
     width: '100px';
     height: '50px';
     z-index: 100;
-    overflow: hidden;
+    overflow-y: scroll;
     background: #E1E7E7;
     border:1px solid black;
+    
     
     
   }

@@ -1,48 +1,76 @@
 import React from 'react';
 
-
+// import 'slick-carousel/slick/slick.css';
+// import 'slick-carousel/slick/slick-theme.css';
 
 //import './styles.css';
 
 import Slider from 'react-slick';
 import Card from "react-bootstrap/Card";
+import Carousel from 'react-multi-carousel';
 
+
+
+var responsive = {
+  superLargeDesktop: {
+    // the naming can be any, depends on you.
+    breakpoint: { max: 4000, min: 3000 },
+    items: 3
+  },
+  desktop: {
+    breakpoint: { max: 3000, min: 1024 },
+    items: 3
+  },
+  tablet: {
+    breakpoint: { max: 1024, min: 464 },
+    items: 3
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 1
+  }
+};
 export default function Testimonial() {
   const test = () =>
     [
       {
         text:
-          'Tortor consequat id porta nibh venenatis cras sed felis. Massa sapien faucibus et molestie ac feugiat. Ac felis donec et odipellentesque diam volutpat commodo. Orci dapibus ultrices iniaculis.',
-        customer: 'Taylor Swift',
+          'I feel good about supporting my local farmers. The produce is freshly picked, and delivered by the farmer to my doorstep!! The prices are very competitive to the neighborhood grocery stores. Ordering on this app is quick and super easy too.',
+        customer: 'L. R. from San Jose, CA',
       },
       {
         text:
-          'Lorem Ipsum adipiscing elit ipsum. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        customer: 'Dua Lipa',
+          'I love love love using Serving Now Quick, convenient and the produce always shows up fresh and ready to use.',
+        customer: 'R. W. from San Jose, CA',
+      },
+      // {
+      //   text:
+      //     'Very convenient to order! Love it!',
+      //   customer: 'L. M. from San Jose, CA',
+      // },
+      {
+        text:
+          'Great vegetables variety and awesome fruits! Deliveries to my home have made it easy for my family.',
+        customer: 'N. F. from Cupertino, CA',
       },
       {
         text:
-          'Orci porta non pulvinar neque laoreet.  incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laboriscommodo consequat.',
-        customer: 'Billie Eilish',
+          'Hi! Serving Now is an awesome app, delivering High-quality Organic fruits and vegetables at the doorstep. The quality of the produce is great. ',
+        customer: 'A. S. from Sunnyvale, CA',
       },
-      // {
-      //   text:
-      //     'Bibendum neque egestas congue quisque.  incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laboris commodo consequat.',
-      //   customer: 'Lizzo',
-      // },
-      // {
-      //   text:
-      //     'Mattis rhoncus urna neque viverra justo.  incididunt ut labore et dolore magna aliqua. Utenim ad minim veniam, quis nostrud exercitation ullamco laboris commodo consequat.',
-      //   customer: 'Harry Styles',
-      // },
+      {
+        text:
+          'Used this last week and it’s been great to have such fresh veggies!!',
+        customer: 'D. M. from San Jose, CA',
+      },
     ].map((x, num) => (
       
-      <div key="{num}" style={{ float:'left' , width: '30%', margin:'10px', padding:'12px'}} >
+      <div key="{num}" style={{ float:'left' , width: '80%', margin:'10px', padding:'12px'}} >
       
       
       <div style={{border:'0px solid black'}}>
         
-      <div style={{color:'black',fontWeight:'bold',fontSize:'25px',float:'left'}}>{x.text}</div>
+      <div style={{color:'black',fontWeight:'bold',fontSize:'25px',float:'left',marginBottom:'20px'}}>{x.text}</div>
       <div>
       <div style={{textAlign:'center',color:'rgb(35,109,115)',fontWeight:'bold',fontSize:'20px'}}>-{x.customer}</div>
       
@@ -60,16 +88,17 @@ export default function Testimonial() {
 
   return (
     
-      <div style={{width:'100%',marginRight:'auto',marginLeft:'auto'}}
-        // dots={true}
-        // slidesToShow={1}
-        // slidesToScroll={1}
-        // autoplay={false}
-        // autoplaySpeed={8000}
-      >
-       {test()}
+      // <div style={{width:'100%',marginRight:'auto',marginLeft:'auto',border:'1px solid black'}}
+      //   // dots={true}
+      //   // slidesToShow={1}
+      //   // slidesToScroll={1}
+      //   // autoplay={false}
+      //   // autoplaySpeed={8000}
+      // >
+        <Carousel responsive={responsive}>{test()}</Carousel>
+       
         
-      </div>
+      // </div>
     
   );
 }

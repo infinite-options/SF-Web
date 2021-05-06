@@ -1,5 +1,5 @@
 import Modal from "react-bootstrap/Modal";
-import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useState, useContext } from 'react';
 import classes from './ErrorModal.module.css';
 import {Button} from 'react-bootstrap'

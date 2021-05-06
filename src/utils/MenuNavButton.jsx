@@ -153,7 +153,7 @@ function MenuListComposition(props) {
           aria-haspopup="true"
           onClick={handleToggle}
         >
-            <MenuIcon color="secondary" 
+            <MenuIcon style={{color:"white",width:'54px',height:'54px'}} 
               aria-hidden="false"
               aria-label = 'Menu list'
             />

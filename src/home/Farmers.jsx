@@ -1,12 +1,13 @@
 import React from 'react';
-
+// import 'slick-carousel/slick/slick.css';
+// import 'slick-carousel/slick/slick-theme.css';
 import { makeStyles } from '@material-ui/core/styles';
 import {Button} from 'react-bootstrap'
 import Card from "react-bootstrap/Card";
 import fb from '../icon/facebook.svg';
 import insta from '../icon/instagram.svg';
 
-
+import Slider from 'react-slick';
 import Carousel from 'react-multi-carousel';
 
 var responsive = {
@@ -170,25 +171,43 @@ export default function Farmers() {
         contact: '258',
       },
     ].map((x, i) => (
-      <div key="{i}" style={{ float:'left' , width: '20rem', margin:'10px', padding:'12px'}} className='classes.Farmers'>
-      <img  src={x.farmerimg} style={{width:'15rem',height:'15rem',border:'2px solid rgb(242,151,56)',aspectRatio:'1/1'}}/>
+      // <div key="{i}" style={{  width: '20rem',margin:'10px', padding:'12px',border:'1px solid black'}}>
+      //   <div style={{width:'15rem',height:'15rem'}}>
+      //     <img  src={x.farmerimg} style={{width:'15rem',height:'15rem',border:'2px solid rgb(242,151,56)',aspectRatio:'1/1',float:'left'}}/>
+      //   </div>
+      //   <div style={{color:'rgb(242,151,56)',fontWeight:'bold',fontSize:'25px',float:'left',width:'100%',border:'1px solid black'}}>
+      // <div style={{color:'rgb(242,151,56)',fontWeight:'bold',fontSize:'25px',float:'left'}}>{x.city}</div>
+      // </div>
+      // <div>
+      // <div style={{float:'left',color:'rgb(35,109,115)',fontWeight:'bold',fontSize:'20px',width:'50%'}}>City:{x.city}</div>
+      // <div style={{float:'left',color:'rgb(35,109,115)',width:'50%'}}>
+      //     {/* <div style={{float:'right',padding:'2px',width:'20px',maxHeight:'10px'}}><img src={fb}></img></div>
+      //     <div style={{float:'right',padding:'2px'}}><img src={insta}></img></div> */}
+      //     </div>
+      // </div>
+      <div style={{marginLeft:'35px'}}>
+         <div>
+          <img  src={x.farmerimg} style={{width:'15rem',height:'15rem',border:'2px solid rgb(242,151,56)',aspectRatio:'1/1',float:'left'}}/>
+        </div>
       
-      <Card.Body>
         
-      <div style={{color:'rgb(242,151,56)',fontWeight:'bold',fontSize:'25px',float:'left',width:'100%'}}><h3 style={{float:'left'}}>{x.name}</h3></div>
-      <div>
-      <div style={{float:'left',color:'rgb(35,109,115)',fontWeight:'bold',fontSize:'20px'}}>City:{x.city}</div>
-      <div style={{float:'right',padding:'2px',width:'20px',maxHeight:'10px'}}><img src={fb}></img></div>
-    <div style={{float:'right',padding:'2px'}}><img src={insta}></img></div>
-      </div>
+        <div style={{color:'rgb(242,151,56)',fontWeight:'bold',fontSize:'25px',float:'left',width:'100%'}}>
+          <p style={{float:'left'}}>{x.name}</p>
+          </div>
+          <div>
+          <div style={{float:'left',color:'rgb(35,109,115)',fontWeight:'bold',fontSize:'20px'}}>City:{x.city}</div>
+          <div style={{marginRight:'30px',float:'right',padding:'2px',width:'20px',maxHeight:'10px'}}><img src={fb}></img></div>
+        <div style={{float:'right',padding:'2px'}}><img src={insta}></img></div>
+          </div> 
 
-          </Card.Body>
+          
       </div>
       
     ));
 
 
   return (
+    
     <Carousel responsive={responsive}>
       {farm()}
       </Carousel>

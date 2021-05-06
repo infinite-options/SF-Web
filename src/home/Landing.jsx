@@ -36,7 +36,10 @@ const useStyles = makeStyles((theme) => ({
   infoTitle: {
     color: appColors.primary,
     // marginBottom: '10px',
-    fonteight: '700',
+    fontWeight: 'bold',
+    fontSize:'32px',
+    marginBottom:'5px'
+
   },
   infoDesc: {
     paddingLeft: '20%',
@@ -85,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   farmer: {
-    backgroundColor: appColors.componentBg,
+    backgroundColor: 'white',
     width: '100%',
     height: 'auto',
     paddingTop: '30px',
@@ -241,6 +244,9 @@ const Landing = ({ ...props }) => {
                   src="./logos/SF.png"
                   style={{
                     marginTop: '40px',
+                    width:'226px',
+                    height:'226px',
+                    marginTop:'100px',
                     //marginLeft: '800px',
                   }}
                 />
@@ -251,7 +257,7 @@ const Landing = ({ ...props }) => {
 
           <Box
             className="hero-right"
-            style={{ background: 'rgba(0244, 134, 9, 0.85)',minHeight:'300px',maxHeight:'500px'}}
+            style={{ backgroundColor: 'rgb(251,132,0)',minHeight:'300px',maxHeight:'500px'}}
           >
             {/* <ZipcodeSearch/> */}
             <p
@@ -270,8 +276,8 @@ const Landing = ({ ...props }) => {
           </Box>
 
           {/* START: Info Section */}
-          <Box style={{backgroundImage: `url(${bg})`}}>
-          <Box className={classes.title} style={{ paddingTop: '30px',position:'sticky' }}>
+          <Box style={{backgroundImage: `url(${bg})`,height:'450px'}}>
+          <Box className={classes.title} style={{ paddingTop: '30px',zIndex:'0' }}>
             Why try Serving Fresh
           </Box>
           <Box mx="auto" className={classes.bar} />
@@ -326,7 +332,8 @@ const Landing = ({ ...props }) => {
                 textAlign: 'left',
                 marginLeft: '00px',
                 paddingBottom: '00px',
-                backgroundColor:'#2F787F26'
+                backgroundColor:'#2F787F26',
+                paddingTop:'20px'
               }}
             >
               <u style={{marginLeft:'50px'}}>Weekly Fresh Produce</u>
@@ -431,7 +438,7 @@ const Landing = ({ ...props }) => {
           </Box>
           {/* END: Farmer Information */}
           {/* START: Info Section */}
-          <Box className={classes.root}>
+          <Box className={classes.root} style={{height:'250px'}}>
             <Box
               // display="flex"
               className="info-container"
@@ -497,7 +504,7 @@ const Landing = ({ ...props }) => {
           
         {/* </Box> */}
         <div>
-        <Box className={classes.testimonial} style={{backgroundColor:'#F1F4F4',height:'30em',width:'100%',border:'0px solid black'}}>
+        <Box className={classes.testimonial} style={{backgroundColor:'#F1F4F4',height:'20em',width:'100%',border:'0px solid black'}}>
             <Box
               className={classes.title}
               style={{
@@ -517,6 +524,7 @@ const Landing = ({ ...props }) => {
         
         <Box style={{backgroundColor:'rgb(251,132,0)'}}><Footer /></Box>
         </div>
+        
       </div>
       
     
