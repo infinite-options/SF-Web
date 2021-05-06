@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { useElements, CardElement } from '@stripe/react-stripe-js';
+import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Box, TextField, Button, Paper, Dialog } from '@material-ui/core';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
@@ -115,11 +116,32 @@ export default function CheckoutTab() {
   // cartItems is a dictonary, need to convert it into an array
   const [cartItems, setCartItems] = useState(getItemsCart());
 
-  const [background, setBackground] = useState();
+  const [userInfo, setUserInfo] = useState(store.profile);
+
+  const [map, setMap] = React.useState(null);
+
+
+  useEffect(() => {
+    if (store.profile !== {}) {
+      setUserInfo(store.profile);
+    }
+  }, [store.profile]);
 
   useEffect(() => {
     setCartItems(getItemsCart());
   }, [store.cartItems]);
+
+
+  
+  const onLoad = React.useCallback(function callback(map) {
+    const bounds = new window.google.maps.LatLngBounds();
+    map.fitBounds(bounds);
+    setMap(map);
+  }, []);
+
+  const onUnmount = React.useCallback(function callback(map) {
+    setMap(null);
+  }, []);
 
   var days = [
     'SUNDAY',
@@ -282,6 +304,8 @@ export default function CheckoutTab() {
     });
     console.log('items: ', items);
     
+
+    
   }
   console.log('cartitems####333',cartItems)
   return (
@@ -315,14 +339,93 @@ export default function CheckoutTab() {
       {/* END: Expected Delivery */}
 
 
-      <Box className={classes.section} display="flex"  fontWeight="700" fontSize="16px">
+      <Box display="flex"  fontWeight="700" fontSize="16px" paddingBottom='1rem'>
             Enter Full Address 
+
+            
             <Box>
+
+              
       {/* <MapComponent/> */}
 
       </Box>  
       </Box>
 
+      <Box display="flex" mb={1}>
+          <CssTextField
+          //  error={locError}
+            value={userInfo.address}
+            name="address"
+            label="Street Address"
+            variant="outlined"
+            size="small"
+            fullWidth
+           // onChange={onFieldChange}
+          />
+
+        <Box ml={1} width="40%">
+            <CssTextField
+              value={userInfo.unit}
+              name="unit"
+              label="Apt Number"
+              variant="outlined"
+              size="small"
+              fullWidth
+            />
+        </Box>
+        </Box>
+
+        <Box display="flex" mb={1}>
+          <Box width="33.3%">
+            <CssTextField
+              value={userInfo.city}
+              name="city"
+              label="City"
+              variant="outlined"
+              size="small"
+              fullWidth
+            />
+          </Box>
+          <Box width="33.3%" mx={1}>
+            <CssTextField
+              value={userInfo.state}
+              name="state"
+              label="State"
+              variant="outlined"
+              size="small"
+              fullWidth
+            />
+          </Box>
+          <Box width="33.3%">
+            <CssTextField
+              value={userInfo.zip}
+              name="zip"
+              label="Zip Code"
+              variant="outlined"
+              size="small"
+              fullWidth
+            />
+          </Box>
+          </Box>
+
+          <LoadScript googleMapsApiKey={process.env.REACT_APP_BING_LOCATION_KEY}>
+          <GoogleMap
+            mapContainerStyle={{
+              width: '100%',
+              height: '200px',
+            }}
+            center={{
+              lat: -3.745,
+              lng: -38.523,
+            }}
+            zoom={10}
+            onLoad={onLoad}
+            onUnmount={onUnmount}
+          >
+            <></>
+          </GoogleMap>
+        </LoadScript>
+          
 
       <Box>
         <input style={{ display:"flex", type:"text", value:"text", width:"100%", height:"2rem"}}  placeholder= "Delivery Instructions (ex: gate code, leave on porch)"

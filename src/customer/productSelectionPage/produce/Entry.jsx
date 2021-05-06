@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import storeContext from '../../storeContext';
 import { Box, Button, Card, Grid, Icon, IconButton, Typography, SvgIcon } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-// import InfoIcon from '@material-ui/icons/Info';
+ import InfoIcon from '@material-ui/icons/Info';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import axios from 'axios';
@@ -10,12 +10,12 @@ import appColors from '../../../styles/AppColors';
 import ProduceSelectContext from '../ProdSelectContext';
 import { CallMissedSharp, InfoOutlined } from '@material-ui/icons';
 
-// import {ReactComponent as AddIcon } from '../../../sf-svg-icons/sfcolored-plus.svg';
-// import {ReactComponent as RemoveIcon } from '../../../sf-svg-icons/sfcolored-minus.svg';
+ import {ReactComponent as AddIcon } from '../../../sf-svg-icons/sfcolored-plus.svg';
+ import {ReactComponent as RemoveIcon } from '../../../sf-svg-icons/sfcolored-minus.svg';
 
-// import FavoriteSrc from '../../../sf-svg-icons/heart-whitebackground.svg';
-// import FavoriteBorderedSrc from '../../../sf-svg-icons/heart-whitebackground-bordered.svg';
-// import InfoSrc from '../../../sf-svg-icons/info-whitebackground.svg';
+import FavoriteSrc from '../../../sf-svg-icons/heart-whitebackground.svg';
+import FavoriteBorderedSrc from '../../../sf-svg-icons/heart-whitebackground-bordered.svg';
+import InfoSrc from '../../../sf-svg-icons/info-whitebackground.svg';
 
 import busiRes from '../../../utils/BusiApiReqs'
 
@@ -279,32 +279,32 @@ function Entry(props) {
     }
 
     postRequest();
-    getRequest();
+     getRequest();
 
 
-    for (let i = 0; i < store.productsFruit.length; i++) {
-      if (store.productsFruit[i].item_uid == props.id) {
-       store.productsFruit[i].favorite = store.productsFruit[i].favorite == "FALSE" ?
-   //       store.products[i].favorite = props.favorite == "FALSE" ?     
-          "TRUE" : "FALSE";
-      }
-    }
+//     for (let i = 0; i < store.productsFruit.length; i++) {
+//       if (store.productsFruit[i].item_uid == props.id) {
+//        store.productsFruit[i].favorite = store.productsFruit[i].favorite == "FALSE" ?
+//    //       store.products[i].favorite = props.favorite == "FALSE" ?     
+//           "TRUE" : "FALSE";
+//       }
+//     }
 
-    for (let i = 0; i < store.productsVegetable.length; i++) {
-      if (store.productsVegetable[i].item_uid == props.id) {
-       store.productsVegetable[i].favorite = store.productsVegetable[i].favorite == "FALSE" ?
-   //       store.products[i].favorite = props.favorite == "FALSE" ?     
-          "TRUE" : "FALSE";
-      }
-  }
+//     for (let i = 0; i < store.productsVegetable.length; i++) {
+//       if (store.productsVegetable[i].item_uid == props.id) {
+//        store.productsVegetable[i].favorite = store.productsVegetable[i].favorite == "FALSE" ?
+//    //       store.products[i].favorite = props.favorite == "FALSE" ?     
+//           "TRUE" : "FALSE";
+//       }
+//   }
 
-  for (let i = 0; i < store.productsDessert.length; i++) {
-    if (store.productsDessert[i].item_uid == props.id) {
-     store.productsDessert[i].favorite = store.productsDessert[i].favorite == "FALSE" ?
- //       store.products[i].favorite = props.favorite == "FALSE" ?     
-        "TRUE" : "FALSE";
-    }
-}
+//   for (let i = 0; i < store.productsDessert.length; i++) {
+//     if (store.productsDessert[i].item_uid == props.id) {
+//      store.productsDessert[i].favorite = store.productsDessert[i].favorite == "FALSE" ?
+//  //       store.products[i].favorite = props.favorite == "FALSE" ?     
+//         "TRUE" : "FALSE";
+//     }
+// }
     setHearted(!hearted);
   };
 
@@ -330,7 +330,7 @@ function Entry(props) {
               className = {classes.itemInfoBtn}
               onClick = {toggleHearted}
             >
-              {/* <img src = {hearted ? FavoriteSrc : FavoriteBorderedSrc} /> */}
+              <img src = {hearted ? FavoriteSrc : FavoriteBorderedSrc} />
             </Button>
           </Box>
 
@@ -340,7 +340,7 @@ function Entry(props) {
             <Button
               className = {classes.itemInfoBtn}
             >
-              {/* <img src = {InfoSrc} /> */}
+              <img src = {InfoSrc} />
             </Button>
           </Box>
         </Box>
@@ -359,7 +359,7 @@ function Entry(props) {
               }}
               onClick = {decrease}
             >
-              {/* <SvgIcon component = {RemoveIcon} fontSize = 'large'/> */}
+              <SvgIcon component = {RemoveIcon} fontSize = 'large'/>
             </IconButton>
 
             <Typography className = {classes.itemCountTypog}>
@@ -369,7 +369,7 @@ function Entry(props) {
             </Typography>
 
             <IconButton onClick = {increase} style = {{padding: '0px'}}>
-              {/* <SvgIcon component = {AddIcon} fontSize = 'large'/> */}
+              <SvgIcon component = {AddIcon} fontSize = 'large'/>
             </IconButton>
           </Box>
 

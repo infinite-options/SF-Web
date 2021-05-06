@@ -569,7 +569,7 @@ export default function DeliveryInfoTab() {
             Save Changes
           </Button>
         </Box>
-        {/* <LoadScript googleMapsApiKey={process.env.REACT_APP_BING_LOCATION_KEY}>
+        <LoadScript googleMapsApiKey={process.env.REACT_APP_BING_LOCATION_KEY}>
           <GoogleMap
             mapContainerStyle={{
               width: '100%',
@@ -585,7 +585,7 @@ export default function DeliveryInfoTab() {
           >
             <></>
           </GoogleMap>
-        </LoadScript> */}
+        </LoadScript>
       </>
     );
   };

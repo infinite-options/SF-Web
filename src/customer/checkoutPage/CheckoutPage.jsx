@@ -75,8 +75,9 @@ export default function CheckoutPage() {
           text="Processing Payment"
         />
         <CheckoutRight />
+        <CheckoutLeft/>
       </Elements>
-        {/* <Elements stripe={stripePromise}>
+         {/* <Elements stripe={stripePromise}>
           <LoadingOverlay
             active={paymentProcessing}
             spinner
@@ -102,7 +103,7 @@ export default function CheckoutPage() {
             </Box>
             
           </Box>
-        </Elements> */}
+        </Elements>  */}
       </CheckoutContext.Provider>
     </>
   );
