@@ -113,63 +113,85 @@ var guestProfile={};
   const handleSelect = async value => {
     const results = await geocodeByAddress(value);
     const latLng = await getLatLng(results[0]);
-    
-    console.log(guestProfile);
-    console.log(coordinates.lat)
     setAddress(value);
-    
     setCoordinates(latLng);
-    const res= await BusiMethods.getLocationBusinessIds(coordinates.lng,coordinates.lat);
-    searchAddress(res);
-    
-  //  guestProfile({
-  //    city:addr[1],
-  //    state:addr[2],
-  //    address:addr[0],
-  //    longitude:coordinates.lng,
-  //    latitude:coordinates.lat
-  //  })
-    
-
-  };
+    let addr=value.split(',');
+    console.log(addr);
+    guestProfile = {
+                  longitude: latLng.lng,
+                  latitude: latLng.lat,
+                  address: addr[0],
+                  city: addr[1],
+                  state: addr[2],
+                  zip: "",
+                };
+    console.log(latLng);
+    const res= await BusiMethods.getLocationBusinessIds(latLng.lng,latLng.lat);
+    console.log(res.result);
+    console.log(!(res.result.length));
   
-  const searchAddress= async (res)=>{
-    // console.log(value);
-    // let addr=(value.split(','));
-    // console.log(addr);
-    // guestProfile.city=addr[1];
-    // guestProfile.state=addr[2];
-    // guestProfile.address=addr[1];
-    // guestProfile.longitude=coordinates.lng;
-    // guestProfile.latitude=coordinates.lat;
-    
-    
-    (modalProp=(!(res.result.length)));
-    console.log(res);
-    // console.log(modalProp)
+    modalProp=(!(res.result.length));
+    console.log(modalProp);
     if(modalProp){
+      console.log(guestProfile);
       setModalErrorMessage({
-        title:"Still Growing…",
-        body:'Sorry, it looks like we don’t deliver to your neighborhood yet. Enter your email address and we will let you know as soon as we come to your neighborhood.'});
+      title:"Still Growing…",
+      body:'Sorry, it looks like we don’t deliver to your neighborhood yet. Enter your email address and we will let you know as soon as we come to your neighborhood.'});
     }
     else{
       setModalSuccessMessage({title:"Hooray!",body:'Looks like we deliver to your address. Click the button below to see the variety of fresh organic fruits and vegetables we offer.'});
       localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
-      auth.setIsGuest(true);}
-    //   // alert("We deliver at your location");
-    //   // localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
-    //   //   auth.setIsGuest(true);
-    //   //   history.push('/store');
-    // }
-    console.log(modalSample)
-
-  }
-  const login=async ()=>{
-    const res= await BusiMethods.getLocationBusinessIds(coordinates.lng,coordinates.lat);
-    
-    
-    localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
       auth.setIsGuest(true);
+      // history.push('/store');
+      
+      console.log(guestProfile);
+    }
+
+  };
+  
+  // const searchAddress= async (res)=>{
+  //   // console.log(value);
+  //   // let addr=(value.split(','));
+  //   // console.log(addr);
+  //   // guestProfile.city=addr[1];
+  //   // guestProfile.state=addr[2];
+  //   // guestProfile.address=addr[1];
+  //   // guestProfile.longitude=coordinates.lng;
+  //   // guestProfile.latitude=coordinates.lat;
+    
+    
+  //   (modalProp=(!(res.result.length)));
+  //   console.log(res);
+  //   // console.log(modalProp)
+  //   if(modalProp){
+  //     setModalErrorMessage({
+  //       title:"Still Growing…",
+  //       body:'Sorry, it looks like we don’t deliver to your neighborhood yet. Enter your email address and we will let you know as soon as we come to your neighborhood.'});
+  //   }
+  //   else{
+  //     setModalSuccessMessage({title:"Hooray!",body:'Looks like we deliver to your address. Click the button below to see the variety of fresh organic fruits and vegetables we offer.'});
+  //     localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
+  //     auth.setIsGuest(true);}
+  //   //   // alert("We deliver at your location");
+  //   //   // localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
+  //   //   //   auth.setIsGuest(true);
+  //   //   //   history.push('/store');
+  //   // }
+  //   console.log(modalSample)
+
+  // }
+  const login=async ()=>{
+    // const res= await BusiMethods.getLocationBusinessIds(coordinates.lng,coordinates.lat);
+    // guestProfile = {
+    //          longitude: coordinates.lng,
+    //          latitude: coordinates.lat,
+    //          // address: address,
+    //          // city: city,
+    //          // state: state,
+    //          // zip: zip,
+    //        };
+    // localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
+      // auth.setIsGuest(true);
       history.push('/store');
       //  localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
       //   auth.setIsGuest(true);
@@ -259,7 +281,7 @@ var guestProfile={};
                 size="large"
                 variant="contained"
                 color="secondary"
-                onClick={searchAddress}
+                onClick={handleSelect}
                 style={{
                   width: '300px',
                   textTransform: 'none',
