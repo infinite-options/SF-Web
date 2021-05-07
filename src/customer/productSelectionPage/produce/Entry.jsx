@@ -282,29 +282,29 @@ function Entry(props) {
      getRequest();
 
 
-//     for (let i = 0; i < store.productsFruit.length; i++) {
-//       if (store.productsFruit[i].item_uid == props.id) {
-//        store.productsFruit[i].favorite = store.productsFruit[i].favorite == "FALSE" ?
-//    //       store.products[i].favorite = props.favorite == "FALSE" ?     
-//           "TRUE" : "FALSE";
-//       }
-//     }
+    for (let i = 0; i < store.productsFruit.length; i++) {
+      if (store.productsFruit[i].item_uid == props.id) {
+       store.productsFruit[i].favorite = store.productsFruit[i].favorite == "FALSE" ?
+   //       store.products[i].favorite = props.favorite == "FALSE" ?     
+          "TRUE" : "FALSE";
+      }
+    }
 
-//     for (let i = 0; i < store.productsVegetable.length; i++) {
-//       if (store.productsVegetable[i].item_uid == props.id) {
-//        store.productsVegetable[i].favorite = store.productsVegetable[i].favorite == "FALSE" ?
-//    //       store.products[i].favorite = props.favorite == "FALSE" ?     
-//           "TRUE" : "FALSE";
-//       }
-//   }
+    for (let i = 0; i < store.productsVegetable.length; i++) {
+      if (store.productsVegetable[i].item_uid == props.id) {
+       store.productsVegetable[i].favorite = store.productsVegetable[i].favorite == "FALSE" ?
+   //       store.products[i].favorite = props.favorite == "FALSE" ?     
+          "TRUE" : "FALSE";
+      }
+  }
 
-//   for (let i = 0; i < store.productsDessert.length; i++) {
-//     if (store.productsDessert[i].item_uid == props.id) {
-//      store.productsDessert[i].favorite = store.productsDessert[i].favorite == "FALSE" ?
-//  //       store.products[i].favorite = props.favorite == "FALSE" ?     
-//         "TRUE" : "FALSE";
-//     }
-// }
+  for (let i = 0; i < store.productsDessert.length; i++) {
+    if (store.productsDessert[i].item_uid == props.id) {
+     store.productsDessert[i].favorite = store.productsDessert[i].favorite == "FALSE" ?
+ //       store.products[i].favorite = props.favorite == "FALSE" ?     
+        "TRUE" : "FALSE";
+    }
+}
     setHearted(!hearted);
   };
 

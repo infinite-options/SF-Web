@@ -2,8 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import LoadingOverlay from 'react-loading-overlay';
 
 import { Box } from '@material-ui/core';
-import CheckoutLeft from './CheckoutLeft';
-import CheckoutRight from './CheckoutRight';
+import CheckoutRight from './CheckoutStoreRight';
 import CheckoutContext from './CheckoutContext';
 import { Elements, CardElement, useStripe } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -68,42 +67,15 @@ export default function CheckoutPage() {
           setChosenCoupon,
         }}
       >
-          {/* <Elements stripe={stripePromise}>
+          <Elements stripe={stripePromise}>
         <LoadingOverlay
           active={paymentProcessing}
           spinner
           text="Processing Payment"
         />
         <CheckoutRight />
-        <CheckoutLeft/>
-      </Elements> */}
-         <Elements stripe={stripePromise}>
-          <LoadingOverlay
-            active={paymentProcessing}
-            spinner
-            text="Processing Payment"
-          />
-
-          <Box 
-          // display="flex"
-          className="checkout-container"
-          >
-            
-            <Box 
-            width="55%"
-            className="checkout-right"
-            >
-              <CheckoutRight />
-            </Box>
-            <Box 
-            // width="45%"
-            className="checkout-left"
-            >
-              <CheckoutLeft />
-            </Box>
-            
-          </Box>
-        </Elements> 
+      </Elements>
+         
       </CheckoutContext.Provider>
     </>
   );

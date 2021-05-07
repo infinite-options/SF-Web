@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import DisplayProduce from './produce/displayProduct';
-import CheckoutPage from '../checkoutPage/CheckoutPage';
+import CheckoutPage from '../checkoutPage/CheckoutStorePage';
 import StoreFilter from './filter';
 import { Box, Badge, Grid, Dialog, Button, Hidden, IconButton, Drawer } from '@material-ui/core';
 import ProdSelectContext from './ProdSelectContext';
@@ -60,7 +60,7 @@ const ProductSelectionPage = (props) => {
 
 
   return (
-    <Box>
+    <Box Box display="flex" justifyContent="space-between">
     <ProdSelectContext.Provider
       value={{
         loggingIn, setLoggingIn,
@@ -77,6 +77,7 @@ const ProductSelectionPage = (props) => {
 
       }}
     >
+
           <Grid container>
           <Grid item xs = {12} lg = {8} style = {{display: 'flex', flexDirection: 'column'}}>
             <StoreFilter />
@@ -91,6 +92,23 @@ const ProductSelectionPage = (props) => {
             </Grid>
           </Hidden>
         </Grid>
+
+        {/* <Box>
+          <Box>
+          <StoreFilter />
+          </Box>
+
+          <Box display="flex" justifyContent="space-between">
+          <DisplayProduce />
+          <Hidden mdDown>
+            <Grid item lg = {4}>
+              <CheckoutPage />
+            </Grid>
+          </Hidden>
+          </Box>
+        </Box> */}
+
+      
 
         <Hidden lgUp>
           <Drawer variant = 'temporary' anchor = 'bottom' open = {checkingOut}>

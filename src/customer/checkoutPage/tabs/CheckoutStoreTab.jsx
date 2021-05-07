@@ -1,7 +1,8 @@
 import React, { useContext, useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { useElements, CardElement } from '@stripe/react-stripe-js';
-import { GoogleMap, LoadScript,  useJsApiLoader } from '@react-google-maps/api';
+import { GoogleMap, LoadScript } from '@react-google-maps/api';
+
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Box, TextField, Button, Paper, Dialog } from '@material-ui/core';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
@@ -118,15 +119,41 @@ export default function CheckoutTab() {
   const [cartItems, setCartItems] = useState(getItemsCart());
 
   const [userInfo, setUserInfo] = useState(store.profile);
+  const [emailError, setEmailError] = useState('');
+  const [emailErrorMessage, setEmailErrorMessage] = useState('');
 
   const [map, setMap] = React.useState(null);
 
+  const [detailsDisplayType, setDetailsDisplayType] = useState(true); 
   const [paymentDisplayType, setPaymentDisplayType] = useState(true); 
 
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyBLoal-kZlb6tO5aDvkJTFC0a4WMp7oHUM"
-  })
+  const onFieldChange = (event) => {
+    const { name, value } = event.target;
+    if (name === 'email' && emailError !== '') {
+      setEmailError('');
+      setEmailErrorMessage('');
+    }
+    setUserInfo({ ...userInfo, [name]: value });
+  };
+
+const PlainTextField = (props) => {
+    return (
+      <Box mb={props.spacing || 1}>
+        <CssTextField
+          error={props.error || ''}
+          value={props.value}
+          name={props.name}
+          label={props.label}
+          type={props.type}
+          disabled={props.disabled}
+          variant="outlined"
+          size="small"
+          fullWidth
+          onChange={props.onChange || onFieldChange}
+        />
+      </Box>
+    );
+  };
 
   useEffect(() => {
     if (store.profile !== {}) {
@@ -310,8 +337,8 @@ export default function CheckoutTab() {
       };
     });
     console.log('items: ', items);
-    
 
+   
     
   }
   console.log('cartitems####333',cartItems)
@@ -369,8 +396,8 @@ export default function CheckoutTab() {
             fullWidth
            // onChange={onFieldChange}
           />
-
-        <Box ml={1} width="40%">
+        </Box>
+        <Box mb={1}>
             <CssTextField
               value={userInfo.unit}
               name="unit"
@@ -379,7 +406,7 @@ export default function CheckoutTab() {
               size="small"
               fullWidth
             />
-        </Box>
+        
         </Box>
 
         <Box display="flex" mb={1}>
@@ -415,7 +442,9 @@ export default function CheckoutTab() {
           </Box>
           </Box>
 
-          <LoadScript googleMapsApiKey={process.env.REACT_APP_BING_LOCATION_KEY}>
+        
+
+          {/* <LoadScript googleMapsApiKey={process.env.REACT_APP_BING_LOCATION_KEY}>
           <GoogleMap
             mapContainerStyle={{
               width: '100%',
@@ -431,15 +460,16 @@ export default function CheckoutTab() {
           >
             <></>
           </GoogleMap>
-        </LoadScript>
+        </LoadScript> */}
           
+          <MapComponent/>
 
-      <Box>
+      {/* <Box>
         <input style={{ display:"flex", type:"text", value:"text", width:"100%", height:"2rem"}}  placeholder= "Delivery Instructions (ex: gate code, leave on porch)"
           autoComplete="on" maxLength="100" cols="20" row="5" borderRadius="2rem">
            
           </input>
-        </Box>
+        </Box> */}
     
 
       {/* START: Order Items */}
@@ -637,17 +667,58 @@ export default function CheckoutTab() {
           color="primary"
           onClick={() => {
             setLeftTabChosen(4);
+            setDetailsDisplayType(!detailsDisplayType)
+          }}
+        >
+         Proceed as Guest
+        </Button>
+      </Box>
+      
+    <Box hidden = {detailsDisplayType}>
+    {/* <PaymentTab/> */}
+    {PlainTextField({
+          value: userInfo.firstName,
+          name: 'firstName',
+          label: 'First Name',
+        })}
+        {PlainTextField({
+          value: userInfo.lastName,
+          name: 'lastName',
+          label: 'Last Name',
+        })}
+         {PlainTextField({
+          value: userInfo.email,
+          name: 'email',
+          label: 'Email',
+        })}
+        {PlainTextField({
+          value: userInfo.phoneNum,
+          name: 'phoneNum',
+          label: 'Phone Number',
+        })}
+       
+
+        <Box display="flex" my={2} flexDirection="column" px="2%">
+        <Button
+          className={classes.button}
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            setLeftTabChosen(4);
             setPaymentDisplayType(!paymentDisplayType)
           }}
         >
           Click to pay with Stripe or PayPal on the Payments Details page
         </Button>
       </Box>
-      
-    {/* <Box hidden = {paymentDisplayType}>
-    <PaymentTab/>
+
+      <Box hidden = {paymentDisplayType}>
+            <PaymentTab/>
+      </Box>
     </Box>
-     */}
+    
     </Box>
   );
 }
+

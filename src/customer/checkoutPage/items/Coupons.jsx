@@ -34,7 +34,8 @@ const responsive = {
 const useStyles = makeStyles((theme) => ({
   imageItem: {
 
-      marginLeft:'2rem'
+      marginLeft:'2rem',
+      marginBottom:"1rem"
 
     },
   }));
@@ -240,12 +241,12 @@ export default function Coupons(props) {
     }
 
     return (
-      <Box key={props.key} height="115px" mt={2} property="div" mx={1}>
+      <Box key={props.key} height="124px" mt={2} property="div" mx={1}>
         <Box
           onClick={onCouponClick}
           style={{
-            width: '220px',
-            height: '96px',
+            width: '212px',
+            height: '115px',
             backgroundImage: `url(${
               './coupon_img/' + coupProps.status + '.png'
             })`,
@@ -351,12 +352,11 @@ export default function Coupons(props) {
     <>
       {(avaiCouponData.length > 0 || unavaiCouponData.length > 0) && (
         <Box className={props.classes.section}>
-          <Box fontWeight="bold" textAlign="left" mb={1} lineHeight={1.8}>
+          <Box fontWeight="bold" textAlign="left" mb={1} style = {{marginTop:'30px'}}>
             Coupons
           </Box>
           <Carousel
             itemClass={classes.imageItem}
-            arrows={true}
             swipeable={true}
             draggable={true}
             showDots={true}

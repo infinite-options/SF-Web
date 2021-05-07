@@ -12,24 +12,23 @@ import 'react-multi-carousel/lib/styles.css';
 
 
 const responsive = {
-  superLargeDesktop: {
-    // the naming can be any, depends on you.
-    breakpoint: { max: 4000, min: 3000 },
-    items: 5
-  },
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 3
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 2
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1
-  }
-  };
+superLargeDesktop: {
+  breakpoint: { max: 3000, min: 1430 },
+  items: 4.5,
+},
+desktop: {
+  breakpoint: { max: 1430, min: 1150 },
+  items: 3,
+},
+tablet: {
+  breakpoint: { max: 1150, min: 800 },
+  items: 2,
+},
+mobile: {
+  breakpoint: { max: 800, min: 0 },
+  items: 2,
+},
+};
   
   const useStyles = makeStyles((theme) => ({
   itemDisplayContainer: {
@@ -130,11 +129,118 @@ function DisplayProduct() {
 
   if (!store.productsLoading && !productSelect.itemError) {
     return (
+      
       <>
 
 <Box>
 
 <div style={{display:"flex", justifyContent:"space-between" }}>  
+<h1 style={{textDecoration:"underline", color:appColors.secondary, paddingLeft:'2rem', paddingRight:'2rem'}}> Vegetables </h1>
+<Button style={{color:"#ff8500"}}  onClick = {handleClickOther}> See all Vegetables </Button>
+</div>
+<Box hidden={OtherDisplayType  }>
+{/* <Carousel
+    itemClass={classes.imageItem}
+    centerMode={true} 
+    responsive={responsive}
+    >
+ 
+
+    {store.productsVegetable.map(createProduct2)}
+ 
+  </Carousel>  */}
+  </Box> 
+<Box
+className="responsive-display-produce"
+// width="100%"
+ hidden ={!OtherDisplayType}
+height={windowHeight - 165}
+// ml={2}
+// p={3}
+// pb={5}
+mb={2}
+style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom: '95px' }}
+>
+
+<Box mt={2} />
+
+<Paper
+  elevation={0}
+  style={{
+    backgroundColor: appColors.componentBg,
+    maxHeight: '100%',
+    width: '100%',
+    overflow: 'auto',
+  
+  }}
+>
+  <Box  width="97%" justifyContent="center">
+    
+    <Grid container direction="row" justify="flex-start" 
+    // spacing={5}
+    spacing={2}
+    >
+      {store.productsVegetable.map(createProduct2)}
+    </Grid>
+  </Box>
+</Paper>
+  </Box>
+
+
+
+  <div style={{display:"flex", justifyContent:"space-between" }}>  
+<h1 style={{textDecoration:"underline", color:appColors.secondary, paddingLeft:'2rem', paddingRight:'2rem'}}> Fruits </h1>
+<Button style={{color:"#ff8500"}}  onClick = {handleClickOther}> See all Fruits </Button>
+</div>
+<Box hidden={OtherDisplayType  }>
+
+ {/* <Carousel
+    itemClass={classes.imageItem}
+    centerMode={true} 
+    responsive={responsive}>
+    
+   {store.products.map(createProduct2)} 
+ 
+  </Carousel>  */}
+  </Box> 
+<Box
+className="responsive-display-produce"
+// width="100%"
+ hidden ={!OtherDisplayType}
+height={windowHeight - 165}
+// ml={2}
+// p={3}
+// pb={5}
+mb={2}
+style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom: '95px' }}
+>
+
+<Box mt={2} />
+
+<Paper
+  elevation={0}
+  style={{
+    backgroundColor: appColors.componentBg,
+    maxHeight: '100%',
+    width: '100%',
+    overflow: 'auto',
+  
+  }}
+>
+  <Box  width="97%" justifyContent="center">
+    
+    <Grid container direction="row" justify="flex-start" 
+    // spacing={5}
+    spacing={2}
+    >
+      {store.productsFruit.map(createProduct2)}
+    </Grid>
+  </Box>
+</Paper>
+  </Box>
+
+
+  <div style={{display:"flex", justifyContent:"space-between" }}>  
 <h1 style={{textDecoration:"underline", color:appColors.secondary, paddingLeft:'2rem', paddingRight:'2rem'}}> Others </h1>
 <Button style={{color:"#ff8500"}}  onClick = {handleClickOther}> See all Others </Button>
 </div>
@@ -184,6 +290,7 @@ style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom
   </Box>
 </Paper>
   </Box>
+
   </Box>
   </>
     );

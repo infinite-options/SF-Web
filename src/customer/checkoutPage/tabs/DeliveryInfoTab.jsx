@@ -569,23 +569,7 @@ export default function DeliveryInfoTab() {
             Save Changes
           </Button>
         </Box>
-        <LoadScript googleMapsApiKey={process.env.REACT_APP_BING_LOCATION_KEY}>
-          <GoogleMap
-            mapContainerStyle={{
-              width: '100%',
-              height: '200px',
-            }}
-            center={{
-              lat: -3.745,
-              lng: -38.523,
-            }}
-            zoom={10}
-            onLoad={onLoad}
-            onUnmount={onUnmount}
-          >
-            <></>
-          </GoogleMap>
-        </LoadScript>
+  
       </>
     );
   };
