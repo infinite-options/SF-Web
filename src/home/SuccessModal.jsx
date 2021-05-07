@@ -17,6 +17,7 @@ const modalSign= () => {
     
 }
     return(
+        <>
        <Card className={classes.modal} style={{borderRadius:'10px'}}>
            <div >
             <img src={cross} onClick={props.modalClear} style={{float:'right',height:'25px',width:'25px',color:'black',marginTop:'3px',marginRight:'3px'}}></img>
@@ -33,8 +34,15 @@ const modalSign= () => {
            <div>
                <button onClick={modalSign} style={{width:'250px',marginBottom:'20px',height:'30px',borderRadius:'5px',backgroundColor:'#FF8500',color:'white',borderColor:'#E1E7E7'}}>Sign Up</button>
            </div>
-           {modalSignup && <Signup/>}
+           {/* {modalSignup && <Signup/>} */}
        </Card>
+       <Card className={classes.modalSignup} style={{borderRadius:'10px'}}>
+       <div >
+            <img src={cross} onClick={props.modalClear} style={{float:'right',height:'25px',width:'25px',color:'black',marginTop:'3px',marginRight:'3px'}}></img>
+           </div>
+       {modalSignup && <Signup/>}
+       </Card>
+       </>
     )
 }
 

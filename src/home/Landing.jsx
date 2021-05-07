@@ -212,7 +212,7 @@ const Landing = ({ ...props }) => {
               paddingLeft: 0,
               paddingRight: 0,
               backgroundSize: 'cover',
-              backgroundImage: `url(${'fruits-and-vegetables.png'})`,
+              backgroundImage: `url(${'fruits-and-vegetables2.png'})`,
               overflow: 'hidden',
               width: '100%',
             }}
