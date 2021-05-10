@@ -26,7 +26,7 @@ const StyledTabs = withStyles({
     justifyContent: 'center',
     backgroundColor: 'transparent',
     '& > span': {
-      maxWidth: 40,
+      maxWidth: 80,
       width: '100%',
       backgroundColor: appColors.secondary,
     },
@@ -133,7 +133,7 @@ export default function CheckoutRight() {
           marginTop: 10,
           backgroundColor: appColors.componentBg,
           maxHeight: '92%',
-          overflow: 'auto',
+//          overflow: 'auto',
         }}
       >
         <Box hidden={rightTabChosen !== 0}>

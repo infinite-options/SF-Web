@@ -26,7 +26,7 @@ const StyledTabs = withStyles({
     justifyContent: 'center',
     backgroundColor: 'transparent',
     '& > span': {
-      maxWidth: 40,
+      maxWidth: 80,
       width: '100%',
       backgroundColor: appColors.secondary,
     },

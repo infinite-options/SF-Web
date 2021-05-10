@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect, } from 'react';
 import { Link } from 'react-router-dom';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import StorefrontIcon from '@material-ui/icons/Storefront';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,6 +16,7 @@ import appColors from 'styles/AppColors';
 import MenuNavButton from '../utils/MenuNavButton';
 import { AuthContext } from 'auth/AuthContext';
 import { Pointer } from 'highcharts';
+
 
 import useWindowsDimensions from './WindowDimensions';
 
@@ -33,13 +35,25 @@ const useStyles = makeStyles((theme) => ({
 
 //TODO: default to payment information
 export default function StoreNavBar(props) {
+
   const classes = useStyles();
   const store = useContext(storeContext);
+  const auth = useContext(AuthContext);
+
+  const [userInfo, setUserInfo] = useState(store.profile);
+
+
 
   const {setCheckingOut} = useContext(storeContext);
   const {width} = useWindowsDimensions();
 
   var itemsAmount = store.cartTotal;
+
+  useEffect(() => {
+    if (store.profile !== {}) {
+      setUserInfo(store.profile);
+    }
+  }, [store.profile]);
 
   function handleStoreClick() {
     if (props.storePage === 1) props.setStorePage(0);
@@ -58,7 +72,7 @@ export default function StoreNavBar(props) {
   return (
     <div className={classes.root}>
       <AppBar
-        color="white"
+        color="secondary"
         position="static"
         //position="fixed" // sticky nav
         elevation={0}
@@ -74,9 +88,9 @@ export default function StoreNavBar(props) {
             justifyContent="center"
           >
             <img
-              width="50"
+              width="75"
               height="50"
-              src="./logos/sf logo_without text.png"
+              src="./logos/sf logo_whiteBackground.png"
               alt="logo"
               onClick={Logoclick}
               style={{ cursor: 'pointer' }}
@@ -85,7 +99,7 @@ export default function StoreNavBar(props) {
           <MenuNavButton />
           <Box flexGrow={1}></Box>
 
-          <IconButton edge="end" className="link">
+          {/* <IconButton edge="end" className="link">
             <StorefrontIcon
               fontSize="large"
               color={props.storePage === 0 ? 'primary' : 'default'}
@@ -93,7 +107,49 @@ export default function StoreNavBar(props) {
               aria-hidden="false"
               aria-label = 'Shop Search'
             />
-          </IconButton>
+          </IconButton> */}
+
+          <Box>
+           <Box display="flex"  >
+             <Box hidden={!(auth.isAuth)}>
+              <p> {userInfo.firstName} </p>
+             </Box>
+             <Box hidden={!(auth.isAuth)}>
+              
+              <Button
+              className={classes.authButton}
+              variant="contained"
+              size="small"
+              color="primary"
+              style={{marginLeft:"2rem", height:"2rem", marginTop:"0.75rem"}}
+            //  onClick={signUpClicked}
+            >
+              Log Out
+            </Button>
+             </Box>
+            </Box>
+            <Box hidden={(auth.isAuth)}>
+
+            <Button
+           //   className={classes.authButton}
+              variant="contained"
+              size="small"
+              color="primary"
+            //  onClick={signUpClicked}
+            >
+              Sign Up
+            </Button>
+            <Button
+             // className={classes.authButton}
+              variant="contained"
+              size="small"
+              color="primary"
+            //  onClick={loginClicked}
+            >
+              Login
+            </Button>
+            </Box>
+          </Box>
           <IconButton edge="end" className="link" onClick = {() => {
               if (width < 1280) {
                 setCheckingOut(true)
@@ -101,11 +157,12 @@ export default function StoreNavBar(props) {
             }
           }>
             <Badge badgeContent={itemsAmount} color="primary">
-              <ShoppingCartIcon
+              <ShoppingCartOutlinedIcon
                 fontSize="large"
                 key={props.storePage || ''}
                 aria-hidden="false"
                 aria-label = 'Shopping cart'
+                style = {{color:"white"}}
               />
             </Badge>
           </IconButton>

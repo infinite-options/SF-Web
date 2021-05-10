@@ -18,6 +18,7 @@ const stripePromise = loadStripe(
 );
 
 export default function CheckoutPage() {
+
   const [paymentDetails, setPaymentDetails] = useState({
     amountPaid: 0,
     amountDue: 0,
@@ -73,8 +74,41 @@ export default function CheckoutPage() {
           spinner
           text="Processing Payment"
         />
+         <Box 
+            width="100%"
+            className="checkout-right"
+            >
         <CheckoutRight />
+
+            </Box>
       </Elements>
+               {/* <Elements stripe={stripePromise}>
+          <LoadingOverlay
+            active={paymentProcessing}
+            spinner
+            text="Processing Payment"
+          />
+
+          <Box 
+          // display="flex"
+          className="checkout-container"
+          >
+            
+            <Box 
+            width="55%"
+            className="checkout-right"
+            >
+              <CheckoutRight />
+            </Box>
+            <Box 
+            // width="45%"
+            className="checkout-left"
+            >
+              <CheckoutLeft />
+            </Box> 
+            
+          </Box>
+        </Elements>*/}
          
       </CheckoutContext.Provider>
     </>

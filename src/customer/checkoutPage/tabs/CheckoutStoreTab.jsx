@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { useElements, CardElement } from '@stripe/react-stripe-js';
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import { GoogleMap, LoadScript,useJsApiLoader } from '@react-google-maps/api';
 
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Box, TextField, Button, Paper, Dialog } from '@material-ui/core';
@@ -15,6 +15,7 @@ import PaymentTab from '../tabs/PaymentTab'
 import PlaceOrder from '../PlaceOrder';
 import Coupons from '../items/Coupons';
 import MapComponent from '../../MapComponent';
+import { AuthContext } from 'auth/AuthContext';
 //import TipImage from '../../../images/TipBackground.svg'
 import LocationSearchInput from '../../../utils/LocationSearchInput'
 
@@ -45,10 +46,18 @@ const useStyles = makeStyles((theme) => ({
   button: { color: appColors.buttonText
   ,backgroundColor:" ",
   "&:hover":{
-    backgroundColor:"#ff8500"
-  }
-}
+    backgroundColor:"#ff8500",
+  },
 
+  
+},
+
+buttonCheckout: { color: appColors.buttonText
+  ,backgroundColor:" ",    width:"20rem",
+  "&:hover":{
+    backgroundColor:"#ff8500",
+  },
+}
 
 }));
 
@@ -93,12 +102,20 @@ function listItem(item) {
   );
 }
 
+const containerStyle = {
+  width: '300px',
+  height: '200px'
+};
+
+
 // TEST: Order confirmation for completed purchase
 // TODO: Get Delivery and service fee from zone
 // TODO: Add button to get to tab 4 of left side
 export default function CheckoutTab() {
   const classes = useStyles();
   const store = useContext(storeContext);
+  const auth = useContext(AuthContext);
+
 //  const checkout = useContext(checkoutContext);
 
   const {
@@ -126,6 +143,8 @@ export default function CheckoutTab() {
 
   const [detailsDisplayType, setDetailsDisplayType] = useState(true); 
   const [paymentDisplayType, setPaymentDisplayType] = useState(true); 
+
+
 
   const onFieldChange = (event) => {
     const { name, value } = event.target;
@@ -165,6 +184,10 @@ const PlainTextField = (props) => {
     setCartItems(getItemsCart());
   }, [store.cartItems]);
 
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: "AIzaSyBGgoTWGX2mt4Sp8BDZZntpgxW8Cq7Qq90"
+  })
 
   
   const onLoad = React.useCallback(function callback(map) {
@@ -177,6 +200,12 @@ const PlainTextField = (props) => {
     setMap(null);
   }, []);
 
+  // const center = {
+  //   lat: 37.236720,
+  //   lng: -121.887370
+  // };
+  
+  //console.log("this is lat and long", userInfo.latitude, userInfo.longitude)
   var days = [
     'SUNDAY',
     'MONDAY',
@@ -441,18 +470,17 @@ const PlainTextField = (props) => {
             />
           </Box>
           </Box>
+     
 
-        
-
-          {/* <LoadScript googleMapsApiKey={process.env.REACT_APP_BING_LOCATION_KEY}>
+          {/* <LoadScript googleMapsApiKey={'AIzaSyBGgoTWGX2mt4Sp8BDZZntpgxW8Cq7Qq90'}>
           <GoogleMap
             mapContainerStyle={{
               width: '100%',
               height: '200px',
             }}
             center={{
-              lat: -3.745,
-              lng: -38.523,
+              lat: userInfo.lat,
+              lng: userInfo.long,
             }}
             zoom={10}
             onLoad={onLoad}
@@ -659,9 +687,10 @@ const PlainTextField = (props) => {
         <Box>{total.toFixed(2)}</Box>
       </Box>
       {/* END: Pricing */}
-      <Box display="flex" my={2} flexDirection="column" px="2%">
-        <Button
-          className={classes.button}
+      
+      <Box hidden={(auth.isAuth)} style = {{marginBottom:"1rem"}}>
+      <Button
+          className={classes.buttonCheckout}
           size="small"
           variant="contained"
           color="primary"
@@ -672,11 +701,68 @@ const PlainTextField = (props) => {
         >
          Proceed as Guest
         </Button>
+      
+      </Box>  
+
+      <Box hidden={(auth.isAuth)} >
+      <p style={{ color: appColors.secondary, fontWeight: 500, fontSize:12 }}>
+         Already have an account?
+        </p>
+      <Button
+          className={classes.buttonCheckout}
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            setLeftTabChosen(4);
+            setDetailsDisplayType(!detailsDisplayType)
+          }}
+        >
+         Login
+        </Button>
+      
+      </Box>  
+
+
+      <Box  hidden={(auth.isAuth)}  style = {{marginBottom:"1rem"}} >
+      <p style={{ color: appColors.secondary, fontWeight: 500 , fontSize:12}}>
+          Save time and create an account?
+        </p>
+      <Button
+          className={classes.buttonCheckout}
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            setLeftTabChosen(4);
+            setDetailsDisplayType(!detailsDisplayType)
+          }}
+        >
+        SignUp
+        </Button>
+      
+      </Box>  
+
+      <Box  hidden={!(auth.isAuth)} style = {{marginBottom:"1rem"}}>
+        <Button
+          className={classes.buttonCheckout}
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            setLeftTabChosen(4);
+            setDetailsDisplayType(!detailsDisplayType)
+          }}
+        >
+          Click to pay with Stripe or PayPal on the Payments Details page
+        </Button>
       </Box>
+
+
       
     <Box hidden = {detailsDisplayType}>
     {/* <PaymentTab/> */}
-    {PlainTextField({
+    {/* {PlainTextField({
           value: userInfo.firstName,
           name: 'firstName',
           label: 'First Name',
@@ -695,9 +781,13 @@ const PlainTextField = (props) => {
           value: userInfo.phoneNum,
           name: 'phoneNum',
           label: 'Phone Number',
-        })}
-       
+        })} */}
 
+      <Box marginBottom="1rem">
+            <PaymentTab/>
+      </Box> 
+       
+{/* 
         <Box display="flex" my={2} flexDirection="column" px="2%">
         <Button
           className={classes.button}
@@ -711,11 +801,11 @@ const PlainTextField = (props) => {
         >
           Click to pay with Stripe or PayPal on the Payments Details page
         </Button>
-      </Box>
-
+      </Box> */}
+{/* 
       <Box hidden = {paymentDisplayType}>
             <PaymentTab/>
-      </Box>
+      </Box> */}
     </Box>
     
     </Box>

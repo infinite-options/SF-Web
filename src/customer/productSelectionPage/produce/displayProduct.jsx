@@ -9,7 +9,29 @@ import {makeStyles} from '@material-ui/core/styles';
 import ItemCategory from '../filter/ItemCategory';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
+import GridList from '@material-ui/core/GridList';
 
+// const useStyles = makeStyles((theme) => ({
+//   root: {
+//     display: 'flex',
+//     flexWrap: 'wrap',
+//     justifyContent: 'space-around',
+//     overflow: 'hidden',
+//     backgroundColor: theme.palette.background.paper,
+//   },
+//   gridList: {
+//     flexWrap: 'nowrap',
+//     // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+//     transform: 'translateZ(0)',
+//   },
+//   title: {
+//     color: theme.palette.primary.light,
+//   },
+//   titleBar: {
+//     background:
+//       'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+//   },
+// }));
 
 const responsive = {
 superLargeDesktop: {
@@ -38,6 +60,7 @@ mobile: {
     paddingLeft: theme.spacing(5),
     paddingRight: theme.spacing(5),
     marginBottom: theme.spacing(2),
+    
   },
   
   productsPaperContainer: {
@@ -46,9 +69,10 @@ mobile: {
   },
   
   imageItem: {
-    backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom: '95px',
-
+     borderRadius: 10, 
+     marginLeft: '6rem',
     },
+
   }));
   
 // DONE: add unit, each is as is, anything else is '/' or 'per'
@@ -81,7 +105,10 @@ function DisplayProduct() {
   const productSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
 
+  const [FruitDisplayType, setFruitDisplayType] = useState(false); 
   const [OtherDisplayType, setOtherDisplayType] = useState(false); 
+  const [VegetableDisplayType, setVegetableDisplayType] = useState(false); 
+
 
 
   const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
@@ -126,87 +153,129 @@ function DisplayProduct() {
     setOtherDisplayType(!OtherDisplayType);
   }
   
+  function handleClickFruit(){
+    setFruitDisplayType(!FruitDisplayType);
+  }
+
+  function handleClickVegetable(){
+    setVegetableDisplayType(!VegetableDisplayType);
+  }
 
   if (!store.productsLoading && !productSelect.itemError) {
     return (
+
+        <>
+      <Box marginLeft="2rem" marginRight='2rem'> 
+    <Box fontSize={22} color={appColors.paragraphText}>
+          {displayMessage}
+    </Box>
+
+
+
+
+    <Box style={{  backgroundColor: appColors.componentBg,}}>
+
+   <div style={{display:"flex", justifyContent:"space-between" }}>  
+ <h1 style={{textDecoration:"underline", color:appColors.secondary, paddingLeft:'2rem', paddingRight:'2rem'}}> Vegetables </h1>
+ <div style = {{display:"flex"}}>
+ <Button varient="text" style={{color:"#ff8500" }}  onClick = {handleClickVegetable}> See all Vegetables </Button>
+ <Box  style={{
+            width: '1rem',
+            height: '1rem',
+            marginTop:'2rem',
+            backgroundSize:'1rem',
+            backgroundImage: VegetableDisplayType? `url(${
+              './store_img/seeAllUp.png' })` : `url(${
+                './store_img/seeAllDown.png'
+            })`,}}>
+
+</Box>
+</div>
+</div>
+        <Box hidden={ VegetableDisplayType }>
+
+        <Carousel
+            itemClass={classes.imageItem}
+            centerMode={true} 
+            responsive={responsive}>
+          
+          {store.productsVegetable.map(createProduct2)}
+            
+          </Carousel> 
+          </Box> 
+      <Box
+       hidden ={!VegetableDisplayType}
+        className="responsive-display-produce"
+        // width="100%"
+        height={windowHeight - 165}
+        // ml={2}
+        // p={3}
+        // pb={5}
+        mb={2}
+        style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom: '95px' }}
+      >
       
-      <>
+        <Box mt={2} />
+      
+        <Paper
+          elevation={0}
+          style={{
+            backgroundColor: appColors.componentBg,
+            maxHeight: '100%',
+            width: '100%',
+            overflow: 'auto',
+          
+          }}
+        >
+          <Box width="97%" justifyContent="center">
+            
+            <Grid container direction="row" justify="flex-start" 
+            // spacing={5}
+            spacing={2}
+            >
+              {store.productsVegetable.map(createProduct2)}
+            </Grid>
+          </Box>
+        </Paper>
+          </Box>
+    </Box>  
 
-<Box>
+     
 
-<div style={{display:"flex", justifyContent:"space-between" }}>  
-<h1 style={{textDecoration:"underline", color:appColors.secondary, paddingLeft:'2rem', paddingRight:'2rem'}}> Vegetables </h1>
-<Button style={{color:"#ff8500"}}  onClick = {handleClickOther}> See all Vegetables </Button>
+    <Box style={{  backgroundColor: appColors.componentBg,}}>
+
+    <div style={{display:"flex", justifyContent:"space-between" }}>  
+ <h1 style={{textDecoration:"underline", color:appColors.secondary, paddingLeft:'2rem', paddingRight:'2rem'}}> Fruits </h1>
+ <div style = {{display:"flex"}}>
+ <Button style={{color:"#ff8500"}}  onClick = {handleClickFruit}> See all Fruits </Button>
+ <Box  style={{
+            width: '1rem',
+            height: '1rem',
+            marginTop:'2rem',
+            backgroundSize:'1rem',
+            backgroundImage: FruitDisplayType? `url(${
+              './store_img/seeAllUp.png' })` : `url(${
+                './store_img/seeAllDown.png'
+            })`,}}>
+
+</Box>
 </div>
-<Box hidden={OtherDisplayType  }>
-{/* <Carousel
-    itemClass={classes.imageItem}
-    centerMode={true} 
-    responsive={responsive}
-    >
- 
-
-    {store.productsVegetable.map(createProduct2)}
- 
-  </Carousel>  */}
-  </Box> 
-<Box
-className="responsive-display-produce"
-// width="100%"
- hidden ={!OtherDisplayType}
-height={windowHeight - 165}
-// ml={2}
-// p={3}
-// pb={5}
-mb={2}
-style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom: '95px' }}
->
-
-<Box mt={2} />
-
-<Paper
-  elevation={0}
-  style={{
-    backgroundColor: appColors.componentBg,
-    maxHeight: '100%',
-    width: '100%',
-    overflow: 'auto',
-  
-  }}
->
-  <Box  width="97%" justifyContent="center">
-    
-    <Grid container direction="row" justify="flex-start" 
-    // spacing={5}
-    spacing={2}
-    >
-      {store.productsVegetable.map(createProduct2)}
-    </Grid>
-  </Box>
-</Paper>
-  </Box>
-
-
-
-  <div style={{display:"flex", justifyContent:"space-between" }}>  
-<h1 style={{textDecoration:"underline", color:appColors.secondary, paddingLeft:'2rem', paddingRight:'2rem'}}> Fruits </h1>
-<Button style={{color:"#ff8500"}}  onClick = {handleClickOther}> See all Fruits </Button>
 </div>
-<Box hidden={OtherDisplayType  }>
+<Box hidden={ FruitDisplayType  }>
 
- {/* <Carousel
+<Carousel
     itemClass={classes.imageItem}
     centerMode={true} 
     responsive={responsive}>
+  
+  {store.productsFruit.map(createProduct2)}
     
-   {store.products.map(createProduct2)} 
- 
-  </Carousel>  */}
+  </Carousel> 
   </Box> 
 <Box
 className="responsive-display-produce"
 // width="100%"
- hidden ={!OtherDisplayType}
+hidden ={!FruitDisplayType}
 height={windowHeight - 165}
 // ml={2}
 // p={3}
@@ -238,27 +307,42 @@ style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom
   </Box>
 </Paper>
   </Box>
+</Box>  
 
 
-  <div style={{display:"flex", justifyContent:"space-between" }}>  
-<h1 style={{textDecoration:"underline", color:appColors.secondary, paddingLeft:'2rem', paddingRight:'2rem'}}> Others </h1>
-<Button style={{color:"#ff8500"}}  onClick = {handleClickOther}> See all Others </Button>
+<Box style={{  backgroundColor: appColors.componentBg,}}>
+<div style={{display:"flex", justifyContent:"space-between" }}>  
+ <h1 style={{textDecoration:"underline", color:appColors.secondary, paddingLeft:'2rem', paddingRight:'2rem'}}> Others </h1>
+ <div style = {{display:"flex"}}>
+ <Button style={{color:"#ff8500"}}  onClick = {handleClickOther}> See all Others </Button>
+ <Box  style={{
+            width: '1rem',
+            height: '1rem',
+            marginTop:'2rem',
+            backgroundSize:'1rem',
+            backgroundImage: OtherDisplayType? `url(${
+              './store_img/seeAllUp.png' })` : `url(${
+                './store_img/seeAllDown.png'
+            })`,}}>
+
+</Box>
 </div>
-<Box hidden={OtherDisplayType  }>
+</div>
+<Box hidden={ OtherDisplayType  }>
 
- {/* <Carousel
+<Carousel
     itemClass={classes.imageItem}
     centerMode={true} 
     responsive={responsive}>
+  
+  {store.products.map(createProduct2)}
     
-   {store.products.map(createProduct2)} 
- 
-  </Carousel>  */}
+  </Carousel> 
   </Box> 
 <Box
 className="responsive-display-produce"
 // width="100%"
- hidden ={!OtherDisplayType}
+hidden ={!OtherDisplayType}
 height={windowHeight - 165}
 // ml={2}
 // p={3}
@@ -290,60 +374,13 @@ style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom
   </Box>
 </Paper>
   </Box>
+</Box>  
 
-  </Box>
-  </>
-    );
-        {/* <Box
-          className="responsive-display-produce"
-          // width="100%"
-          height={windowHeight - 165}
-          // ml={2}
-          // p={3}
-          // pb={5}
-          mb={2}
-          style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom: '95px' }}
-        >
-          <Box fontSize={22} color={appColors.paragraphText}>
-            {displayMessage}
-          </Box>
-          <Box mt={2} />
-          <Paper
-            elevation={0}
-            style={{
-              backgroundColor: appColors.componentBg,
-              maxHeight: '100%',
-              width: '100%',
-              overflow: 'auto',
-            }}
-          >
-            <Box width="97%" justifyContent="center">
-              <Grid container direction="row" justify="flex-start" 
-              // spacing={5}
-              spacing={2}
-              >
-                {store.products.map(createProduct2)}
-              </Grid>
-            </Box>
-          </Paper>
-        </Box>
-      </>
-    );
-  } else {
-    return (
-      <Box
-        ml={2}
-        p={2}
-        width="100%"
-        style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
-      >
-        <div>Thank you for waiting, we are loading the products for you.</div>
+
       </Box>
-    );
-  } */}
-}
-
-else {
+    </>
+  );
+} else {
   return (
     <Box
       p={2}
@@ -354,6 +391,289 @@ else {
   );
 }
 }
+      
+//       <>
+//       <Box className = {classes.itemDisplayContainer}>
 
 
-export default DisplayProduct;
+//      <div style = {{display:'flex',justifyContent:"space-between"}}>
+//      <h1 > Fruits </h1>
+//      <Button style={{color:"#ff8500"}}  > See all Fruits </Button>
+//      </div>
+
+//           <Carousel
+//         itemClass={classes.imageItem}
+//         centerMode={true} 
+//         responsive={responsive}>
+    
+
+  
+//         {/* {store.productsFruit.map(createProduct2)} */}
+//         </Carousel>
+
+//       </Box>
+
+// <Box>
+
+// <div style={{display:"flex", justifyContent:"space-between" }}>  
+// <h1 style={{textDecoration:"underline", color:appColors.secondary, paddingLeft:'2rem', paddingRight:'2rem'}}> Vegetables </h1>
+// <div style = {{display:"flex"}}>
+// <Button varient="text" style={{color:"#ff8500" }}  onClick = {handleClickVegetable}> See all Vegetables </Button>
+// <Box  style={{
+//             width: '1rem',
+//             height: '1rem',
+//             marginTop:'2rem',
+//             backgroundSize:'1rem',
+//             backgroundImage: VegetableDisplayType? `url(${
+//               './store_img/seeAllUp.png' })` : `url(${
+//                 './store_img/seeAllDown.png'
+//             })`,}}>
+
+// </Box>
+// </div>
+// </div>
+// <Box  hidden={VegetableDisplayType  }>
+// {/* <Carousel
+//     itemClass={classes.imageItem}
+//     centerMode={true}   
+//     responsive={responsive}
+//     >
+//     {store.productsVegetable.map(createProduct2)}
+ 
+//   </Carousel>  */}
+//   </Box> 
+// <Box
+// className="responsive-display-produce"
+//  hidden ={!VegetableDisplayType}
+// height={windowHeight - 165}
+
+// mb={2}
+// style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom: '95px' }}
+// >
+
+// <Box mt={2} />
+
+// <Paper
+//   elevation={0}
+//   style={{
+//     backgroundColor: appColors.componentBg,
+//     maxHeight: '100%',
+//     width: '100%',
+//     overflow: 'auto',
+  
+//   }}
+// >
+//   <Box  width="97%" justifyContent="center">
+    
+//     <Grid container direction="row" justify="flex-start" 
+//     // spacing={5}
+//     //spacing={2}
+//    // lg={6}
+//    // md ={6}
+//    // sm ={6}
+//    // xl={6}
+//    // xs={6}
+//     >
+//       {store.productsVegetable.map(createProduct2)}
+//     </Grid>
+//   </Box>
+// </Paper>
+//   </Box>
+
+//   <div style={{display:"flex", justifyContent:"space-between" }}>  
+// <h1 style={{textDecoration:"underline", color:appColors.secondary, paddingLeft:'2rem', paddingRight:'2rem'}}> Fruits </h1>
+// <div style = {{display:"flex"}}>
+// <Button style={{color:"#ff8500"}}  onClick = {handleClickFruit}> See all Fruits </Button>
+// <Box  style={{
+//             width: '1rem',
+//             height: '1rem',
+//             marginTop:'2rem',
+//             backgroundSize:'1rem',
+//             backgroundImage: FruitDisplayType? `url(${
+//               './store_img/seeAllUp.png' })` : `url(${
+//                 './store_img/seeAllDown.png'
+//             })`,}}>
+
+// </Box>
+// </div>
+// </div>
+// <Box maxWidth="auto" hidden={FruitDisplayType  }>
+
+//  {/* <Carousel
+//     itemClass={classes.imageItem}
+//     centerMode={true} 
+//     responsive={responsive}>
+    
+//    {store.products.map(createProduct2)} 
+ 
+//   </Carousel>  */}
+
+//   </Box> 
+// <Box
+// className="responsive-display-produce"
+//  width="100%"
+//  hidden ={!FruitDisplayType}
+// height={windowHeight - 165}
+// // ml={2}
+// // p={3}
+// // pb={5}
+// mb={2}
+// style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom: '95px' }}
+// >
+
+// <Box mt={2} />
+
+// <Paper
+//   elevation={0}
+//   style={{
+//     backgroundColor: appColors.componentBg,
+//     maxHeight: '100%',
+//     width: '100%',
+//     overflow: 'auto',
+//     flexGrow:1
+//   }}
+// >
+//   <Box  width="97%" justifyContent="center">
+    
+//     <Grid container direction="row" justify="flex-start" 
+//     // spacing={5}
+//     spacing={2}
+//   //  style={{flexGrow:1}}
+//     >
+//       {store.productsFruit.map(createProduct2)}
+//     </Grid>
+//   </Box>
+// </Paper>
+//   </Box>
+
+
+//   <div style={{display:"flex", justifyContent:"space-between" }}>  
+// <h1 style={{textDecoration:"underline", color:appColors.secondary, paddingLeft:'2rem', paddingRight:'2rem'}}> Others </h1>
+// <div style = {{display:"flex"}}>
+// <Button style={{color:"#ff8500"}}  onClick = {handleClickOther}> See all Others </Button>
+// <Box  style={{
+//             width: '1rem',
+//             height: '1rem',
+//             marginTop:'2rem',
+//             backgroundSize:'1rem',
+//             backgroundImage: OtherDisplayType? `url(${
+//               './store_img/seeAllUp.png' })` : `url(${
+//                 './store_img/seeAllDown.png'
+//             })`,}}>
+
+// </Box>
+// </div>
+// </div>
+// <Box hidden={OtherDisplayType  }>
+
+//  {/* <Carousel
+//     itemClass={classes.imageItem}
+//     centerMode={true} 
+//     responsive={responsive}>
+    
+//    {store.products.map(createProduct2)} 
+ 
+//   </Carousel>  */}
+//   </Box> 
+// <Box
+// className="responsive-display-produce"
+// // width="100%"
+//  hidden ={!OtherDisplayType}
+// height={windowHeight - 165}
+// // ml={2}
+// // p={3}
+// // pb={5}
+// mb={2}
+// style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom: '95px' }}
+// >
+
+// <Box mt={2} />
+
+// <Paper
+//   elevation={0}
+//   style={{
+//     backgroundColor: appColors.componentBg,
+//     maxHeight: '100%',
+//     width: '100%',
+//     overflow: 'auto',
+  
+//   }}
+// >
+//   <Box  width="97%" justifyContent="center">
+    
+//     <Grid container direction="row" justify="flex-start" 
+//     // spacing={5}
+//     spacing={2}
+//     >
+//       {store.products.map(createProduct2)}
+//     </Grid>
+//   </Box>
+// </Paper>
+//   </Box>
+
+//   </Box>
+//   </>
+//     );
+//         {/* <Box
+//           className="responsive-display-produce"
+//           // width="100%"
+//           height={windowHeight - 165}
+//           // ml={2}
+//           // p={3}
+//           // pb={5}
+//           mb={2}
+//           style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom: '95px' }}
+//         >
+//           <Box fontSize={22} color={appColors.paragraphText}>
+//             {displayMessage}
+//           </Box>
+//           <Box mt={2} />
+//           <Paper
+//             elevation={0}
+//             style={{
+//               backgroundColor: appColors.componentBg,
+//               maxHeight: '100%',
+//               width: '100%',
+//               overflow: 'auto',
+//             }}
+//           >
+//             <Box width="97%" justifyContent="center">
+//               <Grid container direction="row" justify="flex-start" 
+//               // spacing={5}
+//               spacing={2}
+//               >
+//                 {store.products.map(createProduct2)}
+//               </Grid>
+//             </Box>
+//           </Paper>
+//         </Box>
+//       </>
+//     );
+//   } else {
+//     return (
+//       <Box
+//         ml={2}
+//         p={2}
+//         width="100%"
+//         style={{ backgroundColor: appColors.componentBg, borderRadius: 10 }}
+//       >
+//         <div>Thank you for waiting, we are loading the products for you.</div>
+//       </Box>
+//     );
+//   } */}
+// }
+
+// else {
+//   return (
+//     <Box
+//       p={2}
+//       style={{ display: 'flex', backgroundColor: appColors.componentBg, borderRadius: 10}}
+//     >
+//       <Typography>Thank you for waiting, we are loading the products for you.</Typography>
+//     </Box>
+//   );
+// }
+// }
+
+
+ export default DisplayProduct;

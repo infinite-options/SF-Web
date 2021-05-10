@@ -19,15 +19,15 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   card: {
-    backgroundColor: props => props.clicked ? appColors.primary : '#e0e6e6',
+    backgroundColor: props => props.isClicked ?  "#e0e6e6" :appColors.primary ,
     width: 75,
     height: 78,
-    borderRadius: 10,
+    borderRadius: 5,
     cursor: 'pointer',
   },
   weekDay: {
     backgroundColor: appColors.secondary,
-    borderRadius: 10,
+    borderRadius: 5,
     color: 'white',
     textAlign: 'center',
     fontWeight: 'bold',
@@ -37,10 +37,12 @@ const useStyles = makeStyles((theme) => ({
     color: props => props.clicked ? 'white' : appColors.secondary,
     textAlign: 'center',
     fontSize: 16,
+    fontWeight:'bold'
   },
   time: {
     textAlign: 'center',
     fontSize: 10,
+
   },
   accept: {
     textAlign: 'center',
@@ -59,11 +61,13 @@ const amPmTo24Hr = (time) => {
   }
 };
 const DateCard = (props) => {
+  const [isClicked, setIsClicked] = useState(true);
+  const classes = useStyles({clicked: isClicked});
   const productSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
   const confirm = useConfirmation();
 
-  const [isClicked, setIsClicked] = useState(false);
+  //const [isClicked, setIsClicked] = useState(false);
   const [showCard, setShowCard] = useState(
     productSelect.farmsClicked.size == 0 ? true : false
   );
@@ -185,7 +189,7 @@ const DateCard = (props) => {
     _showCard = showCount === productSelect.farmsClicked.size;
     setShowCard(_showCard);
   }, [productSelect.farmsClicked]);
-  const classes = useStyles();
+  //const classes = useStyles();
 
   // IMPORTANT: if you're going to use the hidden field, make sure you either
   //            put a conditional on the display prop, wrap it alone in a Box tag,

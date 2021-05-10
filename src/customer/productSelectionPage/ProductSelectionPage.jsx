@@ -77,9 +77,9 @@ const ProductSelectionPage = (props) => {
 
       }}
     >
-
-          <Grid container>
-          <Grid item xs = {12} lg = {8} style = {{display: 'flex', flexDirection: 'column'}}>
+       
+          <Grid container >
+          <Grid item xs = {12} lg = {8} style = {{display: 'flex', flexDirection: 'column', }}>
             <StoreFilter />
             <DisplayProduce />
           </Grid>

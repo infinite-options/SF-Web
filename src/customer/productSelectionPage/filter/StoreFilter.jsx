@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
   filterCol: {
    
     color: appColors.paragraphText,
+    
   },
   deliveryDates: {
     color: '#397D87',
@@ -198,8 +199,13 @@ const StoreFilter = () => {
   return (
     <FilterContext.Provider value={{ shownDays }}>
       <Box className = {classes.storeFilterContainer}>
-        <Typography className={clsx(classes.deliveryDates, classes.filterCol)}>
-            Delivery dates available {getDeliveryDate()}
+        <Typography style={{display:'flex'}} className={clsx(classes.deliveryDates, classes.filterCol)}>
+            <Typography style={{color:'#e88330'}}>
+            Delivery dates available 
+            </Typography>
+            <Typography style={{marginLeft:"1rem"}}>
+            {getDeliveryDate()}
+            </Typography>
         </Typography>
 
         <Box

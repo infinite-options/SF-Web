@@ -547,7 +547,16 @@ const Store = ({ ...props }) => {
           setCartClicked,
         }}
       >
-        <StoreNavBar
+           <StoreNavBar
+          storePage={storePage}
+          setStorePage={setStorePage}
+        />
+        {/* <Box hidden={storePage !== 0}> */}
+          <ProductSelectionPage farms={farmsList} />
+        {/* </Box> */}
+        
+      </storeContext.Provider>
+        {/* <StoreNavBar
           storePage={storePage}
           setStorePage={setStorePage}
         />
@@ -562,7 +571,7 @@ const Store = ({ ...props }) => {
         <Box hidden={storePage !== 1}>
           <CheckoutPage />
         </Box>
-      </storeContext.Provider>
+      </storeContext.Provider> */}
     </div>
   );
 };
