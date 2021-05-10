@@ -133,68 +133,92 @@ let guestProfile={};
     const latLng = await getLatLng(results[0]);
     setAddress(value);
     setCoordinates(latLng);
-   
-    // console.log(coordinates.lat,coordinates.lng);
-    // const res= await BusiMethods.getLocationBusinessIds(coordinates.lng,coordinates.lat);
-    // console.log(!(res.result.length));
-    // modalProp=(!(res.result.length));
-    // console.log(modalProp);
-    // if(modalProp){
-    //   setModalErrorMessage({
-    //   title:"Still Growing…",
-    //   body:'Sorry, it looks like we don’t deliver to your neighborhood yet. Enter your email address and we will let you know as soon as we come to your neighborhood.'});
-    // }
-    // else{
-    //   setModalSuccessMessage({title:"Hooray!",body:'Looks like we deliver to your address. Click the button below to see the variety of fresh organic fruits and vegetables we offer.'});
-    //   localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
-    //   auth.setIsGuest(true);
-    //   history.push('/store');
-      
-    //   console.log(guestProfile)
-    // }
-
-  };
-
-  const searchAddress= async()=>{
-    const res= await BusiMethods.getLocationBusinessIds(coordinates.lng,coordinates.lat);
-     guestProfile = {
-              longitude: coordinates.lng,
-              latitude: coordinates.lat,
-              // address: address,
-              // city: city,
-              // state: state,
-              // zip: zip,
-            };
-          
+    let addr=value.split(',');
+    console.log(addr);
+    guestProfile = {
+                  longitude: latLng.lng,
+                  latitude: latLng.lat,
+                  address: addr[0],
+                  city: addr[1],
+                  state: addr[2],
+                  zip: "",
+                };
+    console.log(latLng);
+    const res= await BusiMethods.getLocationBusinessIds(latLng.lng,latLng.lat);
+    console.log(res.result);
+    console.log(!(res.result.length));
+  
     modalProp=(!(res.result.length));
-    console.log(modalProp)
+    console.log(modalProp);
     if(modalProp){
+      console.log(guestProfile);
       setModalErrorMessage({
       title:"Still Growing…",
       body:'Sorry, it looks like we don’t deliver to your neighborhood yet. Enter your email address and we will let you know as soon as we come to your neighborhood.'});
     }
     else{
       setModalSuccessMessage({title:"Hooray!",body:'Looks like we deliver to your address. Click the button below to see the variety of fresh organic fruits and vegetables we offer.'});
-      
-      
-      console.log(guestProfile)
-    }
-    console.log(modalSample)
-
-  }
-
-  const login=async ()=>{
-    const res= await BusiMethods.getLocationBusinessIds(coordinates.lng,coordinates.lat);
-    guestProfile = {
-             longitude: coordinates.lng,
-             latitude: coordinates.lat,
-             // address: address,
-             // city: city,
-             // state: state,
-             // zip: zip,
-           };
-    localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
+      localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
       auth.setIsGuest(true);
+      // history.push('/store');
+      
+      console.log(guestProfile);
+    }
+
+  };
+
+  const searchAddress= async value=>{
+    // const results = await geocodeByAddress(value);
+    // const latLng = await getLatLng(results[0]);
+    // setAddress(value);
+    // setCoordinates(latLng);
+    let addr=this.setAddress;
+    console.log(addr);
+
+    guestProfile = {
+                  longitude: coordinates.lng,
+                  latitude: coordinates.lat,
+    //               address: addr[0],
+    //               city: addr[1],
+    //               state: addr[2],
+    //               zip: "",
+                };
+    console.log(setAddress);
+    const res= await BusiMethods.getLocationBusinessIds(coordinates.lng,coordinates.lat);
+    console.log(res.result);
+    console.log(!(res.result.length));
+  
+    modalProp=(!(res.result.length));
+    console.log(modalProp);
+    if(modalProp){
+      console.log(guestProfile);
+      setModalErrorMessage({
+      title:"Still Growing…",
+      body:'Sorry, it looks like we don’t deliver to your neighborhood yet. Enter your email address and we will let you know as soon as we come to your neighborhood.'});
+    }
+    else{
+      setModalSuccessMessage({title:"Hooray!",body:'Looks like we deliver to your address. Click the button below to see the variety of fresh organic fruits and vegetables we offer.'});
+      localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
+      auth.setIsGuest(true);
+      // history.push('/store');
+      
+      console.log(guestProfile);
+    }
+  
+  }
+  // }
+  const login=async ()=>{
+    // const res= await BusiMethods.getLocationBusinessIds(coordinates.lng,coordinates.lat);
+    // guestProfile = {
+    //          longitude: coordinates.lng,
+    //          latitude: coordinates.lat,
+    //          // address: address,
+    //          // city: city,
+    //          // state: state,
+    //          // zip: zip,
+    //        };
+    // localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
+      // auth.setIsGuest(true);
       history.push('/store');
       //  localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
       //   auth.setIsGuest(true);
@@ -209,7 +233,7 @@ let guestProfile={};
 
 
   return (
-    <div style={{backgroundColor:'rgb(236,137,51)',height:'auto'}}>
+    <div style={{backgroundColor:'rgb(251,132,0)',height:'auto'}}>
       
     <div style={{width:'49%',float:'left'}}>
     {modalError && <Mymodal title={modalError.title} body={modalError.body} onConfirm={errorHandleModal}></Mymodal>}
@@ -289,10 +313,11 @@ let guestProfile={};
       </div>
       <div style={{width:'50%',float:'right'}}>
       <Button
+                value={address}
                 size="large"
                 variant="contained"
                 color="secondary"
-                onClick={searchAddress}
+                onClick={handleSelect}
                 style={{
                   width: '300px',
                   textTransform: 'none',
