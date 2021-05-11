@@ -9,6 +9,10 @@ const google = window.google;
 export class MapComponent extends Component {
  
 
+    componentDidMount() {
+        console.log("latitude from props: ", this.props.latitude);
+      }
+
     static defaultProps = {
         center: {
             lat: 37.236720,
@@ -31,18 +35,18 @@ export class MapComponent extends Component {
           google={this.props.google}
           style={{width: '375px', height: '180px', marginTop:'24px', borderRadius:"24px"}}
           initialCenter={{
-            lat:  37.236720 ,
-            lng:  -121.887370
+            lat: this.props.latitude,
+            lng: this.props.longitude,
           }}
           center={{
-            lat: 37.236720  ,
-            lng: -121.887370
+            lat: this.props.latitude,
+            lng: this.props.longitude,
           }}
         >
           <Marker 
             position={{
-              lat: 37.236720 ,
-              lng:  -121.887370
+              lat: this.props.latitude ,
+              lng: this.props.longitude
             }} />
         </Map>
             </div>

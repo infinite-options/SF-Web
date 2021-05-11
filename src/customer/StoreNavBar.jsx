@@ -139,7 +139,7 @@ export default function StoreNavBar(props) {
             >
               Sign Up
             </Button>
-            <Button
+            <Button style={{marginLeft:"1rem"}}
              // className={classes.authButton}
               variant="contained"
               size="small"

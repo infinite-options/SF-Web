@@ -273,7 +273,7 @@ const PaymentTab = () => {
           })}
         </Box>
       </form>
-      <Box className={classes.section} display="flex">
+      {/* <Box className={classes.section} display="flex">
         {SectionLabel('Delivery Address:')}
         <Box flexGrow={1} />
         <Box
@@ -291,7 +291,7 @@ const PaymentTab = () => {
           {userInfo.unit === '' ? ' ' : ''}
           {userInfo.unit}, {userInfo.city}, {userInfo.state} {userInfo.zip}
         </Box>
-      </Box>
+      </Box> */}
       <label className={classes.label}>
         Enter Delivery Instructions Below:
       </label>

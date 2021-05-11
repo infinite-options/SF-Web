@@ -16,6 +16,11 @@ import PlaceOrder from '../PlaceOrder';
 import Coupons from '../items/Coupons';
 import MapComponent from '../../MapComponent';
 import { AuthContext } from 'auth/AuthContext';
+import FindLongLatWithAddr from '../../../utils/FindLongLatWithAddr';
+import BusiApiReqs from '../../../utils/BusiApiReqs';
+import { useConfirmation } from '../../../services/ConfirmationService';
+
+import DeliveryInfoTab from '../tabs/DeliveryInfoTab';
 //import TipImage from '../../../images/TipBackground.svg'
 import LocationSearchInput from '../../../utils/LocationSearchInput'
 
@@ -49,7 +54,11 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor:"#ff8500",
   },
 
-  
+  label: {
+    color: appColors.paragraphText,
+    fontWeight: 300,
+    letterSpacing: '0.025em',
+  },
 },
 
 buttonCheckout: { color: appColors.buttonText
@@ -57,7 +66,23 @@ buttonCheckout: { color: appColors.buttonText
   "&:hover":{
     backgroundColor:"#ff8500",
   },
-}
+},
+
+delivInstr: {
+  width: '100%',
+  minHeight: '2rem',
+  maxHeight: '3rem',
+  backgroundColor: 'white',
+  color: 'black',
+  fontSize: '15px',
+  border: '1px solid ' + appColors.paragraphText,
+  outline: appColors.secondary + ' !important',
+  borderRadius: '5px',
+  textAlign: 'left',
+  fontFamily: 'Arial',
+  resize: 'vertical',
+},
+
 
 }));
 
@@ -111,10 +136,13 @@ const containerStyle = {
 // TEST: Order confirmation for completed purchase
 // TODO: Get Delivery and service fee from zone
 // TODO: Add button to get to tab 4 of left side
-export default function CheckoutTab() {
+export default function CheckoutTab(props) {
   const classes = useStyles();
   const store = useContext(storeContext);
   const auth = useContext(AuthContext);
+  const confirm = useConfirmation();
+  const BusiApiMethods = new BusiApiReqs();
+
 
 //  const checkout = useContext(checkoutContext);
 
@@ -143,8 +171,95 @@ export default function CheckoutTab() {
 
   const [detailsDisplayType, setDetailsDisplayType] = useState(true); 
   const [paymentDisplayType, setPaymentDisplayType] = useState(true); 
+  const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
+  const [addressDisplayType, setAddressDisplayType] = useState(true);
+  const [deliveryInstructions, SetDeliveryInstructions] = useState(
+    localStorage.getItem('deliveryInstructions') || ''
+  ); 
 
+  const [locError, setLocError] = useState('');
+  const [locErrorMessage, setLocErrorMessage] = useState('');
 
+  function createLocError(message) {
+    setLocError('Invalid Input');
+    setLocErrorMessage(message);
+  }
+
+  const onCheckAddressClicked = () => {
+    console.log('Verifying longitude and latitude from Delivery Info');
+    FindLongLatWithAddr(
+      userInfo.address,
+      userInfo.city,
+      userInfo.state,
+      userInfo.zip
+    ).then((res) => {
+      if (res.status === 'found') {
+        BusiApiMethods.getLocationBusinessIds(res.longitude, res.latitude).then(
+          (busiRes) => {
+            if (busiRes.result && busiRes.result.length > 0) {
+              if (busiRes.result[0].zone === store.profile.zone) {
+                updateProfile(false, res.latitude, res.longitude);
+              } else {
+                confirm({
+                  variant: 'danger',
+                  catchOnCancel: true,
+                  title: 'About to Clear Cart',
+                  description:
+                    "Thanks for updating your address. Please note if you click 'Yes' your cart will be cleared. Would you like to proceed?",
+                })
+                  .then(() => {
+                    updateProfile(true, res.latitude, res.longitude);
+                  })
+                  .catch(() => {});
+              }
+            } else {
+              confirm({
+                variant: 'danger',
+                catchOnCancel: true,
+                title: 'Address Notification',
+                description:
+                  "We're happy to save your address. But please note, we are current not delivering to this address. Would you like to proceed?",
+              })
+                .then(() => {
+                  updateProfile(true, res.latitude, res.longitude);
+                })
+                .catch(() => {});
+            }
+          }
+        );
+      } else {
+        createLocError('Sorry, we could not find this Address');
+      }
+    });
+  };
+
+  function updateProfile(isZoneUpdated, lat, long) {
+    const _userInfo = { ...userInfo };
+    _userInfo.latitude = lat.toString();
+    _userInfo.longitude = long.toString();
+    setIsAddressConfirmed(true);
+    store.setProfile(_userInfo);
+    setLocError('');
+    setLocErrorMessage('');
+    if (isZoneUpdated) {
+      localStorage.setItem('isProfileUpdated', store.profile.zone);
+      console.log('Zone should be updated');
+      store.setFarmsClicked(new Set());
+      store.setDayClicked('');
+      localStorage.removeItem('selectedDay');
+      localStorage.removeItem('cartTotal');
+      localStorage.removeItem('cartItems');
+    }
+  }
+
+  useEffect(() => {
+    setIsAddressConfirmed(
+      userInfo.address === store.profile.address &&
+        userInfo.city === store.profile.city &&
+        userInfo.zip === store.profile.zip &&
+        userInfo.state === store.profile.state
+    );
+  }, [userInfo]);
 
   const onFieldChange = (event) => {
     const { name, value } = event.target;
@@ -179,6 +294,8 @@ const PlainTextField = (props) => {
       setUserInfo(store.profile);
     }
   }, [store.profile]);
+
+  //console.log("lat and long",userInfo.latitude)
 
   useEffect(() => {
     setCartItems(getItemsCart());
@@ -370,7 +487,19 @@ const PlainTextField = (props) => {
    
     
   }
-  console.log('cartitems####333',cartItems)
+
+
+  function handleChangeAddress(){
+    setAddressDisplayType(!addressDisplayType)
+  }
+
+  const onDeliveryInstructionsChange = (event) => {
+    const { value } = event.target;
+    SetDeliveryInstructions(value);
+    localStorage.setItem('deliveryInstructions', value);
+  };
+
+
   return (
     <Box 
     className="responsive-checkout-tab"
@@ -402,18 +531,39 @@ const PlainTextField = (props) => {
       {/* END: Expected Delivery */}
 
 
-      <Box display="flex"  fontWeight="700" fontSize="16px" paddingBottom='1rem'>
-            Enter Full Address 
-
-            
+      <Box display="flex" justifyContent="space-between" fontWeight="700" fontSize="16px" paddingBottom='1rem'>
             <Box>
-
-              
-      {/* <MapComponent/> */}
-
-      </Box>  
+            Delivery Address 
+            </Box>
+            <Box hidden={!(auth.isAuth)}>
+            <Button style={{color:"#ff8500" , fontSize:"12px"}}  onClick = {handleChangeAddress}> Change delivery Address </Button>  
+            </Box> 
+          
       </Box>
 
+      <Box hidden={!(addressDisplayType) || !(auth.isAuth)}>
+    
+      <Box
+          marginBottom="1rem"
+          className={classes.info}
+          textAlign="Left"
+          hidden={
+            
+            userInfo.address == '' &&
+            userInfo.unit == '' &&
+            userInfo.city == '' &&
+            userInfo.state == '' &&
+            userInfo.zip == ''
+          }
+        >
+          {userInfo.address}
+          {userInfo.unit === '' ? ' ' : ''}
+          {userInfo.unit}, {userInfo.city}, {userInfo.state} {userInfo.zip}
+        </Box>
+    </Box>  
+
+      
+      <Box  hidden={ (addressDisplayType) && (auth.isAuth) }>
       <Box display="flex" mb={1}>
           <CssTextField
           //  error={locError}
@@ -423,7 +573,7 @@ const PlainTextField = (props) => {
             variant="outlined"
             size="small"
             fullWidth
-           // onChange={onFieldChange}
+            onChange={onFieldChange}
           />
         </Box>
         <Box mb={1}>
@@ -434,6 +584,8 @@ const PlainTextField = (props) => {
               variant="outlined"
               size="small"
               fullWidth
+              onChange={onFieldChange}
+
             />
         
         </Box>
@@ -447,6 +599,8 @@ const PlainTextField = (props) => {
               variant="outlined"
               size="small"
               fullWidth
+              onChange={onFieldChange}
+
             />
           </Box>
           <Box width="33.3%" mx={1}>
@@ -457,6 +611,8 @@ const PlainTextField = (props) => {
               variant="outlined"
               size="small"
               fullWidth
+              onChange={onFieldChange}
+
             />
           </Box>
           <Box width="33.3%">
@@ -467,10 +623,76 @@ const PlainTextField = (props) => {
               variant="outlined"
               size="small"
               fullWidth
+              onChange={onFieldChange}
+
             />
           </Box>
           </Box>
      
+
+          <Box hidden={isAddressConfirmed} mb={3}>
+          <Button
+            className={classes.button}
+            variant="outlined"
+            size="small"
+            color="paragraphText"
+            onClick={onCheckAddressClicked}
+          >
+            Verify Address
+          </Button>
+        </Box>
+
+        <MapComponent
+latitude={userInfo.latitude}
+longitude={userInfo.longitude}
+/>
+        </Box>
+
+        <Box>
+
+     
+      <Box mb={1} mt={0.5} justifyContent="center">
+        <textarea
+          value={deliveryInstructions}
+          onChange={onDeliveryInstructionsChange}
+          className={classes.delivInstr}
+          type=" "
+          placeholder="Delivery instructions (ex: gate code. leave on porch)"
+        />
+      </Box>
+        </Box>
+        {/* <Box mt={spacing + 3} />
+        <FormHelperText error={true} style={{ textAlign: 'center' }}>
+          {passwordErrorMessage}
+        </FormHelperText> */}
+        {/* <FormHelperText style={{ textAlign: 'center' }}>
+          Minimum eight and maximum thirty-two characters, at least one letter
+          and one number:
+        </FormHelperText> */}
+        {/* <Box mb={0.5} />
+        <Box mb={spacing || 1}>
+          <CssTextField
+            error={passwordError}
+            label="Password"
+            type="password"
+            variant="outlined"
+            size="small"
+            fullWidth
+            onChange={onPasswordChange}
+          />
+        </Box>
+        <Box mb={spacing || 1}>
+          <CssTextField
+            error={confirmPasswordError}
+            name="confirm"
+            label="Confirm Password"
+            type="password"
+            variant="outlined"
+            size="small"
+            fullWidth
+            onChange={onPasswordChange}
+          />
+        </Box> */}
 
           {/* <LoadScript googleMapsApiKey={'AIzaSyBGgoTWGX2mt4Sp8BDZZntpgxW8Cq7Qq90'}>
           <GoogleMap
@@ -490,7 +712,9 @@ const PlainTextField = (props) => {
           </GoogleMap>
         </LoadScript> */}
           
-          <MapComponent/>
+          {/* <DeliveryInfoTab/> */}
+
+
 
       {/* <Box>
         <input style={{ display:"flex", type:"text", value:"text", width:"100%", height:"2rem"}}  placeholder= "Delivery Instructions (ex: gate code, leave on porch)"

@@ -103,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '12px',
     border: '1px solid #e8cfba',
     width: '250px',
-    height: '88px',
+    height: '78px',
     display: 'flex',
     flexDirection: 'column',
     background: props => (props.hearted || props.id != 0) ? '#F4860933' : 'white',

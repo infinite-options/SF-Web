@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   card: {
-    backgroundColor: props => props.isClicked ?  "#e0e6e6" :appColors.primary ,
+    backgroundColor: props => props.isClicked ?  appColors.primary : "#e6e0e0" ,
     width: 75,
     height: 78,
     borderRadius: 5,
