@@ -20,6 +20,9 @@ import FindLongLatWithAddr from '../../../utils/FindLongLatWithAddr';
 import BusiApiReqs from '../../../utils/BusiApiReqs';
 import { useConfirmation } from '../../../services/ConfirmationService';
 
+import PayPal from '../utils/Paypal';
+import StripeElement from '../utils/StripeElement';
+
 import DeliveryInfoTab from '../tabs/DeliveryInfoTab';
 //import TipImage from '../../../images/TipBackground.svg'
 import LocationSearchInput from '../../../utils/LocationSearchInput'
@@ -59,6 +62,20 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 300,
     letterSpacing: '0.025em',
   },
+
+  element: {
+    display: 'block',
+    margin: '10px 0 20px 0',
+    padding: '10px 14px',
+    fontSize: '1em',
+    fontFamily: 'Source Code Pro, monospace',
+    boxShadow:
+      'rgba(50, 50, 93, 0.14902) 0px 1px 3px, rgba(0, 0, 0, 0.0196078) 0px 1px 0px',
+    border: 0,
+    outline: 0,
+    borderRadius: '4px',
+    background: 'white',
+  },
 },
 
 buttonCheckout: { color: appColors.buttonText
@@ -82,6 +99,7 @@ delivInstr: {
   fontFamily: 'Arial',
   resize: 'vertical',
 },
+
 
 
 }));
@@ -157,6 +175,7 @@ export default function CheckoutTab(props) {
     setLeftTabChosen,
     paymentDetails,
     setPaymentDetails,
+    
   } = checkout;
   // Retrieve items from store context
 
@@ -164,7 +183,6 @@ export default function CheckoutTab(props) {
   const [cartItems, setCartItems] = useState(getItemsCart());
 
   const [userInfo, setUserInfo] = useState(store.profile);
-  const [emailError, setEmailError] = useState('');
   const [emailErrorMessage, setEmailErrorMessage] = useState('');
 
   const [map, setMap] = React.useState(null);
@@ -173,12 +191,21 @@ export default function CheckoutTab(props) {
   const [paymentDisplayType, setPaymentDisplayType] = useState(true); 
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
   const [addressDisplayType, setAddressDisplayType] = useState(true);
+
+  const [errorMessage, setErrorMessage] = useState('');
+  const [firstNameError, setFirstNameError] = useState('');
+  const [lastNameError, setLastNameError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [deliveryInstructions, SetDeliveryInstructions] = useState(
     localStorage.getItem('deliveryInstructions') || ''
   ); 
 
   const [locError, setLocError] = useState('');
   const [locErrorMessage, setLocErrorMessage] = useState('');
+
+  const [paymentType, setPaymentType] = useState('NONE');
+
 
   function createLocError(message) {
     setLocError('Invalid Input');
@@ -270,6 +297,40 @@ export default function CheckoutTab(props) {
     setUserInfo({ ...userInfo, [name]: value });
   };
 
+  const onFieldGuestChange = (event) => {
+    if (errorMessage !== '') resetError();
+    const { name, value } = event.target;
+    if (value === '') setPaymentType('NONE');
+    setGuestInfo({ ...guestInfo, [name]: value });
+  };
+
+  function resetError() {
+    setFirstNameError('');
+    setLastNameError('');
+    setPhoneError('');
+    setEmailError('');
+    setErrorMessage('');
+  }
+
+  const SectionContent = (contentProps) => {
+    return auth.isAuth ? (
+      <Box className={classes.info}>{contentProps.text}</Box>
+    ) : (
+      <CssTextField
+        error={contentProps.error}
+        name={contentProps.name}
+        size="small"
+        variant="standard"
+        fullWidth
+        onChange={onFieldGuestChange}
+        style={{
+          marginLeft: '30px',
+          height: '18px',
+        }}
+      />
+    );
+  };
+
 const PlainTextField = (props) => {
     return (
       <Box mb={props.spacing || 1}>
@@ -316,11 +377,6 @@ const PlainTextField = (props) => {
   const onUnmount = React.useCallback(function callback(map) {
     setMap(null);
   }, []);
-
-  // const center = {
-  //   lat: 37.236720,
-  //   lng: -121.887370
-  // };
   
   //console.log("this is lat and long", userInfo.latitude, userInfo.longitude)
   var days = [
@@ -499,6 +555,60 @@ const PlainTextField = (props) => {
     localStorage.setItem('deliveryInstructions', value);
   };
 
+  const {
+    guestInfo,
+    setGuestInfo,
+  } = useContext(checkoutContext);
+
+  const {
+    profile,
+ 
+  } = useContext(storeContext);
+
+  async function onPayWithClicked(type) {
+    if (paymentDetails.amountDue > 0) {
+      // check guest fields to make sure they are not empty
+      if (!auth.isAuth) {
+        let hasFirstName = true;
+        let hasLastName = true;
+        let hasPhone = true;
+        let hasEmail = true;
+        if (guestInfo.firstName === '') {
+          setFirstNameError('Empty');
+          hasFirstName = false;
+        }
+        if (guestInfo.lastName === '') {
+          setLastNameError('Empty');
+          hasLastName = false;
+        }
+        if (guestInfo.phoneNumber === '') {
+          setPhoneError('Empty');
+          hasPhone = false;
+        }
+        if (guestInfo.email === '') {
+          setEmailError('Empty');
+          hasEmail = false;
+        }
+        if (!hasFirstName || !hasLastName || !hasPhone || !hasEmail) {
+          setErrorMessage(
+            'Please provide all contact information to complete purchase'
+          );
+          return;
+        }
+
+        resetError();
+        const updatedProfile = { ...profile };
+        updatedProfile.firstName = guestInfo.firstName;
+        updatedProfile.lastName = guestInfo.lastName;
+        updatedProfile.phoneNum = guestInfo.phoneNumber;
+        updatedProfile.email = guestInfo.email;
+        store.setProfile(updatedProfile);
+      }
+      setPaymentType(type);
+    } else {
+      alert('Please add items to your card before processing payment');
+    }
+  }
 
   return (
     <Box 
@@ -967,7 +1077,7 @@ longitude={userInfo.longitude}
       
       </Box>  
 
-      <Box  hidden={!(auth.isAuth)} style = {{marginBottom:"1rem"}}>
+      {/* <Box  hidden={!(auth.isAuth)} style = {{marginBottom:"1rem"}}>
         <Button
           className={classes.buttonCheckout}
           size="small"
@@ -980,13 +1090,16 @@ longitude={userInfo.longitude}
         >
           Click to pay with Stripe or PayPal on the Payments Details page
         </Button>
-      </Box>
+      </Box> */}
 
 
       
-    <Box hidden = {detailsDisplayType}>
+    <Box hidden = {detailsDisplayType} marginBottom="2rem">
     {/* <PaymentTab/> */}
-    {/* {PlainTextField({
+
+      <Box marginBottom="1rem">
+            {/* <PaymentTab/> */}
+            {PlainTextField({
           value: userInfo.firstName,
           name: 'firstName',
           label: 'First Name',
@@ -996,20 +1109,72 @@ longitude={userInfo.longitude}
           name: 'lastName',
           label: 'Last Name',
         })}
-         {PlainTextField({
+       {PlainTextField({
+          error: emailError,
           value: userInfo.email,
           name: 'email',
           label: 'Email',
+       //   spacing: spacing,
         })}
         {PlainTextField({
           value: userInfo.phoneNum,
           name: 'phoneNum',
           label: 'Phone Number',
-        })} */}
+        })}
 
-      <Box marginBottom="1rem">
-            <PaymentTab/>
+      </Box>
       </Box> 
+
+      <Box hidden={detailsDisplayType && !(auth.isAuth)} mb={3} >
+        <Box hidden={paymentType !== 'PAYPAL' && paymentType !== 'NONE'}>
+          <Box display="flex" flexDirection="column" px="20%" mb={1}>
+            <Button
+              className={classes.showButton}
+              size="small"
+              variant="contained"
+              color="primary"
+              onClick={() => onPayWithClicked('STRIPE')}
+            >
+              Pay with Stripe {paymentType !== 'NONE' ? 'Instead?' : ''}
+            </Button>
+          </Box>
+        </Box>
+        <Box hidden={paymentType !== 'STRIPE' && paymentType !== 'NONE'}>
+          <Box display="flex" flexDirection="column" px="20%">
+            <Button
+              className={classes.showButton}
+              size="small"
+              variant="contained"
+              color="primary"
+              onClick={() => onPayWithClicked('PAYPAL')}
+            >
+              Pay with PayPal {paymentType !== 'NONE' ? 'Instead?' : ''}
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+      <Box hidden={paymentType !== 'PAYPAL' } marginBottom="2rem">
+        <PayPal
+          value={paymentDetails.amountDue}
+          deliveryInstructions={deliveryInstructions}
+        />
+      </Box >
+      <Box paddingBottom="5rem">
+        
+      {paymentType === 'STRIPE' && (
+        <StripeElement
+          deliveryInstructions={deliveryInstructions}
+          setPaymentType={setPaymentType}
+          classes={classes}
+        />
+      )}
+      </Box>
+
+
+
+  
+
+
        
 {/* 
         <Box display="flex" my={2} flexDirection="column" px="2%">
@@ -1032,7 +1197,6 @@ longitude={userInfo.longitude}
       </Box> */}
     </Box>
     
-    </Box>
   );
 }
 

@@ -189,7 +189,7 @@ const StoreFilter = () => {
       }
     }
 
-    const orderBy = `(Order by ${time}, ${day})`;
+    const orderBy = `(Order by  ${day}, ${time})`;
 
     return orderBy;
   };

@@ -89,6 +89,7 @@ export default function CheckoutRight() {
         border: '3px solid #136D74',
         borderRadius: '20px',
         margin: '10px',
+        
       }}
       // style={{ height: windowHeight - 95 }}
     >
@@ -133,7 +134,8 @@ export default function CheckoutRight() {
           marginTop: 10,
           backgroundColor: appColors.componentBg,
           maxHeight: '92%',
-//          overflow: 'auto',
+         
+          overflow: 'auto',
         }}
       >
         <Box hidden={rightTabChosen !== 0}>

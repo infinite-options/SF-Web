@@ -15,7 +15,10 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import appColors from 'styles/AppColors';
 import MenuNavButton from '../utils/MenuNavButton';
 import { AuthContext } from 'auth/AuthContext';
+import Cookies from 'js-cookie';
+import { useHistory } from 'react-router-dom';
 import { Pointer } from 'highcharts';
+import appColor from '../styles/AppColors'
 
 
 import useWindowsDimensions from './WindowDimensions';
@@ -39,6 +42,7 @@ export default function StoreNavBar(props) {
   const classes = useStyles();
   const store = useContext(storeContext);
   const auth = useContext(AuthContext);
+  const history = useHistory();
 
   const [userInfo, setUserInfo] = useState(store.profile);
 
@@ -69,6 +73,17 @@ export default function StoreNavBar(props) {
     window.location.href = `${window.location.origin.toString()}/`;
   };
 
+  const handleClickLogOut = () => {
+    localStorage.removeItem('currentStorePage');
+    localStorage.removeItem('cartTotal');
+    localStorage.removeItem('cartItems');
+    Cookies.remove('login-session');
+    Cookies.remove('customer_uid');
+
+    auth.setIsAuth(false);
+    auth.setAuthLevel(0);
+  //  props.history.push('/');
+  };
   return (
     <div className={classes.root}>
       <AppBar
@@ -122,7 +137,7 @@ export default function StoreNavBar(props) {
               size="small"
               color="primary"
               style={{marginLeft:"2rem", height:"2rem", marginTop:"0.75rem"}}
-            //  onClick={signUpClicked}
+              onClick={handleClickLogOut}
             >
               Log Out
             </Button>
@@ -131,7 +146,7 @@ export default function StoreNavBar(props) {
             <Box hidden={(auth.isAuth)}>
 
             <Button
-           //   className={classes.authButton}
+              className={classes.authButton}
               variant="contained"
               size="small"
               color="primary"
@@ -140,7 +155,7 @@ export default function StoreNavBar(props) {
               Sign Up
             </Button>
             <Button style={{marginLeft:"1rem"}}
-             // className={classes.authButton}
+              className={classes.authButton}
               variant="contained"
               size="small"
               color="primary"
@@ -150,13 +165,13 @@ export default function StoreNavBar(props) {
             </Button>
             </Box>
           </Box>
-          <IconButton edge="end" className="link" onClick = {() => {
+          <IconButton  edge="end" className="link" onClick = {() => {
               if (width < 1280) {
                 setCheckingOut(true)
               }
             }
           }>
-            <Badge badgeContent={itemsAmount} color="primary">
+            <Badge badgeContent={itemsAmount} color = "primary">
               <ShoppingCartOutlinedIcon
                 fontSize="large"
                 key={props.storePage || ''}

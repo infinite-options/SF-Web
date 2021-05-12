@@ -4,7 +4,6 @@ import CheckoutPage from '../checkoutPage/CheckoutStorePage';
 import StoreFilter from './filter';
 import { Box, Badge, Grid, Dialog, Button, Hidden, IconButton, Drawer } from '@material-ui/core';
 import ProdSelectContext from './ProdSelectContext';
-import CheckoutContext from '../checkoutPage/CheckoutContext';
 import axios from 'axios';
 import storeContext from '../storeContext';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
@@ -60,7 +59,7 @@ const ProductSelectionPage = (props) => {
 
 
   return (
-    <Box Box display="flex" justifyContent="space-between">
+    <Box>
     <ProdSelectContext.Provider
       value={{
         loggingIn, setLoggingIn,
@@ -77,14 +76,11 @@ const ProductSelectionPage = (props) => {
 
       }}
     >
-       
-          <Grid container >
-          <Grid item xs = {12} lg = {8} style = {{display: 'flex', flexDirection: 'column', }}>
+        <Grid container>
+          <Grid  lg = {8} style = {{display: 'flex', flexDirection: 'column'}}>
             <StoreFilter />
             <DisplayProduce />
           </Grid>
-      
-          
 
           <Hidden mdDown>
             <Grid item lg = {4}>
@@ -125,7 +121,7 @@ const ProductSelectionPage = (props) => {
               </IconButton>
             </Box>
 
-            <CheckoutPage />
+             <CheckoutPage /> 
           </Drawer>
         </Hidden>
       </ProdSelectContext.Provider>

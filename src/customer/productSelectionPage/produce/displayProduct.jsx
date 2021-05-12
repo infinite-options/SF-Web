@@ -165,7 +165,7 @@ function DisplayProduct() {
     return (
 
         <>
-      <Box marginLeft="2rem" marginRight='2rem'> 
+      <Box marginLeft="1rem" marginRight='0.2rem'> 
     <Box fontSize={22} color={appColors.paragraphText}>
           {displayMessage}
     </Box>

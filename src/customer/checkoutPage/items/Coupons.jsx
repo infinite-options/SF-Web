@@ -126,7 +126,7 @@ export default function Coupons(props) {
         const availableCoupons = [];
         const unavailableCoupons = [];
         const couponsRes = res.data.result;
-
+        console.log('coupons got:',res.data.result )
         // notes: title
         // discount_amount: apply first if applicable
         // discount_percent: apply to subtotal - discount_amount
@@ -144,7 +144,7 @@ export default function Coupons(props) {
             const couponData = {
               id: couponsRes[i].coupon_uid,
               index: i,
-              title: couponsRes[i].notes,
+              title: couponsRes[i].coupon_title,
               threshold: couponsRes[i].threshold,
               discountPercent: couponsRes[i].discount_percent,
               discountAmount: couponsRes[i].discount_amount,
@@ -257,7 +257,7 @@ export default function Coupons(props) {
           }}
         >
           <Box textlign="left" pl={2} pr={6} pt={1.5}>
-            <Box fontSize={12} pr={1} height="30px" fontWeight="bold">
+            <Box fontSize={18} pr={1} height="30px" fontWeight="bold">
               {coupProps.title}
             </Box>
             <Box fontSize="12px">
