@@ -1,12 +1,30 @@
 import React from 'react';
+import {useHistory} from 'react-router-dom';
+
+import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import MenuNavButton from '../../utils/MenuNavButton';
-import {Box, Button, Toolbar, Typography, TextField, Avatar, Link} from '@material-ui/core';  
+import {Box, Button, Toolbar, Typography, TextField, Avatar, Link, IconButton, Badge} from '@material-ui/core';  
 import sf from '../../icon/sfnav.svg';
 import {withStyles, makeStyles} from '@material-ui/core/styles';
-import { green, purple } from '@material-ui/core/colors';
-// Blank comment for committing empty branch
+import appColors from '../../styles/AppColors';
+
+import useWindowsDimensions from '../WindowDimensions';
 
 const useStyles = makeStyles((theme) => ({
+    profileInfoContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        background: appColors.componentBg,
+    },
+
+    sfImgContainer: {
+        flexBasis: '1',
+        flexGrow: '1',
+        '&:hover': {
+            cursor: 'pointer',
+        },
+    },
+
     profileContainer: {
         display: 'flex',
         flexDirection: 'column',
@@ -34,26 +52,45 @@ const useStyles = makeStyles((theme) => ({
         height: theme.spacing(12),
     },
 
+    resetPasswordLink: {
+        textDecoration: 'underline',
+        marginTop: '10px',
+        '&:hover': {
+            cursor: 'pointer',
+        },
+    },
+
     profInfButtonContainer: {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        marginBottom: theme.spacing(3),
     },
 
     profInfButton: {
         marginTop: theme.spacing(3),
         width: '75%',
-        height: '60px',
+        height: '50px',
         color: 'primary',
         background: '#e88330',
         color: 'white',
+    },
+
+    servingFreshSupportMessage: {
+        // color: '#e88330',
+        marginBottom: theme.spacing(12),
+    },
+
+    supportLink: {
+        color: '#e88330',
+        textDecoration: 'none',
     },
 }));
 
 const ColorButton = withStyles((theme) => ({
     root: {
         color: 'white',
-        backgroundColor: '#e88330',
+        backgroundColor: appColors.primary,
         '&:hover': {
         backgroundColor: 'rgb(162, 91, 33)',
         },
@@ -62,21 +99,51 @@ const ColorButton = withStyles((theme) => ({
 
 function ProfileInfo() {
     const classes = useStyles();
+    const history = useHistory();
+    const {width} = useWindowsDimensions();
+
     return (
-        <Box style = {{display: 'flex', flexDirection: 'column'}}>
+        <Box className = {classes.profileInfoContainer}>
             <Toolbar style={{backgroundColor:'#2F787F'}}>
-                <MenuNavButton style={{border:'1px solid black',color:'white'}}/>
+                <Box flexBasis = {1} flexGrow = {1}>
+                    <MenuNavButton style={{border:'1px solid black',color:'white'}}/>
+                </Box>
                 
-                <Box flexGrow={1} ><div style={{left:'30%'}}><img style={{float:'center'}} src={sf}></img></div></Box>
+                <Box
+                    className = {classes.sfImgContainer}
+                    onClick = {() => history.push('/')
+                }>
+                    <img style={{float:'center'}} src={sf}></img>
+                </Box>
                 
-                <Box>
+                <Box flexGrow = {1} flexBasis = {1} style = {{display: 'flex', justifyContent: 'flex-end', color: 'white', alignItems: 'center'}}>
+                    <Typography style = {{marginRight: '20px'}}> John Doe </Typography>
                     <Button
                         variant="contained"
                         size="small"
                         color="primary"
+                        style = {{marginRight: '20px'}}
                     >
-                        Login
+                        <Typography style = {{color: 'white', fontSize: '12px', marginLeft: '5px', marginRight: '5px'}}> Log Out </Typography>
                     </Button>
+
+                    <IconButton edge="end" className="link" onClick = {() => {
+                        if (width < 1280) {
+                            // setCheckingOut(true)
+                            console.log("Should check out");
+                        }
+                        }
+                    }>
+                        <Badge badgeContent={1} color = "primary">
+                        <ShoppingCartOutlinedIcon
+                            fontSize="large"
+                            key={'profile-info-shop-cart'}
+                            aria-hidden="false"
+                            aria-label = 'Shopping cart'
+                            style = {{color: appColors.buttonText}}
+                        />
+                        </Badge>
+                    </IconButton>
                 </Box>
             </Toolbar>
 
@@ -97,7 +164,9 @@ function ProfileInfo() {
                     <TextField label = '(123)456-7891'/>
                     <TextField label = 'johndoe@gmail.com'/>
 
-                    <Link style = {{textDecoration: 'underline', marginTop: '10px'}}>Reset Password</Link>
+                    <Link className=  {classes.resetPasswordLink}>
+                        Reset Password
+                    </Link>
 
                     <TextField label = 'Street Address'/>
                     <TextField label = 'Appt number'/>
@@ -117,6 +186,12 @@ function ProfileInfo() {
                             Log Out
                         </ColorButton>
                     </Box>
+
+                    <Typography className = {classes.servingFreshSupportMessage}>
+                        Please contact <a href = "google.com" className = {classes.supportLink}>support@servingfresh.me</a> to 
+                        change your First Name, Last Name
+                        or Email Address.
+                    </Typography>
                 </Box>
             </Box>
         </Box>
