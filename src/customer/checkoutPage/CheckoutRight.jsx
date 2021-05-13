@@ -12,6 +12,7 @@ import RefundTab from './tabs/RefundTab';
 import appColors from '../../styles/AppColors';
 import storeContext from '../storeContext';
 
+//
 const useStyles = makeStyles({
   root: {
     flexGrow: 1,
@@ -36,7 +37,8 @@ const StyledTabs = withStyles({
 const StyledTab = withStyles((theme) => ({
   root: {
     textTransform: 'none',
-    color: appColors.paragraphText,
+    color: appColors.secondary,
+
     fontWeight: theme.typography.fontWeightRegular,
     fontSize: theme.typography.pxToRem(15),
     marginRight: theme.spacing(1),
@@ -89,7 +91,6 @@ export default function CheckoutRight() {
         border: '3px solid #136D74',
         borderRadius: '20px',
         margin: '10px',
-        
       }}
       // style={{ height: windowHeight - 95 }}
     >
@@ -103,7 +104,10 @@ export default function CheckoutRight() {
       >
         {/* <StyledTab label="Checkout" />
         <Box flexGrow={1} />
-        <StyledTab label="History" />
+        <StyledTab
+          label="History"
+          style={{ fontSize: '20px', fontWeight: '700' }}
+        />
         <Box flexGrow={1} />
         <StyledTab label="Refund" /> */}
         <StyledTab

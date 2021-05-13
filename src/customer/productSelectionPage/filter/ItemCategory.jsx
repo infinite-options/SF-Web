@@ -26,6 +26,7 @@ const createItemCategoryItem = (item) => {
 const ItemCategory = () => {
   const classes = useStyles();
 
+
   const categories = [
    // {
     //   onAsset: '../../footer_icon/orangeFruit.png',

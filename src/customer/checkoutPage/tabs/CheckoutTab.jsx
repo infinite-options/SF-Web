@@ -116,6 +116,8 @@ export default function CheckoutTab() {
 
   // cartItems is a dictonary, need to convert it into an array
   const [cartItems, setCartItems] = useState(getItemsCart());
+  const [background, setBackground] = useState();
+
 
   const [userInfo, setUserInfo] = useState(store.profile);
 
@@ -309,38 +311,45 @@ export default function CheckoutTab() {
         itm_business_uid: item.business_uid,
       };
     });
-    console.log('items: ', items);
-    
-
-    
+    // console.log('items: ', items);
   }
-  console.log('cartitems####333',cartItems)
+  // console.log('cartitems####333', cartItems);
   return (
-    <Box 
-    className="responsive-checkout-tab"
-    display="flex" flexDirection="column" 
-    // height="90%"
-    // px={8}
-     >
+    <Box
+      className="responsive-checkout-tab"
+      display="flex"
+      flexDirection="column"
+    >
       {/* START: Expected Delivery */}
       <Box hidden={store.expectedDelivery !== ''} m={2} />
       <Box hidden={store.expectedDelivery === ''}>
         <Box
           className={classes.section}
-          display="flex"
-          flexDirection="column"
+          // height="100px"
+          display="inline"
           // lineHeight="100px"
           id="responsiveExpectedDelivery"
         >
-          <Box  color={appColors.primary}
+          <Box
+            color={appColors.primary}
             fontSize="18px"
             textAlign="left"
             fontWeight="700"
-           >Expected Delivery</Box>
-         
-          <Box fontSize="14px" fontWeight="bold"  textAlign="left" >
+            paddingTop="20px"
+            paddingBottom="10px"
+          >
+            Expected Delivery:
+          </Box>
+          <Box flexGrow={1} />
+
+          <Box fontSize="14px" fontWeight="bold"  textAlign="left" paddingBottom="10px">
             {store.expectedDelivery}
           </Box>
+
+          <textarea style={{ display:"flex", type:"text", value:"text", width:"355px", height:"51px"}}  placeholder= "Delivery Instructions (ex: gate code, leave on porch)"
+          autoComplete="on" maxLength="100" cols="20" row="5" borderRadius="2rem">
+           
+          </textarea>
         </Box>
       </Box>
       {/* END: Expected Delivery */}
@@ -497,15 +506,22 @@ export default function CheckoutTab() {
      
       {/* <Box flexGrow={1} /> */}
       {/* END: Order Items */}
+      <Box>
+      <MapComponent/>
+
+      </Box>
 
       {/* START: Coupons */}
+      <Box>
+
       <Coupons
-        setDeliveryFee={setDeliveryFee}
         setPromoApplied={setPromoApplied}
-        subtotal={subtotal}
         originalDeliveryFee={origDeliveryFee}
+        setDeliveryFee={setDeliveryFee}
+        subtotal={subtotal}
         classes={classes}
       />
+      </Box>
       {/* END: Coupons */}
 
       {/* START: Pricing */}
@@ -515,19 +531,17 @@ export default function CheckoutTab() {
         <Box>${subtotal.toFixed(2)}</Box>
       </Box> */}
       <Box className={classes.section} display="flex">
-        <Box color={appColors.secondary}>Promo Applied</Box>
+        <Box>Delivery Fee</Box>
         <Box flexGrow={1} />
-        <Box>-${promoApplied.toFixed(2)}</Box>
+        <Box>${deliveryFee.toFixed(2)}</Box>
       </Box>
       <Box className={classes.section} display="flex">
         <Box>Service Fee</Box>
         <Box flexGrow={1} />
         <Box>${serviceFee.toFixed(2)}</Box>
       </Box>
-      <Box className={classes.section} display="flex">
-        <Box>Delivery Fee</Box>
-        <Box flexGrow={1} />
-        <Box>${deliveryFee.toFixed(2)}</Box>
+      <Box style={{marginBottom:'10px', paddingBottom:'10px'}} display="flex">
+        Driver Tip:
       </Box>
 
       <Box className={classes.driverTipBox}>
@@ -604,6 +618,7 @@ export default function CheckoutTab() {
         <Box flexGrow={1} />
         <Box width="70px">
           <CurrencyTextField
+            
             variant="standard"
             modifyValueOnWheel={false}
             value={driverTip}
@@ -616,12 +631,22 @@ export default function CheckoutTab() {
               setDriverTip(value);
             }}
           ></CurrencyTextField>
+        
         </Box>
       </Box> */}
       <Box className={classes.section} display="flex">
         <Box>Taxes</Box>
         <Box flexGrow={1} />
         <Box>${tax.toFixed(2)}</Box>
+      </Box>
+
+      <Box display="flex" width="100%" height="2rem" marginTop="1rem" marginBottom="1rem">
+        <Button variant="outlined" color="secondary" className={classes.button} style={{ color:"#000000"}} > Enter Ambassador Code </Button>
+        <Button variant="outlined" style={{backgroundImage:`url(${
+              './info_icon.png'
+            })` ,backgroundSize: '75% 100%',
+            backgroundPosition: 'center center',
+            backgroundRepeat: 'no-repeat',marginLeft:'1rem'}}> </Button>
       </Box>
       <Box className={classes.section} fontWeight="bold" display="flex">
         <Box>Total</Box>
@@ -639,15 +664,83 @@ export default function CheckoutTab() {
             setLeftTabChosen(4);
             setPaymentDisplayType(!paymentDisplayType)
           }}
+          style={{ textTransform: 'none' }}
         >
-          Click to pay with Stripe or PayPal on the Payments Details page
+          Proceed as guest
         </Button>
       </Box>
-      
-    {/* <Box hidden = {paymentDisplayType}>
-    <PaymentTab/>
-    </Box>
-     */}
+      <Box display="flex" flexDirection="column" px="2%">
+        <p style={{ color: appColors.secondary, fontWeight: 500 }}>
+          Already have an account?
+        </p>
+        <Button
+          className={classes.button}
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            setLeftTabChosen(4);
+            setLoggingIn(true);
+          }}
+          style={{ textTransform: 'none' }}
+        >
+          Login
+        </Button>
+      </Box>
+      <Box display="flex"  flexDirection="column" px="2%">
+        <p style={{ color: appColors.secondary, fontWeight: 500 }}>
+          Save time and create an account?
+        </p>
+        <Button
+          className={classes.button}
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            setLeftTabChosen(4);
+            setSigningUp(true);
+          }}
+          style={{ textTransform: 'none' }}
+        >
+          Sign Up
+        </Button>
+      </Box>
+
+      {/* <Box hidden =  {loggingIn}>
+        <SignUp />
+      </Box> */}
+
+      {/* Login dialog opens here based on login state */}
+      <Dialog fullScreen open = {loggingIn} onClose = {() => setLoggingIn(false)} style = {{
+        width: '100%', height: '100%',
+      }}>
+        <Box mt = {1} style = {{
+                     justifyContent: 'center', display: 'flex', height: '100%',
+                     alignItems: 'center',
+        }}>
+          <Button color = 'primary' variant = 'contained' onClick = {() => setLoggingIn(false)} style = {{
+            width: '120px',
+          }}>
+            Close
+          </Button>
+        </Box>
+      </Dialog>
+
+      {/* Sign up dialog opens here based on signUp state */}
+      <Dialog fullScreen open = {signingUp} onClose = {() => setSigningUp(false)} style = {{
+        width: '100%', height: '100%',
+      }}>
+        <Box mt = {1} style = {{
+          justifyContent: 'center', display: 'flex', height: '100%',
+          alignItems: 'center',
+        }}>
+          <Button color = 'primary' variant = 'contained' onClick = {() => setSigningUp(false)} style = {{
+            width: '120px',
+          }}>
+            Close
+          </Button>
+        </Box>
+      </Dialog>
     </Box>
   );
 }

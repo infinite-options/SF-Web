@@ -40,45 +40,106 @@
 /* ----- responsive landing ----- */
 
 .hero-container {
-  display:flex;
-  width: 50%;
-  margin: 0 auto;
+  display: flex;
+  width: 100%;
+  height: fit-content;
+}
+.hero-container .logo {
+  display: flex;
 }
 
 .hero-right {
-  padding: 80px 0 0 20px;
+  padding: 20px 50px 30px 70px;
+  height: auto;
+}
+.hero-left {
+  padding: 20px 50px 30px 70px;
+  background-color: white;
+  height: fit-content;
 }
 
 .info-container {
-  display:flex;
+  display: flex;
+}
+.infoDesc {
+  font-family: "SFProText-RegularItalic";
+}
+.Testimonial > div {
+  background-color: #f1f4f4;
+  color: #000000;
+  text-align: center;
+  border: 1px solid #136d74;
+  border-radius: 10px;
+  margin-left: 40px;
+  margin-right: 40px;
+  height: 160px;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #881798;
+}
+
+.slick-prev:before,
+.slick-next:before {
+  color: #881798;
 }
 
 @media only screen and (max-width: 768px) {
   .hero-container {
-    justify-content: center;
-    display:block;
+    display: block;
     width: 100%;
   }
-  
+
   .hero-right {
-    width: auto;
+    width: 100%;
     padding: 0;
+    min-height: fit-content;
   }
-  
+
   #mobileInfoSection {
     width: 100%;
     padding: 20px 0;
   }
 
   .info-container {
-    display:block;
+    display: block;
   }
-} 
+  .locationContainer {
+    width: 50%;
+  }
+}
 
 /* ----- responsive cart ----- */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.contentWrap {
+  flex: 1;
+}
+.containerFooter {
+  background-color: #ff8500;
+  padding-top: 20px;
+  position: relative;
+  bottom: 0;
+  height: auto;
+  width: 100%;
+  padding-bottom: 20px;
+}
+.containerFooter {
+  display: inline-block;
+  min-width: 90%;
+  margin: auto;
+}
+.container {
+  display: inline-block;
+  min-width: 80%;
+  margin: auto;
+}
 
 .checkout-container {
-  display:flex;
+  display: flex;
   flex-direction: row-reverse;
   justify-content: center;
   /* justify-content: flex-end; */
@@ -105,10 +166,14 @@
 
 @media only screen and (max-width: 992px) {
   .checkout-container {
-    display:block;
+    display: block;
   }
-  
-  .checkout-left, .checkout-right {
+  .container {
+    display: block;
+  }
+
+  .checkout-left,
+  .checkout-right {
     width: 100%;
   }
   .checkout-right {
@@ -121,12 +186,12 @@
   .responsive-payment-tab {
     padding: 0 25px;
   }
-} 
+}
 
 /* ----- responsive store -----*/
 
 .responsive-store {
-  display:flex;
+  display: flex;
 }
 .responsive-display-produce {
   margin-left: 20px;
@@ -135,11 +200,11 @@
 
 @media only screen and (max-width: 768px) {
   .responsive-store {
-    display:block;
+    display: block;
   }
   .responsive-display-produce {
     margin-left: 0;
-    padding:10px 4px;
+    padding: 10px 4px;
   }
 }
 

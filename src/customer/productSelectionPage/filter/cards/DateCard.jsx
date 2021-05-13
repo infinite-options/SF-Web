@@ -18,8 +18,9 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(.5),
     marginRight: theme.spacing(2),
   },
+
   card: {
-    backgroundColor: props => props.clicked ?  appColors.primary : "#e6e0e0" ,
+    backgroundColor: props => props.clicked ? appColors.primary : '#e0e6e6',
     width: 75,
     height: 78,
     borderRadius: 5,
@@ -61,7 +62,6 @@ const amPmTo24Hr = (time) => {
   }
 };
 const DateCard = (props) => {
-  //const [isClicked, setIsClicked] = useState(true);
   const [isClicked, setIsClicked] = useState(false)
   const classes = useStyles({clicked: isClicked});
   const productSelect = useContext(ProdSelectContext);

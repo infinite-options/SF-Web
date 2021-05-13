@@ -26,7 +26,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: 'white',
-    marginBottom: '20px',
   },
   authButton: {
     color: 'white',
@@ -192,13 +191,16 @@ export default function StoreNavBar(props) {
               aria-label = 'Shop Search'
             />
           </IconButton>
-          <IconButton edge="end" className="link">
+          <IconButton edge="end" className="link" onClick = {() => {
+              if (width < 1280) {
+                setCheckingOut(true)
+              }
+            }
+          }>
             <Badge badgeContent={itemsAmount} color="primary">
               <ShoppingCartIcon
                 fontSize="large"
                 key={props.storePage || ''}
-                color={props.storePage === 1 ? 'primary' : 'default'}
-                onClick={handleCartClick}
                 aria-hidden="false"
                 aria-label = 'Shopping cart'
               />

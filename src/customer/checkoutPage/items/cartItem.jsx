@@ -50,6 +50,7 @@ function CartItem(props) {
   return (
     <Box
       display="flex"
+      justifyContent="space-evenly"
       mb={2}
       py={1}
       style={{ borderBottom: '1px solid' + appColors.border }}
@@ -57,13 +58,14 @@ function CartItem(props) {
       <Box
         className="center-cropped"
         style={{
-          width: '90px',
-          height: '90px',
+          width: '50px',
+          height: '50px',
           backgroundImage: `url(${props.img})`,
           backgroundSize: '100% 100%',
-          backgroundPosition: 'center center',
+          backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
           borderRadius: 15,
+          marginTop: 35,
         }}
       />
       <Box display="flex" flexGrow={1} py={4.5}>
@@ -78,8 +80,6 @@ function CartItem(props) {
             textAlign: 'left',
           }}
         >
-          {/* <Box  style={{textDecorationLine: 'line-through', textDecorationStyle: 'solid'}}> {props => props.isInDay? props.name:" " }{' '} </Box> */}
-         {/* <Box  style={{textDecorationLine: 'line-through', textDecorationStyle: 'solid'}}> {props.name }{' '} </Box> */}
          {props.name }{' '}
           {props.unit !== undefined && props.unit !== ''
             ? '($' +
@@ -98,10 +98,11 @@ function CartItem(props) {
                 cursor="pointer"
                 color="primary"
                 onClick={decrease}
+                style={{ backgroundColor: '#136D74', borderRadius: '5px' }}
               />
             </Box>
           )}
-          <Box mx={1} color={appColors.primary}>
+          <Box mx={1}  color="#000000" fontWeight="500" fontSize="14px">
             {props.count}
           </Box>
           {props.isCountChangeable && (
@@ -111,6 +112,7 @@ function CartItem(props) {
                 cursor="pointer"
                 color="primary"
                 onClick={increase}
+                style={{ backgroundColor: '#136D74', borderRadius: '5px' }}
               />
             </Box>
           )}

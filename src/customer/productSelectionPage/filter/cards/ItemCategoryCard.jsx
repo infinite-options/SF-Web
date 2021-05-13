@@ -5,7 +5,6 @@ import iconSizes from '../../../../styles/IconSizes';
 import { Box } from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 
-
 const useStyles = makeStyles((theme) => ({
   itemCatCardContainer: {
     marginTop: theme.spacing(.5),
@@ -35,7 +34,8 @@ const ItemCategoryItem = (props) => {
     } else {
       newCategoriesClicked.add(props.type);
     }
-    console.log('newCategoriesClicked: ', newCategoriesClicked);
+    // console.log('newCategoriesClicked: ', newCategoriesClicked);
+    // console.warn(productSelect);
     productSelect.setCategoriesClicked(newCategoriesClicked);
     setIsClicked(!isClicked);
   }
@@ -59,7 +59,7 @@ const ItemCategoryItem = (props) => {
           alt={props.altName}
         />
       </Box>
-      <div style={{ width: '100%', fontSize: 12, textAlign: 'center' }}>
+      <div style={{width: '100%', fontSize: 12, textAlign: 'center' }}>
         {props.label}
       </div>
     </Box>

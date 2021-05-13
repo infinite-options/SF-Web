@@ -18,8 +18,9 @@
     "@testing-library/user-event": "^7.2.1",
     "@unicef/material-ui-currency-textfield": "^0.8.6",
     "@y0c/react-datepicker": "^1.0.4",
-    "apexcharts": "^3.22.0",
+    "apexcharts": "^3.26.1",
     "axios": "^0.21.1",
+    "bootstrap": "^4.6.0",
     "chart.js": "^2.9.4",
     "clsx": "^1.1.1",
     "google-map-react": "^2.1.9",
@@ -50,6 +51,7 @@
     "react-scripts": "^4.0.0",
     "react-slick": "^0.28.1",
     "rsuite": "^4.8.9",
+    "slick-carousel": "^1.8.1",
     "stripe": "^8.129.0",
     "universal-cookie": "^4.0.4"
   },

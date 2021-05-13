@@ -20,9 +20,8 @@ export class MapComponent extends Component {
         },
         zoom: 10
     };
-
-
-    render() {
+ 
+  render() {
 
         return (
             <div style={{ height: '30vh', width: '100%' }}>
@@ -49,9 +48,10 @@ export class MapComponent extends Component {
               lng: this.props.longitude
             }} />
         </Map>
-            </div>
-        );
-    }
+
+      </div>
+    )
+  }
 }
 
 export default GoogleApiWrapper({

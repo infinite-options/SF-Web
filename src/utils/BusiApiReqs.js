@@ -33,4 +33,18 @@ export default class BusiApiReqs {
         console.log(err.response || err);
       });
   };
+
+  getFavorite = async function (businessIds) {
+    let reqBody = {
+      customer_uid: businessIds,
+    };
+    return await axios
+      .post(this.BASE_URL + 'favorite_produce/get', reqBody)
+      .then((response) => {
+        console.log('Favorite Items:', response);
+      })
+      .catch((err)=> {
+        console.log(err.response || err);
+      });
+  };
 }

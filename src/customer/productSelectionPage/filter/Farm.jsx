@@ -29,13 +29,6 @@ const FarmCategory = () => {
   // const allValidDay = daysInWeek;
   var farms = topNode.farms;
   return <React.Fragment>{farms.map(createFarmCard)}</React.Fragment>;
-
-  return (
-    <div>
-      <div>We are gathering farm-logo</div>
-      {/* <dl className="dictionary">{allValidDay.map(createDateCard)}</dl> */}
-    </div>
-  );
 };
 
 export default FarmCategory;

@@ -100,6 +100,7 @@ const useStyles = makeStyles((theme) => ({
 
 // DONE: add unit, each is as is, anything else is '/' or 'per'
 function createProduct2(product) {
+  console.warn(product);
   return (
     <Entry
       favorite={product.favorite}
@@ -116,8 +117,12 @@ function createProduct2(product) {
       id={product.item_uid}
       key={product.item_uid}
     />
+
   );
 }
+
+
+
 // TEST: We are considering matching on item_name, item_desc and item_price.
 // If they are identical we should choose the one with the lowest business_price.
 // If Identical still then we should select the one with the earliest created_at date
@@ -145,6 +150,8 @@ function DisplayProduct() {
 
   const [displayMessage, setDisplayMessage] = useState('');
 
+  console.warn(store);
+
   // DONE: add date to expected delivery
   // DONE: clear out expected delivery if unclicked
   useEffect(() => {
@@ -158,6 +165,7 @@ function DisplayProduct() {
     } else {
       message = 'Produce available for delivery on ' + store.expectedDelivery;
     }
+    console.log("store length",store.products.length)
     if (store.products.length === 0 && !store.productsLoading) {
       message =
         'Sorry, we could not find any produce that can be delivered to your provided address';
@@ -406,6 +414,82 @@ style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom
   </Box>
 </Box>  
       </>
+//       <Box
+//         className = {classes.itemDisplayContainer}
+//       >
+   
+// <Simple/>
+//         {/* <Paper
+//           elevation={0}
+//           className = {classes.productsPaperContainer}
+//         >
+//           <Box justifyContent="center">
+//             <Grid container direction="row" justify="flex-start"  
+//               // spacing={5}
+//             >
+//               {store.productsFruit.map(createProduct2)}
+//             </Grid>
+//           </Box>
+//         </Paper> */}
+// <div style = {{display:'flex',justifyContent:"space-between"}}>
+//     <h1 > Vegetables </h1>
+//     <Button style={{color:"#ff8500"}}  onClick = {handleClick}> See all Fruits </Button>
+//     </div>
+
+//     <Carousel
+//             itemClass={classes.imageItem}
+//             centerMode={true} 
+//             responsive={responsive}>
+            
+//            {store.productsVegetable.map(createProduct2)}
+             
+//           </Carousel> 
+
+          
+
+
+//           <div style = {{display:'flex',justifyContent:"space-between"}}>
+//     <h1 > Fruits </h1>
+//     <Button style={{color:"#ff8500"}}  onClick = {handleClick}> See all Fruits </Button>
+//     </div>
+
+//          <Carousel
+//         itemClass={classes.imageItem}
+//         centerMode={true} 
+//         responsive={responsive}>
+  
+//         {store.productsFruit.map(createProduct2)}
+//         </Carousel>
+
+//           <div style = {{display:'flex',justifyContent:"space-between"}}>
+//     <h1 > Desserts </h1>
+//     <Button style={{color:"#ff8500"}}  onClick = {handleClick}> See all Fruits </Button>
+//     </div>
+
+//            <Carousel
+//             itemClass={classes.imageItem}
+//             centerMode={true} 
+//             responsive={responsive}>
+            
+//            {store.productsDessert.map(createProduct2)}
+             
+//           </Carousel>
+
+//           <div style = {{display:'flex',justifyContent:"space-between"}}>
+//     <h1 > Other </h1>
+//     <Button style={{color:"#ff8500"}}  onClick = {handleClick}> See all Fruits </Button>
+//     </div>
+
+//            <Carousel
+//             itemClass={classes.imageItem}
+//             centerMode={true} 
+//             responsive={responsive}>
+            
+//             {store.products.map(createProduct2)}
+             
+//           </Carousel> 
+  
+//       </Box>
     );
   } else {
     return (
@@ -705,3 +789,5 @@ style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom
 // }
 
 export default DisplayProduct;
+
+

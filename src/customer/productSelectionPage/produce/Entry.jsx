@@ -10,8 +10,8 @@ import appColors from '../../../styles/AppColors';
 import ProduceSelectContext from '../ProdSelectContext';
 import { CallMissedSharp, InfoOutlined } from '@material-ui/icons';
 
- import {ReactComponent as AddIcon } from '../../../sf-svg-icons/sfcolored-plus.svg';
- import {ReactComponent as RemoveIcon } from '../../../sf-svg-icons/sfcolored-minus.svg';
+import {ReactComponent as AddIcon } from '../../../sf-svg-icons/sfcolored-plus.svg';
+import {ReactComponent as RemoveIcon } from '../../../sf-svg-icons/sfcolored-minus.svg';
 
 import FavoriteSrc from '../../../sf-svg-icons/heart-whitebackground.svg';
 import FavoriteBorderedSrc from '../../../sf-svg-icons/heart-whitebackground-bordered.svg';
@@ -40,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
     opacity: props => props.isInDay ? '1' : '.6',
-
   },
 
   foodNameTypography: {
@@ -51,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
     overflow:'hidden',
     whiteSpace:'nowrap',
     fontWeight: 'bold',
+    fontSize: '14px',
   },
 
   itemCountAndPrice: {
@@ -145,7 +145,6 @@ function Entry(props) {
 
   useEffect(() => {
     let isInDay = false;
-    let isInFarm = false;
     let isInCategory = false;
 
     const isFavoritedAndInFavorites = productSelect.categoriesClicked.has("favorite") != undefined &&

@@ -44,6 +44,27 @@ const useStyles = makeStyles((theme) => ({
       gridTemplateColumns: '1fr',
     },
   },
+
+  deliveryDates: {
+    color: '#397D87',
+    fontWeight: 'bold',
+    fontSize: '14px',
+    textAlign: 'start',
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
+  },
+
+  filterItemsGrid: {
+    display: 'grid',
+    justifyContent: "center",
+
+    [theme.breakpoints.up('sm')]: {
+      gridTemplateColumns: '1fr 1fr',
+    },
+    [theme.breakpoints.down('xs')]: {
+      gridTemplateColumns: '1fr',
+    },
+  },
 }));
 
 // Fixed: When all of the days, farms, and items are selected, KEM Farms - Berries produce stays up

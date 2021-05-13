@@ -32,6 +32,8 @@ const ProductSelectionPage = (props) => {
   useContext(storeContext);
   const profile = store.profile;
 
+  const [loggingIn, setLoggingIn] = React.useState(false);
+  const [signingUp, setSigningUp] = React.useState(false);
   const [itemError, setHasError] = useState(false);
   const [itemIsLoading, setIsLoading] = useState(false);
 
@@ -44,9 +46,6 @@ const ProductSelectionPage = (props) => {
   const [busError, setBusError] = useState(false);
   // this state will notify if one of the farm is clicked or not
   const [farmsClicked, setFarmsClicked] = useState(store.farmsClicked);
-
-  const [loggingIn, setLoggingIn] = React.useState(false);
-  const [signingUp, setSigningUp] = React.useState(false);
 
   useEffect(() => {
     setFarmsClicked(store.farmsClicked);
@@ -121,7 +120,7 @@ const ProductSelectionPage = (props) => {
               </IconButton>
             </Box>
 
-             <CheckoutPage /> 
+            <CheckoutPage /> 
           </Drawer>
         </Hidden>
       </ProdSelectContext.Provider>

@@ -197,6 +197,7 @@ const Store = ({ ...props }) => {
     JSON.parse(localStorage.getItem('cartItems') || '{}')
   );
 
+
   useEffect(() => {
     console.log('cartTotal: ', cartTotal);
     localStorage.setItem('cartTotal', cartTotal);
@@ -418,7 +419,8 @@ const Store = ({ ...props }) => {
 
     BusiMethods.getItems(
       ['fruit', 'dessert', 'vegetable', 'other'],
-      Array.from(businessUids)
+    //['Fruits','Dairy','Vegetables','Snacks'], 
+    Array.from(businessUids)
     ).then((itemRes) => {
       const _products = [];
       const _vegetable = [];
@@ -428,8 +430,11 @@ const Store = ({ ...props }) => {
       if (itemRes !== undefined) {
         for (const item of itemRes) {
           setProductsLoading(true);
+          console.log("Response on Item",item.item_name.toString())
           try {
             if (item.item_status === 'Active') {
+              
+              console.log(item.item_type.toString())
               const namePriceDesc =
                 item.item_name + item.item_price + item.item_desc;
               // Business Price
@@ -505,7 +510,7 @@ const Store = ({ ...props }) => {
       setProductsFruit(_fruit.sort());
       setProductsVegetable(_vegetable.sort());
       setProductsDessert(_dessert.sort());
-      console.log('productsssssss----',_products)
+      // console.log('productsssssss----',_products)
       setProductsLoading(false);
     });
   }
@@ -561,15 +566,7 @@ const Store = ({ ...props }) => {
           setStorePage={setStorePage}
         />
         <Box hidden={storePage !== 0}>
-          <Box 
-          // display="flex"
-            className="responsive-store"
-          >
-            <ProductSelectionPage farms={farmsList} />
-          </Box>
-        </Box>
-        <Box hidden={storePage !== 1}>
-          <CheckoutPage />
+          <ProductSelectionPage farms={farmsList} />
         </Box>
       </storeContext.Provider> */}
     </div>

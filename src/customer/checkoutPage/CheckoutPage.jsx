@@ -7,6 +7,8 @@ import CheckoutRight from './CheckoutRight';
 import CheckoutContext from './CheckoutContext';
 import { Elements, CardElement, useStripe } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import ProdSelectContext from '../productSelectionPage/ProdSelectContext';
+import storeContext from '../storeContext';
 // import storeContext from "customer/storeContext";
 // import axios from "axios";
 
@@ -19,6 +21,8 @@ const stripePromise = loadStripe(
 );
 
 export default function CheckoutPage() {
+  const {test} = React.useContext(storeContext);
+
   const [paymentDetails, setPaymentDetails] = useState({
     amountPaid: 0,
     amountDue: 0,

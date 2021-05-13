@@ -10,15 +10,15 @@ import Product from './Product';
 const responsive = {
   superLargeDesktop: {
     breakpoint: { max: 3000, min: 1430 },
-    items: 8,
+    items: 4.5,
   },
   desktop: {
     breakpoint: { max: 1430, min: 1150 },
-    items: 6,
+    items: 3,
   },
   tablet: {
     breakpoint: { max: 1150, min: 800 },
-    items: 4,
+    items: 2,
   },
   mobile: {
     breakpoint: { max: 800, min: 0 },
@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
     height: '300px',
     paddingTop: '0px',
   },
+
   title: {
     color: appColors.secondary,
     fontSize: '22px',
@@ -55,7 +56,7 @@ const ProductDisplay = () => {
   const [itemsList, setItemsList] = useState([]);
 
   useEffect(() => {
-    getItems();
+   // getItems();
   }, []);
 
   const getItems = () => {
@@ -93,6 +94,8 @@ const ProductDisplay = () => {
         responsive={responsive}
       >
         {itemsList.map((product) => {
+          console.log(product);
+
           return (
             <Product
               img={product.item_photo}
