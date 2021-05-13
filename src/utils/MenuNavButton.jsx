@@ -67,7 +67,7 @@ function MenuListComposition(props) {
         break;
       case 'Profile Info':
         history.push({
-          pathname: '/store',
+          pathname: '/profile-info',
           state: { leftTabChosen: 0 },
         });
         break;
