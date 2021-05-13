@@ -4,6 +4,7 @@ import { Box, IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import appColors from '../../../styles/AppColors';
+import { StrikethroughSOutlined } from '@material-ui/icons';
 
 function CartItem(props) {
   const store = useContext(storeContext);
@@ -77,7 +78,9 @@ function CartItem(props) {
             textAlign: 'left',
           }}
         >
-          {props.name}{' '}
+          {/* <Box  style={{textDecorationLine: 'line-through', textDecorationStyle: 'solid'}}> {props => props.isInDay? props.name:" " }{' '} </Box> */}
+         {/* <Box  style={{textDecorationLine: 'line-through', textDecorationStyle: 'solid'}}> {props.name }{' '} </Box> */}
+         {props.name }{' '}
           {props.unit !== undefined && props.unit !== ''
             ? '($' +
               itemPrice.toFixed(2) +

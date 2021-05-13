@@ -314,11 +314,11 @@ function Entry(props) {
     setHearted(!hearted);
   };
 
-
+  console.warn("isShow =",isShown)
  
 
   return ( isShown ?
-    <Grid xs = {6} md = {4} lg = {4} item className = {classes.foodGridItem}>
+    <Grid   xs = {6} md = {4} lg = {4} item className = {classes.foodGridItem}>
       <Card
         style = {{
           borderRadius: '12px', backgroundImage: `url("${props.img.replace(' ', '%20')}")`,
@@ -326,6 +326,7 @@ function Entry(props) {
           backgroundSize: '250px 200px',
           display: 'flex',
           flexDirection: 'column',
+
           
         }}
         backgroundImage = {`url("${props.img.replace(' ', '%20')}")`}

@@ -73,6 +73,7 @@ export default function Coupons(props) {
       const couponData = {
         id: coupon.id,
         index: coupon.index,
+        notes: coupon.notes,
         title: coupon.title,
         threshold: coupon.threshold,
         discountPercent: coupon.discountPercent,
@@ -145,6 +146,7 @@ export default function Coupons(props) {
               id: couponsRes[i].coupon_uid,
               index: i,
               title: couponsRes[i].coupon_title,
+              notes: couponsRes[i].notes,
               threshold: couponsRes[i].threshold,
               discountPercent: couponsRes[i].discount_percent,
               discountAmount: couponsRes[i].discount_amount,
@@ -208,6 +210,7 @@ export default function Coupons(props) {
         amountSaved={coupProps.amountSaved}
         amountNeeded={coupProps.amountNeeded}
         title={coupProps.title}
+        notes={coupProps.notes}
         discountPercent={coupProps.discountPercent}
         discountAmount={coupProps.discountAmount}
         discountShipping={coupProps.discountShipping}
@@ -259,6 +262,9 @@ export default function Coupons(props) {
           <Box textlign="left" pl={2} pr={6} pt={1.5}>
             <Box fontSize={18} pr={1} height="30px" fontWeight="bold">
               {coupProps.title}
+            </Box>
+            <Box fontSize="10px" fontWeight="bold">
+              {coupProps.notes}
             </Box>
             <Box fontSize="12px">
               {coupProps.threshold === 0 ? 'No' : '$' + coupProps.threshold}{' '}

@@ -77,13 +77,8 @@ const PaymentTab = () => {
   const store = useContext(storeContext);
   const auth = useContext(AuthContext);
   const [paymentType, setPaymentType] = useState('NONE');
-  const {
-    profile,
-    cartItems,
-    setCartItems,
-    startDeliveryDate,
-    setCartTotal,
-  } = useContext(storeContext);
+  const { profile, cartItems, setCartItems, startDeliveryDate, setCartTotal } =
+    useContext(storeContext);
 
   const {
     paymentDetails,
@@ -222,9 +217,10 @@ const PaymentTab = () => {
   //TODO: Add recipient label
   //TODO: If guest, give message: 'enter a password and sign up to be eligible for history and additional coupons press continue to create your account or cancel to skip'
   return (
-    <Box pt={3} 
-    // px={10}
-    className="responsive-payment-tab"
+    <Box
+      pt={3}
+      // px={10}
+      className="responsive-payment-tab"
     >
       {paymentProcessing && (
         <p className={classes.notify}>
@@ -342,7 +338,7 @@ const PaymentTab = () => {
         <StripeElement
           deliveryInstructions={deliveryInstructions}
           setPaymentType={setPaymentType}
-          classes={classes}
+           classes={classes}
         />
       )}
       {/* END: Payment Buttons */}

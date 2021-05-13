@@ -34,12 +34,21 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
+
+  tipButton: { color: appColors.buttonText
+    ,backgroundColor:" ",
+    "&:hover":{
+      backgroundColor:"#ff8500",
+    },
+  },
+
   section: {
     borderBottom: '1px solid' + appColors.checkoutSectionBorder,
     marginBottom: '10px',
     paddingBottom: '10px',
   },
-  button: { color: appColors.buttonText, marginBottom: '10px' },
+  button: { color: appColors.buttonText, 
+    marginBottom: '10px' },
   driverTipBox: {
    
     marginBottom: '10px',
@@ -51,11 +60,8 @@ const useStyles = makeStyles((theme) => ({
       justifyContent:'space-between',
     },
   },
-  button: { color: appColors.buttonText
-  ,backgroundColor:" ",
-  "&:hover":{
-    backgroundColor:"#ff8500",
-  },
+
+ 
 
   label: {
     color: appColors.paragraphText,
@@ -75,14 +81,13 @@ const useStyles = makeStyles((theme) => ({
     outline: 0,
     borderRadius: '4px',
     background: 'white',
-  },
 },
 
-buttonCheckout: { color: appColors.buttonText
-  ,backgroundColor:" ",    width:"20rem",
-  "&:hover":{
+buttonCheckout: { 
+  color: appColors.buttonText,
+    width:"20rem",
     backgroundColor:"#ff8500",
-  },
+ 
 },
 
 delivInstr: {
@@ -100,7 +105,14 @@ delivInstr: {
   resize: 'vertical',
 },
 
-
+showButton: {
+  color: 'white',
+},
+notify: {
+  fontSize: '18px',
+  color: '#fc6f03',
+  fontWeight: 'bold',
+},
 
 }));
 
@@ -160,15 +172,13 @@ export default function CheckoutTab(props) {
   const auth = useContext(AuthContext);
   const confirm = useConfirmation();
   const BusiApiMethods = new BusiApiReqs();
+  const checkout = useContext(checkoutContext);
 
-
-//  const checkout = useContext(checkoutContext);
-
+  
   const {
     loggingIn, setLoggingIn,
     signingUp, setSigningUp,
   } = useContext(storeContext);
-  const checkout = useContext(checkoutContext);
 
   const {
     setPaymentProcessing,
@@ -562,7 +572,7 @@ const PlainTextField = (props) => {
 
   const {
     profile,
- 
+   
   } = useContext(storeContext);
 
   async function onPayWithClicked(type) {
@@ -926,7 +936,7 @@ longitude={userInfo.longitude}
         <Box display="flex" fontWeight="700" marginBottom='1rem' > Driver Tip </Box>
         <Box style={{display:"flex" , justifyContent:'space-between'}}>
           <Button
-            className={classes.button}
+            className={classes.tipButton}
             size="small"
             variant="outlined"
             color="secondary"
@@ -936,17 +946,17 @@ longitude={userInfo.longitude}
             No Tip
           </Button>
           <Button
-            className={classes.button}
+            className={classes.tipButton}
             size="small"
             variant="outlined"
             color="secondary"
             onClick={() => setDriverTip(2) }
-            style={{ borderRadius: '5px', color:"#000000",  backgroundColor: " "}}
+            style={{ borderRadius: '5px', color:"#000000",  backgroundColor: "primary"}}
           >
             $2
           </Button>
           <Button
-            className={classes.button}
+            className={classes.tipButton}
             size="small"
             variant="outlined"
             color="secondary"
@@ -956,7 +966,7 @@ longitude={userInfo.longitude}
             $3
           </Button>
           <Button
-            className={classes.button}
+            className={classes.tipButton}
             size="small"
             variant="outlined"
             color="secondary"
@@ -1029,7 +1039,7 @@ longitude={userInfo.longitude}
           variant="contained"
           color="primary"
           onClick={() => {
-            setLeftTabChosen(4);
+         //   setLeftTabChosen(4);
             setDetailsDisplayType(!detailsDisplayType)
           }}
         >
@@ -1048,7 +1058,7 @@ longitude={userInfo.longitude}
           variant="contained"
           color="primary"
           onClick={() => {
-            setLeftTabChosen(4);
+        //    setLeftTabChosen(4);
             setDetailsDisplayType(!detailsDisplayType)
           }}
         >
@@ -1068,7 +1078,7 @@ longitude={userInfo.longitude}
           variant="contained"
           color="primary"
           onClick={() => {
-            setLeftTabChosen(4);
+       //     setLeftTabChosen(4);
             setDetailsDisplayType(!detailsDisplayType)
           }}
         >
@@ -1110,7 +1120,7 @@ longitude={userInfo.longitude}
           label: 'Last Name',
         })}
        {PlainTextField({
-          error: emailError,
+       //   error: emailError,
           value: userInfo.email,
           name: 'email',
           label: 'Email',
@@ -1127,9 +1137,9 @@ longitude={userInfo.longitude}
 
       <Box hidden={detailsDisplayType && !(auth.isAuth)} mb={3} >
         <Box hidden={paymentType !== 'PAYPAL' && paymentType !== 'NONE'}>
-          <Box display="flex" flexDirection="column" px="20%" mb={1}>
+          <Box display="flex" flexDirection="column" px="9%" mb={1}>
             <Button
-              className={classes.showButton}
+              className={classes.buttonCheckout}
               size="small"
               variant="contained"
               color="primary"
@@ -1140,9 +1150,9 @@ longitude={userInfo.longitude}
           </Box>
         </Box>
         <Box hidden={paymentType !== 'STRIPE' && paymentType !== 'NONE'}>
-          <Box display="flex" flexDirection="column" px="20%">
+          <Box display="flex" flexDirection="column" px="9%">
             <Button
-              className={classes.showButton}
+              className={classes.buttonCheckout}
               size="small"
               variant="contained"
               color="primary"
@@ -1159,9 +1169,8 @@ longitude={userInfo.longitude}
           deliveryInstructions={deliveryInstructions}
         />
       </Box >
-      <Box paddingBottom="5rem">
-        
-      {paymentType === 'STRIPE' && (
+      <Box hidden={paymentType !== 'STRIPE'} >
+        {paymentType === 'STRIPE' && (
         <StripeElement
           deliveryInstructions={deliveryInstructions}
           setPaymentType={setPaymentType}

@@ -7,6 +7,7 @@ import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import appColors from '../styles/AppColors';
 import LandingNavBar from './LandingNavBar';
+import CheckoutStoreTab from '../customer/checkoutPage/tabs/CheckoutStoreTab';
 import AdminLogin from '../auth/AdminLogin';
 import Signup from '../auth/Signup';
 import ProductDisplay from './ProductDisplay';
@@ -37,9 +38,8 @@ const useStyles = makeStyles((theme) => ({
     color: appColors.primary,
     // marginBottom: '10px',
     fontWeight: 'bold',
-    fontSize:'32px',
-    marginBottom:'5px'
-
+    fontSize: '32px',
+    marginBottom: '5px',
   },
   infoDesc: {
     paddingLeft: '20%',
@@ -148,9 +148,8 @@ const Landing = ({ ...props }) => {
   };
 
   return (
-    
-      <div className="contentWrap">
-        {/* <Box
+    <div className="contentWrap">
+      {/* <Box
           style={{
             backgroundSize: 'cover',
 
@@ -159,190 +158,193 @@ const Landing = ({ ...props }) => {
             paddingBottom: '100px',
           }}
         > */}
-          <LandingNavBar
-            isLoginShown={isLoginShown}
-            setIsLoginShown={setIsLoginShown}
-            isSignUpShown={isSignUpShown}
-            setIsSignUpShown={setIsSignUpShown}
-          />
-          {/* START: Login/SignUp Modal */}
-          <Box display="flex" justifyContent="flex-end">
-            {/* Login Modal */}
+      <LandingNavBar
+        isLoginShown={isLoginShown}
+        setIsLoginShown={setIsLoginShown}
+        isSignUpShown={isSignUpShown}
+        setIsSignUpShown={setIsSignUpShown}
+      />
+     
+      {/* START: Login/SignUp Modal */}
+      <Box display="flex" justifyContent="flex-end">
+        {/* Login Modal */}
+        <Box
+          position="absolute"
+          width="50%"
+          display="flex"
+          justifyContent="center"
+          zIndex={40}
+        >
+          <Box
+            ref={loginWrapperRef}
+            className={classes.authModal}
+            hidden={!isLoginShown}
+          >
+            <AdminLogin />
+          </Box>
+        </Box>
+
+        {/* Sign Up Modal */}
+        <Box display="flex" justifyContent="flex-end">
+          <Box
+            position="absolute"
+            width="50%"
+            display="flex"
+            justifyContent="center"
+            zIndex={40}
+          >
             <Box
-              position="absolute"
-              width="50%"
-              display="flex"
-              justifyContent="center"
-              zIndex={40}
+              ref={signupWrapperRef}
+              className={classes.authModal}
+              hidden={!isSignUpShown}
             >
-              <Box
-                ref={loginWrapperRef}
-                className={classes.authModal}
-                hidden={!isLoginShown}
+              <Signup />
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+      {/* END: Login/SignUp Modal */}
+      {/* START: landing Logo and Guest Login */}
+      <Container
+        fluid
+        //class="container-fluid px-0"
+        style={{
+          paddingLeft: 0,
+          paddingRight: 0,
+          backgroundSize: 'cover',
+          backgroundImage: `url(${'fruits-and-vegetables2.png'})`,
+          overflow: 'hidden',
+          width: '100%',
+        }}
+      >
+        <Row class="align-items-center">
+          <Col lg={6} md={{ size: 6, order: 2, offset: 1 }}>
+            <div
+              id="headingGroup"
+              class="text-white text-center d-none d-lg-block mt-5"
+            >
+              <h1
+                id="text"
+                style={{
+                  color: appColors.buttonText,
+                  fontSize: '80px',
+                  textAlign: 'left',
+                  fontWeight: '700',
+                  marginLeft: '90px',
+                }}
               >
-                <AdminLogin />
-              </Box>
-            </Box>
-
-            {/* Sign Up Modal */}
-            <Box display="flex" justifyContent="flex-end">
-              <Box
-                position="absolute"
-                width="50%"
-                display="flex"
-                justifyContent="center"
-                zIndex={40}
-              >
-                <Box
-                  ref={signupWrapperRef}
-                  className={classes.authModal}
-                  hidden={!isSignUpShown}
-                >
-                  <Signup />
-                </Box>
-              </Box>
-            </Box>
-          </Box>
-          {/* END: Login/SignUp Modal */}
-          {/* START: landing Logo and Guest Login */}
-          <Container
-            fluid
-            //class="container-fluid px-0"
-            style={{
-              paddingLeft: 0,
-              paddingRight: 0,
-              backgroundSize: 'cover',
-              backgroundImage: `url(${'fruits-and-vegetables2.png'})`,
-              overflow: 'hidden',
-              width: '100%',
-            }}
-          >
-            <Row class="align-items-center">
-              <Col lg={6} md={{ size: 6, order: 2, offset: 1 }}>
-                <div
-                  id="headingGroup"
-                  class="text-white text-center d-none d-lg-block mt-5"
-                >
-                  <h1
-                    id="text"
-                    style={{
-                      color: appColors.buttonText,
-                      fontSize: '80px',
-                      textAlign: 'left',
-                      fontWeight: '700',
-                      marginLeft: '90px',
-                    }}
-                  >
-                    Fresh, Organic <br></br>
-                    Produce <br></br>Delivered
-                  </h1>
-                </div>
-              </Col>
-              <Col lg={6} md={{ size: 6, order: 1, offset: 1 }}>
-                <img
-                  class="img-fluid"
-                  src="./logos/SF.png"
-                  style={{
-                    marginTop: '40px',
-                    width:'226px',
-                    height:'226px',
-                    marginTop:'100px',
-                    //marginLeft: '800px',
-                  }}
-                />
-              </Col>
-            </Row>
-          </Container>
-          {/* END: Landing Page Logo */}
-
-          <Box
-            className="hero-right"
-            style={{ backgroundColor: 'rgb(251,132,0)',minHeight:'300px',maxHeight:'500px'}}
-          >
-            {/* <ZipcodeSearch/> */}
-            <p
+                Fresh, Organic <br></br>
+                Produce <br></br>Delivered
+              </h1>
+            </div>
+          </Col>
+          <Col lg={6} md={{ size: 6, order: 1, offset: 1 }}>
+            <img
+              class="img-fluid"
+              src="./logos/SF.png"
               style={{
-                color: appColors.buttonText,
-                fontSize: '30px',
-                textAlign: 'center',
-                fontWeight: '700',
-                marginLeft: '20px',
-                marginBottom:'50px'
+                marginTop: '40px',
+                width: '226px',
+                height: '226px',
+                marginTop: '100px',
+                //marginLeft: '800px',
               }}
-            >
-              Local produce delivered to your doorstep
-            </p>
-            <DeliveryLocationSearch />
-          </Box>
+            />
+          </Col>
+        </Row>
+      </Container>
+      {/* END: Landing Page Logo */}
 
-          {/* START: Info Section */}
-          <Box style={{backgroundImage: `url(${bg})`,height:'450px'}}>
-          <Box className={classes.title} style={{ paddingTop: '30px',zIndex:'0' }}>
-            Why try Serving Fresh
-          </Box>
-          <Box mx="auto" className={classes.bar} />
-          <Box
-            // display="flex"
-            className="info-container"
-          >
-            <Box className={classes.infoSection} id="mobileInfoSection">
-              <Box className={classes.infoImg}>
-                <img
-                  src="./landing/vegetables_info.png"
-                  alt="vegetables info"
-                />
-              </Box>
-              <div className={classes.infoTitle}>Farm to doorstep</div>
-              <div className={classes.infoDesc}>
-                We bring fresh produce from local farms right to our consumers'
-                doorstep. It's a farmer's market experience at your fingertips
-              </div>
-            </Box>
-            <Box className={classes.infoSection} id="mobileInfoSection">
-              <Box className={classes.infoImg}>
-                <img src="./landing/farmer_info.png" alt="farmer info" />
-              </Box>
-              <div className={classes.infoTitle}>Help local farmers</div>
-              <div className={classes.infoDesc}>
-                Helping farmers continue their businesses in the post pandemic
-                world. Serving Fresh brings their produce to your doorstep in
-                the safest way possible.
-              </div>
-            </Box>
-            <Box className={classes.infoSection} id="mobileInfoSection">
-              <Box className={classes.infoImg}>
-                <img src="./landing/student_info.png" alt="student info" />
-              </Box>
-              <div className={classes.infoTitle}>Empower students</div>
-              <div className={classes.infoDesc}>
-                We help students gain real world experience by working with us
-                on developing Serving Fresh.
-              </div>
-            </Box>
-          </Box>
-          </Box>
-          {/* END: Info Section */}
-          {/* START: Local Produce Search */}
+      <Box
+        className="hero-right"
+        style={{
+          backgroundColor: 'rgb(251,132,0)',
+          minHeight: '300px',
+          maxHeight: '500px',
+        }}
+      >
+        {/* <ZipcodeSearch/> */}
+        <p
+          style={{
+            color: appColors.buttonText,
+            fontSize: '30px',
+            textAlign: 'center',
+            fontWeight: '700',
+            marginLeft: '20px',
+            marginBottom: '50px',
+          }}
+        >
+          Local produce delivered to your doorstep
+        </p>
+        <DeliveryLocationSearch />
+      </Box>
 
-          
-        
-          <Box
-              className={classes.title}
-              style={{
-                textAlign: 'left',
-                marginLeft: '00px',
-                paddingBottom: '00px',
-                backgroundColor:'#2F787F26',
-                paddingTop:'20px'
-              }}
-            >
-              <u style={{marginLeft:'50px'}}>Weekly Fresh Produce</u>
+      {/* START: Info Section */}
+      <Box style={{ backgroundImage: `url(${bg})`, height: '450px' }}>
+        <Box
+          className={classes.title}
+          style={{ paddingTop: '30px', zIndex: '0' }}
+        >
+          Why try Serving Fresh
+        </Box>
+        <Box mx="auto" className={classes.bar} />
+        <Box
+          // display="flex"
+          className="info-container"
+        >
+          <Box className={classes.infoSection} id="mobileInfoSection">
+            <Box className={classes.infoImg}>
+              <img src="./landing/vegetables_info.png" alt="vegetables info" />
             </Box>
-            <ProductDisplay />
-          
-          {/* END: Local Produce Search */}
-          {/* START: Farmer information */}
-          {/* <Container
+            <div className={classes.infoTitle}>Farm to doorstep</div>
+            <div className={classes.infoDesc}>
+              We bring fresh produce from local farms right to our consumers'
+              doorstep. It's a farmer's market experience at your fingertips
+            </div>
+          </Box>
+          <Box className={classes.infoSection} id="mobileInfoSection">
+            <Box className={classes.infoImg}>
+              <img src="./landing/farmer_info.png" alt="farmer info" />
+            </Box>
+            <div className={classes.infoTitle}>Help local farmers</div>
+            <div className={classes.infoDesc}>
+              Helping farmers continue their businesses in the post pandemic
+              world. Serving Fresh brings their produce to your doorstep in the
+              safest way possible.
+            </div>
+          </Box>
+          <Box className={classes.infoSection} id="mobileInfoSection">
+            <Box className={classes.infoImg}>
+              <img src="./landing/student_info.png" alt="student info" />
+            </Box>
+            <div className={classes.infoTitle}>Empower students</div>
+            <div className={classes.infoDesc}>
+              We help students gain real world experience by working with us on
+              developing Serving Fresh.
+            </div>
+          </Box>
+        </Box>
+      </Box>
+      {/* END: Info Section */}
+      {/* START: Local Produce Search */}
+
+      <Box
+        className={classes.title}
+        style={{
+          textAlign: 'left',
+          marginLeft: '00px',
+          paddingBottom: '00px',
+          backgroundColor: '#2F787F26',
+          paddingTop: '20px',
+        }}
+      >
+        <u style={{ marginLeft: '50px' }}>Weekly Fresh Produce</u>
+      </Box>
+      <ProductDisplay />
+
+      {/* END: Local Produce Search */}
+      {/* START: Farmer information */}
+      {/* <Container
             fluid
             style={{
               paddingLeft: 0,
@@ -423,112 +425,115 @@ const Landing = ({ ...props }) => {
               </Col>
             </Row>
           </Container> */}
-          <Box className={classes.farmer}>
-            <Box
-              className={classes.title}
-              style={{
-                textAlign: 'left',
-                marginLeft: '50px',
-                paddingBottom: '20px',
-              }}
-            >
-              <u>Meet the Farmers</u>
-            </Box>
-            <Farmers />
+      <Box className={classes.farmer}>
+        <Box
+          className={classes.title}
+          style={{
+            textAlign: 'left',
+            marginLeft: '50px',
+            paddingBottom: '20px',
+          }}
+        >
+          <u>Meet the Farmers</u>
+        </Box>
+        <Farmers />
+      </Box>
+      {/* END: Farmer Information */}
+      {/* START: Info Section */}
+      <Box className={classes.root} style={{ height: '250px' }}>
+        <Box
+          // display="flex"
+          className="info-container"
+        >
+          <Box className={classes.infoSection} id="mobileInfoSection">
+            <div className={classes.infoDesc}>
+              <p
+                style={{
+                  color: appColors.secondary,
+                  fontSize: '40px',
+                  textAlign: 'center',
+                  fontWeight: '600',
+                  marginLeft: '20px',
+                }}
+              >
+                100%
+              </p>
+              ute irure dolor in reprehenderit in voluptate velit esse cillum d
+            </div>
           </Box>
-          {/* END: Farmer Information */}
-          {/* START: Info Section */}
-          <Box className={classes.root} style={{height:'250px'}}>
-            <Box
-              // display="flex"
-              className="info-container"
-            >
-              <Box className={classes.infoSection} id="mobileInfoSection">
-                <div className={classes.infoDesc}>
-                  <p
-                    style={{
-                      color: appColors.secondary,
-                      fontSize: '40px',
-                      textAlign: 'center',
-                      fontWeight: '600',
-                      marginLeft: '20px',
-                    }}
-                  >
-                    100%
-                  </p>
-                  ute irure dolor in reprehenderit in voluptate velit esse
-                  cillum d
-                </div>
-              </Box>
 
-              <Box className={classes.infoSection} id="mobileInfoSection">
-                <div className={classes.infoDesc}>
-                  <p
-                    style={{
-                      color: appColors.secondary,
-                      fontSize: '40px',
-                      textAlign: 'center',
-                      fontWeight: '600',
-                      marginLeft: '20px',
-                      marginTop: '40px',
-                    }}
-                  >
-                    4.8/5
-                  </p>
-                  fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                  proident,
-                </div>
-              </Box>
-              <Box className={classes.infoSection} id="mobileInfoSection">
-                <div className={classes.infoDesc}>
-                  <p
-                    style={{
-                      color: appColors.secondary,
-                      fontSize: '40px',
-                      textAlign: 'center',
-                      fontWeight: '600',
-                      marginLeft: '20px',
-                    }}
-                  >
-                    7+ Farms
-                  </p>
-                  ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                </div>
-              </Box>
-            </Box>
+          <Box className={classes.infoSection} id="mobileInfoSection">
+            <div className={classes.infoDesc}>
+              <p
+                style={{
+                  color: appColors.secondary,
+                  fontSize: '40px',
+                  textAlign: 'center',
+                  fontWeight: '600',
+                  marginLeft: '20px',
+                  marginTop: '40px',
+                }}
+              >
+                4.8/5
+              </p>
+              fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+              proident,
+            </div>
           </Box>
-          
+          <Box className={classes.infoSection} id="mobileInfoSection">
+            <div className={classes.infoDesc}>
+              <p
+                style={{
+                  color: appColors.secondary,
+                  fontSize: '40px',
+                  textAlign: 'center',
+                  fontWeight: '600',
+                  marginLeft: '20px',
+                }}
+              >
+                7+ Farms
+              </p>
+              ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+            </div>
+          </Box>
+        </Box>
+      </Box>
 
-          {/* END: Info Section */}
-          
-          
-        {/* </Box> */}
-        <div>
-        <Box className={classes.testimonial} style={{backgroundColor:'#F1F4F4',height:'20em',width:'100%',border:'0px solid black'}}>
-            <Box
-              className={classes.title}
-              style={{
-                
-                marginLeft: '50px',
-                paddingBottom: 'px',
-                textAlign:'left',
-                backgroundColor:'#F1F4F4'
-              }}
-            >
-              <u>Testimonials</u>
-              
-            </Box>
-            <Testimonial></Testimonial>
+      {/* END: Info Section */}
+
+      {/* </Box> */}
+      <div>
+        <Box
+          className={classes.testimonial}
+          style={{
+            backgroundColor: '#F1F4F4',
+            height: '20em',
+            width: '100%',
+            border: '0px solid black',
+          }}
+        >
+          <Box
+            className={classes.title}
+            style={{
+              marginLeft: '50px',
+              paddingBottom: 'px',
+              textAlign: 'left',
+              backgroundColor: '#F1F4F4',
+            }}
+          >
+            <u>Testimonials</u>
           </Box>
-          <Box style={{marginBottom:'20px'}}><Order /></Box>
-        
-        <Box style={{backgroundColor:'rgb(251,132,0)'}}><Footer /></Box>
-        </div>
-        
+          <Testimonial></Testimonial>
+        </Box>
+        <Box style={{ marginBottom: '20px' }}>
+          <Order />
+        </Box>
+
+        <Box style={{ backgroundColor: 'rgb(251,132,0)' }}>
+          <Footer />
+        </Box>
       </div>
-      
-    
-    
+    </div>
   );
 };
 

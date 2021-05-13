@@ -411,8 +411,8 @@ const Store = ({ ...props }) => {
     setAcceptDayHour(_acceptDayHour);
     if (_farmList.length > 0 && updatedProfile.zone !== profile.zone) {
       localStorage.removeItem('selectedDay');
-      localStorage.removeItem('cartTotal');
-      localStorage.removeItem('cartItems');
+   //   localStorage.removeItem('cartTotal');
+   //   localStorage.removeItem('cartItems');
       setProfile(updatedProfile);
     }
 

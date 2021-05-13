@@ -61,9 +61,7 @@ const StripeCheckout = (props) => {
     setCartTotal,
   } = useContext(storeContext);
 
-  const { paymentDetails, setPaymentProcessing, chosenCoupon } = useContext(
-    checkoutContext
-  );
+  const { paymentDetails, setPaymentProcessing, chosenCoupon } = useContext(checkoutContext);
 
   const onPay = async (event) => {
     event.preventDefault();
@@ -228,32 +226,33 @@ const StripeCheckout = (props) => {
 
   return (
     <>
-      <label className={props.classes.label}>
-        Enter Cardholder Name Below:
-      </label>
+      {/* <label className={props.classes.label}>
+        Cardholder Name 
+      </label> */}
       <Box mt={1}>
-        <CssTextField variant="outlined" size="small" fullWidth />
+        <CssTextField label="Cardholder Name" variant="outlined" size="small" fullWidth />
       </Box>
       <Box mt={1}>
-        <label className={props.classes.label}>
-          Enter Card details Below:
+        {/* <label className={props.classes.label}>
+          Enter Card details Below: */}
           <CardElement
             elementRef={(c) => (this._element = c)}
             className={props.classes.element}
             options={options}
           />
-        </label>
+        {/* </label> */}
       </Box>
 
       <Button
-        className={props.classes.button}
-        variant="outlined"
+        className={props.classes.buttonCheckout}
+        variant="contianed"
         size="small"
         color="paragraphText"
         onClick={onPay}
         disabled={processing}
+        style={{marginBottom:"2rem"}}
       >
-        Pay With Stripe
+        Complete Payment with Stripe
       </Button>
     </>
   );

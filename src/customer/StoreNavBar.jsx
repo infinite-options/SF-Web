@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
@@ -18,11 +18,9 @@ import { AuthContext } from 'auth/AuthContext';
 import Cookies from 'js-cookie';
 import { useHistory } from 'react-router-dom';
 import { Pointer } from 'highcharts';
-import appColor from '../styles/AppColors'
-
+import appColor from '../styles/AppColors';
 
 import useWindowsDimensions from './WindowDimensions';
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,7 +36,6 @@ const useStyles = makeStyles((theme) => ({
 
 //TODO: default to payment information
 export default function StoreNavBar(props) {
-
   const classes = useStyles();
   const store = useContext(storeContext);
   const auth = useContext(AuthContext);
@@ -46,10 +43,8 @@ export default function StoreNavBar(props) {
 
   const [userInfo, setUserInfo] = useState(store.profile);
 
-
-
-  const {setCheckingOut} = useContext(storeContext);
-  const {width} = useWindowsDimensions();
+  const { setCheckingOut } = useContext(storeContext);
+  const { width } = useWindowsDimensions();
 
   var itemsAmount = store.cartTotal;
 
@@ -82,7 +77,7 @@ export default function StoreNavBar(props) {
 
     auth.setIsAuth(false);
     auth.setAuthLevel(0);
-  //  props.history.push('/');
+    //  props.history.push('/');
   };
   return (
     <div className={classes.root}>
@@ -125,59 +120,65 @@ export default function StoreNavBar(props) {
           </IconButton> */}
 
           <Box>
-           <Box display="flex"  >
-             <Box hidden={!(auth.isAuth)}>
-              <p> {userInfo.firstName} </p>
-             </Box>
-             <Box hidden={!(auth.isAuth)}>
-              
-              <Button
-              className={classes.authButton}
-              variant="contained"
-              size="small"
-              color="primary"
-              style={{marginLeft:"2rem", height:"2rem", marginTop:"0.75rem"}}
-              onClick={handleClickLogOut}
-            >
-              Log Out
-            </Button>
-             </Box>
+            <Box display="flex">
+              <Box hidden={!auth.isAuth}>
+                <p> {userInfo.firstName} </p>
+              </Box>
+              <Box hidden={!auth.isAuth}>
+                <Button
+                  className={classes.authButton}
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                  style={{
+                    marginLeft: '2rem',
+                    height: '2rem',
+                    marginTop: '0.75rem',
+                  }}
+                  onClick={handleClickLogOut}
+                >
+                  Log Out
+                </Button>
+              </Box>
             </Box>
-            <Box hidden={(auth.isAuth)}>
-
-            <Button
-              className={classes.authButton}
-              variant="contained"
-              size="small"
-              color="primary"
-            //  onClick={signUpClicked}
-            >
-              Sign Up
-            </Button>
-            <Button style={{marginLeft:"1rem"}}
-              className={classes.authButton}
-              variant="contained"
-              size="small"
-              color="primary"
-            //  onClick={loginClicked}
-            >
-              Login
-            </Button>
+            <Box hidden={auth.isAuth}>
+              <Button
+                className={classes.authButton}
+                variant="contained"
+                size="small"
+                color="primary"
+                //  onClick={signUpClicked}
+              >
+                Sign Up
+              </Button>
+              <Button
+                style={{ marginLeft: '1rem' }}
+                className={classes.authButton}
+                variant="contained"
+                size="small"
+                color="primary"
+                //  onClick={loginClicked}
+              >
+                Login
+              </Button>
             </Box>
           </Box>
-          <IconButton  edge="end" className="link" onClick = {() => {
+          <IconButton
+            edge="end"
+            className="link"
+            onClick={() => {
               if (width < 1280) {
-                setCheckingOut(true)
+                setCheckingOut(true);
               }
-            }
-          }>
-            <Badge badgeContent={itemsAmount} color = "primary">
+            }}
+          >
+            <Badge badgeContent={itemsAmount} color="primary">
               <ShoppingCartOutlinedIcon
                 fontSize="large"
                 key={props.storePage || ''}
                 aria-hidden="false"
-                aria-label = 'Shopping cart'
-                style = {{color:"white"}}
+                aria-label="Shopping cart"
+                style={{ color: 'white' }}
               />
             </Badge>
           </IconButton>
