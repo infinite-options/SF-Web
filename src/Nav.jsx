@@ -11,6 +11,7 @@ import AdminSocialSignup from './admin/AdminSocialSignup';
 import AdminSignup from './admin/AdminSignup';
 import AdminLogin from './auth/AdminLogin';
 import Admin from './admin/Admin';
+import ProfileInfo from './customer/Profile-Info/ProfileInfo';
 import MobilePaypalCheckout from './mobile/MobilePaypalCheckout';
 
 // Nav here will take all the adress from children page to this and give
@@ -24,6 +25,7 @@ function Nav(authLevel, isAuth) {
       <Route exact path="/socialsignup" component={SocialSignUp} />
       <Route exact path="/products" component={DisplayProducts} />
       <Route exact path="/store" component={Store} />
+      <Route exact path="/profile-info" component={ProfileInfo} />
       <Route path="/payment/paypal:props" component={MobilePaypalCheckout} />
       <AuthAdminRoute
         path="/admin"
