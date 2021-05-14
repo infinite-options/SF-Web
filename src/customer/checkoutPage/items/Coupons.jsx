@@ -199,7 +199,7 @@ export default function Coupons(props) {
   };
 
   useMemo(() => {
-    loadCoupons();
+    // loadCoupons();
   }, [store.profile.email]);
 
   const CreateCouponCard = (coupProps) => {
@@ -224,7 +224,6 @@ export default function Coupons(props) {
 
   const Coupon = (coupProps) => {
     function onCouponClick() {
-      imageId = OnSelectImg
       if (coupProps.status !== 'unavailable') {
         const newCouponData = [];
         for (const coupon of avaiCouponData) {

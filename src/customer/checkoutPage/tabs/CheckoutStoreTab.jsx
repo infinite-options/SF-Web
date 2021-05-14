@@ -1105,7 +1105,7 @@ longitude={userInfo.longitude}
 
       
     <Box hidden = {detailsDisplayType} marginBottom="2rem">
-    {/* <PaymentTab/> */}
+    <PaymentTab/>
 
       <Box marginBottom="1rem">
             {/* <PaymentTab/> */}
@@ -1135,7 +1135,7 @@ longitude={userInfo.longitude}
       </Box>
       </Box> 
 
-      <Box hidden={detailsDisplayType && !(auth.isAuth)} mb={3} >
+      <Box hidden={!detailsDisplayType && !(auth.isAuth)} mb={3} >
         <Box hidden={paymentType !== 'PAYPAL' && paymentType !== 'NONE'}>
           <Box display="flex" flexDirection="column" px="9%" mb={1}>
             <Button

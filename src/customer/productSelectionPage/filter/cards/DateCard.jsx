@@ -80,13 +80,14 @@ const DateCard = (props) => {
    // localStorage.removeItem('selectedDay');
     if (isClicked) {
       if (store.cartTotal !== 0) {
-        displayDialog(clearCartAndDay);
+       // displayDialog(clearCartAndDay);
+
       } else {
         clearCartAndDay();
       }
     } else {
       if (store.dayClicked != '' && store.cartTotal !== 0) {
-        displayDialog(changeDay);
+        //displayDialog(changeDay);
        changeDay();
       } else {
         changeDay();
