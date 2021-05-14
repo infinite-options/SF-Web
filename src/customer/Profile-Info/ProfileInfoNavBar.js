@@ -4,7 +4,6 @@ import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import storeContext from '../storeContext';
 import { Box, Badge, IconButton, Button } from '@material-ui/core';
 import appColors from 'styles/AppColors';
 import MenuNavButton from '../../utils/MenuNavButton';
@@ -32,7 +31,9 @@ export default function ProfileInfoNavBar(props) {
   const auth = useContext(AuthContext);
   const history = useHistory();
 
-  const {profile, setProfile} = React.useContext(AuthContext);
+  const {profile} = React.useContext(AuthContext);
+  console.warn('IN PROFILE NAVBAR');
+  console.warn(auth);
 
 //   const { setCheckingOut } = useContext(storeContext);
   const { width } = useWindowsDimensions();
@@ -58,7 +59,7 @@ export default function ProfileInfoNavBar(props) {
 
     auth.setIsAuth(false);
     auth.setAuthLevel(0);
-    //  props.history.push('/');
+    history.push('/');
   };
   return (
     <div className={classes.root}>

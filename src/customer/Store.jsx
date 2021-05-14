@@ -108,23 +108,7 @@ const Store = ({ ...props }) => {
   const [signingUp, setSigningUp] = React.useState(false);
   const [checkingOut, setCheckingOut] = React.useState(false);
 
-  const [profile, setProfile] = useState({
-    email: '',
-    firstName: '',
-    lastName: '',
-    phoneNum: '',
-    pushNotifications: false,
-    address: '',
-    unit: '',
-    city: '',
-    state: '',
-    zip: '',
-    deliveryInstructions: '',
-    latitude: '',
-    longitude: '',
-    zone: '',
-    socialMedia: '',
-  }); // checks if user is logged in
+  const {profile, setProfile} = useContext(AuthContext);
   const [products, setProducts] = useState([]);
   const [productsFruit, setProductsFruit] = useState([]);
   const [productsVegetable, setProductsVegetable] = useState([]);
