@@ -96,6 +96,11 @@ function App() {
     zone: '',
     socialMedia: '',
   });
+
+  const [cartTotal, setCartTotal] = useState(
+    parseInt(localStorage.getItem('cartTotal') || '0')
+  );
+
   // IF USER IS LOGGED IN, CHECK THEIR ACCOUNT AUTHORITY:
   // Level  0: Lowest level
   // Level  1: User is logged in & is farmer or higher
@@ -158,6 +163,7 @@ function App() {
                 authLevel,
                 setAuthLevel,
                 profile, setProfile,
+                cartTotal, setCartTotal,
               }}
             >
               {authLevel >= 1 ? (

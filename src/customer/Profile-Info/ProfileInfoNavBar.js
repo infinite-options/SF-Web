@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -25,15 +25,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 //TODO: default to payment information
-export default function ProfileInfoNavBar(props) {
+export default function ProfileInfoNavBar() {
   const classes = useStyles();
 //   const store = useContext(storeContext);
   const auth = useContext(AuthContext);
   const history = useHistory();
 
-  const {profile} = React.useContext(AuthContext);
+  const {profile, cartTotal} = useContext(AuthContext);
   console.warn('IN PROFILE NAVBAR');
-  console.warn(auth);
+  console.warn(profile);
 
 //   const { setCheckingOut } = useContext(storeContext);
   const { width } = useWindowsDimensions();
@@ -94,7 +94,7 @@ export default function ProfileInfoNavBar(props) {
           <Box>
             <Box display="flex">
               <Box hidden={!auth.isAuth}>
-                <p> {profile.firstName} </p>
+                <p> {`${profile.firstName} ${profile.lastName}`} </p>
               </Box>
               <Box hidden={!auth.isAuth}>
                 <Button
@@ -144,7 +144,7 @@ export default function ProfileInfoNavBar(props) {
               }
             }}
           >
-            <Badge badgeContent={2} color="primary">
+            <Badge badgeContent={cartTotal} color="primary">
               <ShoppingCartOutlinedIcon
                 fontSize="large"
                 // key={props.storePage || ''}

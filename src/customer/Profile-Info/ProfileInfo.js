@@ -15,14 +15,6 @@ const useStyles = makeStyles((theme) => ({
         background: appColors.componentBg,
     },
 
-    sfImgContainer: {
-        flexBasis: '1',
-        flexGrow: '1',
-        '&:hover': {
-            cursor: 'pointer',
-        },
-    },
-
     profileContainer: {
         display: 'flex',
         flexDirection: 'column',
@@ -75,7 +67,6 @@ const useStyles = makeStyles((theme) => ({
     },
 
     servingFreshSupportMessage: {
-        // color: '#e88330',
         marginBottom: theme.spacing(12),
     },
 
@@ -85,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const ColorButton = withStyles((theme) => ({
+const ColorButton = withStyles(() => ({
     root: {
         color: 'white',
         backgroundColor: appColors.primary,
@@ -99,14 +90,12 @@ function ProfileInfo() {
     const classes = useStyles();
     const history = useHistory();
     const Auth = React.useContext(AuthContext);
-    const {profile, setProfile, isAuth, setIsAuth, setAuthLevel} = Auth;
+    const {profile, setProfile, isAuth, setIsAuth, setAuthLevel, cartTotal} = Auth;
 
     React.useEffect(() => {
         if (Auth.isAuth) {
           const AuthMethods = new AuthUtils();
           AuthMethods.getProfile().then((authRes) => {
-            console.log('User profile and store items were retrieved');
-            console.log('authRes: ', authRes);
             const updatedProfile = {
               email: authRes.customer_email,
               firstName: authRes.customer_first_name,
@@ -162,6 +151,7 @@ function ProfileInfo() {
                     profile, setProfile,
                     isAuth, setIsAuth,
                     setAuthLevel,
+                    cartTotal,
                 }}
             >
                 <ProfileInfoNavBar />
@@ -190,9 +180,20 @@ function ProfileInfo() {
                     <TextField label = {profile.phoneNum == '' ? '(123)456-7891' : profile.phoneNum}/>
                     <TextField label = {profile.email == '' ? 'johndoe@example.com' : profile.email}/>
 
-                    <Link className =  {classes.resetPasswordLink}>
-                        Reset Password
-                    </Link>
+                    {
+                        profile.socialMedia == 'NULL' ?
+                        (
+                            Auth.isAuth ?
+                            <Link className =  {classes.resetPasswordLink}>
+                                Reset Password
+                            </Link> : ''
+                        ) :
+                        (
+                            <Typography>
+                                {profile.socialMedia}
+                            </Typography>
+                        )
+                    }
 
                     <TextField label = {profile.address == '' ? 'Street Address' : profile.address}/>
                     <TextField label = {profile.unit == '' ? 'Appt number' : profile.unit}/>
