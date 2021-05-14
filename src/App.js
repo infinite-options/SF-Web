@@ -79,6 +79,23 @@ function App() {
   const [isAuth, setIsAuth] = useState(uid === '' ? false : true); // checks if user is logged in
   const [accountType, setAccountType] = useState();
   const [isUserLoaded, setIsUserLoaded] = useState(false);
+  const [profile, setProfile] = useState({
+    email: '',
+    firstName: '',
+    lastName: '',
+    phoneNum: '',
+    pushNotifications: false,
+    address: '',
+    unit: '',
+    city: '',
+    state: '',
+    zip: '',
+    deliveryInstructions: '',
+    latitude: '',
+    longitude: '',
+    zone: '',
+    socialMedia: '',
+  });
   // IF USER IS LOGGED IN, CHECK THEIR ACCOUNT AUTHORITY:
   // Level  0: Lowest level
   // Level  1: User is logged in & is farmer or higher
@@ -140,6 +157,7 @@ function App() {
                 setIsAuth,
                 authLevel,
                 setAuthLevel,
+                profile, setProfile,
               }}
             >
               {authLevel >= 1 ? (
