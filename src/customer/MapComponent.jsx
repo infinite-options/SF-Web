@@ -18,19 +18,23 @@ export class MapComponent extends Component {
             lat: 37.236720,
             lng: -121.887370
         },
-        zoom: 10
+        zoom: 12
     };
  
   render() {
-
+    
+      const center = {lat:parseFloat(this.props.latitude) ? parseFloat(this.props.latitude) : 37.236720, lng: parseFloat(this.props.longitude)? parseFloat(this.props.longitude) : -121.887370}
+      console.log("props test", parseFloat('30'))
+      console.log("props map", this.props.center, center)
         return (
-            <div style={{ height: '30vh', width: '100%' }}>
-                {/* <GoogleMapReact
-                    defaultCenter={this.props.center}
+            <div style={{ height: '30vh'}}>
+                <GoogleMapReact
+                    center={center}
+                //    defaultCenter={center}
                     defaultZoom={this.props.zoom}
-                /> */}
+                />
 
-        <Map 
+        {/* <Map 
           google={this.props.google}
           style={{width: '375px', height: '180px', marginTop:'24px', borderRadius:"24px"}}
           initialCenter={{
@@ -47,7 +51,7 @@ export class MapComponent extends Component {
               lat: this.props.latitude ,
               lng: this.props.longitude
             }} />
-        </Map>
+        </Map> */}
 
       </div>
     )

@@ -64,10 +64,13 @@ function CartItem(props) {
     console.log("props name day",props.business_uid) 
 
    // for (const farm in props.itm_business_uid) {
-      store.farmDaytimeDict[props.business_uid].forEach((daytime) => {
-        if (store.dayClicked === daytime)
-        isInDay = true;
-      });
+     if (store.farmDaytimeDict[props.business_uid] != undefined){
+
+       store.farmDaytimeDict[props.business_uid].forEach((daytime) => {
+         if (store.dayClicked === daytime)
+         isInDay = true;
+       });
+     }
    // }
 
 
