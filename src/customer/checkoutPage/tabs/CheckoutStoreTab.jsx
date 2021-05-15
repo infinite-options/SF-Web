@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useMemo } from 'react';
+import React, { useContext, useState, useEffect, useMemo,useRef } from 'react';
 import axios from 'axios';
 import { useElements, CardElement } from '@stripe/react-stripe-js';
 import { GoogleMap, LoadScript,useJsApiLoader } from '@react-google-maps/api';
@@ -162,6 +162,30 @@ const containerStyle = {
   height: '200px'
 };
 
+function useOutsideAlerter(ref) {
+  useEffect(() => {
+    /**
+     * Alert if clicked on outside of element
+     */
+    function handleClickOutside(event) {
+      if (
+        ref.current &&
+        !ref.current.contains(event.target) &&
+        !ref.current.hidden
+      ) {
+        ref.current.hidden = true;
+      }
+    }
+
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [ref]);
+}
+
 
 // TEST: Order confirmation for completed purchase
 // TODO: Get Delivery and service fee from zone
@@ -174,6 +198,23 @@ export default function CheckoutTab(props) {
   const BusiApiMethods = new BusiApiReqs();
   const checkout = useContext(checkoutContext);
 
+  const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
+  const [isSignUpShown, setIsSignUpShown] = useState(false);
+
+  const loginWrapperRef = useRef(null);
+  useOutsideAlerter(loginWrapperRef, setIsLoginShown);
+  const signupWrapperRef = useRef(null);
+  useOutsideAlerter(signupWrapperRef, setIsSignUpShown);
+
+  const loginClicked = () => {
+    setIsSignUpShown(false);
+    setIsLoginShown(!isLoginShown);
+  };
+
+  const signUpClicked = () => {
+    setIsLoginShown(false);
+    setIsSignUpShown(!isSignUpShown);
+  };
   
   const {
     loggingIn, setLoggingIn,
@@ -197,6 +238,7 @@ export default function CheckoutTab(props) {
 
   const [map, setMap] = React.useState(null);
 
+  
   const [detailsDisplayType, setDetailsDisplayType] = useState(true); 
   const [paymentDisplayType, setPaymentDisplayType] = useState(true); 
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
@@ -934,13 +976,14 @@ longitude={userInfo.longitude}
 
       <Box className={classes.driverTipBox}>
         <Box display="flex" fontWeight="700" marginBottom='1rem' > Driver Tip </Box>
-        <Box style={{display:"flex" , justifyContent:'space-between'}}>
+        <Box style={{display:"flex" , justifyContent:'space-evenly'}}>
           <Button
             className={classes.tipButton}
             size="small"
             variant="outlined"
             color="secondary"
-            onClick={() => setDriverTip(0)}
+            onClick={() => setDriverTip(0)
+            }
             style={{ borderRadius: '5px', textTransform: 'none', color:"#000000"}}
           >
             No Tip
@@ -951,7 +994,7 @@ longitude={userInfo.longitude}
             variant="outlined"
             color="secondary"
             onClick={() => setDriverTip(2) }
-            style={{ borderRadius: '5px', color:"#000000",  backgroundColor: "primary"}}
+            style={{ borderRadius: '5px', color:"#000000",  backgroundColor:  "primary"}}
           >
             $2
           </Button>
@@ -1057,10 +1100,10 @@ longitude={userInfo.longitude}
           size="small"
           variant="contained"
           color="primary"
-          onClick={() => {
+          onClick={ loginClicked  //() => {
         //    setLeftTabChosen(4);
-            setDetailsDisplayType(!detailsDisplayType)
-          }}
+        //    setDetailsDisplayType(!detailsDisplayType)
+          }
         >
          Login
         </Button>
@@ -1079,7 +1122,7 @@ longitude={userInfo.longitude}
           color="primary"
           onClick={() => {
        //     setLeftTabChosen(4);
-            setDetailsDisplayType(!detailsDisplayType)
+       //     setDetailsDisplayType(!detailsDisplayType)
           }}
         >
         SignUp
@@ -1107,8 +1150,7 @@ longitude={userInfo.longitude}
     <Box hidden = {detailsDisplayType} marginBottom="2rem">
     <PaymentTab/>
 
-      <Box marginBottom="1rem">
-            {/* <PaymentTab/> */}
+      {/* <Box marginBottom="1rem">
             {PlainTextField({
           value: userInfo.firstName,
           name: 'firstName',
@@ -1132,12 +1174,12 @@ longitude={userInfo.longitude}
           label: 'Phone Number',
         })}
 
-      </Box>
+      </Box> */}
       </Box> 
 
-      <Box hidden={!detailsDisplayType && !(auth.isAuth)} mb={3} >
+      <Box hidden={ !(auth.isAuth)} mb={3} >
         <Box hidden={paymentType !== 'PAYPAL' && paymentType !== 'NONE'}>
-          <Box display="flex" flexDirection="column" px="9%" mb={1}>
+          <Box display="flex" flexDirection="column" alignItems="center" mb={1}>
             <Button
               className={classes.buttonCheckout}
               size="small"
@@ -1150,7 +1192,7 @@ longitude={userInfo.longitude}
           </Box>
         </Box>
         <Box hidden={paymentType !== 'STRIPE' && paymentType !== 'NONE'}>
-          <Box display="flex" flexDirection="column" px="9%">
+          <Box display="flex" flexDirection="column" alignItems="center">
             <Button
               className={classes.buttonCheckout}
               size="small"

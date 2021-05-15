@@ -37,7 +37,6 @@ const useStyles = makeStyles({
   },
   section: {
     textAlign: 'left',
-    borderBottom: '1px solid' + appColors.checkoutSectionBorder,
     marginBottom: '10px',
     paddingBottom: '10px',
   },
@@ -64,6 +63,8 @@ const useStyles = makeStyles({
   },
   showButton: {
     color: 'white',
+    width: '300px',
+
   },
   notify: {
     fontSize: '18px',
@@ -202,7 +203,7 @@ const PaymentTab = () => {
       <CssTextField
         error={contentProps.error}
         name={contentProps.name}
-        size="small"
+        size="medium"
         variant="standard"
         fullWidth
         onChange={onFieldChange}
@@ -211,6 +212,25 @@ const PaymentTab = () => {
           height: '18px',
         }}
       />
+    );
+  };
+
+  const PlainTextField = (props) => {
+    return (
+      <Box mb={props.spacing || 1}>
+        <CssTextField
+          error={props.error || ''}
+          value={props.value}
+          name={props.name}
+          label={props.label}
+          type={props.type}
+          disabled={props.disabled}
+          variant="outlined"
+          size="small"
+          fullWidth
+          onChange={props.onChange || onFieldChange}
+        />
+      </Box>
     );
   };
 
@@ -232,41 +252,29 @@ const PaymentTab = () => {
         <FormHelperText error={true} style={{ textAlign: 'center' }}>
           {errorMessage}
         </FormHelperText>
-        <Box className={classes.section} display="flex">
-          {SectionLabel('First Name:')}
-          <Box flexGrow={1} />
-          {SectionContent({
-            text: userInfo.firstName,
-            name: 'firstName',
-            error: firstNameError,
-          })}
-        </Box>
-        <Box className={classes.section} display="flex">
-          {SectionLabel('Last Name:')}
-          <Box flexGrow={1} />
-          {SectionContent({
-            text: userInfo.lastName,
-            name: 'lastName',
-            error: lastNameError,
-          })}
-        </Box>
-        <Box className={classes.section} display="flex">
-          {SectionLabel('Phone:')}
-          <Box flexGrow={1} />
-          {SectionContent({
-            text: userInfo.phoneNum,
-            name: 'phoneNumber',
-            error: phoneError,
-          })}
-        </Box>
-        <Box className={classes.section} display="flex">
-          {SectionLabel('Email:')}
-          <Box flexGrow={1} />
-          {SectionContent({
-            text: userInfo.email,
-            name: 'email',
-            error: emailError,
-          })}
+        <Box className={classes.section} display="flex" flexDirection='column'>
+        {PlainTextField({
+          value: userInfo.firstName,
+          name: 'firstName',
+          label: 'First Name',
+        })}
+        {PlainTextField({
+          value: userInfo.lastName,
+          name: 'lastName',
+          label: 'Last Name',
+        })}
+        {PlainTextField({
+       //   error: emailError,
+          value: userInfo.email,
+          name: 'email',
+          label: 'Email',
+       //   spacing: spacing,
+        })}
+        {PlainTextField({
+          value: userInfo.phoneNum,
+          name: 'phoneNum',
+          label: 'Phone Number',
+        })}
         </Box>
       </form>
       {/* <Box className={classes.section} display="flex">
@@ -302,7 +310,7 @@ const PaymentTab = () => {
       {/* START: Payment Buttons */}
       <Box mb={3}>
         <Box hidden={paymentType !== 'PAYPAL' && paymentType !== 'NONE'}>
-          <Box display="flex" flexDirection="column" px="20%" mb={1}>
+          <Box display="flex" flexDirection="column" justifyContent="center" mb={1}>
             <Button
               className={classes.showButton}
               size="small"
@@ -315,7 +323,7 @@ const PaymentTab = () => {
           </Box>
         </Box>
         <Box hidden={paymentType !== 'STRIPE' && paymentType !== 'NONE'}>
-          <Box display="flex" flexDirection="column" px="20%">
+          <Box display="flex" flexDirection="column" justifyContent="center">
             <Button
               className={classes.showButton}
               size="small"

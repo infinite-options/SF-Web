@@ -87,7 +87,7 @@ export default function CheckoutRight() {
       className={classes.root}
       style={{
         border: '3px solid #136D74',
-        borderRadius: '20px',
+        borderRadius: '10px',
         margin: '10px',
       }}
       // style={{ height: windowHeight - 95 }}

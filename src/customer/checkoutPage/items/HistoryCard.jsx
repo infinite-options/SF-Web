@@ -51,6 +51,7 @@ function listItem(item) {
         count={parseInt(item.qty)}
         img={item.img}
         key={item.item_uid}
+        business_uid={item.business_uid}
         isCountChangeable={false}
       />
     </>

@@ -150,9 +150,12 @@ function Entry(props) {
     const isFavoritedAndInFavorites = productSelect.categoriesClicked.has("favorite") != undefined &&
     props.favorite == "TRUE";
 
+    
     for (const farm in props.business_uids) {
       store.farmDaytimeDict[farm].forEach((daytime) => {
-        if (store.dayClicked === daytime) isInDay = true;
+        if (store.dayClicked === daytime)
+   
+        isInDay = true;
       });
     }
 
@@ -175,8 +178,8 @@ function Entry(props) {
         (productSelect.categoriesClicked.size == 0) ||
         isInCategory || isFavoritedAndInFavorites
     );
-
     setIsInDay(isInDay);
+
   }, [
     store.dayClicked,
     productSelect.farmsClicked,

@@ -1,13 +1,15 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
 import storeContext from '../../storeContext';
 import { Box, IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import appColors from '../../../styles/AppColors';
-import { StrikethroughSOutlined } from '@material-ui/icons';
+import ProductSelectContext from '../../productSelectionPage/ProdSelectContext'
 
 function CartItem(props) {
   const store = useContext(storeContext);
+  const products = store.products;
+  const productSelect = useContext(ProductSelectContext);
   const itemPrice = parseFloat(props.price);
   var totalPrice = itemPrice * props.count;
 
@@ -35,6 +37,9 @@ function CartItem(props) {
   }
 
   function increase() {
+    console.log("props",props)
+    console.log("products",products);
+
     const item =
       props.id in store.cartItems
         ? { ...props, count: store.cartItems[props.id]['count'] + 1 }
@@ -47,6 +52,35 @@ function CartItem(props) {
     store.setCartTotal(store.cartTotal + 1);
   }
 
+  // const {
+  //   setIsInDay,
+  //  } = useContext(storeContext);
+
+  const [isInDay, setIsInDay] = useState(false);
+
+
+  useEffect(() => {
+    let isInDay = false;
+    console.log("props name day",props.business_uid) 
+
+   // for (const farm in props.itm_business_uid) {
+      store.farmDaytimeDict[props.business_uid].forEach((daytime) => {
+        if (store.dayClicked === daytime)
+        isInDay = true;
+      });
+   // }
+
+
+    setIsInDay(isInDay);
+    console.log("props name", props.name, isInDay) 
+
+
+  }, [
+    store.dayClicked,
+     productSelect.farmsClicked,
+     productSelect.categoriesClicked,
+    store.cartItems,
+  ]);
   return (
     <Box
       display="flex"
@@ -80,7 +114,8 @@ function CartItem(props) {
             textAlign: 'left',
           }}
         >
-         {props.name }{' '}
+        <Box style={{textDecorationLine:isInDay?'' : 'line-through', textDecorationStyle: 'solid'}}>{ props.name}{' '} </Box>
+         
           {props.unit !== undefined && props.unit !== ''
             ? '($' +
               itemPrice.toFixed(2) +
