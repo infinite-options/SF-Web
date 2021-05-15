@@ -32,8 +32,6 @@ export default function ProfileInfoNavBar() {
   const history = useHistory();
 
   const {profile, cartTotal} = useContext(AuthContext);
-  console.warn('IN PROFILE NAVBAR');
-  console.warn(profile);
 
 //   const { setCheckingOut } = useContext(storeContext);
   const { width } = useWindowsDimensions();

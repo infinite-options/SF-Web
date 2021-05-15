@@ -4,9 +4,15 @@ import {useHistory} from 'react-router-dom';
 import { AuthContext } from 'auth/AuthContext';
 import AuthUtils from '../../utils/AuthUtils';
 import ProfileInfoNavBar from './ProfileInfoNavBar';
-import {Box, Button, Typography, TextField, Avatar, Link} from '@material-ui/core';
+import {Box, Button, Typography, TextField, Avatar} from '@material-ui/core';
 import {withStyles, makeStyles} from '@material-ui/core/styles';
 import appColors from '../../styles/AppColors';
+
+import GoogleSignin from '../../sf-svg-icons/Google-signin.svg';
+import FacebookSignin from '../../sf-svg-icons/Facebook-signin.svg';
+import AppleSignin from '../../sf-svg-icons/Apple-signin.svg';
+
+import Cookies from 'js-cookie';
 
 const useStyles = makeStyles((theme) => ({
     profileInfoContainer: {
@@ -34,7 +40,14 @@ const useStyles = makeStyles((theme) => ({
     currUserInf: {
         display: 'flex',
         flexDirection: 'column',
-        width: '450px',
+
+        [theme.breakpoints.down('md')]: {
+            width: '40%',
+        },
+
+        [theme.breakpoints.up('lg')]: {
+            width: '30%',
+        },
     },
 
     currUserPic: {
@@ -42,12 +55,29 @@ const useStyles = makeStyles((theme) => ({
         height: theme.spacing(12),
     },
 
+    profileEditField: {
+        borderRadius: '10px',
+        marginTop: theme.spacing(1),
+        width: '100%',
+    },
+
     resetPasswordLink: {
+        display: 'inline-block',
         textDecoration: 'underline',
+        color: '#A0A0A0',
+        fontSize: '17px',
         marginTop: '10px',
         '&:hover': {
             cursor: 'pointer',
         },
+    },
+
+    socialSigninWrapper: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(2),
     },
 
     profInfButtonContainer: {
@@ -64,6 +94,7 @@ const useStyles = makeStyles((theme) => ({
         color: 'primary',
         background: '#e88330',
         color: 'white',
+        borderRadius: '10px',
     },
 
     servingFreshSupportMessage: {
@@ -91,11 +122,48 @@ function ProfileInfo() {
     const history = useHistory();
     const Auth = React.useContext(AuthContext);
     const {profile, setProfile, isAuth, setIsAuth, setAuthLevel, cartTotal} = Auth;
+    const [resetPasswordClicked, setResetPasswordClicked] = React.useState(false);
+    const [newPassword, setNewPassword] = React.useState('');
+    const [confirmedPassword, setConfirmedPassword] = React.useState('');
+
+    console.log('newPassword = ', newPassword);
+    console.log('confirmPass = ', confirmedPassword);
+    console.log('profile = ', profile);
+
+    const loginTypeMapping = {
+        'NULL': (
+            <Box>
+                <Typography
+                    className =  {classes.resetPasswordLink}
+                    onClick = {() => setResetPasswordClicked(!resetPasswordClicked)}
+                >
+                    Reset Password
+                </Typography>
+            </Box>
+        ),
+        'GOOGLE': (
+            <Box className = {classes.socialSigninWrapper}>
+                <img height = '60px' src = {GoogleSignin} />
+            </Box>
+        ),
+        'FACEBOOK': (
+            <Box className = {classes.socialSigninWrapper}>
+                <img height = '60px' src = {FacebookSignin} />
+            </Box>
+        ),
+        'APPLE': (
+            <Box className = {classes.socialSigninWrapper}>
+                <img height = '60px' src = {AppleSignin} />
+            </Box>
+        ),
+    }
 
     React.useEffect(() => {
+        console.warn('In useEffect');
         if (Auth.isAuth) {
           const AuthMethods = new AuthUtils();
           AuthMethods.getProfile().then((authRes) => {
+              console.warn('AuthRes = ', authRes);
             const updatedProfile = {
               email: authRes.customer_email,
               firstName: authRes.customer_first_name,
@@ -109,11 +177,19 @@ function ProfileInfo() {
               state: authRes.customer_state,
               zip: authRes.customer_zip,
               deliveryInstructions: '',
+              referralSource: authRes.referral_source,
+              role: authRes.role,
               latitude: authRes.customer_lat,
               longitude: authRes.customer_long,
               zone: '',
               socialMedia: authRes.user_social_media || '',
+              socialID: authRes.social_id || '',
+              userAccessToken: authRes.userAccessToken,
+              userRefreshToken: authRes.userRefreshToken,
+              mobileAccessToken: authRes.mobile_access_token,
+              mobileRefreshToken: authRes.mobile_refresh_token,
             };
+
             setProfile(updatedProfile);
           });
         } else {
@@ -144,6 +220,30 @@ function ProfileInfo() {
         }
       }, []);
 
+    const handleClickLogOut = () => {
+        localStorage.removeItem('currentStorePage');
+        localStorage.removeItem('cartTotal');
+        localStorage.removeItem('cartItems');
+        Cookies.remove('login-session');
+        Cookies.remove('customer_uid');
+
+        Auth.setIsAuth(false);
+        Auth.setAuthLevel(0);
+        history.push('/');
+    };
+
+    const onSubmit = (event) => {
+        const AuthMethods = new AuthUtils();
+
+        AuthMethods.updateProfile(profile).then((authRes) => {
+            console.log('Profile PUT successful');
+            window.location.reload();
+        })
+        .catch((err) => {
+            alert('Unsuccessful update');
+        });
+    };
+
     return (
         <Box className = {classes.profileInfoContainer}>
             <AuthContext.Provider
@@ -168,48 +268,108 @@ function ProfileInfo() {
                 <Box className = {classes.currUserInf}>
                     <Box style = {{display: 'flex', justifyContent: 'center'}}>
                         <Avatar src = {"no-link"} className = {classes.currUserPic}>
-                            <Typography style = {{fontSize: '30px'}}>
-                                {(profile.firstName || profile.lastName) ? `${profile.firstName[0]} ${profile.lastName[0]}` :
-                                    'J D'
+                            <Typography style = {{fontSize: '38px'}}>
+                                {(profile.firstName || profile.lastName) ? `${profile.firstName[0]}${profile.lastName[0]}` :
+                                    'JD'
                                 }
                             </Typography>
                         </Avatar>
                     </Box>
-                    <TextField label = {profile.firstName == '' ? 'John' : profile.firstName}/>
-                    <TextField label = {profile.lastName == '' ? 'Doe' : profile.lastName}/>
-                    <TextField label = {profile.phoneNum == '' ? '(123)456-7891' : profile.phoneNum}/>
-                    <TextField label = {profile.email == '' ? 'johndoe@example.com' : profile.email}/>
+                    <TextField
+                        className = {classes.profileEditField}
+                        variant = 'outlined'
+                        label = {profile.firstName == '' ? 'John' : profile.firstName}
+                        disabled
+                    />
+                    <TextField
+                        className = {classes.profileEditField}
+                        variant = 'outlined'
+                        label = {profile.lastName == '' ? 'Doe' : profile.lastName}
+                        disabled
+                    />
+                    <TextField
+                        className = {classes.profileEditField}
+                        variant = 'outlined'
+                        placeholder = {profile.phoneNum == '' ? '123-456-7891' : profile.phoneNum}
+                        onChange = {(event) => setProfile({...profile, phoneNum: event.target.value})}
+                    />
+                    <TextField
+                        className = {classes.profileEditField}
+                        variant = 'outlined'
+                        label = {profile.email == '' ? 'johndoe@example.com' : profile.email}
+                        disabled
+                    />
 
                     {
-                        profile.socialMedia == 'NULL' ?
-                        (
-                            Auth.isAuth ?
-                            <Link className =  {classes.resetPasswordLink}>
-                                Reset Password
-                            </Link> : ''
-                        ) :
-                        (
-                            <Typography>
-                                {profile.socialMedia}
-                            </Typography>
-                        )
+                        Auth.isAuth ?
+                        loginTypeMapping[profile.socialMedia] : ''
+                        
                     }
 
-                    <TextField label = {profile.address == '' ? 'Street Address' : profile.address}/>
-                    <TextField label = {profile.unit == '' ? 'Appt number' : profile.unit}/>
+                    <Box hidden = {profile.socialMedia != 'NULL' || !resetPasswordClicked}>
+                        <TextField
+                            className = {classes.profileEditField}
+                            variant = 'outlined'
+                            type = 'password'
+                            placeholder = {'New Password'}
+                            onChange = {(event) => setNewPassword(event.target.value)}
+                        />
+
+                        <TextField
+                            className = {classes.profileEditField}
+                            variant = 'outlined'
+                            type = 'password'
+                            placeholder = {'Confirm Password'}
+                            onChange = {(event) => setConfirmedPassword(event.target.value)}
+                        />
+                    </Box>
+
+                    <TextField
+                        className = {classes.profileEditField}
+                        variant = 'outlined'
+                        placeholder = {profile.address == '' ? 'Street Address' : profile.address}
+                        onChange = {(event) => setProfile({...profile, address: event.target.value})}
+                    />
+                    <TextField
+                        className = {classes.profileEditField}
+                        variant = 'outlined'
+                        placeholder = {profile.unit == '' ? 'Appt number' : profile.unit}
+                        onChange = {(event) => setProfile({...profile, unit: event.target.value})}
+                    />
 
                     <Box style = {{display:  'flex'}}>
-                        <TextField label = {profile.city == '' ? 'City' : profile.city} style = {{marginRight: "30px"}}/>
-                        <TextField label = {profile.state == '' ? 'State' : profile.state} style = {{marginRight: "30px"}}/>
-                        <TextField label = {profile.zip == '' ? 'Zip Code' : profile.zip}/>
+                        <TextField
+                            className = {classes.profileEditField}
+                            variant = 'outlined'
+                            placeholder = {profile.city == '' ? 'City' : profile.city} style = {{marginRight: "30px"}}
+                            onChange = {(event) => setProfile({...profile, city: event.target.value})}
+                        />
+                        <TextField
+                            className = {classes.profileEditField}
+                            variant = 'outlined'
+                            placeholder = {profile.state == '' ? 'State' : profile.state} style = {{marginRight: "30px"}}
+                            onChange = {(event) => setProfile({...profile, state: event.target.value})}
+                        />
+                        <TextField
+                            className = {classes.profileEditField}
+                            variant = 'outlined'
+                            placeholder = {profile.zip == '' ? 'Zip Code' : profile.zip}
+                            onChange = {(event) => setProfile({...profile, zip: event.target.value})}
+                        />
                     </Box>
 
                     <Box className = {classes.profInfButtonContainer}>
-                        <ColorButton variant = 'contained' className = {classes.profInfButton}>
+                        <ColorButton
+                            variant = 'contained'
+                            onClick = {onSubmit}
+                            className = {classes.profInfButton}
+                        >
                             Save Changes
                         </ColorButton>
 
-                        <ColorButton variant = 'contained' className = {classes.profInfButton}>
+                        <ColorButton variant = 'contained' className = {classes.profInfButton}
+                            onClick = {handleClickLogOut}
+                        >
                             Log Out
                         </ColorButton>
                     </Box>
