@@ -724,7 +724,7 @@ const PlainTextField = (props) => {
         </Box>
     </Box>  
 
-      
+{/*       
       <Box  hidden={ (addressDisplayType) && (auth.isAuth) }>
       <Box display="flex" mb={1}>
           <CssTextField
@@ -808,7 +808,7 @@ const PlainTextField = (props) => {
 latitude={userInfo.latitude}
 longitude={userInfo.longitude}
 />
-        </Box>
+        </Box> */}
 
         <Box>
 
