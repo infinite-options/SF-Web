@@ -149,6 +149,7 @@ export default function ProfileInfoNavBar() {
                 aria-hidden="false"
                 aria-label="Shopping cart"
                 style={{ color: 'white' }}
+                onClick = {() => history.push('/store')}
               />
             </Badge>
           </IconButton>

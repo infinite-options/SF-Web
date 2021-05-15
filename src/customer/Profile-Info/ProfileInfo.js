@@ -192,6 +192,7 @@ function ProfileInfo() {
               userRefreshToken: authRes.userRefreshToken,
               mobileAccessToken: authRes.mobile_access_token,
               mobileRefreshToken: authRes.mobile_refresh_token,
+              hashed_pwd: authRes.password_hashed,
             };
 
             setProfile(updatedProfile);
@@ -239,13 +240,34 @@ function ProfileInfo() {
     const onSubmit = (event) => {
         const AuthMethods = new AuthUtils();
 
-        AuthMethods.updateProfile(profile).then((authRes) => {
-            console.log('Profile PUT successful');
-            window.location.reload();
-        })
-        .catch((err) => {
-            alert('Unsuccessful update');
-        });
+        if (newPassword != '' && newPassword == confirmedPassword) {
+            const cred = {
+                customer_email: profile.email,
+                password: newPassword,
+            }
+
+            Promise.all([
+                AuthMethods.updateProfile(profile),
+                AuthMethods.updatePassword(cred),
+            ]).then((authRes) => {
+                console.warn('authRes = ', authRes);
+                window.location.reload();
+            })
+            .catch((err) => {
+                alert('Unsuccessful update');
+            });
+
+            console.log('here');
+        } else {
+            console.log('else');
+            AuthMethods.updateProfile(profile).then((authRes) => {
+                console.warn('authRes = ', authRes);
+                // window.location.reload();
+            })
+            .catch((err) => {
+                alert('Unsuccessful update');
+            });
+        }
     };
 
     return (
