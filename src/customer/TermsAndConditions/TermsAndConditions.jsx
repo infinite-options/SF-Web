@@ -1,10 +1,16 @@
-import React from 'react';
+import React, {useContext, useState} from 'react';
 import {Dialog, Typography, Box} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 
-import ProfileInfoNavBar from '../Profile-Info/ProfileInfoNavBar';
+import TermsAndConditionsNavBar from '../TermsAndConditions/TermsAndConditionsNavBar';
 import appColors from '../../styles/AppColors';
 import Background from '../../icon/Rectangle.svg';
+
+import { AuthContext } from 'auth/AuthContext';
+
+import AdminLogin from '../../auth/AdminLogin';
+import Signup from '../../auth/Signup';
+import Footer from '../../home/Footer';
 
 const useStyles = makeStyles((theme) => ({
     termsAndConditionsContaienr: {
@@ -44,11 +50,37 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TermsAndConditions(props) {
     const classes = useStyles();
-    console.log('here');
+    const Auth = useContext(AuthContext);
+    const {profile, cartTotal} = Auth;
+    const [showLogin, setShowLogin] = useState(false);
+    const [showSignup, setShowSignup] = useState(false);
 
     return (
         <Box className = {classes.termsAndConditionsContainer}>
-            <ProfileInfoNavBar />
+            <AuthContext.Provider value = {
+                {
+                    profile,
+                    cartTotal,
+                    setShowLogin,
+                    setShowSignup,
+                }
+            }>
+                <TermsAndConditionsNavBar />
+            </AuthContext.Provider>
+
+            <Dialog
+                open={showLogin}
+                onClose = {() => setShowLogin(false)}
+            >
+                <AdminLogin />
+            </Dialog>
+
+            <Dialog
+                open={showSignup}
+                onClose = {() => setShowSignup(false)}
+            >
+                <Signup />
+            </Dialog>
 
             <Box className = {classes.termsAndCondsContentContainer}>
                 <Typography className = {classes.pageLabel}>
@@ -281,6 +313,8 @@ export default function TermsAndConditions(props) {
                     All charges are billed by and payable to your wireless service provider. Please contact your wireless service provider for pricing plans and details. If you wish to opt out of such text messages, you may do so by following the "opt-out" instructions in the text message, or by editing your account settings. Message and data rates may apply. We will treat data collected through text messages in accordance with our Privacy Policy.
                 </Typography>
             </Box>
+
+            <Footer />
         </Box>
     );
 }

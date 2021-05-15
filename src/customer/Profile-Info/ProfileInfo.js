@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useContext, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
 import { AuthContext } from 'auth/AuthContext';
 import AuthUtils from '../../utils/AuthUtils';
 import ProfileInfoNavBar from './ProfileInfoNavBar';
-import {Box, Button, Typography, TextField, Avatar} from '@material-ui/core';
+import {Box, Button, Typography, TextField, Avatar, Dialog} from '@material-ui/core';
 import {withStyles, makeStyles} from '@material-ui/core/styles';
 import appColors from '../../styles/AppColors';
 
@@ -12,6 +12,10 @@ import GoogleSignin from '../../sf-svg-icons/Google-signin.svg';
 import FacebookSignin from '../../sf-svg-icons/Facebook-signin.svg';
 import AppleSignin from '../../sf-svg-icons/Apple-signin.svg';
 import Background from '../../icon/Rectangle.svg';
+
+import AdminLogin from '../../auth/AdminLogin';
+import Signup from '../../auth/Signup';
+import Footer from '../../home/Footer';
 
 import Cookies from 'js-cookie';
 
@@ -88,7 +92,6 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        marginBottom: theme.spacing(3),
     },
 
     profInfButton: {
@@ -102,6 +105,7 @@ const useStyles = makeStyles((theme) => ({
     },
 
     servingFreshSupportMessage: {
+        marginTop: theme.spacing(3),
         marginBottom: theme.spacing(12),
     },
 
@@ -126,6 +130,9 @@ function ProfileInfo() {
     const history = useHistory();
     const Auth = React.useContext(AuthContext);
     const {profile, setProfile, isAuth, setIsAuth, setAuthLevel, cartTotal} = Auth;
+    const [showLogin, setShowLogin] = useState(false);
+    const [showSignup, setShowSignup] = useState(false);
+
     const [resetPasswordClicked, setResetPasswordClicked] = React.useState(false);
     const [newPassword, setNewPassword] = React.useState('');
     const [confirmedPassword, setConfirmedPassword] = React.useState('');
@@ -270,6 +277,8 @@ function ProfileInfo() {
         }
     };
 
+    console.log('Auth = ', Auth);
+
     return (
         <Box className = {classes.profileInfoContainer}>
             <AuthContext.Provider
@@ -278,10 +287,26 @@ function ProfileInfo() {
                     isAuth, setIsAuth,
                     setAuthLevel,
                     cartTotal,
+                    setShowLogin,
+                    setShowSignup,
                 }}
             >
                 <ProfileInfoNavBar />
             </AuthContext.Provider>
+
+            <Dialog
+                open={showLogin}
+                onClose = {() => setShowLogin(false)}
+            >
+                <AdminLogin />
+            </Dialog>
+
+            <Dialog
+                open={showSignup}
+                onClose = {() => setShowSignup(false)}
+            >
+                <Signup />
+            </Dialog>
 
             <Box className = {classes.profileContainer}>
                 <Box style = {{width: '100%'}}>
@@ -384,20 +409,22 @@ function ProfileInfo() {
                         />
                     </Box>
 
-                    <Box className = {classes.profInfButtonContainer}>
-                        <ColorButton
-                            variant = 'contained'
-                            onClick = {onSubmit}
-                            className = {classes.profInfButton}
-                        >
-                            Save Changes
-                        </ColorButton>
+                    <Box hidden = {!Auth.isAuth}>
+                        <Box className = {classes.profInfButtonContainer}>
+                            <ColorButton
+                                variant = 'contained'
+                                onClick = {onSubmit}
+                                className = {classes.profInfButton}
+                            >
+                                Save Changes
+                            </ColorButton>
 
-                        <ColorButton variant = 'contained' className = {classes.profInfButton}
-                            onClick = {handleClickLogOut}
-                        >
-                            Log Out
-                        </ColorButton>
+                            <ColorButton variant = 'contained' className = {classes.profInfButton}
+                                onClick = {handleClickLogOut}
+                            >
+                                Log Out
+                            </ColorButton>
+                        </Box>
                     </Box>
 
                     <Typography className = {classes.servingFreshSupportMessage}>
@@ -407,6 +434,8 @@ function ProfileInfo() {
                     </Typography>
                 </Box>
             </Box>
+
+            <Footer />
         </Box>
     );
 }
