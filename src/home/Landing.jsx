@@ -204,7 +204,7 @@ const Landing = ({ ...props }) => {
           </Box>
           {/* END: Login/SignUp Modal */}
           {/* START: landing Logo and Guest Login */}
-          <Container
+          {/* <Container
             fluid
             //class="container-fluid px-0"
             style={{
@@ -248,32 +248,14 @@ const Landing = ({ ...props }) => {
                 />
               </Col>
             </Row>
-          </Container>
+          </Container> */}
           {/* END: Landing Page Logo */}
 
-          <Box
-            className="hero-right"
-            style={{ background: 'rgba(0244, 134, 9, 0.85)',minHeight:'350px',maxHeight:'500px'}}
-          >
-            {/* <ZipcodeSearch/> */}
-            <p
-              style={{
-                color: appColors.buttonText,
-                fontSize: '30px',
-                textAlign: 'center',
-                fontWeight: '700',
-                marginLeft: '20px',
-                marginBottom:'50px'
-              }}
-            >
-              Local produce delivered to your doorstep
-            </p>
-            <DeliveryLocationSearch />
-          </Box>
+          
 
           {/* START: Info Section */}
 
-          <Box className={classes.title} style={{ paddingTop: '30px',position:'sticky' }}>
+          {/* <Box className={classes.title} style={{ paddingTop: '30px',position:'sticky' }}>
             Why try Serving Fresh
           </Box>
           <Box mx="auto" className={classes.bar} />
@@ -315,12 +297,12 @@ const Landing = ({ ...props }) => {
                 on developing Serving Fresh.
               </div>
             </Box>
-          </Box>
+          </Box> */}
           {/* END: Info Section */}
           {/* START: Local Produce Search */}
-          <Box my={10}>
+          {/* <Box my={10}>
             <ProductDisplay />
-          </Box>
+          </Box> */}
           {/* END: Local Produce Search */}
           {/* START: Farmer information */}
           {/* <Container
@@ -404,19 +386,7 @@ const Landing = ({ ...props }) => {
               </Col>
             </Row>
           </Container> */}
-          <Box className={classes.farmer}>
-            <Box
-              className={classes.title}
-              style={{
-                textAlign: 'left',
-                marginLeft: '50px',
-                paddingBottom: '20px',
-              }}
-            >
-              <u>Meet the Farmers</u>
-            </Box>
-            <Farmers />
-          </Box>
+          
         {/* </Box>
       </Box> */}
       {/* END: Login/SignUp Modal */}
