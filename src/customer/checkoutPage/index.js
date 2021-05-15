@@ -1,3 +1,3 @@
-import CheckoutPage from './CheckoutPage.jsx';
+import CheckoutPage from './CheckoutStorePage.jsx';
 
 export default CheckoutPage;
