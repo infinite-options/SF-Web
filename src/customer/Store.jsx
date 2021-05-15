@@ -12,7 +12,6 @@ import CheckoutPage from './checkoutPage';
 import ProductSelectionPage from './productSelectionPage';
 import AuthUtils from '../utils/AuthUtils';
 import BusiApiReqs from '../utils/BusiApiReqs';
-import AlertDialog from '../utils/dialog';
 import { set } from 'js-cookie';
 
 const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI;
@@ -116,6 +115,8 @@ const Store = ({ ...props }) => {
 
   const [productsLoading, setProductsLoading] = useState(true);
 
+    const [isInDay, setIsInDay] = useState(true);
+
   const [farmsList, setFarmsList] = useState([]);
   const [dayTimeDict, setDayTimeDict] = useState({});
   const [numDeliveryTimes, setNumDeliveryTimes] = useState(0);
@@ -178,7 +179,6 @@ const Store = ({ ...props }) => {
   const [cartItems, setCartItems] = useState(
     JSON.parse(localStorage.getItem('cartItems') || '{}')
   );
-
 
   useEffect(() => {
     console.log('cartTotal: ', cartTotal);
@@ -394,15 +394,14 @@ const Store = ({ ...props }) => {
     setAcceptDayHour(_acceptDayHour);
     if (_farmList.length > 0 && updatedProfile.zone !== profile.zone) {
       localStorage.removeItem('selectedDay');
-   //   localStorage.removeItem('cartTotal');
-   //   localStorage.removeItem('cartItems');
+      localStorage.removeItem('cartTotal');
+      localStorage.removeItem('cartItems');
       setProfile(updatedProfile);
     }
 
     BusiMethods.getItems(
       ['fruit', 'dessert', 'vegetable', 'other'],
-    //['Fruits','Dairy','Vegetables','Snacks'], 
-    Array.from(businessUids)
+      Array.from(businessUids)
     ).then((itemRes) => {
       const _products = [];
       const _vegetable = [];
@@ -412,11 +411,8 @@ const Store = ({ ...props }) => {
       if (itemRes !== undefined) {
         for (const item of itemRes) {
           setProductsLoading(true);
-          console.log("Response on Item",item.item_name.toString())
           try {
             if (item.item_status === 'Active') {
-              
-              console.log(item.item_type.toString())
               const namePriceDesc =
                 item.item_name + item.item_price + item.item_desc;
               // Business Price
@@ -463,6 +459,8 @@ const Store = ({ ...props }) => {
                 item.lowest_price = bPrice;
 
                 // Push to products to have distinct products
+                _products.push(item);
+
                 if(item.item_type.toString() === 'vegetable'){
                   //_products.push(item);
                   _vegetable.push(item)
@@ -471,13 +469,15 @@ const Store = ({ ...props }) => {
                   
                   _fruit.push(item);
                 
-                }else if (item.item_type.toString() === 'dessert') {
+                 }
+                 //else if (item.item_type.toString() === 'dessert') {
+
+                //   _dessert.push(item);
+
+                // }
+                else {
 
                   _dessert.push(item);
-
-                }else {
-
-                  _products.push(item);
                 
                 }
                // _products.push(item);
@@ -492,7 +492,7 @@ const Store = ({ ...props }) => {
       setProductsFruit(_fruit.sort());
       setProductsVegetable(_vegetable.sort());
       setProductsDessert(_dessert.sort());
-      // console.log('productsssssss----',_products)
+      console.log('productsssssss----',_products)
       setProductsLoading(false);
     });
   }
@@ -532,6 +532,8 @@ const Store = ({ ...props }) => {
           setDayClicked,
           cartClicked,
           setCartClicked,
+          isInDay,
+          setIsInDay,
         }}
       >
            <StoreNavBar
@@ -548,7 +550,15 @@ const Store = ({ ...props }) => {
           setStorePage={setStorePage}
         />
         <Box hidden={storePage !== 0}>
-          <ProductSelectionPage farms={farmsList} />
+          <Box 
+          // display="flex"
+            className="responsive-store"
+          >
+            <ProductSelectionPage farms={farmsList} />
+          </Box>
+        </Box>
+        <Box hidden={storePage !== 1}>
+          <CheckoutPage />
         </Box>
       </storeContext.Provider> */}
     </div>

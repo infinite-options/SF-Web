@@ -1,10 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Typography } from '@material-ui/core';
 import { useConfirmation } from '../../../../services/ConfirmationService';
 import appColors from '../../../../styles/AppColors';
-import AlertDialog from '../../../../utils/dialog';
 import ProdSelectContext from '../../ProdSelectContext';
 import storeContext from '../../../storeContext';
 
@@ -81,7 +79,7 @@ const DateCard = (props) => {
     if (isClicked) {
       if (store.cartTotal !== 0) {
        // displayDialog(clearCartAndDay);
-
+       clearCartAndDay();
       } else {
         clearCartAndDay();
       }
@@ -89,8 +87,11 @@ const DateCard = (props) => {
       if (store.dayClicked != '' && store.cartTotal !== 0) {
         //displayDialog(changeDay);
        changeDay();
+
       } else {
         changeDay();
+
+
       }
     }
   };
@@ -140,8 +141,8 @@ const DateCard = (props) => {
         ' ' +
         amPmTo24Hr(props.time)
     );
-    store.setCartTotal(0);
-    store.setCartItems({});
+    // store.setCartTotal(0);
+    // store.setCartItems({});
     localStorage.setItem('selectedDay', props.id);
   }
 

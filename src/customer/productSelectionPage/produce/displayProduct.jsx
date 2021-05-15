@@ -407,7 +407,7 @@ style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom
     // spacing={5}
     spacing={2}
     >
-      {store.products.map(createProduct2)}
+      {store.productsDessert.map(createProduct2)}
     </Grid>
   </Box>
 </Paper>

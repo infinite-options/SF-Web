@@ -76,7 +76,7 @@ export default function StoreNavBar(props) {
 
     auth.setIsAuth(false);
     auth.setAuthLevel(0);
-    //  props.history.push('/');
+    history.push('/');
   };
   return (
     <div className={classes.root}>
