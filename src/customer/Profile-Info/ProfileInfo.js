@@ -11,6 +11,7 @@ import appColors from '../../styles/AppColors';
 import GoogleSignin from '../../sf-svg-icons/Google-signin.svg';
 import FacebookSignin from '../../sf-svg-icons/Facebook-signin.svg';
 import AppleSignin from '../../sf-svg-icons/Apple-signin.svg';
+import Background from '../../icon/Rectangle.svg';
 
 import Cookies from 'js-cookie';
 
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     profileInfoContainer: {
         display: 'flex',
         flexDirection: 'column',
-        background: appColors.componentBg,
+        background: `transparent url(${Background}) 0% 0% no-repeat padding-box`,
     },
 
     profileContainer: {
@@ -61,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '10px',
         marginTop: theme.spacing(1),
         width: '100%',
+        background: 'white',
     },
 
     resetPasswordLink: {

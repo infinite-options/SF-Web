@@ -30,7 +30,7 @@ export class MapComponent extends Component {
                     defaultZoom={this.props.zoom}
                 /> */}
 
-        <Map 
+        {/* <Map 
           google={this.props.google}
           style={{width: '375px', height: '180px', marginTop:'24px', borderRadius:"24px"}}
           initialCenter={{
@@ -47,7 +47,7 @@ export class MapComponent extends Component {
               lat: this.props.latitude ,
               lng: this.props.longitude
             }} />
-        </Map>
+        </Map> */}
 
       </div>
     )
