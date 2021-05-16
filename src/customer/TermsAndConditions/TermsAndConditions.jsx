@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
         padding: theme.spacing(8),
-        background: `transparent url(${Background}) 0% 0% no-repeat padding-box`,
+        background: `#E0E6E673`,
         textAlign: 'left',
     },
 

@@ -1202,7 +1202,7 @@ longitude={userInfo.longitude}
       </Box> */}
       </Box> 
 
-      <Box hidden={ !(auth.isAuth)} mb={3} >
+      <Box mb={3} >
         <Box
           style = {{display: 'flex'}}
         >

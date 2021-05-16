@@ -269,7 +269,7 @@ function ProfileInfo() {
             console.log('else');
             AuthMethods.updateProfile(profile).then((authRes) => {
                 console.warn('authRes = ', authRes);
-                // window.location.reload();
+                window.location.reload();
             })
             .catch((err) => {
                 alert('Unsuccessful update');
