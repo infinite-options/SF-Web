@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
   card: {
     backgroundColor: props => props.clicked ? appColors.primary : '#e0e6e6',
     width: 75,
-    height: 78,
     borderRadius: 5,
     cursor: 'pointer',
   },
@@ -206,7 +205,8 @@ const DateCard = (props) => {
       <div className={classes.card} onClick={cardClicked}>
         <div className={classes.weekDay}>{props.weekDay}</div>
         <Box
-          mt={1}
+          mt={0}
+          style ={{ display:'flex', flexDirection:'column', justifyContent:'space-evenly'}}
         >
           <Typography className={classes.date}>
             {props.month}

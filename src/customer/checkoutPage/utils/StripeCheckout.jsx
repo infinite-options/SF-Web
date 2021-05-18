@@ -189,10 +189,12 @@ const StripeCheckout = (props) => {
         taxes: paymentDetails.taxes.toString(),
       };
 
+      console.log("purchase_Data_SF data", data)
       let res = axios
         .post(
           process.env.REACT_APP_SERVER_BASE_URI + 'purchase_Data_SF',
           data,
+         
           {
             headers: {
               'Content-Type': 'application/json',

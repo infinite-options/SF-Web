@@ -13,13 +13,13 @@ const responsive = {
   superLargeDesktop: {
     breakpoint: { max: 3000, min: 1650 },
     items: 1,
-    partialVisibilityGutter: 30,
+    partialVisibilityGutter: 150,
   },
   desktop: {
     breakpoint: { max: 1600, min: 1024 },
     items: 1,
-    slidesToSlide: 1,
-    partialVisibilityGutter: 90,
+    slidesToSlide: 2,
+    partialVisibilityGutter: 150,
   },
   tablet: {
     breakpoint: { max: 1400, min: 1250 },
@@ -29,14 +29,13 @@ const responsive = {
   mobile: {
     breakpoint: { max: 1250, min: 0 },
     items: 1,
-    partialVisibilityGutter: 150,
+    partialVisibilityGutter: 750,
   },
 };
 
 const useStyles = makeStyles((theme) => ({
   imageItem: {
 
-      marginLeft:'2rem',
       marginBottom:"1rem"
 
     },
@@ -366,13 +365,14 @@ export default function Coupons(props) {
     // then undo to original, and save again and it should work as expected
     <>
       {(avaiCouponData.length > 0 || unavaiCouponData.length > 0) && (
-        <Box className={props.classes.section}>
+        <Box>
           <Box fontWeight="bold" textAlign="left" mb={1} style = {{marginTop:'30px'}}>
             Coupons
           </Box>
           <Carousel
             itemClass={classes.imageItem}
             swipeable={true}
+            partialVisible={true}
             draggable={true}
             showDots={true}
             responsive={responsive}

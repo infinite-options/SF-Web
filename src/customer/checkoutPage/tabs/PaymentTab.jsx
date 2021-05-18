@@ -15,6 +15,8 @@ import { AuthContext } from '../../../auth/AuthContext';
 import checkoutContext from '../CheckoutContext';
 import PayPal from '../utils/Paypal';
 import StripeElement from '../utils/StripeElement';
+import DeliveryInfoTab from '../tabs/DeliveryInfoTab';
+
 
 const useStyles = makeStyles({
   label: {
@@ -78,8 +80,12 @@ const PaymentTab = () => {
   const store = useContext(storeContext);
   const auth = useContext(AuthContext);
   const [paymentType, setPaymentType] = useState('NONE');
-  const { profile, cartItems, setCartItems, startDeliveryDate, setCartTotal } =
-    useContext(storeContext);
+  const { 
+    profile,
+    cartItems,
+    setCartItems, 
+    startDeliveryDate, 
+    setCartTotal } = useContext(storeContext);
 
   const {
     paymentDetails,
@@ -92,6 +98,7 @@ const PaymentTab = () => {
 
   const [userInfo, setUserInfo] = useState(store.profile);
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
+  const [ishidden, setIsHidden] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const [firstNameError, setFirstNameError] = useState('');
   const [lastNameError, setLastNameError] = useState('');
@@ -219,7 +226,7 @@ const PaymentTab = () => {
     return (
       <Box mb={props.spacing || 1}>
         <CssTextField
-          error={props.error || ''}
+          error={props.error}
           value={props.value}
           name={props.name}
           label={props.label}
@@ -228,7 +235,7 @@ const PaymentTab = () => {
           variant="outlined"
           size="small"
           fullWidth
-          onChange={props.onChange || onFieldChange}
+          onChange={ onFieldChange}
         />
       </Box>
     );
@@ -237,11 +244,13 @@ const PaymentTab = () => {
   //TODO: Add recipient label
   //TODO: If guest, give message: 'enter a password and sign up to be eligible for history and additional coupons press continue to create your account or cancel to skip'
   return (
+    <>
     <Box
       pt={3}
       // px={10}
       className="responsive-payment-tab"
     >
+
       {paymentProcessing && (
         <p className={classes.notify}>
           Please Enter Your {auth.isAuth ? '' : 'Contact and'} Credit Card
@@ -254,33 +263,39 @@ const PaymentTab = () => {
         </FormHelperText>
         <Box className={classes.section} display="flex" flexDirection='column'>
         {PlainTextField({
-          value: userInfo.firstName,
+          value: guestInfo.firstName,
           name: 'firstName',
           label: 'First Name',
+          error: firstNameError,
+            
         })}
         {PlainTextField({
-          value: userInfo.lastName,
+          value: guestInfo.lastName,
           name: 'lastName',
           label: 'Last Name',
+          error: lastNameError,
         })}
         {PlainTextField({
        //   error: emailError,
-          value: userInfo.email,
+          value: guestInfo.email,
           name: 'email',
           label: 'Email',
-       //   spacing: spacing,
+          error: emailError,
+          //   spacing: spacing,
         })}
         {PlainTextField({
-          value: userInfo.phoneNum,
-          name: 'phoneNum',
+          value: guestInfo.phoneNum,
+          name: 'phoneNumber',
           label: 'Phone Number',
+          error: phoneError,
         })}
         </Box>
       </form>
-      {/* <Box className={classes.section} display="flex">
+      <Box hidden={!auth.isAuth}>
+       <Box className={classes.section} display="flex">
         {SectionLabel('Delivery Address:')}
         <Box flexGrow={1} />
-        <Box
+        <Box 
           className={classes.info}
           textAlign="Left"
           hidden={
@@ -295,7 +310,8 @@ const PaymentTab = () => {
           {userInfo.unit === '' ? ' ' : ''}
           {userInfo.unit}, {userInfo.city}, {userInfo.state} {userInfo.zip}
         </Box>
-      </Box> */}
+      </Box>
+      </Box> 
       <label className={classes.label}>
         Enter Delivery Instructions Below:
       </label>
@@ -351,7 +367,7 @@ const PaymentTab = () => {
       )}
       {/* END: Payment Buttons */}
     </Box>
+    </>
   );
 };
-
 export default PaymentTab;

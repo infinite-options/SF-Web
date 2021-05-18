@@ -19,6 +19,8 @@ import { AuthContext } from 'auth/AuthContext';
 import FindLongLatWithAddr from '../../../utils/FindLongLatWithAddr';
 import BusiApiReqs from '../../../utils/BusiApiReqs';
 import { useConfirmation } from '../../../services/ConfirmationService';
+import ProductSelectContext from '../../productSelectionPage/ProdSelectContext'
+
 
 import PayPal from '../utils/Paypal';
 import StripeElement from '../utils/StripeElement';
@@ -26,6 +28,7 @@ import StripeElement from '../utils/StripeElement';
 import DeliveryInfoTab from '../tabs/DeliveryInfoTab';
 //import TipImage from '../../../images/TipBackground.svg'
 import LocationSearchInput from '../../../utils/LocationSearchInput'
+import { StreetviewTwoTone } from '@material-ui/icons';
 
 
 //import SignUp from '../SignUp/SignUp';
@@ -35,8 +38,9 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
 
-  tipButton: { color: appColors.buttonText
-    ,backgroundColor:" ",
+  tipButton: { color: appColors.buttonText,
+    height:'2rem',
+    backgroundColor:" ",
     "&:hover":{
       backgroundColor:"#ff8500",
     },
@@ -53,12 +57,8 @@ const useStyles = makeStyles((theme) => ({
    
     marginBottom: '10px',
     paddingBottom: '10px',
-
-    display: 'flex',
-    [theme.breakpoints.only('lg')]: {
-      flexDirection: 'column',
-      justifyContent:'space-between',
-    },
+    display:'flex',
+    justifyContent:'space-between',
   },
 
  
@@ -129,15 +129,7 @@ const CssTextField = withStyles({
   },
 })(TextField);
 
-function calculateSubTotal(items) {
-  var result = 0;
 
-  for (const item of items) {
-    result += item.count * item.price;
-  }
-
-  return result;
-}
 
 function listItem(item) {
   return (
@@ -197,6 +189,8 @@ export default function CheckoutTab(props) {
   const confirm = useConfirmation();
   const BusiApiMethods = new BusiApiReqs();
   const checkout = useContext(checkoutContext);
+  const productSelect = useContext(ProductSelectContext);
+
 
   const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
   const [isSignUpShown, setIsSignUpShown] = useState(false);
@@ -257,7 +251,46 @@ export default function CheckoutTab(props) {
   const [locErrorMessage, setLocErrorMessage] = useState('');
 
   const [paymentType, setPaymentType] = useState('NONE');
+  const [isInDay, setIsInDay] = useState(false);
 
+
+  useEffect(() => {
+    let isInDay = false;
+    // result.push(farm.business_uid)
+    // console.log("hello", result)
+
+     
+    for (const farm in store.products) {
+      console.log("hello", store.products[farm].itm_business_uid)
+      if (store.farmDaytimeDict[store.products[farm].itm_business_uid]  !== undefined){
+      store.farmDaytimeDict[store.products[farm].itm_business_uid].forEach((daytime) => {
+        if (store.dayClicked === daytime)
+   
+        isInDay = true;
+      });
+    }
+    }
+
+    console.log("hello is",isInDay)
+    setIsInDay(isInDay);
+
+  }, [
+     store.dayClicked,
+     productSelect.farmsClicked,
+     productSelect.categoriesClicked,
+     store.cartItems,
+  ]);
+
+
+  function calculateSubTotal(items) {
+    var result = 0;
+    console.log('hello day',items)
+
+    for (const item of items) {
+       result += item.count * item.price;
+  }
+    return result;
+  }
 
   function createLocError(message) {
     setLocError('Invalid Input');
@@ -794,7 +827,7 @@ const PlainTextField = (props) => {
 
           <Box hidden={isAddressConfirmed} mb={3}>
           <Button
-            className={classes.button}
+            className={classes.Checkoutbutton}
             variant="outlined"
             size="small"
             color="paragraphText"
@@ -974,9 +1007,10 @@ longitude={userInfo.longitude}
         <Box>${deliveryFee.toFixed(2)}</Box>
       </Box>
 
+      <Box fontWeight="700" marginBottom='1rem' display='flex' > Driver Tip </Box>
+
       <Box className={classes.driverTipBox}>
-        <Box display="flex" fontWeight="700" marginBottom='1rem' > Driver Tip </Box>
-        <Box style={{display:"flex" , justifyContent:'space-evenly'}}>
+        <Box style={{display:'flex', justifyContent:'space-evenly', flex:'4'}}>
           <Button
             className={classes.tipButton}
             size="small"
@@ -1018,8 +1052,8 @@ longitude={userInfo.longitude}
           >
             $5
           </Button>
-
-          <Box width="70px">
+          </Box>
+          <Box width='4rem' >
           <CurrencyTextField
             
             disabled={true}
@@ -1036,13 +1070,8 @@ longitude={userInfo.longitude}
             }}
           ></CurrencyTextField>
         
-        
         </Box>
-          </Box>
-          
-        
-        <Box flexGrow={1} />
-   
+         
       </Box>
       {/* <Box className={classes.section} display="flex">
         <Box>Driver Tip (Optional - Click to edit)</Box>
@@ -1075,7 +1104,8 @@ longitude={userInfo.longitude}
       </Box>
       {/* END: Pricing */}
       
-      <Box hidden={(auth.isAuth)} style = {{marginBottom:"1rem"}}>
+      <Box display='flex' alignItems='center' flexDirection='column' >
+      <Box hidden={(auth.isAuth)} style = {{marginBottom:"1rem", justifyContent:'center'}}>
       <Button
           className={classes.buttonCheckout}
           size="small"
@@ -1128,7 +1158,8 @@ longitude={userInfo.longitude}
         SignUp
         </Button>
       
-      </Box>  
+      </Box> 
+      </Box> 
 
       {/* <Box  hidden={!(auth.isAuth)} style = {{marginBottom:"1rem"}}>
         <Button
@@ -1148,6 +1179,8 @@ longitude={userInfo.longitude}
 
       
     <Box hidden = {detailsDisplayType} marginBottom="2rem">
+    
+
     <PaymentTab/>
 
       {/* <Box marginBottom="1rem">
@@ -1177,7 +1210,9 @@ longitude={userInfo.longitude}
       </Box> */}
       </Box> 
 
-      <Box hidden={ !(auth.isAuth)} mb={3} >
+      
+
+      <Box hidden={ !(auth.isAuth) } mb={3} >
         <Box hidden={paymentType !== 'PAYPAL' && paymentType !== 'NONE'}>
           <Box display="flex" flexDirection="column" alignItems="center" mb={1}>
             <Button

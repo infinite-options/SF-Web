@@ -243,16 +243,16 @@ function Entry(props) {
     //   [props.id]: item,
     // });
 
-    for (let i = 0; i < store.products.length; i++) {
-      if (store.products[i].item_uid == props.id) {
-       store.products[i].favorite = store.products[i].favorite == "FALSE" ?
-   //       store.products[i].favorite = props.favorite == "FALSE" ?     
-          "TRUE" : "FALSE";
-          console.log('FavoriteItems Products:',store.products[i].item_name)
-          favoriteArray.push(store.products[i].item_name)
+  //   for (let i = 0; i < store.products.length; i++) {
+  //     if (store.products[i].item_uid == props.id) {
+  //      store.products[i].favorite = store.products[i].favorite == "FALSE" ?
+  //  //       store.products[i].favorite = props.favorite == "FALSE" ?     
+  //         "TRUE" : "FALSE";
+  //         console.log('FavoriteItems Products:',store.products[i].item_name)
+  //         favoriteArray.push(store.products[i].item_name)
    
-      }
-    }
+  //     }
+  //   }
 
     console.log('FavoriteItems Customer:',props.business_uids)
 
@@ -320,7 +320,7 @@ function Entry(props) {
  
 
   return ( isShown ?
-    <Grid   xs = {6} md = {4} lg = {4} item className = {classes.foodGridItem}>
+    <Grid  xs = {6} md = {4} lg = {4} item className = {classes.foodGridItem}>
       <Card
         style = {{
           borderRadius: '12px', backgroundImage: `url("${props.img.replace(' ', '%20')}")`,

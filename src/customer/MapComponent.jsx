@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import GoogleMapReact from 'google-map-react';
-import {Map, Marker, GoogleApiWrapper} from 'google-maps-react';
 
+import RoomOutlinedIcon from '@material-ui/icons/RoomOutlined';
 
 const google = window.google;
 
+const AnyReactComponent = ({ text }) => <div>{text}</div>;
 
-export class MapComponent extends Component {
+export default class MapComponent extends Component {
  
 
     componentDidMount() {
@@ -24,7 +25,6 @@ export class MapComponent extends Component {
   render() {
     
       const center = {lat:parseFloat(this.props.latitude) ? parseFloat(this.props.latitude) : 37.236720, lng: parseFloat(this.props.longitude)? parseFloat(this.props.longitude) : -121.887370}
-      console.log("props test", parseFloat('30'))
       console.log("props map", this.props.center, center)
         return (
             <div style={{ height: '30vh'}}>
@@ -32,7 +32,15 @@ export class MapComponent extends Component {
                     center={center}
                 //    defaultCenter={center}
                     defaultZoom={this.props.zoom}
+                      
                 />
+
+        <AnyReactComponent
+           lat = {37.236720}
+           lng = {-121.887370}
+            text="My Marker"
+          />
+           
 
         {/* <Map 
           google={this.props.google}
@@ -58,8 +66,8 @@ export class MapComponent extends Component {
   }
 }
 
-export default GoogleApiWrapper({
-    apiKey: ('AIzaSyBGgoTWGX2mt4Sp8BDZZntpgxW8Cq7Qq90')
-  })(MapComponent)
+// export default GoogleApiWrapper({
+//     apiKey: ('AIzaSyBGgoTWGX2mt4Sp8BDZZntpgxW8Cq7Qq90')
+//   })(MapComponent)
 
 //export default MapComponent;
