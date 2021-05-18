@@ -25,12 +25,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 //TODO: default to payment information
-export default function ProfileInfoNavBar() {
+export default function TermsAndConditionsNavBar() {
   const classes = useStyles();
   const auth = useContext(AuthContext);
+  const {profile, cartTotal, setShowLogin, setShowSignup} = auth;
   const history = useHistory();
-
-  const {profile, cartTotal, setShowLogin, setShowSignup} = useContext(AuthContext);
 
   const { width } = useWindowsDimensions();
 

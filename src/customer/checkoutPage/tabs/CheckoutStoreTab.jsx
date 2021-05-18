@@ -2,9 +2,10 @@ import React, { useContext, useState, useEffect, useMemo,useRef } from 'react';
 import axios from 'axios';
 import { useElements, CardElement } from '@stripe/react-stripe-js';
 import { GoogleMap, LoadScript,useJsApiLoader } from '@react-google-maps/api';
+import {useHistory} from 'react-router-dom';
 
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { Box, TextField, Button, Paper, Dialog } from '@material-ui/core';
+import { Box, TextField, Button, Typography } from '@material-ui/core';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import AddIcon from '@material-ui/icons/Add';
 import appColors from '../../../styles/AppColors';
@@ -20,8 +21,15 @@ import FindLongLatWithAddr from '../../../utils/FindLongLatWithAddr';
 import BusiApiReqs from '../../../utils/BusiApiReqs';
 import { useConfirmation } from '../../../services/ConfirmationService';
 
+import Checkbox from '@material-ui/core/Checkbox';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+
 import PayPal from '../utils/Paypal';
 import StripeElement from '../utils/StripeElement';
+
+import TermsAndConditions from './TermsAndConditions';
 
 import DeliveryInfoTab from '../tabs/DeliveryInfoTab';
 //import TipImage from '../../../images/TipBackground.svg'
@@ -89,6 +97,17 @@ buttonCheckout: {
     backgroundColor:"#ff8500",
  
 },
+
+  termsAndConditions: {
+    fontSize: '14px',
+  },
+
+  termsAndConditionsLink: {
+    textDecoration: 'underline',
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
 
 delivInstr: {
   width: '100%',
@@ -191,6 +210,7 @@ function useOutsideAlerter(ref) {
 // TODO: Get Delivery and service fee from zone
 // TODO: Add button to get to tab 4 of left side
 export default function CheckoutTab(props) {
+  const history = useHistory();
   const classes = useStyles();
   const store = useContext(storeContext);
   const auth = useContext(AuthContext);
@@ -257,6 +277,9 @@ export default function CheckoutTab(props) {
   const [locErrorMessage, setLocErrorMessage] = useState('');
 
   const [paymentType, setPaymentType] = useState('NONE');
+
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [viewTermsAndConds, setViewTermsAndConds] = useState(false);
 
 
   function createLocError(message) {
@@ -670,6 +693,8 @@ const PlainTextField = (props) => {
     // px={8}
      >
       {/* START: Expected Delivery */}
+      <TermsAndConditions opened = {viewTermsAndConds} />
+
       <Box hidden={store.expectedDelivery !== ''} m={2} />
       <Box hidden={store.expectedDelivery === ''}>
         <Box
@@ -1177,7 +1202,35 @@ longitude={userInfo.longitude}
       </Box> */}
       </Box> 
 
-      <Box hidden={ !(auth.isAuth)} mb={3} >
+      <Box mb={3} >
+        <Box
+          style = {{display: 'flex'}}
+        >
+          <FormControl component="fieldset">
+            <FormGroup aria-label="position" row onClick = {() => console.log('Clicky')}>
+              <Box style = {{display: 'flex', alignItems: 'center'}}>
+                <FormControlLabel
+                  onClick = {() => setTermsAccepted(!termsAccepted)}
+                  value="end"
+                  control={<Checkbox color="primary" />}
+                  labelPlacement="end"
+                />
+                <Typography
+                  className = {classes.termsAndConditions}
+                >
+                  I’ve read and accept
+                  the <a
+                      className = {classes.termsAndConditionsLink}
+                      onClick = {() => history.push('/terms-and-conditions')}
+                    >
+                      Terms and Conditions
+                    </a>
+                </Typography>
+              </Box>
+            </FormGroup>
+          </FormControl>
+        </Box>
+
         <Box hidden={paymentType !== 'PAYPAL' && paymentType !== 'NONE'}>
           <Box display="flex" flexDirection="column" alignItems="center" mb={1}>
             <Button
@@ -1186,6 +1239,7 @@ longitude={userInfo.longitude}
               variant="contained"
               color="primary"
               onClick={() => onPayWithClicked('STRIPE')}
+              disabled = {!termsAccepted}
             >
               Pay with Stripe {paymentType !== 'NONE' ? 'Instead?' : ''}
             </Button>
@@ -1199,6 +1253,7 @@ longitude={userInfo.longitude}
               variant="contained"
               color="primary"
               onClick={() => onPayWithClicked('PAYPAL')}
+              disabled = {!termsAccepted}
             >
               Pay with PayPal {paymentType !== 'NONE' ? 'Instead?' : ''}
             </Button>

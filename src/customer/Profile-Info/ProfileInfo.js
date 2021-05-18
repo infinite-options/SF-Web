@@ -1,24 +1,31 @@
-import React from 'react';
+import React, {useContext, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
 import { AuthContext } from 'auth/AuthContext';
 import AuthUtils from '../../utils/AuthUtils';
 import ProfileInfoNavBar from './ProfileInfoNavBar';
-import {Box, Button, Typography, TextField, Avatar} from '@material-ui/core';
+import {Box, Button, Typography, TextField, Avatar, Dialog} from '@material-ui/core';
 import {withStyles, makeStyles} from '@material-ui/core/styles';
 import appColors from '../../styles/AppColors';
 
 import GoogleSignin from '../../sf-svg-icons/Google-signin.svg';
 import FacebookSignin from '../../sf-svg-icons/Facebook-signin.svg';
 import AppleSignin from '../../sf-svg-icons/Apple-signin.svg';
+import Background from '../../icon/Rectangle.svg';
+
+import AdminLogin from '../../auth/AdminLogin';
+import Signup from '../../auth/Signup';
+import Footer from '../../home/Footer';
 
 import Cookies from 'js-cookie';
+
+// Donovan_0514
 
 const useStyles = makeStyles((theme) => ({
     profileInfoContainer: {
         display: 'flex',
         flexDirection: 'column',
-        background: appColors.componentBg,
+        background: `transparent url(${Background}) 0% 0% no-repeat padding-box`,
     },
 
     profileContainer: {
@@ -59,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '10px',
         marginTop: theme.spacing(1),
         width: '100%',
+        background: 'white',
     },
 
     resetPasswordLink: {
@@ -84,7 +92,6 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        marginBottom: theme.spacing(3),
     },
 
     profInfButton: {
@@ -98,6 +105,7 @@ const useStyles = makeStyles((theme) => ({
     },
 
     servingFreshSupportMessage: {
+        marginTop: theme.spacing(3),
         marginBottom: theme.spacing(12),
     },
 
@@ -122,6 +130,9 @@ function ProfileInfo() {
     const history = useHistory();
     const Auth = React.useContext(AuthContext);
     const {profile, setProfile, isAuth, setIsAuth, setAuthLevel, cartTotal} = Auth;
+    const [showLogin, setShowLogin] = useState(false);
+    const [showSignup, setShowSignup] = useState(false);
+
     const [resetPasswordClicked, setResetPasswordClicked] = React.useState(false);
     const [newPassword, setNewPassword] = React.useState('');
     const [confirmedPassword, setConfirmedPassword] = React.useState('');
@@ -188,6 +199,7 @@ function ProfileInfo() {
               userRefreshToken: authRes.userRefreshToken,
               mobileAccessToken: authRes.mobile_access_token,
               mobileRefreshToken: authRes.mobile_refresh_token,
+              hashed_pwd: authRes.password_hashed,
             };
 
             setProfile(updatedProfile);
@@ -235,14 +247,37 @@ function ProfileInfo() {
     const onSubmit = (event) => {
         const AuthMethods = new AuthUtils();
 
-        AuthMethods.updateProfile(profile).then((authRes) => {
-            console.log('Profile PUT successful');
-            window.location.reload();
-        })
-        .catch((err) => {
-            alert('Unsuccessful update');
-        });
+        if (newPassword != '' && newPassword == confirmedPassword) {
+            const cred = {
+                customer_email: profile.email,
+                password: newPassword,
+            }
+
+            Promise.all([
+                AuthMethods.updateProfile(profile),
+                AuthMethods.updatePassword(cred),
+            ]).then((authRes) => {
+                console.warn('authRes = ', authRes);
+                window.location.reload();
+            })
+            .catch((err) => {
+                alert('Unsuccessful update');
+            });
+
+            console.log('here');
+        } else {
+            console.log('else');
+            AuthMethods.updateProfile(profile).then((authRes) => {
+                console.warn('authRes = ', authRes);
+                window.location.reload();
+            })
+            .catch((err) => {
+                alert('Unsuccessful update');
+            });
+        }
     };
+
+    console.log('Auth = ', Auth);
 
     return (
         <Box className = {classes.profileInfoContainer}>
@@ -252,10 +287,26 @@ function ProfileInfo() {
                     isAuth, setIsAuth,
                     setAuthLevel,
                     cartTotal,
+                    setShowLogin,
+                    setShowSignup,
                 }}
             >
                 <ProfileInfoNavBar />
             </AuthContext.Provider>
+
+            <Dialog
+                open={showLogin}
+                onClose = {() => setShowLogin(false)}
+            >
+                <AdminLogin />
+            </Dialog>
+
+            <Dialog
+                open={showSignup}
+                onClose = {() => setShowSignup(false)}
+            >
+                <Signup />
+            </Dialog>
 
             <Box className = {classes.profileContainer}>
                 <Box style = {{width: '100%'}}>
@@ -358,20 +409,22 @@ function ProfileInfo() {
                         />
                     </Box>
 
-                    <Box className = {classes.profInfButtonContainer}>
-                        <ColorButton
-                            variant = 'contained'
-                            onClick = {onSubmit}
-                            className = {classes.profInfButton}
-                        >
-                            Save Changes
-                        </ColorButton>
+                    <Box hidden = {!Auth.isAuth}>
+                        <Box className = {classes.profInfButtonContainer}>
+                            <ColorButton
+                                variant = 'contained'
+                                onClick = {onSubmit}
+                                className = {classes.profInfButton}
+                            >
+                                Save Changes
+                            </ColorButton>
 
-                        <ColorButton variant = 'contained' className = {classes.profInfButton}
-                            onClick = {handleClickLogOut}
-                        >
-                            Log Out
-                        </ColorButton>
+                            <ColorButton variant = 'contained' className = {classes.profInfButton}
+                                onClick = {handleClickLogOut}
+                            >
+                                Log Out
+                            </ColorButton>
+                        </Box>
                     </Box>
 
                     <Typography className = {classes.servingFreshSupportMessage}>
@@ -381,6 +434,8 @@ function ProfileInfo() {
                     </Typography>
                 </Box>
             </Box>
+
+            <Footer />
         </Box>
     );
 }

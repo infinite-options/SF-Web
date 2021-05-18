@@ -86,24 +86,7 @@ const ProductSelectionPage = (props) => {
               <CheckoutPage />
             </Grid>
           </Hidden>
-        </Grid>
-
-        {/* <Box>
-          <Box>
-          <StoreFilter />
-          </Box>
-
-          <Box display="flex" justifyContent="space-between">
-          <DisplayProduce />
-          <Hidden mdDown>
-            <Grid item lg = {4}>
-              <CheckoutPage />
-            </Grid>
-          </Hidden>
-          </Box>
-        </Box> */}
-
-      
+        </Grid>      
 
         <Hidden lgUp>
           <Drawer variant = 'temporary' anchor = 'bottom' open = {checkingOut}>
