@@ -320,7 +320,7 @@ function Entry(props) {
  
 
   return ( isShown ?
-    <Grid   xs = {6} md = {4} lg = {4} item className = {classes.foodGridItem}>
+    <Grid   xs = {6} md = {3} lg = {2} item className = {classes.foodGridItem}>
       <Card
         style = {{
           borderRadius: '12px', backgroundImage: `url("${props.img.replace(' ', '%20')}")`,
