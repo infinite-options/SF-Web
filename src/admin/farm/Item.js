@@ -34,7 +34,7 @@ import appColors from 'styles/AppColors';
 
 const BASE_URL =
   'https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/';
-const ITEM_EDIT_URL = BASE_URL + 'addItems/';
+const ITEM_EDIT_URL = BASE_URL + 'addItems_Prime/';
 
 const booleanVals = new Set(['taxable', 'favorite']);
 
@@ -76,15 +76,6 @@ export default function Item(props) {
   useEffect(() => {
     setEditData(props.data);
   }, [props.data]);
-
-  // useEffect(() => {
-  //     // creating File object from item_photo URL
-  //     fetch("https://cors-anywhere.herokuapp.com/" + props.data.item_photo)
-  //     .then(response => response.blob())
-  //     .then(blob => new File([blob], "item_photo.png", { type: "image/png" }))
-  //     .then(file => setFile(prevFile => ({ ...prevFile, obj: file })))
-  //     .catch(err => console.log(err.response || err));
-  // }, []);
 
   const handleHeartChange = () => {
     const updatedData = { ...props.data };
@@ -157,6 +148,9 @@ export default function Item(props) {
       }
       formData.append(item[0], item[1]);
     });
+    formData.append('bus_price',postData['business_price'])
+    formData.append('bus_uid',postData['itm_business_uid'])
+    formData.append('sup_uid',postData['supply_uid'])
     console.log('postData ', postData);
 
     console.log('formData ', formData.get('item_taxable'));
@@ -188,6 +182,7 @@ export default function Item(props) {
         console.error(err.response || err);
       });
   };
+  
   const updateStatus = (status) => {
     // const postData = {
     //     item_uid: props.data.item_uid,
@@ -196,6 +191,7 @@ export default function Item(props) {
     let formData = new FormData();
     formData.append('item_uid', props.data.item_uid);
     formData.append('item_status', status);
+    formData.append('sup_uid', editData['supply_uid']);
 
     Axios.post(ITEM_EDIT_URL + 'Status', formData /*postData*/)
       .then((response) => {
@@ -502,6 +498,7 @@ export default function Item(props) {
       <Modal open={open} onClose={handleCloseEditModel}>
         {modelBody}
       </Modal>
+      
       <Card variant="outlined" className={classes.card}>
         <CardMedia
           image={itemImage}
@@ -550,6 +547,8 @@ export default function Item(props) {
         </Box>
       </Card>
     </Grid>
+
+    
   );
 }
 
