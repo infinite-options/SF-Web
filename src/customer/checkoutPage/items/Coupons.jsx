@@ -19,7 +19,7 @@ const responsive = {
     breakpoint: { max: 1600, min: 1024 },
     items: 1,
     slidesToSlide: 2,
-    partialVisibilityGutter: 150,
+    partialVisibilityGutter: 160,
   },
   tablet: {
     breakpoint: { max: 1400, min: 1250 },
@@ -29,7 +29,7 @@ const responsive = {
   mobile: {
     breakpoint: { max: 1250, min: 0 },
     items: 1,
-    partialVisibilityGutter: 750,
+    partialVisibilityGutter: 650,
   },
 };
 
@@ -251,7 +251,7 @@ export default function Coupons(props) {
    
 
     return (
-      <Box key={props.key} height="124px" mt={2} property="div" mx={1}>
+      <Box key={props.key} height="124px" mt={2} property="div" >
         <Box
           onClick={onCouponClick}
           style={{
@@ -266,40 +266,47 @@ export default function Coupons(props) {
             cursor: coupProps.status != 'unavailable' ? 'pointer' : '',
           }}
         >
-          <Box textlign="left" pl={2} pr={6} pt={1.5}>
-            <Box fontSize={18} pr={1} height="30px" fontWeight="bold">
+          <Box display='flex' flexDirection="column"  alignItems='flex-start' justifyContent='center' marginLeft='2rem'>
+            <Box fontSize='16px' pr={1}  fontWeight="bold" marginTop='1rem'>
               {coupProps.title}
             </Box>
-            <Box fontSize="10px" fontWeight="bold">
+            <Box hidden={coupProps.status !== 'unavailable'} fontSize="12px" fontWeight="bold">
               {coupProps.notes}
-            </Box>
-            <Box fontSize="12px">
-              {coupProps.threshold === 0 ? 'No' : '$' + coupProps.threshold}{' '}
-              minimum purchase
-            </Box>
-            <Box fontSize="10px">
-              {/* +1 because JS date object function returns months from 0-11 and similarly for days */}
-              Expires: {coupProps.expDate.getMonth() + 1}/
-              {coupProps.expDate.getDate()}/{coupProps.expDate.getFullYear()}
             </Box>
             <Box
               hidden={
                 coupProps.status !== 'unavailable' || coupProps.threshold === 0
               }
-              fontSize="10px"
+              fontSize="12px"
               fontStyle="oblique"
             >
               {/* +1 because JS date object function returns months from 0-11 and similarly for days */}
               Spend ${coupProps.amountNeeded.toFixed(2)} more to use
             </Box>
+            {/* <Box hidden={coupProps.status !== 'unavailable'} fontSize="10px">
+              {coupProps.threshold === 0 ? 'No' : '$' + coupProps.threshold}{' '}
+              minimum purchase
+            </Box> */}
             <Box
               hidden={coupProps.status === 'unavailable'}
-              fontSize="10px"
+              fontSize="12px"
               fontStyle="oblique"
             >
               {/* +1 because JS date object function returns months from 0-11 and similarly for days */}
               You saved: ${coupProps.amountSaved.toFixed(2)}
             </Box>
+            <Box fontSize="12px">
+              {/* +1 because JS date object function returns months from 0-11 and similarly for days */}
+              Expires: {coupProps.expDate.getMonth() + 1}/
+              {coupProps.expDate.getDate()}/{coupProps.expDate.getFullYear()}
+            </Box>
+            <Box  fontSize="12px" hidden={coupProps.status === 'unavailable'}>
+               Applied
+            </Box>
+            <Box  fontSize="12px" hidden={coupProps.status !== 'unavailable'}>
+               Not Eligible
+            </Box>
+    
           </Box>
         </Box>
       </Box>

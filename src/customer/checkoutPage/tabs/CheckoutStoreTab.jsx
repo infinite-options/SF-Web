@@ -182,7 +182,7 @@ function useOutsideAlerter(ref) {
 // TEST: Order confirmation for completed purchase
 // TODO: Get Delivery and service fee from zone
 // TODO: Add button to get to tab 4 of left side
-export default function CheckoutTab(props) {
+export default function CheckoutTab() {
   const classes = useStyles();
   const store = useContext(storeContext);
   const auth = useContext(AuthContext);
@@ -190,10 +190,12 @@ export default function CheckoutTab(props) {
   const BusiApiMethods = new BusiApiReqs();
   const checkout = useContext(checkoutContext);
   const productSelect = useContext(ProductSelectContext);
-
+ 
 
   const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
   const [isSignUpShown, setIsSignUpShown] = useState(false);
+  const [isInDay, setIsInDay] = useState(false);
+
 
   const loginWrapperRef = useRef(null);
   useOutsideAlerter(loginWrapperRef, setIsLoginShown);
@@ -251,43 +253,25 @@ export default function CheckoutTab(props) {
   const [locErrorMessage, setLocErrorMessage] = useState('');
 
   const [paymentType, setPaymentType] = useState('NONE');
-  const [isInDay, setIsInDay] = useState(false);
-
-
-  useEffect(() => {
-    let isInDay = false;
-    // result.push(farm.business_uid)
-    // console.log("hello", result)
-
-     
-    for (const farm in store.products) {
-      console.log("hello", store.products[farm].itm_business_uid)
-      if (store.farmDaytimeDict[store.products[farm].itm_business_uid]  !== undefined){
-      store.farmDaytimeDict[store.products[farm].itm_business_uid].forEach((daytime) => {
-        if (store.dayClicked === daytime)
-   
-        isInDay = true;
-      });
-    }
-    }
-
-    console.log("hello is",isInDay)
-    setIsInDay(isInDay);
-
-  }, [
-     store.dayClicked,
-     productSelect.farmsClicked,
-     productSelect.categoriesClicked,
-     store.cartItems,
-  ]);
 
 
   function calculateSubTotal(items) {
     var result = 0;
-    console.log('hello day',items)
 
     for (const item of items) {
-       result += item.count * item.price;
+
+      let isInDay = false;
+
+      if (store.farmDaytimeDict[item.business_uid] != undefined){
+
+      store.farmDaytimeDict[item.business_uid].forEach((daytime) => {
+        if (store.dayClicked === daytime)
+        isInDay = true;
+      });
+    } 
+      
+        isInDay ? result += item.count * item.price :result = result;
+   
   }
     return result;
   }
@@ -573,7 +557,7 @@ const PlainTextField = (props) => {
 
   useEffect(() => {
     setSubtotal(calculateSubTotal(cartItems));
-  }, [cartItems]);
+  }, [cartItems, store.dayClicked]);
 
   useEffect(() => {
     setTax(0);
@@ -706,7 +690,6 @@ const PlainTextField = (props) => {
       <Box hidden={store.expectedDelivery !== ''} m={2} />
       <Box hidden={store.expectedDelivery === ''}>
         <Box
-          className={classes.section}
           display="flex"
           flexDirection="column"
           // lineHeight="100px"
@@ -726,19 +709,21 @@ const PlainTextField = (props) => {
       {/* END: Expected Delivery */}
 
 
-      <Box display="flex" justifyContent="space-between" fontWeight="700" fontSize="16px" paddingBottom='1rem'>
-            <Box>
+      <Box display="flex" justifyContent="space-between" fontWeight="700" fontSize="16px">
+            <Box fontSize="18px"  color={appColors.primary}>
             Delivery Address 
             </Box>
             <Box hidden={!(auth.isAuth)}>
-            <Button style={{color:"#ff8500" , fontSize:"12px"}}  onClick = {handleChangeAddress}> Change delivery Address </Button>  
+            <Button style={{color:"#ff8500" , fontSize:"10px", fontWeight:'bold'}}  onClick = {handleChangeAddress}> Change delivery Address </Button>  
             </Box> 
           
       </Box>
 
       <Box hidden={!(addressDisplayType) || !(auth.isAuth)}>
     
-      <Box
+      <Box 
+          fontSize="14px"
+          fontWeight='bold'
           marginBottom="1rem"
           className={classes.info}
           textAlign="Left"
@@ -920,9 +905,9 @@ longitude={userInfo.longitude}
     
 
       {/* START: Order Items */}
-      <Box className={classes.section}>
-        <Box display="flex" paddingTop="2rem">
-          <Box fontWeight="bold" lineHeight={1.8} fontSize="20px">
+      <Box >
+        <Box display="flex" paddingTop="1rem" className={classes.section}>
+          <Box fontWeight="bold" lineHeight={1.8} fontSize="20px" >
             Your Order:
           </Box>
           <Box flexGrow={1} />
@@ -1056,7 +1041,7 @@ longitude={userInfo.longitude}
           <Box width='4rem' >
           <CurrencyTextField
             
-            disabled={true}
+            disabled={false}
             variant="standard"
             modifyValueOnWheel={false}
             value={driverTip}

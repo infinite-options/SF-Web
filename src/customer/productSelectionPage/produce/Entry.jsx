@@ -18,6 +18,10 @@ import FavoriteBorderedSrc from '../../../sf-svg-icons/heart-whitebackground-bor
 import InfoSrc from '../../../sf-svg-icons/info-whitebackground.svg';
 
 import busiRes from '../../../utils/BusiApiReqs'
+import Flippy, { FrontSide, BackSide } from 'react-flippy';
+import ReactCardFlip from 'react-card-flip';
+
+import Cookies from "js-cookie";
 
 const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI;
 
@@ -125,6 +129,10 @@ function Entry(props) {
   const [hearted, setHearted] = useState(false);
   const [isShown, setIsShown] = useState(false);
   const [isInDay, setIsInDay] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  const [favorite, setfavorite] = useState([]);
+
   const store = useContext(storeContext);
   const BusiApiMethods = new busiRes();
   var favoriteArray = [];
@@ -147,14 +155,13 @@ function Entry(props) {
     let isInDay = false;
     let isInCategory = false;
 
-    const isFavoritedAndInFavorites = productSelect.categoriesClicked.has("favorite") != undefined &&
+    const isFavoritedAndInFavorites = productSelect.categoriesClicked.has("favorite") &&
     props.favorite == "TRUE";
 
     
     for (const farm in props.business_uids) {
       store.farmDaytimeDict[farm].forEach((daytime) => {
         if (store.dayClicked === daytime)
-   
         isInDay = true;
       });
     }
@@ -225,6 +232,37 @@ function Entry(props) {
     console.warn(store.cartItems);
   }
 
+  
+let reqBodyPost = {
+  customer_uid : Cookies.get("customer_uid"),
+  favorite:favoriteArray
+};
+
+
+
+const postRequest = async() => {
+
+  try{
+  const response = await axios.post(BASE_URL + 'favorite_produce/post', reqBodyPost)
+    console.log('Favorite Post:', response);
+    }catch(err) {
+      console.log(err.response || err);
+    }
+}
+
+  let reqBodyGet = {
+      customer_uid : Cookies.get("customer_uid")
+    };
+    const getRequest = async() => {
+  
+      try{
+      const response = await axios.post(BASE_URL + 'favorite_produce/get', reqBodyGet)
+        console.log('Favorite Items get:', response);
+        }catch(err) {
+          console.log(err.response || err);
+        }
+    }
+
   const toggleHearted = () => {
     // console.warn(store.products);
     // const itemCount = props.id in store.cartItems ?
@@ -243,84 +281,62 @@ function Entry(props) {
     //   [props.id]: item,
     // });
 
-  //   for (let i = 0; i < store.products.length; i++) {
-  //     if (store.products[i].item_uid == props.id) {
-  //      store.products[i].favorite = store.products[i].favorite == "FALSE" ?
-  //  //       store.products[i].favorite = props.favorite == "FALSE" ?     
-  //         "TRUE" : "FALSE";
-  //         console.log('FavoriteItems Products:',store.products[i].item_name)
-  //         favoriteArray.push(store.products[i].item_name)
-   
-  //     }
-  //   }
+    for (let i = 0; i < store.products.length; i++) {
+      if (store.products[i].item_uid == props.id) {
+  //     store.products[i].favorite = store.products[i].favorite == "FALSE" ?
+          store.products[i].favorite = props.favorite == "FALSE" ? "TRUE" : "FALSE";
+          // console.log('FavoriteItems Products:',store.products[i].item_name)
+           favoriteArray.push(store.products[i].item_name)
 
-    console.log('FavoriteItems Customer:',props.business_uids)
-
-    
-    let reqBodyPost = {
-      customer_uid: props.id,
-      favorite:favoriteArray
-    };
-
-    let reqBodyGet = {
-      customer_uid: props.id,
-    };
-
-    const postRequest = async() => {
-
-      try{
-      const response = await axios.post(BASE_URL + 'favorite_produce/post', reqBodyPost)
-        console.log('Favorite Items:', response);
-        }catch(err) {
-          console.log(err.response || err);
-        }
+      }
     }
 
-    const getRequest = async() => {
 
-      try{
-      const response = await axios.post(BASE_URL + 'favorite_produce/get', reqBodyGet)
-        console.log('Favorite Items:', response);
-        }catch(err) {
-          console.log(err.response || err);
-        }
-    }
 
     postRequest();
-     getRequest();
 
+   getRequest();
 
-    for (let i = 0; i < store.productsFruit.length; i++) {
-      if (store.productsFruit[i].item_uid == props.id) {
-       store.productsFruit[i].favorite = store.productsFruit[i].favorite == "FALSE" ?
-   //       store.products[i].favorite = props.favorite == "FALSE" ?     
-          "TRUE" : "FALSE";
-      }
-    }
+//     for (let i = 0; i < store.productsFruit.length; i++) {
+//       if (store.productsFruit[i].item_uid == props.id) {
+//        store.productsFruit[i].favorite = store.productsFruit[i].favorite == "FALSE" ?
+//    //       store.products[i].favorite = props.favorite == "FALSE" ?     
+//           "TRUE" : "FALSE";
+//       }
+//     }
 
-    for (let i = 0; i < store.productsVegetable.length; i++) {
-      if (store.productsVegetable[i].item_uid == props.id) {
-       store.productsVegetable[i].favorite = store.productsVegetable[i].favorite == "FALSE" ?
-   //       store.products[i].favorite = props.favorite == "FALSE" ?     
-          "TRUE" : "FALSE";
-      }
-  }
+//     for (let i = 0; i < store.productsVegetable.length; i++) {
+//       if (store.productsVegetable[i].item_uid == props.id) {
+//        store.productsVegetable[i].favorite = store.productsVegetable[i].favorite == "FALSE" ?
+//    //       store.products[i].favorite = props.favorite == "FALSE" ?     
+//           "TRUE" : "FALSE";
+//       }
+//   }
 
-  for (let i = 0; i < store.productsDessert.length; i++) {
-    if (store.productsDessert[i].item_uid == props.id) {
-     store.productsDessert[i].favorite = store.productsDessert[i].favorite == "FALSE" ?
- //       store.products[i].favorite = props.favorite == "FALSE" ?     
-        "TRUE" : "FALSE";
-    }
-}
+//   for (let i = 0; i < store.productsDessert.length; i++) {
+//     if (store.productsDessert[i].item_uid == props.id) {
+//      store.productsDessert[i].favorite = store.productsDessert[i].favorite == "FALSE" ?
+//  //       store.products[i].favorite = props.favorite == "FALSE" ?     
+//         "TRUE" : "FALSE";
+//     }
+// }
     setHearted(!hearted);
   };
 
-  console.warn("isShow =",isShown)
+ function flipped(){
+   setIsFlipped(true)
+ }
+
  
+ function notFlipped(){
+  setIsFlipped(false)
+}
+
 
   return ( isShown ?
+  
     <Grid  xs = {6} md = {4} lg = {4} item className = {classes.foodGridItem}>
+      <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
       <Card
         style = {{
           borderRadius: '12px', backgroundImage: `url("${props.img.replace(' ', '%20')}")`,
@@ -351,6 +367,7 @@ function Entry(props) {
           }}>
             <Button
               className = {classes.itemInfoBtn}
+              onClick = {flipped}
               disabled = {!isInDay}
             >
               <img src = {InfoSrc} />
@@ -366,6 +383,44 @@ function Entry(props) {
           </Typography>
         </Box>
       </Card>
+
+      <Box>
+      <Box className = {classes.itemInfo}>
+          <Box style = {{
+            display: 'flex', justifyContent: 'flex-start',
+          }}>
+            <Button
+              className = {classes.itemInfoBtn}
+              onClick = {toggleHearted}
+              disabled = {!isInDay}
+            >
+              <img src = {hearted ? FavoriteSrc : FavoriteBorderedSrc} />
+            </Button>
+          </Box>
+          {/* {props.info} */}
+          <Box style = {{
+            display: 'flex', justifyContent: 'flex-end',
+          }}>
+            <Button
+              className = {classes.itemInfoBtn}
+              onClick = {notFlipped}
+              disabled = {!isInDay}
+            >
+              <img src = {InfoSrc} />
+            </Button>
+          </Box>
+         
+        </Box>
+        <Box style = {{
+            display: 'flex', justifyContent: 'center',
+          }}>
+            <Typography>
+              {props.info}
+            </Typography>
+          </Box>
+      </Box>
+
+      </ReactCardFlip>
 
       <Card className = {classes.checkoutInfo}>
         <Typography className = {classes.foodNameTypography}>
@@ -403,8 +458,10 @@ function Entry(props) {
           </Typography>
         </Box>
       </Card>
+
+
     </Grid> : ''
-  );
+  ); 
 }
 
 export default Entry;
