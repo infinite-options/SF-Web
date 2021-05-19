@@ -6,6 +6,9 @@ import axios from 'axios';
 import { Grid, Paper, Button, Typography, Box } from '@material-ui/core';
 import { AuthContext } from '../auth/AuthContext';
 import { withRouter } from 'react-router';
+import Google from '../icon/Google.svg';
+import Fb_Login from '../icon/fb_login.svg'
+import Apple_Login from '../icon/Apple_Login.svg'
 
 function SocialLogin(props) {
   const Auth = useContext(AuthContext);
@@ -171,11 +174,14 @@ function SocialLogin(props) {
           onClick="return false"
           callback={responseFacebook}
           size="small"
-          textButton="Continue with Facebook"
+          // textButton="Continue with Facebook"
+          render={renderProps => (
+            <img  src={Fb_Login} onClick={renderProps.onClick} disabled={renderProps.disabled} ></img>
+          )}
         />
       </Grid>
       <Grid item xs={12}>
-        <GoogleLogin
+        <Button style={{}}><GoogleLogin
           clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
           onSuccess={responseGoogle}
           onFailure={responseGoogle}
@@ -183,19 +189,25 @@ function SocialLogin(props) {
           buttonText="Continue with Google"
           disable={false}
           cookiePolicy={'single_host_origin'}
-          style={{ borderRadius: '10px' }}
+          render={renderProps => (
+            <img  src={ Google} onClick={renderProps.onClick} disabled={renderProps.disabled} ></img>
+          )}
+          
         />
+        </Button>
       </Grid>
 
       <Grid item xs={12}>
-        <Button
+        <img
+        src={Apple_Login}
           variant="contained"
           onClick={() => {
             window.AppleID.auth.signIn();
+
           }}
         >
-          Apple Login
-        </Button>
+          
+        </img>
       </Grid>
     </Grid>
   );

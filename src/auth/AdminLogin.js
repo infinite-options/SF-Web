@@ -338,25 +338,28 @@ function AdminLogin(props) {
   return (
     <div>
       <Paper style={paperStyle}>
-        <Grid container spacing={1}>
+        <Grid container spacing={1} xs={12}>
           <Grid item xs={12}>
             <Box
               my={1}
-              style={{ fontSize: '20px', color: appColors.secondary }}
+              style={{ color: appColors.secondary,fontSize:'32px',fontWeight:'bolder' ,textDecoration:'underline',marginBottom:'25px'}}
             >
               Log In
             </Box>
           </Grid>
-          <Grid item xs={12}>
+          <SocialLogin setError={setError} setErrorMessage={setErrorMessage} />
+          <Box style={{borderBottom:'2px solid #136D74',marginBottom:'20px',marginTop:'20px'}}></Box>
+        <p style={{fontWeight:'bold',marginRight:'auto',marginLeft:'auto',marginBottom:'0px',marginTop:'20px'}}>Or continue with email</p>
+          <Grid item xs={12} style={{marginTop:'20px'}}>
             <CssTextField
               error={errorValue}
               id="outlined-required"
-              label="email"
+              label="Email"
               variant="outlined"
               size="small"
               value={emailValue}
               onChange={handleEmailChange}
-              fullWidth
+              style={{width:'300px',marginBottom:'20px'}}
             />
           </Grid>
           <Grid item xs={12}>
@@ -369,7 +372,7 @@ function AdminLogin(props) {
               size="small"
               value={passwordValue}
               onChange={handlePasswordChange}
-              fullWidth
+              style={{width:'300px',marginBottom:'20px'}}
             />
           </Grid>
           <Grid item xs={12}>
@@ -380,7 +383,7 @@ function AdminLogin(props) {
               <Button
                 variant="contained"
                 style={{
-                  backgroundColor: appColors.secondary,
+                  backgroundColor: appColors.primary,
                   color: 'white',
                   width: '300px',
                   height: '40px',
@@ -392,11 +395,11 @@ function AdminLogin(props) {
             </Box>
           </Grid>
           <Grid item xs={12}>
-            <Box mb={2}>
+            {/* <Box mb={2}>
               <Box>or</Box>
-            </Box>
+            </Box> */}
           </Grid>
-          <SocialLogin setError={setError} setErrorMessage={setErrorMessage} />
+         
         </Grid>
       </Paper>
     </div>
@@ -404,12 +407,12 @@ function AdminLogin(props) {
 }
 
 const paperStyle = {
-  width: '500px',
+  width: '350px',
   textAlign: 'center',
   display: 'inline-block',
   padding: '20px',
   marginTop: '50px',
-  backgroundColor: appColors.componentBg,
+  backgroundColor: "#E0E6E6F2",
 };
 
 export default withRouter(AdminLogin);

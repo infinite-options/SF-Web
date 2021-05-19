@@ -5,10 +5,13 @@ import classes from './ErrorModal.module.css';
 import {Button} from 'react-bootstrap'
 import Card from "react-bootstrap/Card";
 import cross from '../icon/cross.svg';
+const AmbasadorModal =(props)=>{
 
-const Mymodal=(props)=>{
-    return (
-      <Card className={classes.modal} style={{ borderRadius: '10px' ,marginBottom:'20px',height:'601px',width:'400px'}}>
+
+
+
+    return(
+        <Card className={classes.modal} style={{ borderRadius: '10px' ,marginBottom:'20px',height:'601px',width:'400px'}}>
         <div>
           <img
             src={cross}
@@ -62,7 +65,7 @@ const Mymodal=(props)=>{
           </button>
         </div>
       </Card>
-    );
+    )
 }
 
-export default Mymodal;
+export default AmbasadorModal;

@@ -1,7 +1,7 @@
 import Modal from "react-bootstrap/Modal";
 // import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useState, useContext } from 'react';
-import classes from './ErrorModal.module.css';
+import classes from './Ambasadormodal.module.css';
 import {Button} from 'react-bootstrap'
 import Card from "react-bootstrap/Card";
 import cross from '../icon/cross.svg';
@@ -9,8 +9,7 @@ import Signup from '../auth/Signup';
 import { Paper } from "@material-ui/core";
 
 
-
-const SuccessModal=(props)=>{
+const LoginAmbasador=(props)=>{
     let [modalSignup,modalSignupMessage]=useState('');
 const modalSign= () => {
     modalSignupMessage("true");
@@ -25,7 +24,7 @@ const modalSign= () => {
             <img src={cross} onClick={props.modalClear} style={{float:'right',height:'25px',width:'25px',color:'black',marginTop:'3px',marginRight:'3px'}}></img>
            </div>
            <div>
-            <h2 style={{fontWeight:'bold',fontSize:'40px',marginBottom:'50px',marginTop:'80px'}}>{props.title}</h2>
+            <h2 style={{fontWeight:'bold',fontSize:'40px',marginBottom:'50px',marginTop:'80px'}}>Love Serving Fresh?</h2>
            </div>
            <div style={{width:'300px',marginLeft:'auto',marginRight:'auto',fontSize:'20px',marginBottom:'50px'}}>
            Looks like we deliver to your address. Click the button below to see the variety of fresh organic fruits and vegetables we offer.
@@ -48,4 +47,4 @@ const modalSign= () => {
     )
 }
 
-export default SuccessModal;
+export default LoginAmbasador;

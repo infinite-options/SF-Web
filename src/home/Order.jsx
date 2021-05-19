@@ -206,7 +206,8 @@ var guestProfile={};
   }
   return (
     <div style={{backgroundColor:'white',height:'auto',marginTop:'30px',width:'100%'}}>
-      {modalSuccess && <SuccessModal title={modalSuccess.title} body={modalSuccess.body} onConfirm={login} modalClear={errorHandleModal}></SuccessModal>}
+      {modalSuccess && <SuccessModal title={modalSuccess.title} body={modalSuccess.body} onConfirm={login} modalClear={errorHandleModal} style={{zIndex:'100000'}}></SuccessModal>}
+      
       {modalError && <Mymodal title={modalError.title} body={modalError.body} onConfirm={errorHandleModal}></Mymodal>}
       <div style={{marginRight:'auto',marginLeft:'auto'}}><h1 style={{color:'rgb(54,97,102)',float:'center',marginLeft:'auto',marginRight:'auto',marginBottom:'5px',fontSize:'42px',fontWeight:'bold'}}>Ready to Order</h1></div>
       <div style={{marginRight:'auto',marginLeft:'auto'}}><h3 style={{color:'rgb(251,132,0)',float:'center',marginLeft:'auto',marginRight:'auto',marginBottom:'35px',fontSize:'24px'}}>Fresh Organic Produce Delivered</h3></div>
