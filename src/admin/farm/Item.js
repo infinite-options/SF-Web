@@ -207,6 +207,8 @@ export default function Item(props) {
       });
   };
 
+  
+
   //modal that pops up when farmer edits an item
   const modelBody = (
     <div className={classes.paper}>
@@ -215,11 +217,16 @@ export default function Item(props) {
           <Box display="flex" justifyContent="center">
             <h3>Edit Item</h3>
           </Box>
+          <Box display="flex" justifyContent="center">
+          <h5 ><i> (To update business Only edit Business Price and Item Status)</i></h5>
+          </Box>
         </Grid>
+        
         <Grid container item xs={6} spacing={2}>
           <Grid item xs={12}>
-            <Box display="flex" justifyContent="center">
+            <Box display="flex" justifyContent="center" >
               <TextField
+              
                 name="item_name"
                 label="Item Name"
                 onChange={handleEditChange}
@@ -276,6 +283,7 @@ export default function Item(props) {
                   }}
                   onChange={handleEditChange}
                   value={editData.business_price}
+                  color = 'secondary'
                 />
               </Box>
             </Grid>
@@ -436,7 +444,7 @@ export default function Item(props) {
                 onChange={handleEditChange}
                 // onChange={}
                 name="item_status"
-                color="primary"
+                color = 'secondary'
               />
             </Box>
           </Grid>
