@@ -18,6 +18,7 @@ import { AuthContext } from '../auth/AuthContext';
 import { TrendingUpRounded } from '@material-ui/icons';
 import PlacesAutocomplete, {
   geocodeByAddress,
+  geocodeByPlaceId,
   getLatLng
 } from "react-places-autocomplete";
 import BusiApiReqs from '../utils/BusiApiReqs';
@@ -134,14 +135,30 @@ let guestProfile={};
     setAddress(value);
     setCoordinates(latLng);
     let addr=value.split(',');
-    console.log(addr);
+    console.log(results.[0].place_id);
+    const results1 = await geocodeByPlaceId(results.[0].place_id);
+    const array_fragment=(results1.[0].address_components);
+    const zipCode1 = array_fragment[array_fragment.length - 1];
+    const zipCode2 = array_fragment[array_fragment.length - 2];
+    console.log(zipCode1,zipCode2);
+    console.log(array_fragment);
+    
+    // const google_pack=new window.google.maps.places.Autocomplete(value);
+    // const zipResult= await (google_pack);
+
+    // =await fetch("api.postcodes.io/postcodes?lon="+latLng.lng+"&lat="+latLng.lat,
+    // {
+    //   "method":"GET"
+    // }
+    // );
+    // console.log(zipResult.getPlace());
     guestProfile = {
                   longitude: latLng.lng,
                   latitude: latLng.lat,
                   address: addr[0],
                   city: addr[1],
                   state: addr[2],
-                  zip: "",
+                  zip: (zipCode1.length==5)?zipCode1.long_name:zipCode2.long_name ,
                 };
     console.log(latLng);
     const res= await BusiMethods.getLocationBusinessIds(latLng.lng,latLng.lat);
@@ -233,19 +250,23 @@ let guestProfile={};
 
 
   return (
-    <div style={{backgroundColor:'rgb(251,132,0)',height:'auto'}}>
-      
-    <div style={{width:'49%',float:'left'}}>
-    {modalError && <Mymodal title={modalError.title} body={modalError.body} onConfirm={errorHandleModal}></Mymodal>}
-    {modalSuccess && <SuccessModal title={modalSuccess.title} body={modalSuccess.body} onConfirm={login} modalClear={errorHandleModal}></SuccessModal>}
-     <div style={{ 
-          zIndex:'100',position:'absolute',left:'25%',marginRight:'auto',marginLeft:'auto'
-              }}>
-      <PlacesAutocomplete
+    <div style={{height:'auto',zIndex:'100',position:'absolute',width:'100%'}}>
+      {modalError && <Mymodal title={modalError.title} body={modalError.body} onConfirm={errorHandleModal}></Mymodal>}
+   {modalSuccess && <SuccessModal title={modalSuccess.title} body={modalSuccess.body} onConfirm={login} modalClear={errorHandleModal}></SuccessModal>}
+    <div style={{width:'50%',float:'left'}}>
+    
+     <div style={{
+                  width: '300px',
+                  textTransform: 'none',
+                  float:'right',
+                  marginRight:'50px'
+                }}>
+     <PlacesAutocomplete
         value={address}
         onChange={setAddress}
         onSelect={handleSelect}
-        
+        style={{}}
+        // searchOptions={{ types: ["(address)"] }}
       >
         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
           <div>
@@ -309,9 +330,14 @@ let guestProfile={};
           
         )}
       </PlacesAutocomplete>
+
+
+
+
+
+    </div>
       </div>
-      </div>
-      <div style={{width:'50%',float:'right'}}>
+      <div style={{width:'49%',float:'left'}}>
       <Button
                 value={address}
                 size="large"
@@ -338,3 +364,9 @@ let guestProfile={};
   )
 };
 export default DeliveryLocationSearch;
+
+
+
+
+
+

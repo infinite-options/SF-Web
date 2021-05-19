@@ -8,6 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import CssTextField from '../utils/CssTextField';
 import appColors from '../styles/AppColors';
 import SocialLogin from '../admin/SocialLogin';
+import cross from '../icon/cross.svg';
 
 class Signup extends Component {
   constructor(props) {
@@ -226,15 +227,48 @@ class Signup extends Component {
       <Paper
         style={{
           width: 480,
+          height: 800 ,
           padding: 20,
-          backgroundColor: appColors.componentBg,
+          backgroundColor: "#E0E6E6F2",
           textAlign: 'center',
           display: 'inline-block',
+          
         }}
+        elevation={1000}
       >
-        <p style={{ color: appColors.secondary }}>SIGN UP</p>
+        {/* <div >
+            <img src={cross}  style={{float:'right',height:'25px',width:'25px',color:'black',marginTop:'3px',marginRight:'3px'}}></img>
+           </div> */}
+        <p style={{ color: appColors.secondary,fontSize:'32px',fontWeight:'bolder' ,textDecoration:'underline'}}>Sign Up</p>
         <form onSubmit={this._onSubmit}>
-          <Box mb={1}>
+        <SocialLogin />
+        <Box style={{borderBottom:'2px solid #136D74',marginBottom:'20px',marginTop:'20px'}}></Box>
+        <p style={{fontWeight:'bold'}}>Or continue with email</p>
+        <Box display="flex" mb={1} style={{marginBottom:'20px'}}>
+            <CssTextField
+              value={this.state.firstName}
+              onChange={this._firstNameChange}
+              label="First Name"
+              variant="outlined"
+              size="small"
+              fullWidth
+            />
+            
+          </Box>
+          <Box display="flex" mb={1} style={{marginBottom:'20px'}}>
+            <CssTextField
+              value={this.state.lastName}
+              onChange={this._lastNameChange}
+              label="Last Name"
+              variant="outlined"
+              size="small"
+              fullWidth
+              style={{borderRadius:'5px',height:'40px'}}
+              
+            />
+            
+          </Box>
+          <Box mb={1} style={{marginBottom:'20px'}}>
             <CssTextField
               value={this.state.email}
               onChange={this._emailChange}
@@ -244,7 +278,17 @@ class Signup extends Component {
               fullWidth
             />
           </Box>
-          <Box mb={1}>
+          <Box mb={1} style={{marginBottom:'20px'}}>
+            <CssTextField
+              value={this.state.email}
+              onChange={this._emailChange}
+              label="Confirm Email"
+              variant="outlined"
+              size="small"
+              fullWidth
+            />
+          </Box>
+          <Box mb={1} style={{marginBottom:'20px'}}> 
             <CssTextField
               value={this.state.password}
               onChange={this._passwordChange}
@@ -255,7 +299,7 @@ class Signup extends Component {
               fullWidth
             />
           </Box>
-          <Box mb={1}>
+          <Box mb={1} style={{marginBottom:'20px'}}>
             <CssTextField
               value={this.state.confirmPassword}
               onChange={this._confirmPasswordChange}
@@ -266,7 +310,7 @@ class Signup extends Component {
               fullWidth
             />
           </Box>
-          <Box display="flex" mb={1}>
+          {/* <Box display="flex" mb={1}>
             <CssTextField
               value={this.state.firstName}
               onChange={this._firstNameChange}
@@ -340,7 +384,7 @@ class Signup extends Component {
             variant="outlined"
             size="small"
             fullWidth
-          />
+          /> */}
           <br />
           <br />
           <div>
@@ -348,24 +392,27 @@ class Signup extends Component {
               variant="contained"
               type="submit"
               style={{
-                backgroundColor: appColors.secondary,
+                backgroundColor: appColors.primary,
                 color: 'white',
+                width:'287px',
+                height:'40px',
+                borderRadius:'8px'
               }}
             >
               Submit
             </Button>
-            <Button
+            {/* <Button
               variant="contained"
               style={{
                 marginLeft: '20px',
-                backgroundColor: appColors.secondary,
+                backgroundColor: appColors.primary,
                 color: 'white',
               }}
               type="button"
               onClick={this._onReset}
             >
               Reset
-            </Button>
+            </Button> */}
           </div>
           {this.state.message === 'success' && (
             <div>
@@ -373,10 +420,10 @@ class Signup extends Component {
               link in your email.
             </div>
           )}
-          <Box my={2}>
+          {/* <Box my={2}>
             <Box>or</Box>
-          </Box>
-          <SocialLogin />
+          </Box> */}
+         
         </form>
       </Paper>
     );

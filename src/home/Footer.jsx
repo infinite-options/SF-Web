@@ -7,11 +7,36 @@ import { Hidden } from 'react-grid-system';
 import appColors from '../styles/AppColors';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import InstagramIcon from '@material-ui/icons/Instagram';
+import Modal from './Modal';
+import { AuthContext } from '..//auth/AuthContext';
+import AmbasadorModal from './AmbasadorModal';
+import LoginAmbasador from './loginAmbasador';
+import storeContext from '../customer/storeContext';
 
 const Footer = () => {
+  let [ambasadorModal,ambasadorModalMessage] = useState('');
+  let [loginambasadorModal,loginambasadorModalMessage] = useState('');
+  const auth = useContext(AuthContext);
+  
+  const [userInfo, setUserInfo] = useState(auth.profile);
+ 
+
+
+  const becomeAmbassador=()=>{
+    if(auth.isAuth){
+      // ambasadorModalMessage("true");
+      console.log(userInfo);
+    }
+    else{
+      // loginambasadorModalMessage('true')
+      alert(auth.profile);
+    }
+  }
   return (
     <div className="containerFooter" style={{ margin: 0 ,height:'200px'}}>
       <div className="container">
+        {/* {ambasadorModal && <AmbasadorModal ></AmbasadorModal>}
+        {loginambasadorModal && <LoginAmbasador/>} */}
         <Container>
           <Row>
             <Col lg={3} md={2}>
@@ -48,7 +73,7 @@ const Footer = () => {
                 size="large"
                 variant="contained"
                 color="secondary"
-                //onClick={onFindProduceClicked}
+                onClick={becomeAmbassador}
                 style={{
                   width: '250px',
                   marginTop: '75px',

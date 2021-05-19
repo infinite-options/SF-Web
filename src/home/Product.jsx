@@ -48,13 +48,13 @@ const Product = (props) => {
         >
           <Box display="flex">
             <Box style={{float:'left',fontWeight:'bold'}}>
-              {props.name}({props.unit === 'each' ? '' : 'per '}
-              {props.unit})
+              {props.name}
             </Box>
             </Box>
             {/* <Box flexGrow={1} /> */}
             <div style={{width:'175px',float:'center',fontWeight:'bold'}}>
-            <Box style={{float:'left',fontWeight:'bold',}}>${props.price}</Box>
+            <Box style={{float:'left',fontWeight:'bold',}}>${props.price}({props.unit === 'each' ? '' : 'per '}
+              {props.unit})</Box>
             </div>
         </Box>
         </div>

@@ -190,7 +190,7 @@ const Landing = ({ ...props }) => {
                 width="50%"
                 display="flex"
                 justifyContent="center"
-                zIndex={40}
+                zIndex={4000}
               >
                 <Box
                   ref={signupWrapperRef}
@@ -416,7 +416,9 @@ const Landing = ({ ...props }) => {
                   fontSize: '80px',
                   textAlign: 'left',
                   fontWeight: '700',
-                  marginLeft: '90px',
+                  marginLeft: '175px',
+                  marginTop:'150px',
+                  marginBottom:'150px'
                 }}
               >
                 Fresh, Organic <br></br>
@@ -432,7 +434,7 @@ const Landing = ({ ...props }) => {
                 marginTop: '40px',
                 width: '226px',
                 height: '226px',
-                marginTop: '100px',
+                marginTop: '200px',
                 //marginLeft: '800px',
               }}
             />
@@ -445,8 +447,8 @@ const Landing = ({ ...props }) => {
         className="hero-right"
         style={{
           backgroundColor: 'rgb(251,132,0)',
-          minHeight: '300px',
-          maxHeight: '500px',
+          minHeight: '200px',
+          maxHeight: '300px',
         }}
       >
         {/* <ZipcodeSearch/> */}
@@ -642,9 +644,9 @@ const Landing = ({ ...props }) => {
                   marginLeft: '20px',
                 }}
               >
-                100%
+                75+ items
               </p>
-              ute irure dolor in reprehenderit in voluptate velit esse cillum d
+              Fruits, vegetables and other organic produce to choose from
             </div>
           </Box>
 
@@ -660,10 +662,9 @@ const Landing = ({ ...props }) => {
                   marginTop: '40px',
                 }}
               >
-                4.8/5
+                17% Savings
               </p>
-              fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-              proident,
+              Our affordable produce can help you save an average of 17% more than that compared to organic produce at local grocery stores.
             </div>
           </Box>
           <Box className={classes.infoSection} id="mobileInfoSection">
@@ -679,7 +680,7 @@ const Landing = ({ ...props }) => {
               >
                 7+ Farms
               </p>
-              ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+              Support our farm partners by ordering here and stay updated with new, seasonal produce.
             </div>
           </Box>
         </Box>

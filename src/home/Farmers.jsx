@@ -6,6 +6,8 @@ import {Button} from 'react-bootstrap'
 import Card from "react-bootstrap/Card";
 import fb from '../icon/facebook.svg';
 import insta from '../icon/instagram.svg';
+import globe from '../icon/globe.svg';
+
 
 import Slider from 'react-slick';
 import Carousel from 'react-multi-carousel';
@@ -185,9 +187,9 @@ export default function Farmers() {
       //     <div style={{float:'right',padding:'2px'}}><img src={insta}></img></div> */}
       //     </div>
       // </div>
-      <div style={{marginLeft:'35px'}}>
+      <div style={{marginLeft:'35px',width:'20rem'}}>
          <div>
-          <img  src={x.farmerimg} style={{width:'15rem',height:'15rem',border:'2px solid rgb(242,151,56)',aspectRatio:'1/1',float:'left'}}/>
+          <img  src={x.farmerimg} style={{width:'17rem',height:'15rem',border:'2px solid rgb(242,151,56)',aspectRatio:'1/1',float:'left'}}/>
         </div>
       
         
@@ -196,8 +198,9 @@ export default function Farmers() {
           </div>
           <div>
           <div style={{float:'left',color:'rgb(35,109,115)',fontWeight:'bold',fontSize:'20px'}}>City:{x.city}</div>
-          <div style={{marginRight:'30px',float:'right',padding:'2px',width:'20px',maxHeight:'10px'}}><img src={fb}></img></div>
+          <div style={{marginRight:'30%',float:'right',padding:'2px',width:'20px',maxHeight:'10px'}}><img src={globe}></img></div>
         <div style={{float:'right',padding:'2px'}}><img src={insta}></img></div>
+        <div style={{float:'right',padding:'2px'}}><img src={fb}></img></div>
           </div> 
 
           
