@@ -116,6 +116,7 @@ function createProduct2(product) {
       business_uid={product.lowest_price_business_uid} // This is the business ID with the lowest price, also parsed from the getBusinesses method
       id={product.item_uid}
       key={product.item_uid}
+      info={product.item_info}
     />
 
   );

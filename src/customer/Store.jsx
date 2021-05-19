@@ -399,9 +399,10 @@ const Store = ({ ...props }) => {
       setProfile(updatedProfile);
     }
 
-    BusiMethods.getItems(
-      ['fruit', 'dessert', 'vegetable', 'other'],
-      Array.from(businessUids)
+    BusiMethods.getProduceByLocation(
+      profile.longitude , profile.latitude
+      // ['fruit', 'dessert', 'vegetable', 'other'],
+      // Array.from(businessUids)
     ).then((itemRes) => {
       const _products = [];
       const _vegetable = [];

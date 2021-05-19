@@ -10,8 +10,9 @@ function CartItem(props) {
   const store = useContext(storeContext);
   const products = store.products;
   const productSelect = useContext(ProductSelectContext);
-  const itemPrice = parseFloat(props.price);
+  var itemPrice = parseFloat(props.price);
   var totalPrice = itemPrice * props.count;
+
 
   function decrease() {
     if (props.id in store.cartItems) {
@@ -84,6 +85,8 @@ function CartItem(props) {
      productSelect.categoriesClicked,
     store.cartItems,
   ]);
+
+
   return (
     <Box
       display="flex"
@@ -109,55 +112,64 @@ function CartItem(props) {
         <Box
           width="50%"
           display="flex"
+          flex ='2'
           ml={2}
           style={{
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
             textAlign: 'left',
+            textDecorationLine:isInDay?'' : 'line-through', textDecorationStyle: 'solid',
           }}
         >
         <Box style={{textDecorationLine:isInDay?'' : 'line-through', textDecorationStyle: 'solid'}}>{ props.name}{' '} </Box>
          
-          {props.unit !== undefined && props.unit !== ''
+          
+         { props.unit !== undefined && props.unit !== ''
             ? '($' +
               itemPrice.toFixed(2) +
               ' ' +
               (props.unit === 'each' ? '' : '/ ') +
               props.unit +
               ')'
-            : ''}
+            : ''  } 
         </Box>
-        <Box width="30%" display="flex" justifyContent="center">
+        <Box width="30%" flex='0.5' display="flex" justifyContent="center">
           {props.isCountChangeable && (
             <Box>
+              { isInDay ?
               <RemoveIcon
                 fontSize="small"
                 cursor="pointer"
                 color="primary"
                 onClick={decrease}
                 style={{ backgroundColor: '#136D74', borderRadius: '5px' }}
-              />
+              /> :' '}
             </Box>
           )}
           <Box mx={1}  color="#000000" fontWeight="500" fontSize="14px">
-            {props.count}
+          
+            { isInDay ? props.count : ' '}
           </Box>
           {props.isCountChangeable && (
             <Box>
+              { isInDay ?
               <AddIcon
                 fontSize="small"
                 cursor="pointer"
                 color="primary"
                 onClick={increase}
                 style={{ backgroundColor: '#136D74', borderRadius: '5px' }}
-              />
+              /> : ' '}
             </Box>
           )}
         </Box>
 
-        <Box textAlign="right" width="20%">
+        <Box textAlign="right" width="20%" flex='2' display="flex" flexDirection='column' >
+          <Box style={{textDecorationLine:isInDay?'' : 'line-through', textDecorationStyle: 'solid'}}>
           ${totalPrice.toFixed(2)}
+          </Box >
+          <Box style={{fontSize:'10px', textAlign:'left', color:'#ff8500'}} hidden={isInDay} > Item not avaliable on this day </Box>
         </Box>
       </Box>
     </Box>

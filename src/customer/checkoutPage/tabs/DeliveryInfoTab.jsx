@@ -25,9 +25,7 @@ import CssTextField from '../../../utils/CssTextField';
 const useStyles = makeStyles({
   root: {
     flexGrow: 1,
-    paddingTop: '20px',
-    paddingLeft: '50px',
-    paddingRight: '50px',
+   
   },
   button: {
     color: appColors.primary,
@@ -401,7 +399,7 @@ export default function DeliveryInfoTab() {
         })}
         {store.profile.socialMedia === 'NULL' && (
           <>
-            <Box my={1} hidden={!isPassFieldShown}>
+            {/* <Box my={1} hidden={!isPassFieldShown}>
               {PlainTextField({
                 value: password,
                 error: passwordError,
@@ -444,7 +442,7 @@ export default function DeliveryInfoTab() {
                     : 'Save Password'
                   : 'Change Password'}
               </Button>
-            </Box>
+            </Box> */}
           </>
         )}
         {/* <Box
@@ -461,7 +459,7 @@ export default function DeliveryInfoTab() {
             onChange={onNotificationChange}
           />
         </Box> */}
-        {paymentProcessing && (
+        {/* {paymentProcessing && (
           <p className={classes.notify}>
             Please Confirm your delivery information below.
           </p>
@@ -483,8 +481,8 @@ export default function DeliveryInfoTab() {
         })}
         <FormHelperText error={true} style={{ textAlign: 'center' }}>
           {locErrorMessage}
-        </FormHelperText>
-        <Box display="flex" mb={1}>
+        </FormHelperText> */}
+         {/* <Box display="flex" mb={1}>
           <CssTextField
             error={locError}
             value={userInfo.address}
@@ -507,8 +505,8 @@ export default function DeliveryInfoTab() {
               onChange={onFieldChange}
             />
           </Box>
-        </Box>
-        <Box display="flex" mb={1}>
+        </Box> */}
+        {/* <Box display="flex" mb={1}>
           <Box width="33.3%">
             <CssTextField
               error={locError}
@@ -543,10 +541,10 @@ export default function DeliveryInfoTab() {
               size="small"
               fullWidth
               onChange={onFieldChange}
-            />
-          </Box>
-        </Box>
-
+      /> 
+      </Box>  
+        </Box> */}
+{/* 
         <Box hidden={isAddressConfirmed} mb={3}>
           <Button
             className={classes.button}
@@ -569,7 +567,7 @@ export default function DeliveryInfoTab() {
             Save Changes
           </Button>
         </Box>
-  
+   */}
       </>
     );
   };
@@ -577,9 +575,6 @@ export default function DeliveryInfoTab() {
   const noAuthFields = (spacing) => {
     return (
       <>
-        <Box mb={spacing} color={appColors.paragraphText} fontSize={20}>
-          <label> Guest Information</label>
-        </Box>
         {PlainTextField({
           value: userInfo.firstName,
           name: 'firstName',
@@ -608,7 +603,7 @@ export default function DeliveryInfoTab() {
           label: 'Email',
           spacing: spacing,
         })}
-        <FormHelperText error={true} style={{ textAlign: 'center' }}>
+        {/* <FormHelperText error={true} style={{ textAlign: 'center' }}>
           {locErrorMessage}
         </FormHelperText>
         <Box display="flex" mb={spacing}>
@@ -688,12 +683,12 @@ export default function DeliveryInfoTab() {
         <Box mt={spacing + 3} />
         <FormHelperText error={true} style={{ textAlign: 'center' }}>
           {passwordErrorMessage}
-        </FormHelperText>
+        </FormHelperText> */}
         {/* <FormHelperText style={{ textAlign: 'center' }}>
           Minimum eight and maximum thirty-two characters, at least one letter
           and one number:
         </FormHelperText> */}
-        <Box mb={0.5} />
+        {/* <Box mb={0.5} />
         <Box mb={spacing || 1}>
           <CssTextField
             error={passwordError}
@@ -730,7 +725,7 @@ export default function DeliveryInfoTab() {
           >
             Sign Up
           </Button>
-        </Box>
+        </Box> */}
         {/* <LoadScript googleMapsApiKey={process.env.REACT_APP_BING_LOCATION_KEY}>
           <GoogleMap
             mapContainerStyle={{
@@ -753,10 +748,10 @@ export default function DeliveryInfoTab() {
   };
 
   return (
-    <Paper className={classes.root}>
+   
       <form onSubmit={onSubmit}>
         {auth.isAuth ? authFields() : noAuthFields(2)}
       </form>
-    </Paper>
+
   );
 }

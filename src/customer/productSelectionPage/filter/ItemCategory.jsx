@@ -59,7 +59,7 @@ const ItemCategory = () => {
   ];
 
   return (
-    <React.Fragment>{categories.map(createItemCategoryItem)}</React.Fragment>
+    <React.Fragment>{categories.map(createItemCategoryItem)} </React.Fragment>
   );
 };
 
