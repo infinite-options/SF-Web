@@ -55,7 +55,7 @@ const ProductDisplay = () => {
   const [itemsList, setItemsList] = useState([]);
 
   useEffect(() => {
- //   getItems();
+  getItems();
   }, []);
 
   const getItems = () => {
