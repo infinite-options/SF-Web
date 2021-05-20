@@ -37,19 +37,22 @@ import AuthUtils from 'utils/AuthUtils';
 const booleanVals = new Set(['taxable', 'favorite']);
 
 const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
+  console.log('props in add item modal',props)
   const auth = useContext(AuthContext);
 
   const [file, setFile] = useState({ obj: undefined, url: '' }); // NOTE: url key is probably useless
   const classes = useStyles();
   const [itemProps, setItemProps] = useState({
-    itm_business_uid: farmID,
+    new_item:'TRUE',
+    bus_uid: farmID,
+    item_info:'',
     item_name: '',
     item_status: 'Active',
     item_type: '',
     item_desc: '',
     item_unit: '',
     item_price: '',
-    business_price: '',
+    bus_price: '',
     item_sizes: '',
     favorite: 'FALSE',
     taxable: 'FALSE',
@@ -74,21 +77,23 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
     console.log(event.target.files[0].name);
   };
 
-  const insertAPI = process.env.REACT_APP_SERVER_BASE_URI + 'addItems/Insert';
+  const insertAPI = process.env.REACT_APP_SERVER_BASE_URI + 'addItems_Prime/Insert';
 
   // NOTE: Which item inputs are optional/required?
 
   //post new item to endpoint
   const addItem = () => {
     const itemInfo = {
-      itm_business_uid: farmID,
+      new_item:'TRUE',
+      item_info:itemProps.item_name,
+      bus_uid: farmID,
       item_name: itemProps.item_name,
       item_status: itemProps.item_status,
       item_type: itemProps.item_type,
       item_desc: itemProps.item_desc,
       item_unit: itemProps.item_unit,
       item_price: parseFloat(itemProps.item_price).toFixed(2),
-      business_price: parseFloat(
+      bus_price: parseFloat(
         auth.authLevel == 2 ? itemProps.business_price : itemProps.item_price
       ).toFixed(2),
       item_sizes: itemProps.item_sizes,
@@ -130,7 +135,7 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
         itemInfo.item_price = parseFloat(itemInfo.item_price);
         itemInfo.business_price = parseFloat(itemInfo.business_price);
 
-        props.setData((prevData) => [...prevData, itemInfo]);
+        //props.setData((prevData) => [...prevData, itemInfo]);
 
         props.handleClose();
       })
@@ -212,7 +217,6 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
               </Box>
             </Grid>
           )}
-
           <Grid item xs={12}>
             {' '}
             <Box display="flex" justifyContent="center">
@@ -259,7 +263,9 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
               </Button>
             </Box>
           </Grid>
+          
         </Grid>
+        
         <Grid container item xs={6} spacing={2} style={{ textAlign: 'right' }}>
           <Grid item xs={12} style={{ height: '100px' }}>
             <FormControl className={classes.formControl}>
@@ -294,7 +300,6 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
               </Select>
             </FormControl>
           </Grid>
-
           <Grid item xs={12}>
             <div style={{ height: '100px', backgroundColor: 'white' }}>
               <FormControl className={classes.formControl}>
@@ -315,19 +320,16 @@ const AddItemModel = forwardRef(({ farmID, ...props }, ref) => {
               </FormControl>
             </div>
           </Grid>
-          {/* <Grid item xs={12}>
-            <TextField
-              id="date"
-              label="Expiration Date"
-              type="date"
-              value={itemProps.exp_date}
-              defaultValue=""
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          </Grid> */}
-
+          <Grid item xs={12}>
+            <Box display="flex" justifyContent="center">
+              <TextField
+                name="item_info"
+                label="Item Info"
+                onChange={handleChange}
+                value={itemProps.item_info}
+              />
+            </Box>
+          </Grid>
           <Grid item xs={12}>
             <Box
               pl={9}

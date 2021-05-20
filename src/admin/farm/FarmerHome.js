@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Item from './Item';
 import AddItemModel from './AddItemModel';
+import CheckItem from './CheckItem';
 import NumberFormat from 'react-number-format';
 // import IconButton from '@material-ui/core/IconButton';
 // import Fab from '@material-ui/core/Fab';
@@ -17,9 +18,6 @@ import { ButtonBase, Divider, Grid, Modal } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import axios from 'axios';
 
-//https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/itemsByBusiness/200-000003
-//api/v2/businesses
-//https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/businesses
 const API_BASE_URL = process.env.REACT_APP_SERVER_BASE_URI + 'itemsByBusiness/';
 
 //TODO: add fields to add modal, close modal with x
@@ -49,6 +47,7 @@ export default function FarmerHome({ farmID, farmName, ...props }) {
     //get data from farm
     console.log('get farm data..');
     if (farmID !== '') getBusinessItems(API_BASE_URL + farmID, setFarmData);
+    console.log('Farm data is',farmData)
   }, [farmID]);
 
   const getBusinessItems = (urlAPI, setData) => {
@@ -96,7 +95,7 @@ export default function FarmerHome({ farmID, farmName, ...props }) {
         return itemData;
       }
     });
-    console.log(refreshedPastProduce);
+    console.log('farm data to be used', refreshedPastProduce);
     setFarmData(refreshedPastProduce);
     // To Do: put this in database
   };
@@ -104,6 +103,7 @@ export default function FarmerHome({ farmID, farmName, ...props }) {
   //model for when farmer adds new item
   const modelBody = (
     // adding parent <div> fixes 'Material-UI: The modal content node does not accept focus' warning.
+    /*
     <div>
       <AddItemModel
         farmID={farmID}
@@ -111,6 +111,14 @@ export default function FarmerHome({ farmID, farmName, ...props }) {
         setData={setFarmData}
       />
     </div>
+    */
+    <div>
+    <CheckItem
+      farmID={farmID}
+      handleClose={handleCloseModel}
+      setData={setFarmData}
+    />
+  </div>
   );
 
   return (
@@ -177,6 +185,7 @@ export default function FarmerHome({ farmID, farmName, ...props }) {
           farmData &&
             farmData.map((itemData, idx) => {
               // display 'past' status items AND items with no status tag
+              console.log('individual items data', itemData)
               if (
                 !itemData.item_status ||
                 itemData.item_status.toLowerCase() === 'past'
