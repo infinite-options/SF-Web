@@ -20,9 +20,7 @@ export default class BusiApiReqs {
     let reqBody = {
       type: itemTypes,
       ids: businessIds,
-
     };
-
     return await axios
       .post(this.BASE_URL + 'getItems', reqBody)
       .then((response) => {
@@ -48,7 +46,23 @@ export default class BusiApiReqs {
           return Promise.resolve(response.data.result);
         else return Promise.resolve([]);
       })
-      .catch((err) => {
+      .catch((err)=> {
+        console.log(err.response || err);
+      });
+  };
+
+
+  create_ambassador = async function (email) {
+    let reqBody = {
+      code: email,
+    };
+    return await axios
+      .post(this.BASE_URL + 'brandAmbassador/create_ambassador', reqBody)
+      .then((response) => {
+        console.log('response', response);
+        alert("Congrats you are a ambassador");
+      })
+      .catch((err)=> {
         console.log(err.response || err);
       });
   };
@@ -66,5 +80,4 @@ export default class BusiApiReqs {
         console.log(err.response || err);
       });
   };
-
 }

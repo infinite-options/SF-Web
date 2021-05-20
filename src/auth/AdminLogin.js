@@ -347,10 +347,13 @@ function AdminLogin(props) {
               Log In
             </Box>
           </Grid>
+          
           <SocialLogin setError={setError} setErrorMessage={setErrorMessage} />
+          <form style={{marginRight:'auto',marginLeft:'auto'}}>
           <Box style={{borderBottom:'2px solid #136D74',marginBottom:'20px',marginTop:'20px'}}></Box>
-        <p style={{fontWeight:'bold',marginRight:'auto',marginLeft:'auto',marginBottom:'0px',marginTop:'20px'}}>Or continue with email</p>
-          <Grid item xs={12} style={{marginTop:'20px'}}>
+          
+            <p style={{fontWeight:'bold',marginRight:'auto',marginLeft:'auto',marginBottom:'0px',marginTop:'20px'}}>Or continue with email</p>
+            <Grid item xs={12} style={{marginTop:'20px'}}>
             <CssTextField
               error={errorValue}
               id="outlined-required"
@@ -359,10 +362,10 @@ function AdminLogin(props) {
               size="small"
               value={emailValue}
               onChange={handleEmailChange}
-              style={{width:'300px',marginBottom:'20px'}}
+              style={{width:'300px',marginBottom:'10px',borderRadius:'10px'}}
             />
-          </Grid>
-          <Grid item xs={12}>
+            </Grid>
+            <Grid item xs={12}>
             <CssTextField
               error={errorValue}
               id="outlined-password-input"
@@ -372,13 +375,13 @@ function AdminLogin(props) {
               size="small"
               value={passwordValue}
               onChange={handlePasswordChange}
-              style={{width:'300px',marginBottom:'20px'}}
+              style={{width:'300px',marginBottom:'20px',borderRadius:'10px'}}
             />
-          </Grid>
-          <Grid item xs={12}>
+            </Grid>
+            <Grid item xs={12}>
             {showError()}
-          </Grid>
-          <Grid item xs={12}>
+            </Grid>
+            <Grid item xs={12}>
             <Box mb={2}>
               <Button
                 variant="contained"
@@ -393,14 +396,16 @@ function AdminLogin(props) {
                 Login
               </Button>
             </Box>
-          </Grid>
-          <Grid item xs={12}>
+            </Grid>
+            <Grid item xs={12}>
             {/* <Box mb={2}>
               <Box>or</Box>
             </Box> */}
-          </Grid>
-         
+            
+            </Grid>
+            </form>
         </Grid>
+        
       </Paper>
     </div>
   );

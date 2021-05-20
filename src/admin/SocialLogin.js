@@ -8,7 +8,8 @@ import { AuthContext } from '../auth/AuthContext';
 import { withRouter } from 'react-router';
 import Google from '../icon/Google.svg';
 import Fb_Login from '../icon/fb_login.svg'
-import Apple_Login from '../icon/Apple_Login.svg'
+import Apple_Login from '../icon/Apple_Login.svg';
+import {SiFacebook} from 'react-icons/si';
 
 function SocialLogin(props) {
   const Auth = useContext(AuthContext);
@@ -167,18 +168,20 @@ function SocialLogin(props) {
   return (
     <Grid container spacing={1} xs={12}>
       <Grid item xs={12}>
-        <FacebookLogin
+       <button style={{backgroundColor:"rgb(82,104,180)",border:'1px solid rgb(82,104,180)',borderRadius:'8px',height:'50px',width:'280px'}}> <FacebookLogin
           appId={process.env.REACT_APP_FACEBOOK_APP_ID}
           autoLoad={false}
           fields="name,email,picture"
           onClick="return false"
           callback={responseFacebook}
           size="small"
-          // textButton="Continue with Facebook"
-          render={renderProps => (
-            <img  src={Fb_Login} onClick={renderProps.onClick} disabled={renderProps.disabled} ></img>
-          )}
+          // icon={<SiFacebook/>}
+          textButton="Continue with Facebook"
+          // render={renderProps => (
+          //   <img  src={Fb_Login} onClick={renderProps.onClick} disabled={renderProps.disabled} ></img>
+          // )}
         />
+        </button>
       </Grid>
       <Grid item xs={12}>
         <Button style={{}}><GoogleLogin

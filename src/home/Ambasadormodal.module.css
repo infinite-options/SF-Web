@@ -1,91 +1,91 @@
 .backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    z-index: 10;
-    background: rgba(0, 0, 0, 0.75);
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.modal {
+  position: fixed;
+  top: 70px;
+  left: 40%;
+  width: auto;
+  height: auto;
+  z-index: 10000;
+  overflow-y: auto;
+  background: #E1E7E7;
+  border:1px solid #E1E7E7;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+ 
+}
+
+.modalSuccess {
+  position: fixed;
+  top: 70px;
+  left: 40%;
+  width: auto;
+  height: auto;
+  z-index: 10000;
+  overflow-y: auto;
+  background: #E1E7E7;
+  border:1px solid black;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+ 
+}
+
+
+
+
+.modalSignup {
+  position: fixed;
+  top: 101px;
+  left: 40%;
+  width: 550px;
+  height: 850px;
+  z-index: 10000;
+  overflow-y: scroll;
+  background: #E1E7E7;
+  border:1px solid black;
   
+  
+  
+}
+
+.header {
+  background: #E1E7E7;
+  padding: 1rem;
+}
+
+.header h2 {
+  margin: 0;
+  color: black;
+}
+
+.content {
+  padding: 1rem;
+}
+
+.actions {
+  padding: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+.button{
+    width: 300px;
+    height: 40px;
+    background-color: #FF8500;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 15px;
+}
+/* @media (min-width: 768px) {
   .modal {
-    position: fixed;
-    top: 70px;
-    left: 40%;
-    width: auto;
-    height: auto;
-    z-index: 10000;
-    overflow-y: auto;
-    background: #E1E7E7;
-    border:1px solid black;
-    max-height: calc(100vh - 100px);
-    overflow-y: auto;
-   
+    left: calc(50% - 20rem);
+    width: 40rem;
   }
-
-  .modalSuccess {
-    position: fixed;
-    top: 70px;
-    left: 40%;
-    width: auto;
-    height: auto;
-    z-index: 10000;
-    overflow-y: auto;
-    background: #E1E7E7;
-    border:1px solid black;
-    max-height: calc(100vh - 100px);
-    overflow-y: auto;
-   
-  }
-
-
-
-
-  .modalSignup {
-    position: fixed;
-    top: 101px;
-    left: 40%;
-    width: 550px;
-    height: 850px;
-    z-index: 10000;
-    overflow-y: scroll;
-    background: #E1E7E7;
-    border:1px solid black;
-    
-    
-    
-  }
-  
-  .header {
-    background: #E1E7E7;
-    padding: 1rem;
-  }
-  
-  .header h2 {
-    margin: 0;
-    color: black;
-  }
-  
-  .content {
-    padding: 1rem;
-  }
-  
-  .actions {
-    padding: 1rem;
-    display: flex;
-    justify-content: flex-end;
-  }
-  .button{
-      width: 300px;
-      height: 40px;
-      background-color: #FF8500;
-      margin-left: auto;
-      margin-right: auto;
-      border-radius: 15px;
-  }
-  /* @media (min-width: 768px) {
-    .modal {
-      left: calc(50% - 20rem);
-      width: 40rem;
-    }
-  } */
+} */
