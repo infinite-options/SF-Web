@@ -30,7 +30,7 @@ import TextField from '@material-ui/core/TextField';
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 
 
-
+// let google1=new google.maps;
 
 let modalProp=true;
 let modalSample="";
@@ -242,6 +242,12 @@ let guestProfile={};
       //   history.push('/store');
       console.log(guestProfile)
   }
+  const google = window.google;
+  const searchOptions = {
+    location: new google.maps.LatLng(37 , -121),
+    radius: 2000,
+    types: ['address']
+  }
 
   const errorHandleModal=()=>{
     setModalErrorMessage(null);
@@ -249,6 +255,12 @@ let guestProfile={};
   }
 
 
+  // const options = {
+  //   location: google1.LatLng(-34, 151),
+  //   radius: 2000,
+  //   types: ['address']
+  
+  // }
   return (
     <div style={{height:'auto',zIndex:'100',position:'absolute',width:'100%'}}>
       {modalError && <Mymodal title={modalError.title} body={modalError.body} onConfirm={errorHandleModal}></Mymodal>}
@@ -266,7 +278,8 @@ let guestProfile={};
         onChange={setAddress}
         onSelect={handleSelect}
         style={{}}
-        // searchOptions={{ types: ["(address)"] }}
+        // options={options}
+        searchOptions={searchOptions}
       >
         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
           <div>

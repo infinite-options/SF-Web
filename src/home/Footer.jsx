@@ -24,19 +24,24 @@ const Footer = () => {
 
   const becomeAmbassador=()=>{
     if(auth.isAuth){
-      // ambasadorModalMessage("true");
-      console.log(userInfo);
+      ambasadorModalMessage("true");
+      
     }
     else{
-      // loginambasadorModalMessage('true')
-      alert(auth.profile);
+      loginambasadorModalMessage('true'); 
     }
   }
+
+  const modalClose=()=>{
+    ambasadorModalMessage(null);
+    loginambasadorModalMessage(null);
+  }
+
   return (
     <div className="containerFooter" style={{ margin: 0 ,height:'200px'}}>
       <div className="container">
-        {/* {ambasadorModal && <AmbasadorModal ></AmbasadorModal>}
-        {loginambasadorModal && <LoginAmbasador/>} */}
+        {ambasadorModal && <AmbasadorModal close={modalClose}></AmbasadorModal>}
+        {loginambasadorModal && <LoginAmbasador close={modalClose}></LoginAmbasador>}
         <Container>
           <Row>
             <Col lg={3} md={2}>
