@@ -40,42 +40,42 @@ import GridList from '@material-ui/core/GridList';
 //   },
 // }));
 
-// const responsive = {
-//   superLargeDesktop: {
-//     breakpoint: { max: 3000, min: 1430 },
-//     items: 4.5,
-//   },
-//   desktop: {
-//     breakpoint: { max: 1430, min: 1150 },
-//     items: 3,
-//   },
-//   tablet: {
-//     breakpoint: { max: 1150, min: 800 },
-//     items: 2,
-//   },
-//   mobile: {
-//     breakpoint: { max: 800, min: 0 },
-//     items: 2,
-//   },
-// };
-
-const responsive = {
+var responsive = {
+  superLargeDesktop: {
+    // the naming can be any, depends on you.
+    breakpoint: { max: 40, min: 3000 },
+    items: 5
+  },
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
-    items: 3,
-    partialVisibilityGutter: 40, // this is needed to tell the amount of px that should be visible.
+    items: 5
   },
   tablet: {
     breakpoint: { max: 1024, min: 464 },
-    items: 2,
-    partialVisibilityGutter: 30, // this is needed to tell the amount of px that should be visible.
+    items: 7
   },
   mobile: {
     breakpoint: { max: 464, min: 0 },
-    items: 1,
-    partialVisibilityGutter: 30, // this is needed to tell the amount of px that should be visible.
-  },
+    items: 1
+  }
 };
+
+// const responsive = {
+//   desktop: {
+//     breakpoint: { max: 3000, min: 1024 },
+//     items: 3,
+  
+//   },
+//   tablet: {
+//     breakpoint: { max: 1024, min: 464 },
+//     items: 2,
+  
+//   },
+//   mobile: {
+//     breakpoint: { max: 464, min: 0 },
+//     items: 1,
+//   }
+// };
 
 const useStyles = makeStyles((theme) => ({
   itemDisplayContainer: {

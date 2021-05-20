@@ -489,13 +489,34 @@ const Store = ({ ...props }) => {
           }
         }
       }
+
+      BusiMethods.getFavorite(cookies.get("customer_uid")).then((itemRes) => {
+        if (itemRes !== undefined) {
+          for (const item of itemRes) {
+                console.log("Favorite get",item)
+                   
+                   for(let i=0;  i < _products.length; i++){
+                     if(item.favorite_produce.includes(_products[i].item_name))
+                            _products[i].favorite = 'TRUE'
+                          }   
+                 // if (products[i].item_name == item.favorite_produce){
+             //       products[i].favorite = "TRUE"
+              //     console.log("Favorite get", item.favorite_produce)
+              //    }
+              // }
+          }
+        }
+    
+      });
+
       setProducts(_products.sort());
       setProductsFruit(_fruit.sort());
       setProductsVegetable(_vegetable.sort());
       setProductsDessert(_dessert.sort());
-      console.log('productsssssss----',_products)
+  //    console.log('productsssssss----',_products)
       setProductsLoading(false);
     });
+
   }
 
   return (

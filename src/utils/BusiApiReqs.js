@@ -20,11 +20,11 @@ export default class BusiApiReqs {
     let reqBody = {
       type: itemTypes,
       ids: businessIds,
-      
+
     };
-    
+
     return await axios
-      .post(this.BASE_URL + 'getItems' , reqBody)
+      .post(this.BASE_URL + 'getItems', reqBody)
       .then((response) => {
         console.log('getItems API: ', response);
         if (response.data.result.length !== 0)
@@ -44,6 +44,9 @@ export default class BusiApiReqs {
       .post(this.BASE_URL + 'favorite_produce/get', reqBody)
       .then((response) => {
         console.log('Favorite Items:', response);
+        if (response.data.result.length !== 0)
+          return Promise.resolve(response.data.result);
+        else return Promise.resolve([]);
       })
       .catch((err) => {
         console.log(err.response || err);

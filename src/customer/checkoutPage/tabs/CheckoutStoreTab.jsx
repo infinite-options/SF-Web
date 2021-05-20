@@ -32,6 +32,8 @@ import PayPal from '../utils/Paypal';
 import StripeElement from '../utils/StripeElement';
 
 import TermsAndConditions from './TermsAndConditions';
+import Cookies from "js-cookie";
+
 
 import DeliveryInfoTab from '../tabs/DeliveryInfoTab';
 //import TipImage from '../../../images/TipBackground.svg'
@@ -40,6 +42,9 @@ import { StreetviewTwoTone } from '@material-ui/icons';
 
 
 //import SignUp from '../SignUp/SignUp';
+
+const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI;
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -210,7 +215,7 @@ export default function CheckoutTab(props) {
   const BusiApiMethods = new BusiApiReqs();
   const checkout = useContext(checkoutContext);
   const productSelect = useContext(ProductSelectContext);
- 
+  const FavoritePost = []
 
   const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
   const [isSignUpShown, setIsSignUpShown] = useState(false);
@@ -657,6 +662,24 @@ const PlainTextField = (props) => {
    
   } = useContext(storeContext);
 
+
+  let reqBodyPost = {
+    customer_uid : Cookies.get("customer_uid"),
+    favorite:FavoritePost
+  };
+  
+  
+  
+  const postRequest = async() => {
+  
+    try{
+    const response = await axios.post(BASE_URL + 'favorite_produce/post', reqBodyPost)
+      console.log('Favorite Post:', response);
+      }catch(err) {
+        console.log(err.response || err);
+      }
+  }
+
   async function onPayWithClicked(type) {
     if (paymentDetails.amountDue > 0) {
       // check guest fields to make sure they are not empty
@@ -697,6 +720,18 @@ const PlainTextField = (props) => {
         store.setProfile(updatedProfile);
       }
       setPaymentType(type);
+
+      for (let i = 0; i < store.products.length; i++) {
+          //console.log("Favorite post",store.products[i].favorite, store.products[i].item_name)
+         if(store.products[i].favorite === 'TRUE'){ 
+          FavoritePost.push(store.products[i].item_name)
+         }
+      }
+
+
+      postRequest();
+
+
     } else {
       alert('Please add items to your card before processing payment');
     }

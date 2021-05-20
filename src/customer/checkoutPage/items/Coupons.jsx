@@ -8,35 +8,28 @@ import storeContext from '../../storeContext';
 import checkoutContext from '../CheckoutContext';
 import {makeStyles} from '@material-ui/core/styles';
 
-
 const responsive = {
-  superLargeDesktop: {
-    breakpoint: { max: 3000, min: 1650 },
-    items: 1,
-    partialVisibilityGutter: 150,
-  },
   desktop: {
-    breakpoint: { max: 1600, min: 1024 },
-    items: 1,
-    slidesToSlide: 2,
-    partialVisibilityGutter: 160,
+    breakpoint: { max: 3000, min: 1024 },
+    items: 3,
+    partialVisibilityGutter: 40 // this is needed to tell the amount of px that should be visible.
   },
   tablet: {
-    breakpoint: { max: 1400, min: 1250 },
-    items: 1,
-    partialVisibilityGutter: 330,
+    breakpoint: { max: 1024, min: 464 },
+    items: 2,
+    partialVisibilityGutter: 30 // this is needed to tell the amount of px that should be visible.
   },
   mobile: {
-    breakpoint: { max: 1250, min: 0 },
+    breakpoint: { max: 464, min: 0 },
     items: 1,
-    partialVisibilityGutter: 650,
-  },
-};
+    partialVisibilityGutter: 30 // this is needed to tell the amount of px that should be visible.
+  }
+}
 
 const useStyles = makeStyles((theme) => ({
   imageItem: {
 
-      marginBottom:"1rem"
+      marginRight:"6rem"
 
     },
   }));
@@ -378,10 +371,11 @@ export default function Coupons(props) {
           </Box>
           <Carousel
             itemClass={classes.imageItem}
+            showDots={true}
+            arrows={true}
             swipeable={true}
             partialVisible={true}
             draggable={true}
-            showDots={true}
             responsive={responsive}
           >
             {avaiCouponData.concat(unavaiCouponData).map(CreateCouponCard)}

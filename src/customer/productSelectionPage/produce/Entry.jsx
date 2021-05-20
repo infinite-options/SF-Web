@@ -232,24 +232,6 @@ function Entry(props) {
     console.warn(store.cartItems);
   }
 
-  
-let reqBodyPost = {
-  customer_uid : Cookies.get("customer_uid"),
-  favorite:favoriteArray
-};
-
-
-
-const postRequest = async() => {
-
-  try{
-  const response = await axios.post(BASE_URL + 'favorite_produce/post', reqBodyPost)
-    console.log('Favorite Post:', response);
-    }catch(err) {
-      console.log(err.response || err);
-    }
-}
-
   let reqBodyGet = {
       customer_uid : Cookies.get("customer_uid")
     };
@@ -293,9 +275,9 @@ const postRequest = async() => {
 
 
 
-    postRequest();
+   // postRequest();
 
-   getRequest();
+  // getRequest();
 
 //     for (let i = 0; i < store.productsFruit.length; i++) {
 //       if (store.productsFruit[i].item_uid == props.id) {
@@ -412,7 +394,8 @@ const postRequest = async() => {
          
         </Box>
         <Box style = {{
-            display: 'flex', justifyContent: 'center',
+            display: 'flex', justifyContent: 'center', height: '142px', width: '250px',
+            backgroundSize: '250px 200px',
           }}>
             <Typography>
               {props.info}
