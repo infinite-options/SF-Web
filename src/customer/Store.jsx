@@ -100,14 +100,14 @@ const Store = ({ ...props }) => {
   const Auth = useContext(AuthContext);
   const location = useLocation();
   const history = useHistory();
-
+  const [orderConfirmation, setOrderConfirmation] = useState(false);
   // const currenttime = setInterval(checkIfAccepting, 60000);
 
   const [loggingIn, setLoggingIn] = React.useState(false);
   const [signingUp, setSigningUp] = React.useState(false);
   const [checkingOut, setCheckingOut] = React.useState(false);
 
-  const {profile, setProfile} = useContext(AuthContext);
+  const { profile, setProfile } = useContext(AuthContext);
   const [products, setProducts] = useState([]);
   const [productsFruit, setProductsFruit] = useState([]);
   const [productsVegetable, setProductsVegetable] = useState([]);
@@ -115,7 +115,7 @@ const Store = ({ ...props }) => {
 
   const [productsLoading, setProductsLoading] = useState(true);
 
-    const [isInDay, setIsInDay] = useState(true);
+  const [isInDay, setIsInDay] = useState(true);
 
   const [farmsList, setFarmsList] = useState([]);
   const [dayTimeDict, setDayTimeDict] = useState({});
@@ -174,8 +174,8 @@ const Store = ({ ...props }) => {
   }, [storePage]);
 
   localStorage.setItem('currentStorePage', storePage);
-  const {cartTotal, setCartTotal} = useContext(AuthContext);
-  
+  const { cartTotal, setCartTotal } = useContext(AuthContext);
+
   const [cartItems, setCartItems] = useState(
     JSON.parse(localStorage.getItem('cartItems') || '{}')
   );
@@ -295,12 +295,14 @@ const Store = ({ ...props }) => {
       );
       const originalDeliveryDate = weekdayDatesDict[business.z_delivery_day];
 
-      if (!_acceptDayHour[business.z_delivery_day]){
-        
-        _acceptDayHour[business.z_delivery_day] = business.z_accepting_day.slice(0,3)+ ' ' +business.z_accepting_time 
+      if (!_acceptDayHour[business.z_delivery_day]) {
+        _acceptDayHour[business.z_delivery_day] =
+          business.z_accepting_day.slice(0, 3) +
+          ' ' +
+          business.z_accepting_time;
       }
 
-     if (sameDay(today, acceptDate)) {
+      if (sameDay(today, acceptDate)) {
         const acceptTimeComps = amPmTo24Hr(business.z_accepting_time).split(
           ':'
         );
@@ -428,14 +430,17 @@ const Store = ({ ...props }) => {
 
                 // checks for if the current iterated business has a lower price than the one previously seen
                 if (bPrice < _products[itemIdx].lowest_price) {
-                  console.log('in comparing*********', _products[itemIdx].item_uid, item.item_uid)
+                  console.log(
+                    'in comparing*********',
+                    _products[itemIdx].item_uid,
+                    item.item_uid
+                  );
                   _products[itemIdx].lowest_price = bPrice;
                   _products[itemIdx].lowest_price_business_uid =
                     item.itm_business_uid;
                   _products[itemIdx].item_uid = item.item_uid;
                   _products[itemIdx].item_photo = item.item_photo;
                   _products[itemIdx].business_price = item.business_price;
-
                 }
 
                 // If the price is the same, take the one that was created first
@@ -446,9 +451,9 @@ const Store = ({ ...props }) => {
                 )
                   _products[itemIdx].lowest_price_business_uid =
                     item.itm_business_uid;
-                  _products[itemIdx].item_uid = item.item_uid;
-                  _products[itemIdx].item_photo = item.item_photo;
-                  _products[itemIdx].business_price = item.business_price;
+                _products[itemIdx].item_uid = item.item_uid;
+                _products[itemIdx].item_photo = item.item_photo;
+                _products[itemIdx].business_price = item.business_price;
               } else {
                 // If we haven't seen it push it into the dictionary just in case we see it again
                 itemDict[namePriceDesc] = _products.length;
@@ -461,26 +466,21 @@ const Store = ({ ...props }) => {
                 // Push to products to have distinct products
                 _products.push(item);
 
-                if(item.item_type.toString() === 'vegetable'){
+                if (item.item_type.toString() === 'vegetable') {
                   //_products.push(item);
-                  _vegetable.push(item)
-
-                }else if(item.item_type.toString() === 'fruit')  {                  
-                  
+                  _vegetable.push(item);
+                } else if (item.item_type.toString() === 'fruit') {
                   _fruit.push(item);
-                
-                 }
-                 //else if (item.item_type.toString() === 'dessert') {
+                }
+                //else if (item.item_type.toString() === 'dessert') {
 
                 //   _dessert.push(item);
 
                 // }
                 else {
-
                   _dessert.push(item);
-                
                 }
-               // _products.push(item);
+                // _products.push(item);
               }
             }
           } catch (error) {
@@ -492,7 +492,7 @@ const Store = ({ ...props }) => {
       setProductsFruit(_fruit.sort());
       setProductsVegetable(_vegetable.sort());
       setProductsDessert(_dessert.sort());
-      console.log('productsssssss----',_products)
+      console.log('productsssssss----', _products);
       setProductsLoading(false);
     });
   }
@@ -501,9 +501,12 @@ const Store = ({ ...props }) => {
     <div hidden={props.hidden}>
       <storeContext.Provider
         value={{
-          checkingOut, setCheckingOut,
-          loggingIn, setLoggingIn,
-          signingUp, setSigningUp,
+          checkingOut,
+          setCheckingOut,
+          loggingIn,
+          setLoggingIn,
+          signingUp,
+          setSigningUp,
           cartTotal,
           setCartTotal,
           cartItems,
@@ -534,18 +537,16 @@ const Store = ({ ...props }) => {
           setCartClicked,
           isInDay,
           setIsInDay,
+          orderConfirmation,
+          setOrderConfirmation,
         }}
       >
-           <StoreNavBar
-          storePage={storePage}
-          setStorePage={setStorePage}
-        />
+        <StoreNavBar storePage={storePage} setStorePage={setStorePage} />
         {/* <Box hidden={storePage !== 0}> */}
-          <ProductSelectionPage farms={farmsList} />
+        <ProductSelectionPage farms={farmsList} />
         {/* </Box> */}
-        
       </storeContext.Provider>
-        {/* <StoreNavBar
+      {/* <StoreNavBar
           storePage={storePage}
           setStorePage={setStorePage}
         />

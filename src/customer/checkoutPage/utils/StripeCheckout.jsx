@@ -3,7 +3,8 @@ import { useElements, useStripe, CardElement } from '@stripe/react-stripe-js';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import Stripe from 'stripe';
-
+import { useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 
@@ -15,6 +16,8 @@ import CssTextField from '../../../utils/CssTextField';
 import { AuthContext } from '../../../auth/AuthContext';
 import storeContext from '../../storeContext';
 import checkoutContext from '../CheckoutContext';
+import OrderConfirmation from './OrderConfirmation';
+import HistoryTab from '../tabs/HistoryTab';
 
 const cookies = new Cookies();
 const useOptions = () => {
@@ -43,15 +46,17 @@ const useOptions = () => {
 };
 const StripeCheckout = (props) => {
   const auth = useContext(AuthContext);
-
+  const history = useHistory();
   const store = useContext(storeContext);
   const checkout = useContext(checkoutContext);
   const confirm = useConfirmation();
-
+  const [rightTabChosen, setRightTabChosen] = useState(0);
+  const location = useLocation();
   const elements = useElements();
   const stripe = useStripe();
   const options = useOptions();
   const [processing, setProcessing] = useState(false);
+  const [isShown, setIsShown] = useState(false);
   const {
     profile,
     setProfile,
@@ -61,7 +66,8 @@ const StripeCheckout = (props) => {
     setCartTotal,
   } = useContext(storeContext);
 
-  const { paymentDetails, setPaymentProcessing, chosenCoupon } = useContext(checkoutContext);
+  const { paymentDetails, setPaymentProcessing, chosenCoupon } =
+    useContext(checkoutContext);
 
   const onPay = async (event) => {
     event.preventDefault();
@@ -189,12 +195,12 @@ const StripeCheckout = (props) => {
         taxes: paymentDetails.taxes.toString(),
       };
 
-      console.log("purchase_Data_SF data", data)
+      console.log('purchase_Data_SF data', data);
       let res = axios
         .post(
           process.env.REACT_APP_SERVER_BASE_URI + 'purchase_Data_SF',
           data,
-         
+
           {
             headers: {
               'Content-Type': 'application/json',
@@ -208,8 +214,8 @@ const StripeCheckout = (props) => {
           onPurchaseComplete({
             store: store,
             checkout: checkout,
-            confirm: confirm,
           });
+          store.setOrderConfirmation(true);
         })
         .catch((err) => {
           setProcessing(false);
@@ -225,23 +231,27 @@ const StripeCheckout = (props) => {
       console.log('error happened while posting to Stripe_Intent api', err);
     }
   };
-
   return (
     <>
       {/* <label className={props.classes.label}>
         Cardholder Name 
       </label> */}
       <Box mt={1}>
-        <CssTextField label="Cardholder Name" variant="outlined" size="small" fullWidth />
+        <CssTextField
+          label="Cardholder Name"
+          variant="outlined"
+          size="small"
+          fullWidth
+        />
       </Box>
       <Box mt={1}>
         {/* <label className={props.classes.label}>
           Enter Card details Below: */}
-          <CardElement
-            elementRef={(c) => (this._element = c)}
-            className={props.classes.element}
-            options={options}
-          />
+        <CardElement
+          elementRef={(c) => (this._element = c)}
+          className={props.classes.element}
+          options={options}
+        />
         {/* </label> */}
       </Box>
 
@@ -252,7 +262,7 @@ const StripeCheckout = (props) => {
         color="paragraphText"
         onClick={onPay}
         disabled={processing}
-        style={{marginBottom:"2rem"}}
+        style={{ marginBottom: '2rem' }}
       >
         Complete Payment with Stripe
       </Button>

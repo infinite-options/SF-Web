@@ -2,11 +2,21 @@ import React, { useContext, useState, useEffect } from 'react';
 import DisplayProduce from './produce/displayProduct';
 import CheckoutPage from '../checkoutPage/CheckoutStorePage';
 import StoreFilter from './filter';
-import { Box, Badge, Grid, Dialog, Button, Hidden, IconButton, Drawer } from '@material-ui/core';
+import {
+  Box,
+  Badge,
+  Grid,
+  Dialog,
+  Button,
+  Hidden,
+  IconButton,
+  Drawer,
+} from '@material-ui/core';
 import ProdSelectContext from './ProdSelectContext';
 import axios from 'axios';
 import storeContext from '../storeContext';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import OrderConfirmation from '../checkoutPage/utils/OrderConfirmation';
 
 const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI + '';
 
@@ -28,8 +38,7 @@ function calTotal() {
 const ProductSelectionPage = (props) => {
   const store = useContext(storeContext);
 
-  const {checkingOut, setCheckingOut} =
-  useContext(storeContext);
+  const { checkingOut, setCheckingOut } = useContext(storeContext);
   const profile = store.profile;
 
   const [loggingIn, setLoggingIn] = React.useState(false);
@@ -56,33 +65,43 @@ const ProductSelectionPage = (props) => {
 
   const itemsAmount = store.cartTotal;
 
-
   return (
     <Box>
-    <ProdSelectContext.Provider
-      value={{
-        loggingIn, setLoggingIn,
-        signingUp, setSigningUp,
-        itemError,
-        itemIsLoading,
-        farms,
-        busIsLoad,
-        busError,
-        farmsClicked,
-        setFarmsClicked,
-        categoriesClicked,
-        setCategoriesClicked,
-
-      }}
-    >
+      <ProdSelectContext.Provider
+        value={{
+          loggingIn,
+          setLoggingIn,
+          signingUp,
+          setSigningUp,
+          itemError,
+          itemIsLoading,
+          farms,
+          busIsLoad,
+          busError,
+          farmsClicked,
+          setFarmsClicked,
+          categoriesClicked,
+          setCategoriesClicked,
+        }}
+      >
         <Grid container>
-          <Grid item lg = {8} style = {{display: 'flex', flexDirection: 'column'}}>
+          <Grid
+            item
+            lg={8}
+            style={{ display: 'flex', flexDirection: 'column' }}
+          >
             <StoreFilter />
-            <DisplayProduce />
+            <Box hidden={store.orderConfirmation}>
+              <DisplayProduce />
+            </Box>
+
+            <Box hidden={!store.orderConfirmation}>
+              <OrderConfirmation />
+            </Box>
           </Grid>
 
           <Hidden mdDown>
-            <Grid item lg = {4}>
+            <Grid item lg={4}>
               <CheckoutPage />
             </Grid>
           </Hidden>
@@ -103,29 +122,29 @@ const ProductSelectionPage = (props) => {
           </Box>
         </Box> */}
 
-      
-
         <Hidden lgUp>
-          <Drawer variant = 'temporary' anchor = 'bottom' open = {checkingOut}>
-            <Box mt = {2} pr = {1} style = {{display: 'flex', justifyContent: 'flex-end'}}>
-              <IconButton onClick = {() => setCheckingOut(false)
-              }>
+          <Drawer variant="temporary" anchor="bottom" open={checkingOut}>
+            <Box
+              mt={2}
+              pr={1}
+              style={{ display: 'flex', justifyContent: 'flex-end' }}
+            >
+              <IconButton onClick={() => setCheckingOut(false)}>
                 <Badge badgeContent={itemsAmount} color="primary">
                   <ShoppingCartIcon
                     fontSize="large"
                     aria-hidden="false"
-                    aria-label = 'Shopping cart'
+                    aria-label="Shopping cart"
                   />
                 </Badge>
               </IconButton>
             </Box>
 
-            <CheckoutPage /> 
+            <CheckoutPage />
           </Drawer>
         </Hidden>
       </ProdSelectContext.Provider>
     </Box>
-     
   );
 };
 

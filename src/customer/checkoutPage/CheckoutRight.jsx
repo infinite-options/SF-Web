@@ -11,6 +11,7 @@ import HistoryTab from './tabs/HistoryTab';
 import RefundTab from './tabs/RefundTab';
 import appColors from '../../styles/AppColors';
 import storeContext from '../storeContext';
+import checkoutContext from './CheckoutContext';
 
 //
 const useStyles = makeStyles({
@@ -51,25 +52,26 @@ const StyledTab = withStyles((theme) => ({
 export default function CheckoutRight() {
   const classes = useStyles();
   const store = useContext(storeContext);
+  const checkout = useContext(checkoutContext);
   const location = useLocation();
 
-  const [rightTabChosen, setRightTabChosen] = useState(0);
+  //const [rightTabChosen, setRightTabChosen] = useState(0);
 
   useEffect(() => {
-    setRightTabChosen(0);
+    checkout.setRightTabChosen(0);
   }, [store.cartClicked]);
 
   useEffect(() => {
     if (
       location.state !== undefined &&
-      location.state.rightTabChosen !== undefined
+      location.state.checkout.rightTabChosen !== undefined
     ) {
-      setRightTabChosen(location.state.rightTabChosen);
+      checkout.setRightTabChosen(location.state.checkout.rightTabChosen);
     }
   }, [location]);
 
   const handleChange = (event, newValue) => {
-    setRightTabChosen(newValue);
+    checkout.setRightTabChosen(newValue);
   };
 
   const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
@@ -95,7 +97,7 @@ export default function CheckoutRight() {
       // style={{ height: windowHeight - 95 }}
     >
       <StyledTabs
-        value={rightTabChosen}
+        value={checkout.rightTabChosen}
         onChange={handleChange}
         indicatorColor="secondary"
         textColor="secondary"
@@ -138,16 +140,16 @@ export default function CheckoutRight() {
           marginTop: 10,
           backgroundColor: appColors.componentBg,
           maxHeight: '92%',
-         
+
           overflow: 'auto',
         }}
       >
-        <Box hidden={rightTabChosen !== 0}>
+        <Box hidden={checkout.rightTabChosen !== 0}>
           <CheckoutTab />
         </Box>
         {/* rightTabChosen is 2 because the flex spacing takes up values 1 and 3 */}
-        {rightTabChosen === 2 && <HistoryTab />}
-        {rightTabChosen === 4 && <RefundTab />}
+        {checkout.rightTabChosen === 2 && <HistoryTab />}
+        {checkout.rightTabChosen === 4 && <RefundTab />}
       </Paper>
     </Paper>
   );

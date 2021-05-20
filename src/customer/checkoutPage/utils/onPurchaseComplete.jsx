@@ -10,6 +10,9 @@ export function onPurchaseComplete(props) {
   localStorage.removeItem('cartItems');
   localStorage.removeItem('startDeliveryDate');
 
+  //before adding order confirmation page this section gives an alert box
+
+  /* 
   props
     .confirm({
       variant: 'info',
@@ -22,5 +25,5 @@ export function onPurchaseComplete(props) {
     .then(() => {
       props.store.setExpectedDelivery('');
     })
-    .catch(() => {});
+    .catch(() => {}); */
 }
