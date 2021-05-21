@@ -140,8 +140,8 @@ const DateCard = (props) => {
         amPmTo24Hr(props.time)
     );
     // store.setCartTotal(0);
-    // store.setCartItems({});
-  //  localStorage.setItem('selectedDay', props.id);
+    //store.setCartItems({});
+   localStorage.setItem('selectedDay', props.id);
   }
 
   useEffect(() => {
@@ -217,43 +217,6 @@ const DateCard = (props) => {
         </Box>
       </div>
     </Box>
-      {/* <Box
-        hidden={!showCard}
-        justifyContent="center"
-        width="100%"
-        m={0.5}
-        p={0.5}
-      >
-        <div className={classes.card} onClick={cardClicked}>
-          <div className={classes.weekDay}>{props.weekDay}</div>
-          <Box
-            mt={1}
-            className={classes.date}
-            style={{
-              color: isClicked ? appColors.primary : appColors.secondary,
-            }}
-          >
-            {props.month} {props.day}
-            <br />
-            <Box
-              className={classes.time}
-              style={{
-                color: isClicked ? appColors.primary : appColors.secondary,
-              }}
-            >
-              {props.time}
-            </Box>
-            <Box
-              className={classes.accept}
-              style={{
-                color: isClicked ? appColors.primary : 'purple',
-              }}
-            >
-              order by {}{props.accept_hr.charAt(0) + props.accept_hr.substring(1).toLowerCase()}
-            </Box>
-          </Box>
-        </div>
-      </Box> */}
     </>
   );
 };

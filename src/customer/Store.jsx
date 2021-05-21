@@ -496,7 +496,9 @@ const Store = ({ ...props }) => {
                 console.log("Favorite get",item)
                    
                    for(let i=0;  i < _products.length; i++){
-                     if(item.favorite_produce.includes(_products[i].item_name))
+                    if(  item.favorite_produce !== null && 
+                      item.favorite_produce.includes(_products[i].item_name)
+                    ) 
                             _products[i].favorite = 'TRUE'
                           }   
                  // if (products[i].item_name == item.favorite_produce){
@@ -508,6 +510,7 @@ const Store = ({ ...props }) => {
         }
     
       });
+      
 
       setProducts(_products.sort());
       setProductsFruit(_fruit.sort());

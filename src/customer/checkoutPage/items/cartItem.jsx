@@ -109,6 +109,7 @@ function CartItem(props) {
         }}
       />
       <Box display="flex" flexGrow={1} py={4.5}>
+        {  props.isCountChangeable ? 
         <Box
           width="50%"
           display="flex"
@@ -119,10 +120,10 @@ function CartItem(props) {
             flexDirection: 'column',
             justifyContent: 'center',
             textAlign: 'left',
-            textDecorationLine:isInDay?'' : 'line-through', textDecorationStyle: 'solid',
+           textDecorationLine:isInDay?'' : 'line-through', textDecorationStyle: 'solid',
           }}
         >
-        <Box style={{textDecorationLine:isInDay?'' : 'line-through', textDecorationStyle: 'solid'}}>{ props.name}{' '} </Box>
+        <Box >{ props.name}{' '} </Box>
          
           
          { props.unit !== undefined && props.unit !== ''
@@ -133,7 +134,35 @@ function CartItem(props) {
               props.unit +
               ')'
             : ''  } 
-        </Box>
+        </Box> 
+        :  <Box
+        width="50%"
+        display="flex"
+        flex ='2'
+        ml={2}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          textAlign: 'left',
+        }}
+      >
+      <Box >{ props.name}{' '} </Box>
+       
+        
+       { props.unit !== undefined && props.unit !== ''
+          ? '($' +
+            itemPrice.toFixed(2) +
+            ' ' +
+            (props.unit === 'each' ? '' : '/ ') +
+            props.unit +
+            ')'
+          : ''  } 
+      </Box>   }
+
+
+
+
         <Box width="30%" flex='0.5' display="flex" justifyContent="center">
           {props.isCountChangeable && (
             <Box>
@@ -166,10 +195,20 @@ function CartItem(props) {
         </Box>
 
         <Box textAlign="right" width="20%" flex='2' display="flex" flexDirection='column' >
+          {props.isCountChangeable ? 
+          <Box>
           <Box style={{textDecorationLine:isInDay?'' : 'line-through', textDecorationStyle: 'solid'}}>
           ${totalPrice.toFixed(2)}
-          </Box >
-          <Box style={{fontSize:'10px', textAlign:'left', color:'#ff8500'}} hidden={isInDay} > Item not avaliable on this day </Box>
+          </Box > 
+          <Box style={{fontSize:'10px', textAlign:'left', color:'#ff8500'}} hidden={isInDay} > Item not avaliable on this day 
+          </Box>
+          </Box> :
+          <Box>
+          <Box >
+          ${totalPrice.toFixed(2)}
+          </Box > 
+          </Box>
+            }
         </Box>
       </Box>
     </Box>
