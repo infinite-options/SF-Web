@@ -28,10 +28,8 @@ const useStyles = makeStyles((theme) => ({
         background: `transparent url(${Background}) 0% 0% no-repeat padding-box`,
     },
 
-    profileContainer: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+    [theme.breakpoints.up('lg')]: {
+      width: '30%',
     },
 
     pageLabel: {
@@ -113,16 +111,51 @@ const useStyles = makeStyles((theme) => ({
         color: '#e88330',
         textDecoration: 'none',
     },
+  },
+
+  socialSigninWrapper: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+  },
+
+  profInfButtonContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginBottom: theme.spacing(3),
+  },
+
+  profInfButton: {
+    marginTop: theme.spacing(3),
+    width: '75%',
+    height: '50px',
+    color: 'primary',
+    background: '#e88330',
+    color: 'white',
+    borderRadius: '10px',
+  },
+
+  servingFreshSupportMessage: {
+    marginBottom: theme.spacing(12),
+  },
+
+  supportLink: {
+    color: '#e88330',
+    textDecoration: 'none',
+  },
 }));
 
 const ColorButton = withStyles(() => ({
-    root: {
-        color: 'white',
-        backgroundColor: appColors.primary,
-        '&:hover': {
-        backgroundColor: 'rgb(162, 91, 33)',
-        },
+  root: {
+    color: 'white',
+    backgroundColor: appColors.primary,
+    '&:hover': {
+      backgroundColor: 'rgb(162, 91, 33)',
     },
+  },
 }))(Button);
 
 function ProfileInfo() {
@@ -168,6 +201,52 @@ function ProfileInfo() {
             </Box>
         ),
     }
+  }, []);
+
+  const handleClickLogOut = () => {
+    localStorage.removeItem('currentStorePage');
+    localStorage.removeItem('cartTotal');
+    localStorage.removeItem('cartItems');
+    Cookies.remove('login-session');
+    Cookies.remove('customer_uid');
+
+    Auth.setIsAuth(false);
+    Auth.setAuthLevel(0);
+    history.push('/');
+  };
+
+  const onSubmit = (event) => {
+    const AuthMethods = new AuthUtils();
+
+    AuthMethods.updateProfile(profile)
+      .then((authRes) => {
+        console.log('Profile PUT successful');
+        window.location.reload();
+      })
+      .catch((err) => {
+        alert('Unsuccessful update');
+      });
+  };
+
+  return (
+    <Box className={classes.profileInfoContainer}>
+      <AuthContext.Provider
+        value={{
+          profile,
+          setProfile,
+          isAuth,
+          setIsAuth,
+          setAuthLevel,
+          cartTotal,
+        }}
+      >
+        <ProfileInfoNavBar />
+      </AuthContext.Provider>
+
+      <Box className={classes.profileContainer}>
+        <Box style={{ width: '100%' }}>
+          <Typography className={classes.pageLabel}>Profile</Typography>
+        </Box>
 
     React.useEffect(() => {
         console.warn('In useEffect');
@@ -437,7 +516,9 @@ function ProfileInfo() {
 
             <Footer />
         </Box>
-    );
+      </Box>
+    </Box>
+  );
 }
 
 export default ProfileInfo;
