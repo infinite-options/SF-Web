@@ -18,7 +18,6 @@ const stripePromise = loadStripe(
 );
 
 export default function CheckoutPage() {
-
   const [paymentDetails, setPaymentDetails] = useState({
     amountPaid: 0,
     amountDue: 0,
@@ -37,7 +36,7 @@ export default function CheckoutPage() {
   const [paymentProcessing, setPaymentProcessing] = useState(false);
   const [chosenCoupon, setChosenCoupon] = useState('');
   const [leftTabChosen, setLeftTabChosen] = useState(4);
-
+  const [rightTabChosen, setRightTabChosen] = useState(0);
   useEffect(() => {
     console.log(chosenCoupon);
   }, [chosenCoupon]);
@@ -60,6 +59,8 @@ export default function CheckoutPage() {
           setPaymentProcessing,
           leftTabChosen,
           setLeftTabChosen,
+          rightTabChosen,
+          setRightTabChosen,
           guestInfo,
           setGuestInfo,
           purchaseMade,
@@ -68,17 +69,16 @@ export default function CheckoutPage() {
           setChosenCoupon,
         }}
       >
-          <Elements stripe={stripePromise}>
-        <LoadingOverlay
-          active={paymentProcessing}
-          spinner
-          text="Processing Payment"
-        />
-         
-        <CheckoutRight />
+        <Elements stripe={stripePromise}>
+          <LoadingOverlay
+            active={paymentProcessing}
+            spinner
+            text="Processing Payment"
+          />
 
-      </Elements> 
-                {/* <Elements stripe={stripePromise}>
+          <CheckoutRight />
+        </Elements>
+        {/* <Elements stripe={stripePromise}>
           <LoadingOverlay
             active={paymentProcessing}
             spinner
@@ -100,7 +100,6 @@ export default function CheckoutPage() {
             
           </Box>
         </Elements> */}
-         
       </CheckoutContext.Provider>
     </>
   );

@@ -116,8 +116,8 @@ const PayPal = ({ value, deliveryInstructions }) => {
               onPurchaseComplete({
                 store: store,
                 checkout: checkout,
-                confirm: confirm,
               });
+              store.setOrderConfirmation(true);
             });
         }}
         options={{

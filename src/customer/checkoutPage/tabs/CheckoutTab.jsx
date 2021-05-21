@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { useElements, CardElement } from '@stripe/react-stripe-js';
-import { GoogleMap, LoadScript,  useJsApiLoader } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, useJsApiLoader } from '@react-google-maps/api';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Box, TextField, Button, Paper, Dialog } from '@material-ui/core';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
@@ -10,13 +10,12 @@ import appColors from '../../../styles/AppColors';
 import CartItem from '../items/cartItem';
 import storeContext from '../../storeContext';
 import checkoutContext from '../CheckoutContext';
-import PaymentTab from '../tabs/PaymentTab'
+import PaymentTab from '../tabs/PaymentTab';
 import PlaceOrder from '../PlaceOrder';
 import Coupons from '../items/Coupons';
 import MapComponent from '../../MapComponent';
 //import TipImage from '../../../images/TipBackground.svg'
-import LocationSearchInput from '../../../utils/LocationSearchInput'
-
+import LocationSearchInput from '../../../utils/LocationSearchInput';
 
 //import SignUp from '../SignUp/SignUp';
 
@@ -31,24 +30,22 @@ const useStyles = makeStyles((theme) => ({
   },
   button: { color: appColors.buttonText, marginBottom: '10px' },
   driverTipBox: {
-   
     marginBottom: '10px',
     paddingBottom: '10px',
 
     display: 'flex',
     [theme.breakpoints.only('lg')]: {
       flexDirection: 'column',
-      justifyContent:'space-between',
+      justifyContent: 'space-between',
     },
   },
-  button: { color: appColors.buttonText
-  ,backgroundColor:" ",
-  "&:hover":{
-    backgroundColor:"#ff8500"
-  }
-}
-
-
+  button: {
+    color: appColors.buttonText,
+    backgroundColor: ' ',
+    '&:hover': {
+      backgroundColor: '#ff8500',
+    },
+  },
 }));
 
 const CssTextField = withStyles({
@@ -98,12 +95,10 @@ function listItem(item) {
 export default function CheckoutTab() {
   const classes = useStyles();
   const store = useContext(storeContext);
-//  const checkout = useContext(checkoutContext);
+  //  const checkout = useContext(checkoutContext);
 
-  const {
-    loggingIn, setLoggingIn,
-    signingUp, setSigningUp,
-  } = useContext(storeContext);
+  const { loggingIn, setLoggingIn, signingUp, setSigningUp } =
+    useContext(storeContext);
   const checkout = useContext(checkoutContext);
 
   const {
@@ -118,17 +113,16 @@ export default function CheckoutTab() {
   const [cartItems, setCartItems] = useState(getItemsCart());
   const [background, setBackground] = useState();
 
-
   const [userInfo, setUserInfo] = useState(store.profile);
 
   const [map, setMap] = React.useState(null);
 
-  const [paymentDisplayType, setPaymentDisplayType] = useState(true); 
+  const [paymentDisplayType, setPaymentDisplayType] = useState(true);
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyBLoal-kZlb6tO5aDvkJTFC0a4WMp7oHUM"
-  })
+    googleMapsApiKey: 'AIzaSyBLoal-kZlb6tO5aDvkJTFC0a4WMp7oHUM',
+  });
 
   useEffect(() => {
     if (store.profile !== {}) {
@@ -140,8 +134,6 @@ export default function CheckoutTab() {
     setCartItems(getItemsCart());
   }, [store.cartItems]);
 
-
-  
   const onLoad = React.useCallback(function callback(map) {
     const bounds = new window.google.maps.LatLngBounds();
     map.fitBounds(bounds);
@@ -342,114 +334,131 @@ export default function CheckoutTab() {
           </Box>
           <Box flexGrow={1} />
 
-          <Box fontSize="14px" fontWeight="bold"  textAlign="left" paddingBottom="10px">
+          <Box
+            fontSize="14px"
+            fontWeight="bold"
+            textAlign="left"
+            paddingBottom="10px"
+          >
             {store.expectedDelivery}
           </Box>
 
-          <textarea style={{ display:"flex", type:"text", value:"text", width:"355px", height:"51px"}}  placeholder= "Delivery Instructions (ex: gate code, leave on porch)"
-          autoComplete="on" maxLength="100" cols="20" row="5" borderRadius="2rem">
-           
-          </textarea>
+          <textarea
+            style={{
+              display: 'flex',
+              type: 'text',
+              value: 'text',
+              width: '355px',
+              height: '51px',
+            }}
+            placeholder="Delivery Instructions (ex: gate code, leave on porch)"
+            autoComplete="on"
+            maxLength="100"
+            cols="20"
+            row="5"
+            borderRadius="2rem"
+          ></textarea>
         </Box>
       </Box>
       {/* END: Expected Delivery */}
 
-
-      <Box display="flex"  fontWeight="700" fontSize="16px" paddingBottom='1rem'>
-            Enter Full Address 
-
-            
-            <Box>
-
-              
-      {/* <MapComponent/> */}
-
-      </Box>  
+      <Box display="flex" fontWeight="700" fontSize="16px" paddingBottom="1rem">
+        Enter Full Address
+        <Box>{/* <MapComponent/> */}</Box>
       </Box>
 
       <Box display="flex" mb={1}>
-          <CssTextField
+        <CssTextField
           //  error={locError}
-            value={userInfo.address}
-            name="address"
-            label="Street Address"
+          value={userInfo.address}
+          name="address"
+          label="Street Address"
+          variant="outlined"
+          size="small"
+          fullWidth
+          // onChange={onFieldChange}
+        />
+
+        <Box ml={1} width="40%">
+          <CssTextField
+            value={userInfo.unit}
+            name="unit"
+            label="Apt Number"
             variant="outlined"
             size="small"
             fullWidth
-           // onChange={onFieldChange}
           />
-
-        <Box ml={1} width="40%">
-            <CssTextField
-              value={userInfo.unit}
-              name="unit"
-              label="Apt Number"
-              variant="outlined"
-              size="small"
-              fullWidth
-            />
         </Box>
+      </Box>
+
+      <Box display="flex" mb={1}>
+        <Box width="33.3%">
+          <CssTextField
+            value={userInfo.city}
+            name="city"
+            label="City"
+            variant="outlined"
+            size="small"
+            fullWidth
+          />
         </Box>
+        <Box width="33.3%" mx={1}>
+          <CssTextField
+            value={userInfo.state}
+            name="state"
+            label="State"
+            variant="outlined"
+            size="small"
+            fullWidth
+          />
+        </Box>
+        <Box width="33.3%">
+          <CssTextField
+            value={userInfo.zip}
+            name="zip"
+            label="Zip Code"
+            variant="outlined"
+            size="small"
+            fullWidth
+          />
+        </Box>
+      </Box>
 
-        <Box display="flex" mb={1}>
-          <Box width="33.3%">
-            <CssTextField
-              value={userInfo.city}
-              name="city"
-              label="City"
-              variant="outlined"
-              size="small"
-              fullWidth
-            />
-          </Box>
-          <Box width="33.3%" mx={1}>
-            <CssTextField
-              value={userInfo.state}
-              name="state"
-              label="State"
-              variant="outlined"
-              size="small"
-              fullWidth
-            />
-          </Box>
-          <Box width="33.3%">
-            <CssTextField
-              value={userInfo.zip}
-              name="zip"
-              label="Zip Code"
-              variant="outlined"
-              size="small"
-              fullWidth
-            />
-          </Box>
-          </Box>
-
-          <LoadScript googleMapsApiKey={process.env.REACT_APP_BING_LOCATION_KEY}>
-          <GoogleMap
-            mapContainerStyle={{
-              width: '100%',
-              height: '200px',
-            }}
-            center={{
-              lat: -3.745,
-              lng: -38.523,
-            }}
-            zoom={10}
-            onLoad={onLoad}
-            onUnmount={onUnmount}
-          >
-            <></>
-          </GoogleMap>
-        </LoadScript>
-          
+      <LoadScript googleMapsApiKey={process.env.REACT_APP_BING_LOCATION_KEY}>
+        <GoogleMap
+          mapContainerStyle={{
+            width: '100%',
+            height: '200px',
+          }}
+          center={{
+            lat: -3.745,
+            lng: -38.523,
+          }}
+          zoom={10}
+          onLoad={onLoad}
+          onUnmount={onUnmount}
+        >
+          <></>
+        </GoogleMap>
+      </LoadScript>
 
       <Box>
-        <input style={{ display:"flex", type:"text", value:"text", width:"100%", height:"2rem"}}  placeholder= "Delivery Instructions (ex: gate code, leave on porch)"
-          autoComplete="on" maxLength="100" cols="20" row="5" borderRadius="2rem">
-           
-          </input>
-        </Box>
-    
+        <input
+          style={{
+            display: 'flex',
+            type: 'text',
+            value: 'text',
+            width: '100%',
+            height: '2rem',
+          }}
+          placeholder="Delivery Instructions (ex: gate code, leave on porch)"
+          autoComplete="on"
+          maxLength="100"
+          cols="20"
+          row="5"
+          borderRadius="2rem"
+        ></input>
+      </Box>
 
       {/* START: Order Items */}
       <Box className={classes.section}>
@@ -465,7 +474,6 @@ export default function CheckoutTab() {
             color="primary"
             onClick={onAddItemsClicked}
             style={{ borderRadius: '24px' }}
-
           >
             <AddIcon fontSize="small" />
             Add Items
@@ -474,8 +482,8 @@ export default function CheckoutTab() {
 
         {/* {cartItems.length > 0 && (
           <Box className={classes.section} display="flex"> */}
-            {/* <Box width="130px"></Box> */}
-            {/* <Box width="52%" textAlign="left">
+        {/* <Box width="130px"></Box> */}
+        {/* <Box width="52%" textAlign="left">
               Name
             </Box>
             <Box width="38%" textAlign="center">
@@ -489,38 +497,33 @@ export default function CheckoutTab() {
         <Box my={1} px={1}>
           {cartItems.map(listItem)}
         </Box>
-        
-        <Box  display="flex" paddingTop="2rem">
-        <Box fontWeight="700" fontSize="22px">
-          Subtotal
+
+        <Box display="flex" paddingTop="2rem">
+          <Box fontWeight="700" fontSize="22px">
+            Subtotal
+          </Box>
+          <Box flexGrow={1} />
+          <Box>${subtotal.toFixed(2)}</Box>
         </Box>
+
         <Box flexGrow={1} />
-        <Box>${subtotal.toFixed(2)}</Box>
       </Box>
 
-    
-     
-      <Box flexGrow={1} />
-      </Box>
-      
-     
       {/* <Box flexGrow={1} /> */}
       {/* END: Order Items */}
       <Box>
-      <MapComponent/>
-
+        <MapComponent />
       </Box>
 
       {/* START: Coupons */}
       <Box>
-
-      <Coupons
-        setPromoApplied={setPromoApplied}
-        originalDeliveryFee={origDeliveryFee}
-        setDeliveryFee={setDeliveryFee}
-        subtotal={subtotal}
-        classes={classes}
-      />
+        <Coupons
+          setPromoApplied={setPromoApplied}
+          originalDeliveryFee={origDeliveryFee}
+          setDeliveryFee={setDeliveryFee}
+          subtotal={subtotal}
+          classes={classes}
+        />
       </Box>
       {/* END: Coupons */}
 
@@ -540,20 +543,30 @@ export default function CheckoutTab() {
         <Box flexGrow={1} />
         <Box>${serviceFee.toFixed(2)}</Box>
       </Box>
-      <Box style={{marginBottom:'10px', paddingBottom:'10px'}} display="flex">
+      <Box
+        style={{ marginBottom: '10px', paddingBottom: '10px' }}
+        display="flex"
+      >
         Driver Tip:
       </Box>
 
       <Box className={classes.driverTipBox}>
-        <Box display="flex" fontWeight="700" marginBottom='1rem' > Driver Tip </Box>
-        <Box style={{display:"flex" , justifyContent:'space-between'}}>
+        <Box display="flex" fontWeight="700" marginBottom="1rem">
+          {' '}
+          Driver Tip{' '}
+        </Box>
+        <Box style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Button
             className={classes.button}
             size="small"
             variant="outlined"
             color="secondary"
             onClick={() => setDriverTip(0)}
-            style={{ borderRadius: '5px', textTransform: 'none', color:"#000000"}}
+            style={{
+              borderRadius: '5px',
+              textTransform: 'none',
+              color: '#000000',
+            }}
           >
             No Tip
           </Button>
@@ -562,8 +575,12 @@ export default function CheckoutTab() {
             size="small"
             variant="outlined"
             color="secondary"
-            onClick={() => setDriverTip(2) }
-            style={{ borderRadius: '5px', color:"#000000",  backgroundColor: " "}}
+            onClick={() => setDriverTip(2)}
+            style={{
+              borderRadius: '5px',
+              color: '#000000',
+              backgroundColor: ' ',
+            }}
           >
             $2
           </Button>
@@ -573,7 +590,7 @@ export default function CheckoutTab() {
             variant="outlined"
             color="secondary"
             onClick={() => setDriverTip(3)}
-            style={{ borderRadius: '5px', color:"#000000"}}
+            style={{ borderRadius: '5px', color: '#000000' }}
           >
             $3
           </Button>
@@ -583,35 +600,30 @@ export default function CheckoutTab() {
             variant="outlined"
             color="secondary"
             onClick={() => setDriverTip(5)}
-            style={{ borderRadius: '5px', color:"#000000" }}
+            style={{ borderRadius: '5px', color: '#000000' }}
           >
             $5
           </Button>
 
           <Box width="70px">
-          <CurrencyTextField
-            
-            disabled={true}
-            variant="standard"
-            modifyValueOnWheel={false}
-            value={driverTip}
-            currencySymbol="$"
-            minimumValue="0"
-            outputFormat="string"
-            decimalCharacter="."
-            digitGroupSeparator=","
-            onChange={(event, value) => {
-              setDriverTip(value);
-            }}
-          ></CurrencyTextField>
-        
-        
-        </Box>
+            <CurrencyTextField
+              disabled={true}
+              variant="standard"
+              modifyValueOnWheel={false}
+              value={driverTip}
+              currencySymbol="$"
+              minimumValue="0"
+              outputFormat="string"
+              decimalCharacter="."
+              digitGroupSeparator=","
+              onChange={(event, value) => {
+                setDriverTip(value);
+              }}
+            ></CurrencyTextField>
           </Box>
-          
-        
+        </Box>
+
         <Box flexGrow={1} />
-   
       </Box>
       {/* <Box className={classes.section} display="flex">
         <Box>Driver Tip (Optional - Click to edit)</Box>
@@ -640,13 +652,34 @@ export default function CheckoutTab() {
         <Box>${tax.toFixed(2)}</Box>
       </Box>
 
-      <Box display="flex" width="100%" height="2rem" marginTop="1rem" marginBottom="1rem">
-        <Button variant="outlined" color="secondary" className={classes.button} style={{ color:"#000000"}} > Enter Ambassador Code </Button>
-        <Button variant="outlined" style={{backgroundImage:`url(${
-              './info_icon.png'
-            })` ,backgroundSize: '75% 100%',
+      <Box
+        display="flex"
+        width="100%"
+        height="2rem"
+        marginTop="1rem"
+        marginBottom="1rem"
+      >
+        <Button
+          variant="outlined"
+          color="secondary"
+          className={classes.button}
+          style={{ color: '#000000' }}
+        >
+          {' '}
+          Enter Ambassador Code{' '}
+        </Button>
+        <Button
+          variant="outlined"
+          style={{
+            backgroundImage: `url(${'./info_icon.png'})`,
+            backgroundSize: '75% 100%',
             backgroundPosition: 'center center',
-            backgroundRepeat: 'no-repeat',marginLeft:'1rem'}}> </Button>
+            backgroundRepeat: 'no-repeat',
+            marginLeft: '1rem',
+          }}
+        >
+          {' '}
+        </Button>
       </Box>
       <Box className={classes.section} fontWeight="bold" display="flex">
         <Box>Total</Box>
@@ -662,7 +695,7 @@ export default function CheckoutTab() {
           color="primary"
           onClick={() => {
             setLeftTabChosen(4);
-            setPaymentDisplayType(!paymentDisplayType)
+            setPaymentDisplayType(!paymentDisplayType);
           }}
           style={{ textTransform: 'none' }}
         >
@@ -687,7 +720,7 @@ export default function CheckoutTab() {
           Login
         </Button>
       </Box>
-      <Box display="flex"  flexDirection="column" px="2%">
+      <Box display="flex" flexDirection="column" px="2%">
         <p style={{ color: appColors.secondary, fontWeight: 500 }}>
           Save time and create an account?
         </p>
@@ -711,32 +744,64 @@ export default function CheckoutTab() {
       </Box> */}
 
       {/* Login dialog opens here based on login state */}
-      <Dialog fullScreen open = {loggingIn} onClose = {() => setLoggingIn(false)} style = {{
-        width: '100%', height: '100%',
-      }}>
-        <Box mt = {1} style = {{
-                     justifyContent: 'center', display: 'flex', height: '100%',
-                     alignItems: 'center',
-        }}>
-          <Button color = 'primary' variant = 'contained' onClick = {() => setLoggingIn(false)} style = {{
-            width: '120px',
-          }}>
+      <Dialog
+        fullScreen
+        open={loggingIn}
+        onClose={() => setLoggingIn(false)}
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        <Box
+          mt={1}
+          style={{
+            justifyContent: 'center',
+            display: 'flex',
+            height: '100%',
+            alignItems: 'center',
+          }}
+        >
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={() => setLoggingIn(false)}
+            style={{
+              width: '120px',
+            }}
+          >
             Close
           </Button>
         </Box>
       </Dialog>
 
       {/* Sign up dialog opens here based on signUp state */}
-      <Dialog fullScreen open = {signingUp} onClose = {() => setSigningUp(false)} style = {{
-        width: '100%', height: '100%',
-      }}>
-        <Box mt = {1} style = {{
-          justifyContent: 'center', display: 'flex', height: '100%',
-          alignItems: 'center',
-        }}>
-          <Button color = 'primary' variant = 'contained' onClick = {() => setSigningUp(false)} style = {{
-            width: '120px',
-          }}>
+      <Dialog
+        fullScreen
+        open={signingUp}
+        onClose={() => setSigningUp(false)}
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        <Box
+          mt={1}
+          style={{
+            justifyContent: 'center',
+            display: 'flex',
+            height: '100%',
+            alignItems: 'center',
+          }}
+        >
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={() => setSigningUp(false)}
+            style={{
+              width: '120px',
+            }}
+          >
             Close
           </Button>
         </Box>
