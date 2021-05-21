@@ -5,9 +5,11 @@ import classes from './ErrorModal.module.css';
 import {Button} from 'react-bootstrap'
 import Card from "react-bootstrap/Card";
 import cross from '../icon/cross.svg';
+import Draggable from "react-draggable";
 
 const Mymodal=(props)=>{
     return (
+      <Draggable>
       <Card className={classes.modal} style={{ borderRadius: '10px' ,marginBottom:'20px',height:'601px',width:'400px'}}>
         <div>
           <img
@@ -62,6 +64,7 @@ const Mymodal=(props)=>{
           </button>
         </div>
       </Card>
+      </Draggable>
     );
 }
 

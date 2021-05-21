@@ -2,7 +2,7 @@ import React, { useRef, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import { PayPalButton } from 'react-paypal-button-v2';
-
+import { useHistory } from 'react-router-dom';
 import { useConfirmation } from '../../../services/ConfirmationService';
 import { onPurchaseComplete } from './onPurchaseComplete';
 import checkoutContext from '../CheckoutContext';
@@ -16,6 +16,7 @@ const PayPal = ({ value, deliveryInstructions }) => {
   const checkout = useContext(checkoutContext);
   const auth = useContext(AuthContext);
   const confirm = useConfirmation();
+  const history = useHistory();
 
   const [loaded, setLoaded] = useState(false);
   const { paymentDetails, chosenCoupon } = useContext(checkoutContext);
@@ -116,7 +117,11 @@ const PayPal = ({ value, deliveryInstructions }) => {
               onPurchaseComplete({
                 store: store,
                 checkout: checkout,
-                confirm: confirm,
+              });
+              store.setOrderConfirmation(true);
+              history.push({
+                pathname: '/store',
+                state: { rightTabChosen: 2 },
               });
             });
         }}

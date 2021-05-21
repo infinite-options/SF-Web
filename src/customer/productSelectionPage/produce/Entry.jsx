@@ -2,13 +2,12 @@ import React, { useState, useContext, useEffect } from 'react';
 import storeContext from '../../storeContext';
 import { Box, Button, Card, Grid, Icon, IconButton, Typography, SvgIcon } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
- import InfoIcon from '@material-ui/icons/Info';
+import InfoIcon from '@material-ui/icons/Info';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import axios from 'axios';
 import appColors from '../../../styles/AppColors';
 import ProduceSelectContext from '../ProdSelectContext';
-import { CallMissedSharp, InfoOutlined } from '@material-ui/icons';
 
 import {ReactComponent as AddIcon } from '../../../sf-svg-icons/sfcolored-plus.svg';
 import {ReactComponent as RemoveIcon } from '../../../sf-svg-icons/sfcolored-minus.svg';
@@ -17,14 +16,7 @@ import FavoriteSrc from '../../../sf-svg-icons/heart-whitebackground.svg';
 import FavoriteBorderedSrc from '../../../sf-svg-icons/heart-whitebackground-bordered.svg';
 import InfoSrc from '../../../sf-svg-icons/info-whitebackground.svg';
 
-import busiRes from '../../../utils/BusiApiReqs'
-import Flippy, { FrontSide, BackSide } from 'react-flippy';
 import ReactCardFlip from 'react-card-flip';
-
-import Cookies from "js-cookie";
-
-const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI;
-
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -110,7 +102,7 @@ const useStyles = makeStyles((theme) => ({
     height: '78px',
     display: 'flex',
     flexDirection: 'column',
-    background: props => (props.hearted || props.id != 0) ? '#F4860933' : 'white',
+    background: props => ( props.id != 0) ? '#F4860933' : 'white',
   },
 
   itemInfo: {
@@ -131,11 +123,8 @@ function Entry(props) {
   const [isInDay, setIsInDay] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
 
-  const [favorite, setfavorite] = useState([]);
-
   const store = useContext(storeContext);
-  const BusiApiMethods = new busiRes();
-  var favoriteArray = [];
+
 
   const stylesProps = {
     'id': props.id in store.cartItems
@@ -144,6 +133,7 @@ function Entry(props) {
     'hearted': hearted,
     'isInDay': isInDay,
   }
+    
 
   const classes = useStyles(stylesProps);
 
@@ -158,7 +148,10 @@ function Entry(props) {
     const isFavoritedAndInFavorites = productSelect.categoriesClicked.has("favorite") &&
     props.favorite == "TRUE";
 
-    
+    if (props.favorite === "TRUE") {
+      setHearted(true)
+    }
+
     for (const farm in props.business_uids) {
       store.farmDaytimeDict[farm].forEach((daytime) => {
         if (store.dayClicked === daytime)
@@ -166,24 +159,12 @@ function Entry(props) {
       });
     }
 
-    // productSelect.farmsClicked.forEach((farm) => {
-    //   if (farm in props.business_uids) {
-    //     isInFarm = true;
-    //   }
-    // });
     if (productSelect.categoriesClicked.has(props.type)) isInCategory = true;
-
-    //setIsShown(
-      // (isInDay && isInFarm && isInCategory) ||
-      //   (isInDay &&
-      //     productSelect.farmsClicked.size == 0 &&
-      //     productSelect.categoriesClicked.size == 0) ||
-      //   (isInDay && productSelect.farmsClicked.size == 0 && isInCategory) ||
-      //   (isInDay && isInFarm && productSelect.categoriesClicked.size == 0)
 
       setIsShown(
         (productSelect.categoriesClicked.size == 0) ||
         isInCategory || isFavoritedAndInFavorites
+        
     );
     setIsInDay(isInDay);
 
@@ -229,112 +210,32 @@ function Entry(props) {
     });
     store.setCartTotal(store.cartTotal + 1);
 
-    console.warn(store.cartItems);
+   // console.warn(store.cartItems);
   }
 
-  
-let reqBodyPost = {
-  customer_uid : Cookies.get("customer_uid"),
-  favorite:favoriteArray
-};
-
-
-
-const postRequest = async() => {
-
-  try{
-  const response = await axios.post(BASE_URL + 'favorite_produce/post', reqBodyPost)
-    console.log('Favorite Post:', response);
-    }catch(err) {
-      console.log(err.response || err);
-    }
-}
-
-  let reqBodyGet = {
-      customer_uid : Cookies.get("customer_uid")
-    };
-    const getRequest = async() => {
-  
-      try{
-      const response = await axios.post(BASE_URL + 'favorite_produce/get', reqBodyGet)
-        console.log('Favorite Items get:', response);
-        }catch(err) {
-          console.log(err.response || err);
-        }
-    }
-
   const toggleHearted = () => {
-    // console.warn(store.products);
-    // const itemCount = props.id in store.cartItems ?
-    //   store.cartItems[props.id]['count'] :
-    //   false;
-
-    // const item =
-    // props.id in store.cartItems
-    //   ? { ...props, count: 'count' in store.items[props.id] ? itemCount : undefined,
-    //       favorited: !store.cartItems[props.id]['favorited']}
-    //   : { ...props, favorited: true};
-    // console.warn(item);
-
-    // store.setCartItems({
-    //   ...store.cartItems,
-    //   [props.id]: item,
-    // });
 
     for (let i = 0; i < store.products.length; i++) {
       if (store.products[i].item_uid == props.id) {
-  //     store.products[i].favorite = store.products[i].favorite == "FALSE" ?
           store.products[i].favorite = props.favorite == "FALSE" ? "TRUE" : "FALSE";
-          // console.log('FavoriteItems Products:',store.products[i].item_name)
-           favoriteArray.push(store.products[i].item_name)
-
       }
     }
-
-
-
-    postRequest();
-
-   getRequest();
-
-//     for (let i = 0; i < store.productsFruit.length; i++) {
-//       if (store.productsFruit[i].item_uid == props.id) {
-//        store.productsFruit[i].favorite = store.productsFruit[i].favorite == "FALSE" ?
-//    //       store.products[i].favorite = props.favorite == "FALSE" ?     
-//           "TRUE" : "FALSE";
-//       }
-//     }
-
-//     for (let i = 0; i < store.productsVegetable.length; i++) {
-//       if (store.productsVegetable[i].item_uid == props.id) {
-//        store.productsVegetable[i].favorite = store.productsVegetable[i].favorite == "FALSE" ?
-//    //       store.products[i].favorite = props.favorite == "FALSE" ?     
-//           "TRUE" : "FALSE";
-//       }
-//   }
-
-//   for (let i = 0; i < store.productsDessert.length; i++) {
-//     if (store.productsDessert[i].item_uid == props.id) {
-//      store.productsDessert[i].favorite = store.productsDessert[i].favorite == "FALSE" ?
-//  //       store.products[i].favorite = props.favorite == "FALSE" ?     
-//         "TRUE" : "FALSE";
-//     }
-// }
     setHearted(!hearted);
+    
   };
 
  function flipped(){
    setIsFlipped(true)
  }
 
- 
  function notFlipped(){
   setIsFlipped(false)
 }
+ 
 
 
   return ( isShown ?
-  
+    
     <Grid  xs = {6} md = {4} lg = {4} item className = {classes.foodGridItem}>
       <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
       <Card
@@ -358,7 +259,7 @@ const postRequest = async() => {
               onClick = {toggleHearted}
               disabled = {!isInDay}
             >
-              <img src = {hearted ? FavoriteSrc : FavoriteBorderedSrc} />
+              <img src = {hearted ? FavoriteSrc :FavoriteBorderedSrc } />
             </Button>
           </Box>
 
@@ -390,14 +291,12 @@ const postRequest = async() => {
             display: 'flex', justifyContent: 'flex-start',
           }}>
             <Button
-              className = {classes.itemInfoBtn}
               onClick = {toggleHearted}
               disabled = {!isInDay}
             >
               <img src = {hearted ? FavoriteSrc : FavoriteBorderedSrc} />
             </Button>
           </Box>
-          {/* {props.info} */}
           <Box style = {{
             display: 'flex', justifyContent: 'flex-end',
           }}>
@@ -412,7 +311,8 @@ const postRequest = async() => {
          
         </Box>
         <Box style = {{
-            display: 'flex', justifyContent: 'center',
+            display: 'flex', justifyContent: 'center', height: '142px', width: '250px',
+            backgroundSize: '250px 200px',
           }}>
             <Typography>
               {props.info}
@@ -458,195 +358,8 @@ const postRequest = async() => {
           </Typography>
         </Box>
       </Card>
-
-
     </Grid> : ''
   ); 
 }
 
 export default Entry;
-
-
-
-
-
-// import React, { useState, useContext, useEffect } from 'react';
-// import storeContext from '../../storeContext';
-// import { Box, Button, Grid } from '@material-ui/core';
-// import { makeStyles } from '@material-ui/styles';
-// import AddIcon from '@material-ui/icons/Add';
-// import RemoveIcon from '@material-ui/icons/Remove';
-// import appColors from '../../../styles/AppColors';
-// import ProduceSelectContext from '../ProdSelectContext';
-
-// const useStyles = makeStyles({
-//   button: {
-//     border: '1px solid' + appColors.border,
-//     borderRadius: 5,
-//     backgroundColor: 'white',
-//     color: appColors.primary,
-//     opacity: 0.9,
-//   },
-// });
-
-// function Entry(props) {
-//   const classes = useStyles();
-
-//   const store = useContext(storeContext);
-//   const productSelect = useContext(ProduceSelectContext);
-
-//   const [isShown, setIsShown] = useState(false);
-
-//   useEffect(() => {
-//     let isInDay = false;
-//     let isInFarm = false;
-//     let isInCategory = false;
-//     for (const farm in props.business_uids) {
-//       store.farmDaytimeDict[farm].forEach((daytime) => {
-//         if (store.dayClicked === daytime) isInDay = true;
-//       });
-//     }
-
-//     productSelect.farmsClicked.forEach((farm) => {
-//       if (farm in props.business_uids) {
-//         isInFarm = true;
-//       }
-//     });
-//     if (productSelect.categoriesClicked.has(props.type)) isInCategory = true;
-
-//     setIsShown(
-//       (isInDay && isInFarm && isInCategory) ||
-//         (isInDay &&
-//           productSelect.farmsClicked.size == 0 &&
-//           productSelect.categoriesClicked.size == 0) ||
-//         (isInDay && productSelect.farmsClicked.size == 0 && isInCategory) ||
-//         (isInDay && isInFarm && productSelect.categoriesClicked.size == 0)
-//     );
-//   }, [
-//     store.dayClicked,
-//     productSelect.farmsClicked,
-//     productSelect.categoriesClicked,
-//     store.cartItems,
-//   ]);
-
-//   function decrease() {
-//     if (props.id in store.cartItems) {
-//       const itemCount = store.cartItems[props.id]['count'];
-//       if (itemCount > 0) {
-//         if (itemCount == 1) {
-//           let clone = Object.assign({}, store.cartItems);
-//           delete clone[props.id];
-//           store.setCartItems(clone);
-//         } else {
-//           const item = {
-//             ...props,
-//             count: store.cartItems[props.id]['count'] - 1,
-//           };
-//           store.setCartItems({
-//             ...store.cartItems,
-//             [props.id]: item,
-//           });
-//         }
-//         store.setCartTotal(store.cartTotal - 1);
-//       }
-//     }
-//   }
-
-//   function increase() {
-//     const item =
-//       props.id in store.cartItems
-//         ? { ...props, count: store.cartItems[props.id]['count'] + 1 }
-//         : { ...props, count: 1 };
-
-//     store.setCartItems({
-//       ...store.cartItems,
-//       [props.id]: item,
-//     });
-//     store.setCartTotal(store.cartTotal + 1);
-//   }
-
-//   return (
-//     <>
-//       <Grid hidden={!isShown} item>
-//         <Box
-//           className="center-cropped"
-//           display="flex"
-//           alignItems="flex-start"
-//           position="relative"
-//           zIndex="modal"
-//         >
-//           <img src={props.img.replace(' ', '%20')} width='170' height='170' alt={props.name}></img>
-//         </Box>
-        
-//         <Box position="relative" zIndex="tooltip" top={-91} height={110}>
-//           <Box
-//             className={classes.button}
-//             width={30}
-//             height={30}
-//             ml={17.5}
-//             mt={-10.1}
-//             mb={13.7}
-//             lineHeight="30px"
-//           >
-//             {props.id in store.cartItems
-//               ? store.cartItems[props.id]['count']
-//               : 0}
-//           </Box>
-//           <Box display="flex" alignItems="flex-start">
-//             <Button
-//               className={classes.button}
-//               variant="contained"
-//               size="small"
-//               onClick={decrease}
-//               style={{
-//                 width: '86px',
-//                 borderTopLeftRadius: 10,
-//                 borderBottomLeftRadius: 10,
-//                 borderTopRightRadius: 0,
-//                 borderBottomRightRadius: 0,
-//               }}
-//             >
-//               <RemoveIcon fontSize="small" cursor="pointer" color="primary" />
-//             </Button>
-//             <Button
-//               className={classes.button}
-//               variant="contained"
-//               size="small"
-//               onClick={increase}
-//               style={{
-//                 width: '86px',
-//                 borderTopRightRadius: 10,
-//                 borderBottomRightRadius: 10,
-//                 borderTopLeftRadius: 0,
-//                 borderBottomLeftRadius: 0,
-//               }}
-//             >
-//               <AddIcon fontSize="small" cursor="pointer" color="primary" />
-//             </Button>
-//           </Box>
-//           <Box
-//             width="168px"
-//             p={0.1}
-//             style={{
-//               fontSize: '12px',
-//               backgroundColor: 'white',
-//               borderRadius: 5,
-//               border: '1px solid ' + appColors.border,
-//             }}
-//           >
-//             <Box display="flex">
-//               <Box textAlign="left">{props.name}</Box>
-//               <Box flexGrow={1} />
-//               <Box textAlign="right">
-//                 $ {props.price.toFixed(2)} {props.unit === 'each' ? '' : '/ '}
-//                 {props.unit}
-//               </Box>
-//             </Box>
-//           </Box>
-//         </Box>
-//       </Grid>
-//     </>
-//   );
-// }
-
-// export default Entry;
