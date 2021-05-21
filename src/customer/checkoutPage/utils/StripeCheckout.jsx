@@ -50,13 +50,11 @@ const StripeCheckout = (props) => {
   const store = useContext(storeContext);
   const checkout = useContext(checkoutContext);
   const confirm = useConfirmation();
-  const [rightTabChosen, setRightTabChosen] = useState(0);
   const location = useLocation();
   const elements = useElements();
   const stripe = useStripe();
   const options = useOptions();
   const [processing, setProcessing] = useState(false);
-  const [isShown, setIsShown] = useState(false);
   const {
     profile,
     setProfile,
@@ -216,6 +214,10 @@ const StripeCheckout = (props) => {
             checkout: checkout,
           });
           store.setOrderConfirmation(true);
+          history.push({
+            pathname: '/store',
+            state: { rightTabChosen: 2 },
+          });
         })
         .catch((err) => {
           setProcessing(false);
