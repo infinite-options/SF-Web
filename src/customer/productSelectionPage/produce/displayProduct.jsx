@@ -100,7 +100,7 @@ const useStyles = makeStyles((theme) => ({
 
 // DONE: add unit, each is as is, anything else is '/' or 'per'
 function createProduct2(product) {
-  console.warn(product);
+//  console.warn(product);
   return (
     <Entry
       favorite={product.favorite}
@@ -151,7 +151,7 @@ function DisplayProduct() {
 
   const [displayMessage, setDisplayMessage] = useState('');
 
-  console.warn(store);
+ // console.warn(store);
 
   // DONE: add date to expected delivery
   // DONE: clear out expected delivery if unclicked
@@ -166,7 +166,7 @@ function DisplayProduct() {
     } else {
       message = 'Produce available for delivery on ' + store.expectedDelivery;
     }
-    console.log("store length",store.products.length)
+ //   console.log("store length",store.products.length)
     if (store.products.length === 0 && !store.productsLoading) {
       message =
         'Sorry, we could not find any produce that can be delivered to your provided address';

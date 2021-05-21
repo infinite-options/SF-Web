@@ -3,8 +3,9 @@ import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, FormHelperText } from '@material-ui/core';
+import { Button, FormHelperText,  Typography } from '@material-ui/core';
 import clsx from 'clsx';
+import {useHistory} from 'react-router-dom';
 
 import appColors from '../../../styles/AppColors';
 import AuthUtils from '../../../utils/AuthUtils';
@@ -16,6 +17,14 @@ import checkoutContext from '../CheckoutContext';
 import PayPal from '../utils/Paypal';
 import StripeElement from '../utils/StripeElement';
 import DeliveryInfoTab from '../tabs/DeliveryInfoTab';
+
+import Checkbox from '@material-ui/core/Checkbox';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+
+import TermsAndConditions from './TermsAndConditions';
+
 
 
 const useStyles = makeStyles({
@@ -73,10 +82,23 @@ const useStyles = makeStyles({
     color: '#fc6f03',
     fontWeight: 'bold',
   },
+
+  termsAndConditions: {
+    fontSize: '14px',
+  },
+
+  termsAndConditionsLink: {
+    textDecoration: 'underline',
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
+
 });
 
 const PaymentTab = () => {
   const classes = useStyles();
+  const history = useHistory();
   const store = useContext(storeContext);
   const auth = useContext(AuthContext);
   const [paymentType, setPaymentType] = useState('NONE');
@@ -107,6 +129,8 @@ const PaymentTab = () => {
   const [deliveryInstructions, SetDeliveryInstructions] = useState(
     localStorage.getItem('deliveryInstructions') || ''
   );
+
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   function resetError() {
     setFirstNameError('');
@@ -325,6 +349,34 @@ const PaymentTab = () => {
       </Box>
       {/* START: Payment Buttons */}
       <Box mb={3}>
+      <Box
+          style = {{display: 'flex'}}
+        >
+          <FormControl component="fieldset">
+            <FormGroup aria-label="position" row onClick = {() => console.log('Clicky')}>
+              <Box style = {{display: 'flex', alignItems: 'center'}}>
+                <FormControlLabel
+                  onClick = {() => setTermsAccepted(!termsAccepted)}
+                  value="end"
+                  control={<Checkbox color="primary" />}
+                  labelPlacement="end"
+                />
+                <Typography
+                  className = {classes.termsAndConditions}
+                >
+                  I’ve read and accept
+                  the <a
+                      className = {classes.termsAndConditionsLink}
+                      onClick = {() => history.push('/terms-and-conditions')}
+                    >
+                      Terms and Conditions
+                    </a>
+                </Typography>
+              </Box>
+            </FormGroup>
+          </FormControl>
+        </Box>
+
         <Box hidden={paymentType !== 'PAYPAL' && paymentType !== 'NONE'}>
           <Box display="flex" flexDirection="column" justifyContent="center" mb={1}>
             <Button
@@ -333,6 +385,7 @@ const PaymentTab = () => {
               variant="contained"
               color="primary"
               onClick={() => onPayWithClicked('STRIPE')}
+              disabled = {!termsAccepted}
             >
               Pay with Stripe {paymentType !== 'NONE' ? 'Instead?' : ''}
             </Button>
@@ -346,6 +399,7 @@ const PaymentTab = () => {
               variant="contained"
               color="primary"
               onClick={() => onPayWithClicked('PAYPAL')}
+              disabled = {!termsAccepted}
             >
               Pay with PayPal {paymentType !== 'NONE' ? 'Instead?' : ''}
             </Button>

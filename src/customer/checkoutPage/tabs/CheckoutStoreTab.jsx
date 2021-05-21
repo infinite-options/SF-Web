@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect, useMemo,useRef } from 'react';
 import axios from 'axios';
 import { useElements, CardElement } from '@stripe/react-stripe-js';
-import { GoogleMap, LoadScript,useJsApiLoader } from '@react-google-maps/api';
 import {useHistory} from 'react-router-dom';
 
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -36,15 +35,10 @@ import Cookies from "js-cookie";
 
 
 import DeliveryInfoTab from '../tabs/DeliveryInfoTab';
-//import TipImage from '../../../images/TipBackground.svg'
 import LocationSearchInput from '../../../utils/LocationSearchInput'
 import { StreetviewTwoTone } from '@material-ui/icons';
 
-
-//import SignUp from '../SignUp/SignUp';
-
 const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI;
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -64,17 +58,18 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '10px',
     paddingBottom: '10px',
   },
-  button: { color: appColors.buttonText, 
-    marginBottom: '10px' },
+
+  button: {
+     color: appColors.buttonText, 
+    marginBottom: '10px' 
+  },
+
   driverTipBox: {
-   
     marginBottom: '10px',
     paddingBottom: '10px',
     display:'flex',
     justifyContent:'space-between',
   },
-
- 
 
   label: {
     color: appColors.paragraphText,
@@ -100,7 +95,6 @@ buttonCheckout: {
   color: appColors.buttonText,
     width:"20rem",
     backgroundColor:"#ff8500",
- 
 },
 
   termsAndConditions: {
@@ -173,34 +167,29 @@ function listItem(item) {
   );
 }
 
-const containerStyle = {
-  width: '300px',
-  height: '200px'
-};
+// function useOutsideAlerter(ref) {
+//   useEffect(() => {
+//     /**
+//      * Alert if clicked on outside of element
+//      */
+//     function handleClickOutside(event) {
+//       if (
+//         ref.current &&
+//         !ref.current.contains(event.target) &&
+//         !ref.current.hidden
+//       ) {
+//         ref.current.hidden = true;
+//       }
+//     }
 
-function useOutsideAlerter(ref) {
-  useEffect(() => {
-    /**
-     * Alert if clicked on outside of element
-     */
-    function handleClickOutside(event) {
-      if (
-        ref.current &&
-        !ref.current.contains(event.target) &&
-        !ref.current.hidden
-      ) {
-        ref.current.hidden = true;
-      }
-    }
-
-    // Bind the event listener
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      // Unbind the event listener on clean up
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [ref]);
-}
+//     // Bind the event listener
+//     document.addEventListener('mousedown', handleClickOutside);
+//     return () => {
+//       // Unbind the event listener on clean up
+//       document.removeEventListener('mousedown', handleClickOutside);
+//     };
+//   }, [ref]);
+// }
 
 
 // TEST: Order confirmation for completed purchase
@@ -209,57 +198,23 @@ function useOutsideAlerter(ref) {
 export default function CheckoutTab(props) {
   const history = useHistory();
   const classes = useStyles();
+
   const store = useContext(storeContext);
   const auth = useContext(AuthContext);
-  const confirm = useConfirmation();
-  const BusiApiMethods = new BusiApiReqs();
   const checkout = useContext(checkoutContext);
   const productSelect = useContext(ProductSelectContext);
-  const FavoritePost = []
 
-  const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
-  const [isSignUpShown, setIsSignUpShown] = useState(false);
+  const confirm = useConfirmation();
+  const BusiApiMethods = new BusiApiReqs();
+
   const [isInDay, setIsInDay] = useState(false);
-
-
-  const loginWrapperRef = useRef(null);
-  useOutsideAlerter(loginWrapperRef, setIsLoginShown);
-  const signupWrapperRef = useRef(null);
-  useOutsideAlerter(signupWrapperRef, setIsSignUpShown);
-
-  const loginClicked = () => {
-    setIsSignUpShown(false);
-    setIsLoginShown(!isLoginShown);
-  };
-
-  const signUpClicked = () => {
-    setIsLoginShown(false);
-    setIsSignUpShown(!isSignUpShown);
-  };
-  
-  const {
-    loggingIn, setLoggingIn,
-    signingUp, setSigningUp,
-  } = useContext(storeContext);
-
-  const {
-    setPaymentProcessing,
-    setLeftTabChosen,
-    paymentDetails,
-    setPaymentDetails,
-    
-  } = checkout;
-  // Retrieve items from store context
+  const [map, setMap] = React.useState(null);
 
   // cartItems is a dictonary, need to convert it into an array
   const [cartItems, setCartItems] = useState(getItemsCart());
-
+  // Retrieve items from store context
   const [userInfo, setUserInfo] = useState(store.profile);
-  const [emailErrorMessage, setEmailErrorMessage] = useState('');
 
-  const [map, setMap] = React.useState(null);
-
-  
   const [detailsDisplayType, setDetailsDisplayType] = useState(true); 
   const [paymentDisplayType, setPaymentDisplayType] = useState(true); 
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
@@ -270,36 +225,63 @@ export default function CheckoutTab(props) {
   const [lastNameError, setLastNameError] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [emailError, setEmailError] = useState('');
-  const [deliveryInstructions, SetDeliveryInstructions] = useState(
-    localStorage.getItem('deliveryInstructions') || ''
-  ); 
-
+  const [emailErrorMessage, setEmailErrorMessage] = useState('');
   const [locError, setLocError] = useState('');
   const [locErrorMessage, setLocErrorMessage] = useState('');
 
+  const [deliveryInstructions, SetDeliveryInstructions] = useState(
+    localStorage.getItem('deliveryInstructions') || ''
+  ); 
   const [paymentType, setPaymentType] = useState('NONE');
 
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [viewTermsAndConds, setViewTermsAndConds] = useState(false);
+  const FavoritePost = []
+
+  // const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
+  // const [isSignUpShown, setIsSignUpShown] = useState(false);
 
 
+  // const loginWrapperRef = useRef(null);
+  // useOutsideAlerter(loginWrapperRef, setIsLoginShown);
+  // const signupWrapperRef = useRef(null);
+  // useOutsideAlerter(signupWrapperRef, setIsSignUpShown);
+
+  // const loginClicked = () => {
+  //   setIsSignUpShown(false);
+  //   setIsLoginShown(!isLoginShown);
+  // };
+
+  // const signUpClicked = () => {
+  //   setIsLoginShown(false);
+  //   setIsSignUpShown(!isSignUpShown);
+  // };
+  
+  // const {
+  //   loggingIn, setLoggingIn,
+  //   signingUp, setSigningUp,
+  // } = useContext(storeContext);
+
+  const {
+    setPaymentProcessing,
+    setLeftTabChosen,
+    paymentDetails,
+    setPaymentDetails,
+    
+  } = checkout;
+  
   function calculateSubTotal(items) {
     var result = 0;
-
     for (const item of items) {
-
       let isInDay = false;
-
       if (store.farmDaytimeDict[item.business_uid] != undefined){
-
-      store.farmDaytimeDict[item.business_uid].forEach((daytime) => {
-        if (store.dayClicked === daytime)
-        isInDay = true;
-      });
+        store.farmDaytimeDict[item.business_uid].forEach((daytime) => {
+          if (store.dayClicked === daytime)
+            isInDay = true;
+        }
+      );
     } 
-      
         isInDay ? result += item.count * item.price :result = result;
-   
   }
     return result;
   }
@@ -409,71 +391,15 @@ export default function CheckoutTab(props) {
     setErrorMessage('');
   }
 
-  const SectionContent = (contentProps) => {
-    return auth.isAuth ? (
-      <Box className={classes.info}>{contentProps.text}</Box>
-    ) : (
-      <CssTextField
-        error={contentProps.error}
-        name={contentProps.name}
-        size="small"
-        variant="standard"
-        fullWidth
-        onChange={onFieldGuestChange}
-        style={{
-          marginLeft: '30px',
-          height: '18px',
-        }}
-      />
-    );
-  };
-
-const PlainTextField = (props) => {
-    return (
-      <Box mb={props.spacing || 1}>
-        <CssTextField
-          error={props.error || ''}
-          value={props.value}
-          name={props.name}
-          label={props.label}
-          type={props.type}
-          disabled={props.disabled}
-          variant="outlined"
-          size="small"
-          fullWidth
-          onChange={props.onChange || onFieldChange}
-        />
-      </Box>
-    );
-  };
-
   useEffect(() => {
     if (store.profile !== {}) {
       setUserInfo(store.profile);
     }
   }, [store.profile]);
 
-  //console.log("lat and long",userInfo.latitude)
-
   useEffect(() => {
     setCartItems(getItemsCart());
   }, [store.cartItems]);
-
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyBGgoTWGX2mt4Sp8BDZZntpgxW8Cq7Qq90"
-  })
-
-  
-  const onLoad = React.useCallback(function callback(map) {
-    const bounds = new window.google.maps.LatLngBounds();
-    map.fitBounds(bounds);
-    setMap(map);
-  }, []);
-
-  const onUnmount = React.useCallback(function callback(map) {
-    setMap(null);
-  }, []);
   
   //console.log("this is lat and long", userInfo.latitude, userInfo.longitude)
   var days = [
@@ -636,11 +562,7 @@ const PlainTextField = (props) => {
       };
     });
     console.log('items: ', items);
-
-   
-    
   }
-
 
   function handleChangeAddress(){
     setAddressDisplayType(!addressDisplayType)
@@ -659,22 +581,16 @@ const PlainTextField = (props) => {
 
   const {
     profile,
-   
   } = useContext(storeContext);
-
 
   let reqBodyPost = {
     customer_uid : Cookies.get("customer_uid"),
     favorite:FavoritePost
   };
-  
-  
-  
+    
   const postRequest = async() => {
-  
     try{
     const response = await axios.post(BASE_URL + 'favorite_produce/post', reqBodyPost)
-      console.log('Favorite Post:', response);
       }catch(err) {
         console.log(err.response || err);
       }
@@ -722,15 +638,11 @@ const PlainTextField = (props) => {
       setPaymentType(type);
 
       for (let i = 0; i < store.products.length; i++) {
-          //console.log("Favorite post",store.products[i].favorite, store.products[i].item_name)
          if(store.products[i].favorite === 'TRUE'){ 
           FavoritePost.push(store.products[i].item_name)
          }
       }
-
-
       postRequest();
-
 
     } else {
       alert('Please add items to your card before processing payment');
@@ -738,29 +650,17 @@ const PlainTextField = (props) => {
   }
 
   return (
-    <Box 
-    className="responsive-checkout-tab"
-    display="flex" flexDirection="column" 
-    // height="90%"
-    // px={8}
-     >
+    <Box className="responsive-checkout-tab" display="flex" flexDirection="column">
       {/* START: Expected Delivery */}
       <TermsAndConditions opened = {viewTermsAndConds} />
 
       <Box hidden={store.expectedDelivery !== ''} m={2} />
       <Box hidden={store.expectedDelivery === ''}>
-        <Box
-          display="flex"
-          flexDirection="column"
-          // lineHeight="100px"
-          id="responsiveExpectedDelivery"
-        >
-          <Box  color={appColors.primary}
-            fontSize="18px"
-            textAlign="left"
-            fontWeight="700"
-           >Expected Delivery</Box>
-         
+
+      <Box display="flex" flexDirection="column" id="responsiveExpectedDelivery">
+          <Box  color={appColors.primary} fontSize="18px" textAlign="left" fontWeight="700">
+            Expected Delivery
+          </Box>
           <Box fontSize="14px" fontWeight="bold"  textAlign="left" >
             {store.expectedDelivery}
           </Box>
@@ -768,27 +668,20 @@ const PlainTextField = (props) => {
       </Box>
       {/* END: Expected Delivery */}
 
-
       <Box display="flex" justifyContent="space-between" fontWeight="700" fontSize="16px">
-            <Box fontSize="18px"  color={appColors.primary}>
-            Delivery Address 
-            </Box>
-            <Box hidden={!(auth.isAuth)}>
-            <Button style={{color:"#ff8500" , fontSize:"10px", fontWeight:'bold'}}  onClick = {handleChangeAddress}> Change delivery Address </Button>  
-            </Box> 
-          
+        <Box fontSize="18px"  color={appColors.primary}>
+        Delivery Address 
+        </Box>
+        <Box hidden={!(auth.isAuth)}>
+          <Button style={{color:"#ff8500" , fontSize:"10px", fontWeight:'bold'}}  onClick = {handleChangeAddress}> 
+            Change delivery Address 
+          </Button>  
+        </Box> 
       </Box>
 
       <Box hidden={!(addressDisplayType) || !(auth.isAuth)}>
-    
-      <Box 
-          fontSize="14px"
-          fontWeight='bold'
-          marginBottom="1rem"
-          className={classes.info}
-          textAlign="Left"
+        <Box fontSize="14px" fontWeight='bold' marginBottom="1rem" className={classes.info} textAlign="Left"
           hidden={
-            
             userInfo.address == '' &&
             userInfo.unit == '' &&
             userInfo.city == '' &&
@@ -800,13 +693,12 @@ const PlainTextField = (props) => {
           {userInfo.unit === '' ? ' ' : ''}
           {userInfo.unit}, {userInfo.city}, {userInfo.state} {userInfo.zip}
         </Box>
-    </Box>  
+      </Box>  
 
-      
       <Box  hidden={ (addressDisplayType) && (auth.isAuth) }>
-      <Box display="flex" mb={1}>
+        <Box display="flex" mb={1}>
           <CssTextField
-          //  error={locError}
+            error={locError}
             value={userInfo.address}
             name="address"
             label="Street Address"
@@ -816,6 +708,7 @@ const PlainTextField = (props) => {
             onChange={onFieldChange}
           />
         </Box>
+        
         <Box mb={1}>
             <CssTextField
               value={userInfo.unit}
@@ -825,9 +718,7 @@ const PlainTextField = (props) => {
               size="small"
               fullWidth
               onChange={onFieldChange}
-
             />
-        
         </Box>
 
         <Box display="flex" mb={1}>
@@ -840,9 +731,9 @@ const PlainTextField = (props) => {
               size="small"
               fullWidth
               onChange={onFieldChange}
-
             />
           </Box>
+
           <Box width="33.3%" mx={1}>
             <CssTextField
               value={userInfo.state}
@@ -852,9 +743,9 @@ const PlainTextField = (props) => {
               size="small"
               fullWidth
               onChange={onFieldChange}
-
             />
           </Box>
+
           <Box width="33.3%">
             <CssTextField
               value={userInfo.zip}
@@ -864,37 +755,24 @@ const PlainTextField = (props) => {
               size="small"
               fullWidth
               onChange={onFieldChange}
-
             />
           </Box>
-          </Box>
-     
 
-          <Box hidden={isAddressConfirmed} mb={3}>
-          <Button
-            className={classes.Checkoutbutton}
-            variant="outlined"
-            size="small"
-            color="paragraphText"
-            onClick={onCheckAddressClicked}
-          >
+        </Box>
+     
+        <Box hidden={isAddressConfirmed} mb={3}>
+          <Button className={classes.Checkoutbutton} variant="outlined" size="small" color="paragraphText" onClick={onCheckAddressClicked}>
             Verify Address
           </Button>
         </Box>
 
-        <MapComponent
-latitude={userInfo.latitude}
-longitude={userInfo.longitude}
-/>
-        </Box>
+        <MapComponent latitude={userInfo.latitude} longitude={userInfo.longitude}/>
 
-        <Box>
+      </Box>
 
-     
-      <Box mb={1} mt={0.5} justifyContent="center">
-        <textarea
-          value={deliveryInstructions}
-          onChange={onDeliveryInstructionsChange}
+      <Box>
+        <Box mb={1} mt={0.5} justifyContent="center">
+          <textarea value={deliveryInstructions} onChange={onDeliveryInstructionsChange}
           className={classes.delivInstr}
           type=" "
           placeholder="Delivery instructions (ex: gate code. leave on porch)"
@@ -1175,10 +1053,10 @@ longitude={userInfo.longitude}
           size="small"
           variant="contained"
           color="primary"
-          onClick={ loginClicked  //() => {
+       //   onClick={ loginClicked  //() => {
         //    setLeftTabChosen(4);
         //    setDetailsDisplayType(!detailsDisplayType)
-          }
+       //   }
         >
          Login
         </Button>
@@ -1255,7 +1133,7 @@ longitude={userInfo.longitude}
       </Box> */}
       </Box> 
 
-      <Box mb={3} >
+      <Box hidden={!(auth.isAuth)} mb={3} >
         <Box
           style = {{display: 'flex'}}
         >

@@ -101,7 +101,6 @@ const HistoryCard = (props) => {
       <Box className={classes.date}>Order ID: {props.id}</Box>
 
       <Box className={classes.section} display="flex">
-        <Box width="120px"></Box>
         <Box width="50%" textAlign="left">
           Name
         </Box>
