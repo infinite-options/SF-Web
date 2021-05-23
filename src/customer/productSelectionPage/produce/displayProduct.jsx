@@ -12,11 +12,42 @@ import {
 } from '@material-ui/core';
 import appColors from '../../../styles/AppColors';
 import { set } from 'js-cookie';
-import { makeStyles } from '@material-ui/core/styles';
+import { createMuiTheme, makeStyles } from '@material-ui/core/styles';
 import ItemCategory from '../filter/ItemCategory';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import GridList from '@material-ui/core/GridList';
+
+const theme2 = createMuiTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      size550: 550,
+      sm: 600,
+      size880: 880,
+      md: 960,
+      size1140: 1140,
+      lg: 1280,
+      size1315: 1315,
+      size1720: 1720,
+      xl: 1920,
+      size2100: 2100,
+      size2490: 2490,
+      size2880: 2880,
+      size3270: 3270,
+      size3660: 3660,
+      size4050: 4050,
+
+      size0: 640,
+      size1: 770,
+      size3: 1500,
+      size5: 2300,
+      size6: 2700,
+    },
+  },
+});
+
+console.log('Theme2 = ', theme2.breakpoints);
 
 // const useStyles = makeStyles((theme) => ({
 //   root: {
@@ -95,6 +126,49 @@ const useStyles = makeStyles((theme) => ({
   imageItem: {
     borderRadius: 10,
     marginLeft: '6rem',
+  },
+
+  entryContainer: {
+    display: 'grid',
+    // gridTemplateColumns: '1fr 1fr 1fr',
+    justifyItems: 'center',
+
+    [theme2.breakpoints.up('xs')]: {
+      gridTemplateColumns: '1fr',
+    },
+    [theme2.breakpoints.up('size550')]: {
+      gridTemplateColumns: '1fr 1fr',
+    },
+    [theme2.breakpoints.up('size880')]: {
+      gridTemplateColumns: 'repeat(3, 1fr)',
+    },
+    [theme2.breakpoints.up('size1140')]: {
+      gridTemplateColumns: 'repeat(4, 1fr)',
+    },
+    [theme.breakpoints.up('lg')]: {
+      gridTemplateColumns: 'repeat(3, 1fr)',
+    },
+    [theme2.breakpoints.up('size1720')]: {
+      gridTemplateColumns: 'repeat(4, 1fr)',
+    },
+    [theme2.breakpoints.up('size2100')]: {
+      gridTemplateColumns: 'repeat(5, 1fr)',
+    },
+    [theme2.breakpoints.up('size2490')]: {
+      gridTemplateColumns: 'repeat(6, 1fr)',
+    },
+    [theme2.breakpoints.up('size2880')]: {
+      gridTemplateColumns: 'repeat(7, 1fr)',
+    },
+    [theme2.breakpoints.up('size3270')]: {
+      gridTemplateColumns: 'repeat(8, 1fr)',
+    },
+    [theme2.breakpoints.up('size3660')]: {
+      gridTemplateColumns: 'repeat(9, 1fr)',
+    },
+    [theme2.breakpoints.up('size4050')]: {
+      gridTemplateColumns: 'repeat(10, 1fr)',
+    },
   },
 }));
 
@@ -270,12 +344,13 @@ style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom
 >
   <Box  width="97%" justifyContent="center">
     
-    <Grid container direction="row" justify="flex-start" 
-    // spacing={5}
-    spacing={2}
+    <Box
+      className = {classes.entryContainer} 
+      // spacing={5}
+      // spacing={2}
     >
       {store.productsVegetable.map(createProduct2)}
-    </Grid>
+    </Box>
   </Box>
 </Paper>
   </Box>

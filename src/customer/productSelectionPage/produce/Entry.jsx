@@ -236,7 +236,7 @@ function Entry(props) {
 
   return ( isShown ?
     
-    <Grid  xs = {6} md = {4} lg = {4} item className = {classes.foodGridItem}>
+    <Grid  xs = {6} md = {4} lg = {3} item className = {classes.foodGridItem}>
       <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
       <Card
         style = {{
