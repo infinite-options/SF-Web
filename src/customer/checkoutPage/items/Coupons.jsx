@@ -1,30 +1,33 @@
 import React, { useContext, useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import Carousel from 'react-multi-carousel';
+//import Carousel from 'react-multi-carousel';
 // import { Box, makeStyles } from '@material-ui/core';
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import { Carousel } from 'react-responsive-carousel';
+
 import { Box } from '@material-ui/core';
 import { AuthContext } from '../../../auth/AuthContext';
 import storeContext from '../../storeContext';
 import checkoutContext from '../CheckoutContext';
 import {makeStyles} from '@material-ui/core/styles';
 
-const responsive = {
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 3,
-    partialVisibilityGutter: 40 // this is needed to tell the amount of px that should be visible.
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 2,
-    partialVisibilityGutter: 30 // this is needed to tell the amount of px that should be visible.
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-    partialVisibilityGutter: 30 // this is needed to tell the amount of px that should be visible.
-  }
-}
+// const responsive = {
+//   desktop: {
+//     breakpoint: { max: 3000, min: 1024 },
+//     items: 3,
+//     partialVisibilityGutter: 40 // this is needed to tell the amount of px that should be visible.
+//   },
+//   tablet: {
+//     breakpoint: { max: 1024, min: 464 },
+//     items: 2,
+//     partialVisibilityGutter: 30 // this is needed to tell the amount of px that should be visible.
+//   },
+//   mobile: {
+//     breakpoint: { max: 464, min: 0 },
+//     items: 1,
+//     partialVisibilityGutter: 30 // this is needed to tell the amount of px that should be visible.
+//   }
+// }
 
 const useStyles = makeStyles((theme) => ({
   imageItem: {
@@ -370,13 +373,10 @@ export default function Coupons(props) {
             Coupons
           </Box>
           <Carousel
-            itemClass={classes.imageItem}
-            showDots={true}
-            arrows={true}
-            swipeable={true}
-            partialVisible={true}
-            draggable={true}
-            responsive={responsive}
+            showArrows = {true}
+            centerMode ={true}
+            centerSlidePercentage = {window.innerWidth < 1200 ?  window.innerWidth < 500 ? 100 : 30 : 60}
+            width = "100%"
           >
             {avaiCouponData.concat(unavaiCouponData).map(CreateCouponCard)}
           </Carousel>

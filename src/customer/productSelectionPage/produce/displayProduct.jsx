@@ -411,13 +411,12 @@ style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom
   }}
 >
   <Box  width="97%" justifyContent="center">
-    
-    <Grid container direction="row" justify="flex-start" 
-    // spacing={5}
-    spacing={2}
-    >
+  <Box className = {classes.entryContainer} 
+>
+
+
       {store.productsFruit.map(createProduct2)}
-    </Grid>
+      </Box>
   </Box>
 </Paper>
   </Box>
@@ -478,13 +477,10 @@ style={{ backgroundColor: appColors.componentBg, borderRadius: 10, paddingBottom
   }}
 >
   <Box  width="97%" justifyContent="center">
-    
-    <Grid container direction="row" justify="flex-start" 
-    // spacing={5}
-    spacing={2}
-    >
-      {store.productsDessert.map(createProduct2)}
-    </Grid>
+  
+    <Box className = {classes.entryContainer} >
+    {store.productsDessert.map(createProduct2)}
+    </Box>
   </Box>
 </Paper>
   </Box>

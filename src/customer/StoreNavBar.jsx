@@ -120,7 +120,7 @@ export default function StoreNavBar(props) {
 
           <Box>
             <Box display="flex">
-              <Box hidden={!auth.isAuth}>
+              <Box >
                 <p> {userInfo.firstName} </p>
               </Box>
               <Box hidden={!auth.isAuth}>
@@ -140,7 +140,7 @@ export default function StoreNavBar(props) {
                 </Button>
               </Box>
             </Box>
-            <Box hidden={auth.isAuth}>
+            {/* <Box hidden={auth.isAuth}>
               <Button
                 className={classes.authButton}
                 variant="contained"
@@ -160,7 +160,7 @@ export default function StoreNavBar(props) {
               >
                 Login
               </Button>
-            </Box>
+            </Box> */}
           </Box>
           <IconButton
             edge="end"

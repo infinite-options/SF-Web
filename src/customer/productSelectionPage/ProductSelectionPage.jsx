@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import DisplayProduce from './produce/displayProduct';
 import CheckoutPage from '../checkoutPage/CheckoutStorePage';
 import StoreFilter from './filter';
+import Footer from '../../home/Footer';
 import {
   Box,
   Badge,
@@ -128,6 +129,7 @@ const ProductSelectionPage = (props) => {
             <CheckoutPage />
           </Drawer>
         </Hidden>
+        <Footer/>
       </ProdSelectContext.Provider>
     </Box>
   );

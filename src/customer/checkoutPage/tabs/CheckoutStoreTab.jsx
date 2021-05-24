@@ -20,7 +20,8 @@ import FindLongLatWithAddr from '../../../utils/FindLongLatWithAddr';
 import BusiApiReqs from '../../../utils/BusiApiReqs';
 import { useConfirmation } from '../../../services/ConfirmationService';
 import ProductSelectContext from '../../productSelectionPage/ProdSelectContext'
-
+import AdminLogin from '../../../auth/AdminLogin';
+import Signup from '../../../auth/Signup';
 
 import Checkbox from '@material-ui/core/Checkbox';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -219,6 +220,8 @@ export default function CheckoutTab(props) {
   const [paymentDisplayType, setPaymentDisplayType] = useState(true); 
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
   const [addressDisplayType, setAddressDisplayType] = useState(true);
+  const [isClickedLogin , setIsClickedLogin] = useState(true);
+  const [isClickedSignUp , setIsClickedSignUp] = useState(true);
 
   const [errorMessage, setErrorMessage] = useState('');
   const [firstNameError, setFirstNameError] = useState('');
@@ -1053,15 +1056,16 @@ export default function CheckoutTab(props) {
           size="small"
           variant="contained"
           color="primary"
-       //   onClick={ loginClicked  //() => {
-        //    setLeftTabChosen(4);
-        //    setDetailsDisplayType(!detailsDisplayType)
-       //   }
+          onClick={ () => {setIsClickedLogin(!isClickedLogin)}} 
         >
          Login
         </Button>
       
       </Box>  
+
+      <Box hidden = {isClickedLogin || (auth.isAuth)} >
+         <AdminLogin/> 
+        </Box> 
 
 
       <Box  hidden={(auth.isAuth)}  style = {{marginBottom:"1rem"}} >
@@ -1073,15 +1077,16 @@ export default function CheckoutTab(props) {
           size="small"
           variant="contained"
           color="primary"
-          onClick={() => {
-       //     setLeftTabChosen(4);
-       //     setDetailsDisplayType(!detailsDisplayType)
+          onClick={() => { setIsClickedSignUp(!isClickedSignUp)
           }}
         >
         SignUp
         </Button>
       
       </Box> 
+      <Box hidden = {isClickedSignUp || (auth.isAuth)} >
+         <Signup/> 
+        </Box> 
       </Box> 
 
       {/* <Box  hidden={!(auth.isAuth)} style = {{marginBottom:"1rem"}}>

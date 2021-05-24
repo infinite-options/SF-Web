@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
@@ -12,6 +12,11 @@ import CheckoutPage from './checkoutPage';
 import ProductSelectionPage from './productSelectionPage';
 import AuthUtils from '../utils/AuthUtils';
 import BusiApiReqs from '../utils/BusiApiReqs';
+import LandingNavBar from '../home/LandingNavBar';
+import AdminLogin from '../auth/AdminLogin';
+import Signup from '../auth/Signup';
+import { makeStyles } from '@material-ui/core/styles';
+
 import { set } from 'js-cookie';
 
 const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI;
@@ -19,6 +24,13 @@ const cookies = new Cookies();
 
 const testDate = new Date();
 const BusiMethods = new BusiApiReqs();
+
+const useStyles = makeStyles((theme) => ({
+  authModal: {
+    position: 'absolute',
+    width: '500px',
+  },
+}));
 
 const fullDaysUpper = [
   'SUNDAY',
@@ -94,12 +106,37 @@ const findWeekdayDates = () => {
   return result;
 };
 
+function useOutsideAlerter(ref) {
+  useEffect(() => {
+    /**
+     * Alert if clicked on outside of element
+     */
+    function handleClickOutside(event) {
+      if (
+        ref.current &&
+        !ref.current.contains(event.target) &&
+        !ref.current.hidden
+      ) {
+        ref.current.hidden = true;
+      }
+    }
+
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [ref]);
+}
+
 const weekdayDatesDict = findWeekdayDates();
 
 const Store = ({ ...props }) => {
   const Auth = useContext(AuthContext);
   const location = useLocation();
   const history = useHistory();
+  const classes = useStyles();
   const [orderConfirmation, setOrderConfirmation] = useState(false);
   // const currenttime = setInterval(checkIfAccepting, 60000);
 
@@ -133,6 +170,14 @@ const Store = ({ ...props }) => {
     localStorage.getItem('selectedDay') || ''
   );
   const [acceptDayHour, setAcceptDayHour] = useState({});
+
+  const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
+  const [isSignUpShown, setIsSignUpShown] = useState(false);
+
+  const loginWrapperRef = useRef(null);
+  useOutsideAlerter(loginWrapperRef, setIsLoginShown);
+  const signupWrapperRef = useRef(null);
+  useOutsideAlerter(signupWrapperRef, setIsSignUpShown);
 
   useEffect(() => {
     localStorage.setItem('startDeliveryDate', startDeliveryDate);
@@ -566,7 +611,54 @@ const Store = ({ ...props }) => {
           setOrderConfirmation,
         }}
       >
+        <Box hidden={!(Auth.isAuth)}>
         <StoreNavBar storePage={storePage} setStorePage={setStorePage} />
+        </Box>
+        <Box hidden={(Auth.isAuth)}>
+         <LandingNavBar 
+           isLoginShown={isLoginShown}
+           setIsLoginShown={setIsLoginShown}
+           isSignUpShown={isSignUpShown}
+           setIsSignUpShown={setIsSignUpShown} />
+
+          <Box display="flex" justifyContent="flex-end">
+            {/* Login Modal */}
+            <Box
+              position="absolute"
+              width="50%"
+              display="flex"
+              justifyContent="center"
+              zIndex={40}
+            >
+              <Box
+                ref={loginWrapperRef}
+                className={classes.authModal}
+                hidden={!isLoginShown}
+              >
+                <AdminLogin />
+              </Box>
+            </Box>
+
+            {/* Sign Up Modal */}
+            <Box display="flex" justifyContent="flex-end">
+              <Box
+                position="absolute"
+                width="50%"
+                display="flex"
+                justifyContent="center"
+                zIndex={4000}
+              >
+                <Box
+                  ref={signupWrapperRef}
+                  className={classes.authModal}
+                  hidden={!isSignUpShown}
+                >
+                  <Signup />
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
         {/* <Box hidden={storePage !== 0}> */}
         <ProductSelectionPage farms={farmsList} />
         {/* </Box> */}
