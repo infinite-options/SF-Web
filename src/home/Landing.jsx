@@ -158,53 +158,53 @@ const Landing = ({ ...props }) => {
             paddingBottom: '100px',
           }}
         > */}
-          <LandingNavBar
-            isLoginShown={isLoginShown}
-            setIsLoginShown={setIsLoginShown}
-            isSignUpShown={isSignUpShown}
-            setIsSignUpShown={setIsSignUpShown}
-          />
-          {/* START: Login/SignUp Modal */}
-          <Box display="flex" justifyContent="flex-end">
-            {/* Login Modal */}
-            <Box
-              position="absolute"
-              width="50%"
-              display="flex"
-              justifyContent="center"
-              zIndex={40}
-            >
-              <Box
-                ref={loginWrapperRef}
-                className={classes.authModal}
-                hidden={!isLoginShown}
-              >
-                <AdminLogin />
-              </Box>
-            </Box>
+      <LandingNavBar
+        isLoginShown={isLoginShown}
+        setIsLoginShown={setIsLoginShown}
+        isSignUpShown={isSignUpShown}
+        setIsSignUpShown={setIsSignUpShown}
+      />
+      {/* START: Login/SignUp Modal */}
+      <Box display="flex" justifyContent="flex-end">
+        {/* Login Modal */}
+        <Box
+          position="absolute"
+          width="50%"
+          display="flex"
+          justifyContent="center"
+          zIndex={40}
+        >
+          <Box
+            ref={loginWrapperRef}
+            className={classes.authModal}
+            hidden={!isLoginShown}
+          >
+            <AdminLogin />
+          </Box>
+        </Box>
 
-            {/* Sign Up Modal */}
-            <Box display="flex" justifyContent="flex-end">
-              <Box
-                position="absolute"
-                width="50%"
-                display="flex"
-                justifyContent="center"
-                zIndex={4000}
-              >
-                <Box
-                  ref={signupWrapperRef}
-                  className={classes.authModal}
-                  hidden={!isSignUpShown}
-                >
-                  <Signup />
-                </Box>
-              </Box>
+        {/* Sign Up Modal */}
+        <Box display="flex" justifyContent="flex-end">
+          <Box
+            position="absolute"
+            width="50%"
+            display="flex"
+            justifyContent="center"
+            zIndex={4000}
+          >
+            <Box
+              ref={signupWrapperRef}
+              className={classes.authModal}
+              hidden={!isSignUpShown}
+            >
+              <Signup />
             </Box>
           </Box>
-          {/* END: Login/SignUp Modal */}
-          {/* START: landing Logo and Guest Login */}
-          {/* <Container
+        </Box>
+      </Box>
+      {/* END: Login/SignUp Modal */}
+      {/* START: landing Logo and Guest Login */}
+      {/* <Container
             fluid
             //class="container-fluid px-0"
             style={{
@@ -249,13 +249,11 @@ const Landing = ({ ...props }) => {
               </Col>
             </Row>
           </Container> */}
-          {/* END: Landing Page Logo */}
+      {/* END: Landing Page Logo */}
 
-          
+      {/* START: Info Section */}
 
-          {/* START: Info Section */}
-
-          {/* <Box className={classes.title} style={{ paddingTop: '30px',position:'sticky' }}>
+      {/* <Box className={classes.title} style={{ paddingTop: '30px',position:'sticky' }}>
             Why try Serving Fresh
           </Box>
           <Box mx="auto" className={classes.bar} />
@@ -298,14 +296,14 @@ const Landing = ({ ...props }) => {
               </div>
             </Box>
           </Box> */}
-          {/* END: Info Section */}
-          {/* START: Local Produce Search */}
-          {/* <Box my={10}>
+      {/* END: Info Section */}
+      {/* START: Local Produce Search */}
+      {/* <Box my={10}>
             <ProductDisplay />
           </Box> */}
-          {/* END: Local Produce Search */}
-          {/* START: Farmer information */}
-          {/* <Container
+      {/* END: Local Produce Search */}
+      {/* START: Farmer information */}
+      {/* <Container
             fluid
             style={{
               paddingLeft: 0,
@@ -386,8 +384,8 @@ const Landing = ({ ...props }) => {
               </Col>
             </Row>
           </Container> */}
-          
-        {/* </Box>
+
+      {/* </Box>
       </Box> */}
       {/* END: Login/SignUp Modal */}
       {/* START: landing Logo and Guest Login */}
@@ -403,11 +401,13 @@ const Landing = ({ ...props }) => {
           width: '100%',
         }}
       >
-        <Row class="align-items-center">
-          <Col lg={6} md={{ size: 6, order: 2, offset: 1 }}>
+        <Row className="align-items-center">
+          <Col lg={6}
+          //  md={{ size: 6, order: 2, offset: 1 }}
+          >
             <div
               id="headingGroup"
-              class="text-white text-center d-none d-lg-block mt-5"
+              className="text-white text-center d-none d-lg-block mt-5"
             >
               <h1
                 id="text"
@@ -417,8 +417,8 @@ const Landing = ({ ...props }) => {
                   textAlign: 'left',
                   fontWeight: '700',
                   marginLeft: '175px',
-                  marginTop:'150px',
-                  marginBottom:'150px'
+                  marginTop: '150px',
+                  marginBottom: '150px',
                 }}
               >
                 Fresh, Organic <br></br>
@@ -426,9 +426,11 @@ const Landing = ({ ...props }) => {
               </h1>
             </div>
           </Col>
-          <Col lg={6} md={{ size: 6, order: 1, offset: 1 }}>
+          <Col lg={6} 
+          // md={{ size: 6, order: 1, offset: 1 }}
+          >
             <img
-              class="img-fluid"
+              className="img-fluid"
               src="./logos/SF.png"
               style={{
                 marginTop: '40px',
@@ -664,7 +666,8 @@ const Landing = ({ ...props }) => {
               >
                 17% Savings
               </p>
-              Our affordable produce can help you save an average of 17% more than that compared to organic produce at local grocery stores.
+              Our affordable produce can help you save an average of 17% more
+              than that compared to organic produce at local grocery stores.
             </div>
           </Box>
           <Box className={classes.infoSection} id="mobileInfoSection">
@@ -680,7 +683,8 @@ const Landing = ({ ...props }) => {
               >
                 7+ Farms
               </p>
-              Support our farm partners by ordering here and stay updated with new, seasonal produce.
+              Support our farm partners by ordering here and stay updated with
+              new, seasonal produce.
             </div>
           </Box>
         </Box>

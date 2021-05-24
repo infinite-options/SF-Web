@@ -338,8 +338,12 @@ function AdminLogin(props) {
   return (
     <div>
       <Paper style={paperStyle}>
-        <Grid container spacing={1} xs={12}>
-          <Grid item xs={12}>
+        <Grid container spacing={1} 
+        
+        >
+          <Grid item 
+          xs={12}
+          >
             <Box
               my={1}
               style={{ color: appColors.secondary,fontSize:'32px',fontWeight:'bolder' ,textDecoration:'underline',marginBottom:'25px'}}

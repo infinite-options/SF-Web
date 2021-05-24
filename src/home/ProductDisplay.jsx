@@ -92,15 +92,18 @@ const ProductDisplay = () => {
         draggable={true}
         responsive={responsive}
       >
-        {itemsList.map((product) => {
+        {itemsList.map((product,i) => {
           return (
-            <Product
+            <div key={i}>
+            <Product 
+            
               img={product.item_photo}
               name={product.item_name}
               price={product.item_price}
               unit={product.item_unit}
-              key={product.item_uid}
+              
             />
+            </div>
           );
         })}
       </Carousel>

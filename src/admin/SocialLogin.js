@@ -1,5 +1,5 @@
 import React, { Component, useState, useContext, useEffect } from 'react';
-import FacebookLogin from 'react-facebook-login';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import GoogleLogin from 'react-google-login';
 import Cookies from 'js-cookie';
 import axios from 'axios';
@@ -166,9 +166,9 @@ function SocialLogin(props) {
   };
 
   return (
-    <Grid container spacing={1} xs={12}>
+    <Grid container spacing={1} >
       <Grid item xs={12}>
-       <button style={{backgroundColor:"rgb(82,104,180)",border:'1px solid rgb(82,104,180)',borderRadius:'8px',height:'50px',width:'280px'}}> <FacebookLogin
+        <FacebookLogin
           appId={process.env.REACT_APP_FACEBOOK_APP_ID}
           autoLoad={false}
           fields="name,email,picture"
@@ -177,11 +177,11 @@ function SocialLogin(props) {
           size="small"
           // icon={<SiFacebook/>}
           textButton="Continue with Facebook"
-          // render={renderProps => (
-          //   <img  src={Fb_Login} onClick={renderProps.onClick} disabled={renderProps.disabled} ></img>
-          // )}
+          render={renderProps => (
+            <img  src={Fb_Login} onClick={renderProps.onClick} disabled={renderProps.disabled} ></img>
+          )}
         />
-        </button>
+       
       </Grid>
       <Grid item xs={12}>
         <Button style={{}}><GoogleLogin

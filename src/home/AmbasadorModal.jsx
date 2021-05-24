@@ -1,26 +1,32 @@
-import Modal from "react-bootstrap/Modal";
+
 // import "bootstrap/dist/css/bootstrap.min.css";
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import classes from './ErrorModal.module.css';
-import {Button} from 'react-bootstrap'
+// import {Button} from 'react-bootstrap'
 import Card from "react-bootstrap/Card";
 import cross from '../icon/cross.svg';
 import BusiApiReqs from '../utils/BusiApiReqs';
 import Draggable from 'react-draggable';
+import AuthUtils from '../utils/AuthUtils';
 
 const AmbasadorModal =(props)=>{
-
+  let [customerName,setCustomerName]=useState('');
     const BusiMethods = new BusiApiReqs();
-
+    const AuthMethods = new AuthUtils();
+    AuthMethods.getProfile().then(response=>{
+      console.log((response.customer_first_name));
+      setCustomerName(response.customer_first_name);
+    });
+    
    let createAmbassador=async ()=>{
-        let ambassadorEmail=document.getElementById("ambassadorEmail").value
+        let ambassadorEmail=document.getElementById("ambassadorEmail").value;
         await BusiMethods.create_ambassador(ambassadorEmail);
        
         
     }
 
 
-
+    
 
 
 
@@ -45,6 +51,7 @@ const AmbasadorModal =(props)=>{
         <Card className={classes.modal} style={{border:'1px solid #E1E7E7', borderRadius: '10px' ,marginBottom:'20px',height:'621px',width:'400px'}}>
         <div>
         <img
+            alt="close"
             src={cross}
             onClick={props.close}
             style={{
@@ -69,7 +76,7 @@ const AmbasadorModal =(props)=>{
         </div>
         <div>
             <p style={{float:'left',color:'#136D74',marginLeft:'50px'}}>Ambassador Name:</p>
-            <p style={{float:'left',marginLeft:'50px'}}>hello</p>
+            <p style={{float:'left',marginLeft:'50px'}}>{customerName}</p>
         </div>
         <div>
           <input
