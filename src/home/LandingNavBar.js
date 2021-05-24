@@ -56,7 +56,7 @@ export default function LandingNavBar({ ...props }) {
   return (
     <div className={classes.root} style={{backgroundColor:'#2F787F'}}>
       <AppBar
-        color="white"
+       
         position="static"
         elevation={0}
         style={{

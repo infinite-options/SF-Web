@@ -1,39 +1,38 @@
 import React, { useState, useContext } from 'react';
-import { Container, Row, Col } from 'react-grid-system';
+// import { Container, Row, Col } from 'react-grid-system';
 import { useHistory } from 'react-router-dom';
-import { Visible, Hidden } from 'react-grid-system';
+// import { Visible, Hidden } from 'react-grid-system';
 import {
-  Box,
+  // Box,
   Button,
   InputAdornment,
-  FormHelperText,
-  Collapse,
+  // FormHelperText,
+  // Collapse,
 } from '@material-ui/core';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import appColors from '../styles/AppColors';
 import CssTextField from '../utils/CssTextField';
-import FindLongLatWithAddr from '../utils/FindLongLatWithAddr';
+// import FindLongLatWithAddr from '../utils/FindLongLatWithAddr';
 import { AuthContext } from '../auth/AuthContext';
-import { TrendingUpRounded } from '@material-ui/icons';
+// import { TrendingUpRounded } from '@material-ui/icons';
 import PlacesAutocomplete, {
   geocodeByAddress,
   geocodeByPlaceId,
   getLatLng
 } from "react-places-autocomplete";
 import BusiApiReqs from '../utils/BusiApiReqs';
-import ProductDisplay from './ProductDisplay';
+
 import Mymodal from './Modal';
 import SuccessModal from './SuccessModal';
-import TextField from '@material-ui/core/TextField';
+// import TextField from '@material-ui/core/TextField';
 
-import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
+
 
 
 // let google1=new google.maps;
 
 let modalProp=true;
-let modalSample="";
 const BusiMethods = new BusiApiReqs();
 const useStyles = makeStyles((theme) => ({
   authModal: {
@@ -62,10 +61,10 @@ const useStyles = makeStyles((theme) => ({
 // }
 const DeliveryLocationSearch = (props) => {
   const [address, setAddress] = React.useState("");
-const [coordinates, setCoordinates] = React.useState({
-  lat: null,
-  lng: null
-});
+// const [coordinates, setCoordinates] = React.useState({
+//   lat: null,
+//   lng: null
+// });
 const [modalError, setModalErrorMessage] = useState('');
 const [modalSuccess, setModalSuccessMessage] = useState('');
 let guestProfile={};
@@ -133,10 +132,10 @@ let guestProfile={};
     const results = await geocodeByAddress(value);
     const latLng = await getLatLng(results[0]);
     setAddress(value);
-    setCoordinates(latLng);
+    // setCoordinates(latLng);
     let addr=value.split(',');
-    console.log(results.[0].place_id);
-    const results1 = await geocodeByPlaceId(results.[0].place_id);
+    console.log(results[0].place_id);
+    const results1 = await geocodeByPlaceId(results[0].place_id);
     const array_fragment=(results1.[0].address_components);
     const zipCode1 = array_fragment[array_fragment.length - 1];
     const zipCode2 = array_fragment[array_fragment.length - 2];
@@ -184,46 +183,47 @@ let guestProfile={};
 
   };
 
-  const searchAddress= async value=>{
-    // const results = await geocodeByAddress(value);
-    // const latLng = await getLatLng(results[0]);
-    // setAddress(value);
-    // setCoordinates(latLng);
-    let addr=this.setAddress;
-    console.log(addr);
+  // const searchAddress= async value=>{
+  //   // const results = await geocodeByAddress(value);
+  //   // const latLng = await getLatLng(results[0]);
+  //   // setAddress(value);
+  //   // setCoordinates(latLng);
+  //   let addr=this.setAddress;
+  //   console.log(addr);
 
-    guestProfile = {
-                  longitude: coordinates.lng,
-                  latitude: coordinates.lat,
-    //               address: addr[0],
-    //               city: addr[1],
-    //               state: addr[2],
-    //               zip: "",
-                };
-    console.log(setAddress);
-    const res= await BusiMethods.getLocationBusinessIds(coordinates.lng,coordinates.lat);
-    console.log(res.result);
-    console.log(!(res.result.length));
+  //   guestProfile = {
+  //                 longitude: coordinates.lng,
+  //                 latitude: coordinates.lat,
+  //   //               address: addr[0],
+  //   //               city: addr[1],
+  //   //               state: addr[2],
+  //   //               zip: "",
+  //               };
+  //   console.log(setAddress);
+  //   const res= await BusiMethods.getLocationBusinessIds(coordinates.lng,coordinates.lat);
+  //   console.log(res.result);
+  //   console.log(!(res.result.length));
   
-    modalProp=(!(res.result.length));
-    console.log(modalProp);
-    if(modalProp){
-      console.log(guestProfile);
-      setModalErrorMessage({
-      title:"Still Growing…",
-      body:'Sorry, it looks like we don’t deliver to your neighborhood yet. Enter your email address and we will let you know as soon as we come to your neighborhood.'});
-    }
-    else{
-      setModalSuccessMessage({title:"Hooray!",body:'Looks like we deliver to your address. Click the button below to see the variety of fresh organic fruits and vegetables we offer.'});
-      localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
-      auth.setIsGuest(true);
-      // history.push('/store');
+  //   modalProp=(!(res.result.length));
+  //   console.log(modalProp);
+  //   if(modalProp){
+  //     console.log(guestProfile);
+  //     setModalErrorMessage({
+  //     title:"Still Growing…",
+  //     body:'Sorry, it looks like we don’t deliver to your neighborhood yet. Enter your email address and we will let you know as soon as we come to your neighborhood.'});
+  //   }
+  //   else{
+  //     setModalSuccessMessage({title:"Hooray!",body:'Looks like we deliver to your address. Click the button below to see the variety of fresh organic fruits and vegetables we offer.'});
+  //     localStorage.setItem('guestProfile', JSON.stringify(guestProfile));
+  //     auth.setIsGuest(true);
+  //     // history.push('/store');
       
-      console.log(guestProfile);
-    }
+  //     console.log(guestProfile);
+  //   }
   
-  }
   // }
+  // }
+
   const login=async ()=>{
     // const res= await BusiMethods.getLocationBusinessIds(coordinates.lng,coordinates.lat);
     // guestProfile = {
@@ -245,7 +245,7 @@ let guestProfile={};
   const google = window.google;
   const searchOptions = {
     location: new google.maps.LatLng(37 , -121),
-    radius: 2000,
+    radius: 15,
     types: ['address']
   }
 
@@ -286,7 +286,7 @@ let guestProfile={};
           
 
           <CssTextField className={classes.margin}
-            id="input-with-icon-textfield"
+            id="input-with-icon-textfield_top"
             size="small"
             placeholder="Search for your address"
             variant="outlined"
@@ -333,7 +333,7 @@ let guestProfile={};
                 };
 
                 return (
-                  <div {...getSuggestionItemProps(suggestion, { style })}>
+                  <div  {...getSuggestionItemProps(suggestion, { style })}>
                     {suggestion.description}
                   </div>
                 );

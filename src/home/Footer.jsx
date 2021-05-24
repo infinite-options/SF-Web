@@ -100,6 +100,10 @@ const Footer = () => {
             >
               Find Us<br></br>
               <IconButton
+              onClick={(event) =>
+                (window.location.href =
+                  'https://www.facebook.com/ServingFresh')
+              }
                 edge="end"
                 className="link"
                 style={{
@@ -108,21 +112,32 @@ const Footer = () => {
               >
                 <FacebookIcon
                   fontSize="large"
-                  onClick={(event) =>
-                    (window.location.href =
-                      'https://www.facebook.com/ServingFresh')
-                  }
+                  // onClick={(event) =>
+                  //   (window.location.href =
+                  //     'https://www.facebook.com/ServingFresh')
+                  // }
                   aria-hidden="false"
                   aria-label="Facebook"
                   style={{ color: 'white' }}
                 />
-
+                </IconButton>
+                <IconButton
+                onClick={(event) =>
+                  (window.location.href =
+                    'https://www.instagram.com/servingfresh/')
+                }
+                edge="end"
+                className="link"
+                style={{
+                  color: 'white',
+                }}
+                >
                 <InstagramIcon
                   fontSize="large"
-                  onClick={(event) =>
-                    (window.location.href =
-                      'https://www.instagram.com/servingfresh/')
-                  }
+                  // onClick={(event) =>
+                  //   (window.location.href =
+                  //     'https://www.instagram.com/servingfresh/')
+                  // }
                   aria-hidden="false"
                   aria-label="Instagram"
                   style={{ color: 'white' }}

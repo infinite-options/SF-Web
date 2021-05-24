@@ -234,7 +234,7 @@ class Signup extends Component {
           display: 'inline-block',
           
         }}
-        elevation={1000}
+        
       >
         {/* <div >
             <img src={cross}  style={{float:'right',height:'25px',width:'25px',color:'black',marginTop:'3px',marginRight:'3px'}}></img>

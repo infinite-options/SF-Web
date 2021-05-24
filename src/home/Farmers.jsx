@@ -187,7 +187,7 @@ export default function Farmers() {
       //     <div style={{float:'right',padding:'2px'}}><img src={insta}></img></div> */}
       //     </div>
       // </div>
-      <div style={{marginLeft:'35px',width:'20rem'}}>
+      <div key={i} style={{marginLeft:'35px',width:'20rem'}}>
          <div>
           <img  src={x.farmerimg} style={{width:'17rem',height:'15rem',border:'2px solid rgb(242,151,56)',aspectRatio:'1/1',float:'left'}}/>
         </div>
