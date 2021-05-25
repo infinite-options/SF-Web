@@ -114,6 +114,7 @@ export default function Coupons(props) {
     setAvaiCouponData(availableCoupons);
     setUnavaiCouponData(unavailableCoupons);
   }, [props.subtotal]);
+
   const loadCoupons = () => {
     console.log('coupons fetched');
     const url =
@@ -193,7 +194,7 @@ export default function Coupons(props) {
       });
   };
 
-  useMemo(() => {
+  useEffect(() => {
     loadCoupons();
   }, [store.profile.email]);
 
@@ -296,13 +297,15 @@ export default function Coupons(props) {
               Expires: {coupProps.expDate.getMonth() + 1}/
               {coupProps.expDate.getDate()}/{coupProps.expDate.getFullYear()}
             </Box>
-            <Box  fontSize="12px" hidden={coupProps.status === 'unavailable'}>
-               Applied
+            <Box  fontSize="12px" hidden={coupProps.status === 'unavailable'  || coupProps.status === 'selected' || coupProps.status !== 'available' }>
+                Eligible
             </Box>
-            <Box  fontSize="12px" hidden={coupProps.status !== 'unavailable'}>
+            <Box  fontSize="12px" hidden={coupProps.status === 'available' || coupProps.status === 'unavailable' || coupProps.status !== 'selected'}>
+                Applied
+            </Box>
+            <Box  fontSize="12px" hidden={coupProps.status === 'available' || coupProps.status === 'selected' || coupProps.status !== 'unavailable'}>
                Not Eligible
             </Box>
-    
           </Box>
         </Box>
       </Box>
@@ -377,6 +380,7 @@ export default function Coupons(props) {
             centerMode ={true}
             centerSlidePercentage = {window.innerWidth < 1200 ?  window.innerWidth < 500 ? 100 : 30 : 60}
             width = "100%"
+             
           >
             {avaiCouponData.concat(unavaiCouponData).map(CreateCouponCard)}
           </Carousel>

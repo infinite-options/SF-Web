@@ -48,6 +48,10 @@ export default function StoreNavBar(props) {
   var itemsAmount = store.cartTotal;
 
   useEffect(() => {
+
+  }, [userInfo]);
+
+  useEffect(() => {
     if (store.profile !== {}) {
       setUserInfo(store.profile);
     }
@@ -162,6 +166,7 @@ export default function StoreNavBar(props) {
               </Button>
             </Box> */}
           </Box>
+          <Box hidden = {store.orderConfirmation}>
           <IconButton
             edge="end"
             className="link"
@@ -181,6 +186,29 @@ export default function StoreNavBar(props) {
               />
             </Badge>
           </IconButton>
+          </Box>
+
+          <Box hidden = {!store.orderConfirmation}>
+          <IconButton
+            edge="end"
+            className="link"
+            onClick={() => {
+              store.setOrderConfirmation(!store.orderConfirmation)
+            }}
+          >
+            <Badge badgeContent={itemsAmount} color="primary">
+              <StorefrontIcon
+                fontSize="large"
+                key={props.storePage || ''}
+                aria-hidden="false"
+                aria-label="Shopping cart"
+                style={{ color: 'white' }}
+              />
+            </Badge>
+          </IconButton>
+
+          </Box>
+          
 
           {/* <IconButton edge="end" className="link">
             <StorefrontIcon

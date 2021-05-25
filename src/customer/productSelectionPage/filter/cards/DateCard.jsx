@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
   card: {
     backgroundColor: props => props.clicked ? appColors.primary : '#e0e6e6',
     width: 75,
+    height: '4.5rem',
     borderRadius: 5,
     cursor: 'pointer',
   },
