@@ -6,9 +6,9 @@ import axios from 'axios';
 import { Grid, Paper, Button, Typography, Box } from '@material-ui/core';
 import { AuthContext } from '../auth/AuthContext';
 import { withRouter } from 'react-router';
-import Google from '../icon/Google.svg';
-import Fb_Login from '../icon/fb_login.svg'
-import Apple_Login from '../icon/Apple_Login.svg';
+import Google from '../icon/Google/Glogin.png';
+import Fb_Login from '../icon/Facebook/Flogin.png'
+import Apple_Login from '../icon/Apple/Alogin.png';
 import {SiFacebook} from 'react-icons/si';
 
 function SocialLogin(props) {

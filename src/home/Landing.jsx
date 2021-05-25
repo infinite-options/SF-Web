@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
   testimonial: {
     //backgroundColor: appColors.componentBg,
     width: '100%',
-    height: 'auto',
+    
     paddingTop: '30px',
     paddingBottom: '30px',
   },
@@ -146,7 +146,8 @@ const Landing = ({ ...props }) => {
     setIsLoginShown(false);
     setIsSignUpShown(false);
   };
-
+  
+  
   return (
     <div className="contentWrap">
       {/* <Box
@@ -433,10 +434,10 @@ const Landing = ({ ...props }) => {
               className="img-fluid"
               src="./logos/SF.png"
               style={{
-                marginTop: '40px',
-                width: '226px',
-                height: '226px',
-                marginTop: '200px',
+                marginTop: '30px',
+                width: '306px',
+                height: '306px',
+                marginTop: '160px',
                 //marginLeft: '800px',
               }}
             />
@@ -470,7 +471,7 @@ const Landing = ({ ...props }) => {
       </Box>
 
       {/* START: Info Section */}
-      <Box style={{ backgroundImage: `url(${bg})`, height: '450px' }}>
+      <Box style={{ backgroundImage: `url(${bg})`}}>
         <Box
           className={classes.title}
           style={{ paddingTop: '30px', zIndex: '0' }}
@@ -630,7 +631,7 @@ const Landing = ({ ...props }) => {
       </Box>
       {/* END: Farmer Information */}
       {/* START: Info Section */}
-      <Box className={classes.root} style={{ height: '250px' }}>
+      <Box className={classes.root} style={{  }}>
         <Box
           // display="flex"
           className="info-container"
@@ -646,7 +647,7 @@ const Landing = ({ ...props }) => {
                   marginLeft: '20px',
                 }}
               >
-                75+ items
+                55+ items
               </p>
               Fruits, vegetables and other organic produce to choose from
             </div>
