@@ -699,7 +699,7 @@ const Landing = ({ ...props }) => {
           className={classes.testimonial}
           style={{
             backgroundColor: '#F1F4F4',
-            height: '20em',
+            // height: '20em',
             width: '100%',
             border: '0px solid black',
           }}

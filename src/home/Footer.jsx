@@ -38,7 +38,7 @@ const Footer = () => {
   }
 
   return (
-    <div className="containerFooter" style={{ margin: 0 ,height:'200px'}}>
+    <div className="containerFooter" style={{ margin: 0 }}>
       <div className="container">
         {ambasadorModal && <AmbasadorModal close={modalClose}></AmbasadorModal>}
         {loginambasadorModal && <LoginAmbasador close={modalClose}></LoginAmbasador>}
