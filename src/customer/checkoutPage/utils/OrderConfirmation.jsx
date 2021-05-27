@@ -106,7 +106,18 @@ const OrderConfirmation = (props) => {
         setPasswordErrorMessage('Your passwords do not match');
         isPasswordError = true;
       }
+      var count = 0;
 
+      //Minimum eight characters, at least one letter and one number:
+      count += password.length >= 8 && password.length <= 32 ? 1 : 0;
+      count += /[a-z]/.test(password) ? 1 : 0;
+      count += /[A-Z]/.test(password) ? 1 : 0;
+      count += /\d/.test(password) ? 1 : 0;
+      if (count < 4) {
+        setPasswordError('stronger');
+        setPasswordErrorMessage('Your password does not pass the criteria');
+        isPasswordError = true;
+      }
       if (isEmailError || isEmptyError || isPasswordError) {
         return;
       }
@@ -270,6 +281,10 @@ const OrderConfirmation = (props) => {
         })} */}
 
         <Box mb={0.5} />
+        <FormHelperText style={{ textAlign: 'center' }}>
+          Minimum eight and maximum thirty-two characters, at least one capital
+          letter and one number:
+        </FormHelperText>
         <Box mb={spacing || 1}>
           <CssTextField
             error={passwordError}
