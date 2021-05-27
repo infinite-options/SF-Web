@@ -83,7 +83,7 @@ function CartItem(props) {
     store.dayClicked,
      productSelect.farmsClicked,
      productSelect.categoriesClicked,
-    store.cartItems,
+  //  store.cartItems,
   ]);
 
 

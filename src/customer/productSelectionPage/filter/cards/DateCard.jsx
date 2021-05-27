@@ -142,7 +142,7 @@ const DateCard = (props) => {
     );
     // store.setCartTotal(0);
     //store.setCartItems({});
-   localStorage.setItem('selectedDay', props.id);
+   //localStorage.setItem('selectedDay', props.id);
   }
 
   useEffect(() => {

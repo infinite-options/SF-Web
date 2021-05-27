@@ -173,6 +173,8 @@ const Store = ({ ...props }) => {
 
   const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
   const [isSignUpShown, setIsSignUpShown] = useState(false);
+  const [isCheckoutLogin, setIsCheckoutLogin] = useState(false);
+  const [isCheckoutSignUp, setIsCheckoutSignUp] = useState(false);
 
   const loginWrapperRef = useRef(null);
   useOutsideAlerter(loginWrapperRef, setIsLoginShown);
@@ -609,6 +611,10 @@ const Store = ({ ...props }) => {
           setIsInDay,
           orderConfirmation,
           setOrderConfirmation,
+          isCheckoutLogin,
+          setIsCheckoutLogin,
+          isCheckoutSignUp,
+          setIsCheckoutSignUp,
         }}
       >
         <Box hidden={!(Auth.isAuth)}>
