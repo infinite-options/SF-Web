@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 // import 'slick-carousel/slick/slick.css';
 // import 'slick-carousel/slick/slick-theme.css';
 import { makeStyles } from '@material-ui/core/styles';
@@ -11,6 +11,8 @@ import globe from '../icon/globe.svg';
 
 import Slider from 'react-slick';
 import Carousel from 'react-multi-carousel';
+import axios from 'axios';
+import { get } from 'js-cookie';
 
 var responsive = {
   superLargeDesktop: {
@@ -120,59 +122,73 @@ var responsive = {
 // }));
 export default function Farmers() {
   
- 
+
+  useEffect(() => {
+    farmerObj();
+    }, []);
+  let [farmerInfo,setfarmerInfo]=useState([]);
+
+  const farmerObj= async ()=> {await axios
+  .get ("https://tsx3rnuidi.execute-api.us-west-1.amazonaws.com/dev/api/v2/businesses")
+  .then((response)=>{console.log(response);
+    setfarmerInfo(response.data.result.result);
+  })}
   
-  const farm = () =>
-    [
-      {
-        farmerimg: './farmer1.jpg',
-        name: 'ABC Farm',
-        city: 'ABC',
-        contact: '123',
-      },
-      {
-        farmerimg: './farmer2.jpg',
-        name: 'DEF Farm',
-        city: 'DEF',
-        contact: '456',
-      },
-      {
-        farmerimg: './farmer3.jpg',
-        name: 'GHI Farm',
-        city: 'GHI',
-        contact: '789',
-      },
-      {
-        farmerimg: './farmer4.jpg',
-        name: 'IJK Farm',
-        city: 'IJK',
-        contact: '987',
-      },
-      {
-        farmerimg: './farmer5.jpg',
-        name: 'LMN Farms',
-        city: 'LMN',
-        contact: '654',
-      },
-      {
-        farmerimg: './farmer6.jpg',
-        name: 'OPQ Farms',
-        city: 'OPQ',
-        contact: '321',
-      },
-      {
-        farmerimg: './farmer7.jpg',
-        name: 'RST Farms',
-        city: 'RST',
-        contact: '147',
-      },
-      {
-        farmerimg: './farmer8.jpg',
-        name: 'UVW Farms',
-        city: 'UVW',
-        contact: '258',
-      },
-    ].map((x, i) => (
+  
+  
+  // const farm = () =>
+  //   [
+  //     {
+  //       farmerimg: './farmer1.jpg',
+  //       name: 'ABC Farm',
+  //       city: 'ABC',
+  //       contact: '123',
+  //     },
+  //     {
+  //       farmerimg: './farmer2.jpg',
+  //       name: 'DEF Farm',
+  //       city: 'DEF',
+  //       contact: '456',
+  //     },
+  //     {
+  //       farmerimg: './farmer3.jpg',
+  //       name: 'GHI Farm',
+  //       city: 'GHI',
+  //       contact: '789',
+  //     },
+  //     {
+  //       farmerimg: './farmer4.jpg',
+  //       name: 'IJK Farm',
+  //       city: 'IJK',
+  //       contact: '987',
+  //     },
+  //     {
+  //       farmerimg: './farmer5.jpg',
+  //       name: 'LMN Farms',
+  //       city: 'LMN',
+  //       contact: '654',
+  //     },
+  //     {
+  //       farmerimg: './farmer6.jpg',
+  //       name: 'OPQ Farms',
+  //       city: 'OPQ',
+  //       contact: '321',
+  //     },
+  //     {
+  //       farmerimg: './farmer7.jpg',
+  //       name: 'RST Farms',
+  //       city: 'RST',
+  //       contact: '147',
+  //     },
+  //     {
+  //       farmerimg: './farmer8.jpg',
+  //       name: 'UVW Farms',
+  //       city: 'UVW',
+  //       contact: '258',
+  //     },
+  //   ]
+    
+    const farm=()=>farmerInfo.map((x, i) => (
       // <div key="{i}" style={{  width: '20rem',margin:'10px', padding:'12px',border:'1px solid black'}}>
       //   <div style={{width:'15rem',height:'15rem'}}>
       //     <img  src={x.farmerimg} style={{width:'15rem',height:'15rem',border:'2px solid rgb(242,151,56)',aspectRatio:'1/1',float:'left'}}/>
@@ -189,25 +205,34 @@ export default function Farmers() {
       // </div>
       <div key={i} style={{marginLeft:'35px',width:'20rem'}}>
          <div>
-          <img  src={x.farmerimg} style={{width:'17rem',height:'15rem',border:'2px solid rgb(242,151,56)',aspectRatio:'1/1',float:'left'}}/>
+          <img  src={x.business_image} style={{width:'17rem',height:'15rem',border:'2px solid rgb(242,151,56)',aspectRatio:'1/1',float:'left'}}/>
         </div>
       
         
-        <div style={{color:'rgb(242,151,56)',fontWeight:'bold',fontSize:'25px',float:'left',width:'100%'}}>
-          <p style={{float:'left'}}>{x.name}</p>
+        <div style={{color:'rgb(242,151,56)',fontWeight:'bold',fontSize:'22px',float:'left',width:'100%'}}>
+          <p style={{float:'left'}}>{x.business_name}</p>
           </div>
           <div>
-          <div style={{float:'left',color:'rgb(35,109,115)',fontWeight:'bold',fontSize:'20px'}}>City:{x.city}</div>
-          <div style={{marginRight:'30%',float:'right',padding:'2px',width:'20px',maxHeight:'10px'}}><img src={globe}></img></div>
-        <div style={{float:'right',padding:'2px'}}><img src={insta}></img></div>
-        <div style={{float:'right',padding:'2px'}}><img src={fb}></img></div>
+          <div style={{float:'left',color:'rgb(35,109,115)',fontWeight:'bold',fontSize:'16px'}}>City:{x.business_city}</div>
+          <div style={{marginRight:'30%',float:'right',padding:'2px',width:'20px',maxHeight:'10px'}}>
+            <a href={`mailto:${x.business_email}`}><img alt="email" src={globe} style={{height:'20px',width:'20px'}}>
+
+            </img>
+            </a>
+            </div>
+        <div style={{float:'right',padding:'2px'}}>
+          <img src={insta} style={{height:'20px',width:'20px'}}></img>
+          </div>
+        <div style={{float:'right',padding:'2px'}}>
+          <img src={fb} style={{height:'20px',width:'20px'}}></img>
+          </div>
           </div> 
 
           
       </div>
       
     ));
-
+    console.log(farmerInfo);
 
   return (
     
