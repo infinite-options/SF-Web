@@ -89,6 +89,7 @@ export default function CheckoutRight() {
         border: '3px solid #136D74',
         borderRadius: '10px',
         margin: '10px',
+        maxWidth:'100%'
       }}
       // style={{ height: windowHeight - 95 }}
     >

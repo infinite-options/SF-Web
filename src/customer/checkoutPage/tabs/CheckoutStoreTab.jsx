@@ -168,31 +168,6 @@ function listItem(item) {
   );
 }
 
-// function useOutsideAlerter(ref) {
-//   useEffect(() => {
-//     /**
-//      * Alert if clicked on outside of element
-//      */
-//     function handleClickOutside(event) {
-//       if (
-//         ref.current &&
-//         !ref.current.contains(event.target) &&
-//         !ref.current.hidden
-//       ) {
-//         ref.current.hidden = true;
-//       }
-//     }
-
-//     // Bind the event listener
-//     document.addEventListener('mousedown', handleClickOutside);
-//     return () => {
-//       // Unbind the event listener on clean up
-//       document.removeEventListener('mousedown', handleClickOutside);
-//     };
-//   }, [ref]);
-// }
-
-
 // TEST: Order confirmation for completed purchase
 // TODO: Get Delivery and service fee from zone
 // TODO: Add button to get to tab 4 of left side
@@ -240,30 +215,6 @@ export default function CheckoutTab(props) {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [viewTermsAndConds, setViewTermsAndConds] = useState(false);
   const FavoritePost = []
-
-  // const [isLoginShown, setIsLoginShown] = useState(false); // checks if user is logged in
-  // const [isSignUpShown, setIsSignUpShown] = useState(false);
-
-
-  // const loginWrapperRef = useRef(null);
-  // useOutsideAlerter(loginWrapperRef, setIsLoginShown);
-  // const signupWrapperRef = useRef(null);
-  // useOutsideAlerter(signupWrapperRef, setIsSignUpShown);
-
-  // const loginClicked = () => {
-  //   setIsSignUpShown(false);
-  //   setIsLoginShown(!isLoginShown);
-  // };
-
-  // const signUpClicked = () => {
-  //   setIsLoginShown(false);
-  //   setIsSignUpShown(!isSignUpShown);
-  // };
-  
-  // const {
-  //   loggingIn, setLoggingIn,
-  //   signingUp, setSigningUp,
-  // } = useContext(storeContext);
 
   const {
     setPaymentProcessing,
@@ -452,7 +403,8 @@ export default function CheckoutTab(props) {
   }, [store.profile.zone, store.expectedDelivery]);
 
   function getItemsCart() {
-    var result = [];
+    //var result = [store.cartItems['310-000481']];
+    var result = []
     for (const itemId in store.cartItems) {
       result.push(store.cartItems[itemId]);
     }
@@ -1056,17 +1008,12 @@ export default function CheckoutTab(props) {
           size="small"
           variant="contained"
           color="primary"
-          onClick={ () => {setIsClickedLogin(!isClickedLogin)}} 
+          onClick={ () => {store.setIsCheckoutLogin(!store.isCheckoutLogin)}} 
         >
          Login
         </Button>
       
       </Box>  
-
-      <Box hidden = {isClickedLogin || (auth.isAuth)} >
-         <AdminLogin/> 
-        </Box> 
-
 
       <Box  hidden={(auth.isAuth)}  style = {{marginBottom:"1rem"}} >
       <p style={{ color: appColors.secondary, fontWeight: 500 , fontSize:12}}>
@@ -1077,16 +1024,14 @@ export default function CheckoutTab(props) {
           size="small"
           variant="contained"
           color="primary"
-          onClick={() => { setIsClickedSignUp(!isClickedSignUp)
+          onClick={() => { store.setIsCheckoutSignUp(!store.isCheckoutSignUp)
           }}
         >
         SignUp
         </Button>
       
       </Box> 
-      <Box hidden = {isClickedSignUp || (auth.isAuth)} >
-         <Signup/> 
-        </Box> 
+ 
       </Box> 
 
       {/* <Box  hidden={!(auth.isAuth)} style = {{marginBottom:"1rem"}}>

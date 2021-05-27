@@ -18,6 +18,10 @@ import axios from 'axios';
 import storeContext from '../storeContext';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import OrderConfirmation from '../checkoutPage/utils/OrderConfirmation';
+import AdminLogin from '../../auth/AdminLogin';
+import { AuthContext } from 'auth/AuthContext';
+import Signup from '../../auth/Signup';
+
 
 const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI + '';
 
@@ -38,6 +42,7 @@ function calTotal() {
 
 const ProductSelectionPage = (props) => {
   const store = useContext(storeContext);
+  const auth = useContext(AuthContext);
 
   const { checkingOut, setCheckingOut } = useContext(storeContext);
   const profile = store.profile;
@@ -85,6 +90,7 @@ const ProductSelectionPage = (props) => {
           setCategoriesClicked,
         }}
       >
+        <Box style ={{opacity: !store.isCheckoutLogin|| !store.isCheckoutSignUp  || auth.isAuth ? 1 : .6}} >
         <Grid container>
           <Grid
             item
@@ -92,7 +98,7 @@ const ProductSelectionPage = (props) => {
             style={{ display: 'flex', flexDirection: 'column' }}
           >
             <StoreFilter />
-            <Box hidden={store.orderConfirmation}>
+            <Box  hidden={store.orderConfirmation}>
               <DisplayProduce />
             </Box>
 
@@ -129,6 +135,15 @@ const ProductSelectionPage = (props) => {
             <CheckoutPage />
           </Drawer>
         </Hidden>
+        </Box>
+
+        <Box  position= 'absolute' left='40%' top='50%' hidden = {!(store.isCheckoutLogin) || (auth.isAuth)} >
+          <AdminLogin/> 
+          </Box> 
+
+          <Box  position= 'absolute' left='40%' top='50%' hidden = {!(store.isCheckoutSignUp) || (auth.isAuth)} >
+         <Signup/> 
+        </Box> 
         <Footer/>
       </ProdSelectContext.Provider>
     </Box>

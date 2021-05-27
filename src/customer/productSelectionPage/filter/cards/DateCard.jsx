@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
   card: {
     backgroundColor: props => props.clicked ? appColors.primary : '#e0e6e6',
     width: 75,
+    height: '4.5rem',
     borderRadius: 5,
     cursor: 'pointer',
   },
@@ -141,7 +142,7 @@ const DateCard = (props) => {
     );
     // store.setCartTotal(0);
     //store.setCartItems({});
-   localStorage.setItem('selectedDay', props.id);
+   //localStorage.setItem('selectedDay', props.id);
   }
 
   useEffect(() => {

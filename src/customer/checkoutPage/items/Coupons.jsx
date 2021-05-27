@@ -29,10 +29,11 @@ import {makeStyles} from '@material-ui/core/styles';
 //   }
 // }
 
+
 const useStyles = makeStyles((theme) => ({
   imageItem: {
 
-      marginRight:"6rem"
+     // marginBottom:"1rem"
 
     },
   }));
@@ -114,6 +115,7 @@ export default function Coupons(props) {
     setAvaiCouponData(availableCoupons);
     setUnavaiCouponData(unavailableCoupons);
   }, [props.subtotal]);
+
   const loadCoupons = () => {
     console.log('coupons fetched');
     const url =
@@ -193,7 +195,7 @@ export default function Coupons(props) {
       });
   };
 
-  useMemo(() => {
+  useEffect(() => {
     loadCoupons();
   }, [store.profile.email]);
 
@@ -247,7 +249,7 @@ export default function Coupons(props) {
    
 
     return (
-      <Box key={props.key} height="124px" mt={2} property="div" >
+      <Box key={props.key} height="124px" mt={2} property="div" marginBottom="2rem" >
         <Box
           onClick={onCouponClick}
           style={{
@@ -296,13 +298,15 @@ export default function Coupons(props) {
               Expires: {coupProps.expDate.getMonth() + 1}/
               {coupProps.expDate.getDate()}/{coupProps.expDate.getFullYear()}
             </Box>
-            <Box  fontSize="12px" hidden={coupProps.status === 'unavailable'}>
-               Applied
+            <Box  fontSize="12px" hidden={coupProps.status === 'unavailable'  || coupProps.status === 'selected' || coupProps.status !== 'available' }>
+                Eligible
             </Box>
-            <Box  fontSize="12px" hidden={coupProps.status !== 'unavailable'}>
+            <Box  fontSize="12px" hidden={coupProps.status === 'available' || coupProps.status === 'unavailable' || coupProps.status !== 'selected'}>
+                Applied
+            </Box>
+            <Box  fontSize="12px" hidden={coupProps.status === 'available' || coupProps.status === 'selected' || coupProps.status !== 'unavailable'}>
                Not Eligible
             </Box>
-    
           </Box>
         </Box>
       </Box>
@@ -373,10 +377,15 @@ export default function Coupons(props) {
             Coupons
           </Box>
           <Carousel
+            className = {classes.imageItem}
             showArrows = {true}
+            showIndicators = {true}
+            
             centerMode ={true}
+            swipeable = {true}
             centerSlidePercentage = {window.innerWidth < 1200 ?  window.innerWidth < 500 ? 100 : 30 : 60}
             width = "100%"
+             
           >
             {avaiCouponData.concat(unavaiCouponData).map(CreateCouponCard)}
           </Carousel>

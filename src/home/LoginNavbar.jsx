@@ -1,4 +1,4 @@
-import React, { useContext,useState  } from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 
@@ -13,9 +13,6 @@ import appColors from 'styles/AppColors';
 import MenuNavButton from '../utils/MenuNavButton';
 import { AuthContext } from '../auth/AuthContext';
 import sf from '../icon/sfnav.svg';
-import AuthUtils from '../utils/AuthUtils';
-import BusiApiReqs from '../utils/BusiApiReqs';
-import Cookies from 'js-cookie';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,19 +26,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function LandingNavBar({ ...props }) {
+export default function LoginNavBar({ ...props }) {
   const classes = useStyles();
   const auth = useContext(AuthContext);
   const history = useHistory();
-  const {profile} = useContext(AuthContext);
-
-  let [customerName,setCustomerName]=useState('');
-    const BusiMethods = new BusiApiReqs();
-    const AuthMethods = new AuthUtils();
-    AuthMethods.getProfile().then(response=>{
-      console.log((response.customer_first_name));
-      setCustomerName(response.customer_first_name);
-    });
 
   const badgeContent = parseInt(localStorage.getItem('cartTotal') || '0');
   console.log('badgeContent: ' + badgeContent);
@@ -64,18 +52,6 @@ export default function LandingNavBar({ ...props }) {
     localStorage.setItem('currentStorePage', 0);
     history.push('/store');
   }
-  const handleClickLogOut = () => {
-    
-    localStorage.removeItem('currentStorePage');
-    localStorage.removeItem('cartTotal');
-    localStorage.removeItem('cartItems');
-    Cookies.remove('login-session');
-    Cookies.remove('customer_uid');
-
-    auth.setIsAuth(false);
-    auth.setAuthLevel(0);
-    history.push('/');
-  };
 
   return (
     <div className={classes.root} style={{backgroundColor:'#2F787F'}}>
@@ -91,15 +67,9 @@ export default function LandingNavBar({ ...props }) {
 
         <Toolbar style={{backgroundColor:'#2F787F'}}>
         
-          <MenuNavButton style={{color:'white'}}/>
+          <MenuNavButton style={{border:'1px solid black',color:'white'}}/>
           
-          <Box flexGrow={1} >
-            <div style={{float:'center'}}>
-            
-            <img style={{}} src={sf}></img>
-            
-            </div>
-            </Box>
+          <Box flexGrow={1} ><div style={{left:'30%'}}><img style={{float:'center'}} src={sf}></img></div></Box>
           
           <Box hidden={auth.isAuth}>
           
@@ -121,42 +91,6 @@ export default function LandingNavBar({ ...props }) {
             >
               Login
             </Button>
-            
-          </Box>
-          <Box hidden={!auth.isAuth} style={{width:'18%'}}>
-
-          <div style={{width:'50%',float:'left'}} hidden={(window.width < 1024) ? true : false}>
-          <p style={{color:'white'}}>{customerName}</p>
-          </div>
-            
-            <div style={{width:'50%',float:'right'}}>  
-            {/* <Button
-                  className={classes.authButton}
-                  variant="contained"
-                  size="small"
-                  color="primary"
-                  style={{
-                    marginLeft: '2rem',
-                    height: '2rem',
-                    marginTop: '0.5rem',
-                    
-                  }}
-                  onClick={handleClickLogOut}
-                >
-                  Log Out
-                </Button> */}
-                <Button
-              className={classes.authButton}
-              variant="contained"
-              size="small"
-              color="primary"
-              onClick={handleClickLogOut}
-              style={{marginTop:'.5rem'}}
-            >
-              Logout
-            </Button>
-                </div>
-            
           </Box>
 
           <Box hidden={!(auth.isAuth || auth.isGuest)}>
