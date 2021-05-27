@@ -1,7 +1,7 @@
 export function onPurchaseComplete(props) {
   props.store.setCartItems({});
   props.store.setCartTotal(0);
-  props.store.setDayClicked('');
+  //props.store.setDayClicked('');
   props.store.setStartDeliveryDate('');
   props.store.setFarmsClicked(new Set());
   props.checkout.setPurchaseMade(props.checkout.purchaseMade + 1);

@@ -2,16 +2,13 @@ import React, { useEffect, useContext, useState } from 'react';
 import axios from 'axios';
 import appColors from '../../../styles/AppColors';
 import { makeStyles } from '@material-ui/core/styles';
-import { Box, Button, TextField, FormHelperText } from '@material-ui/core';
+import { Box, Button, FormHelperText } from '@material-ui/core';
 import storeContext from '../../storeContext';
 import MapComponent from '../../MapComponent';
 import SocialLogin from '../../../admin/SocialLogin';
 import CssTextField from '../../../utils/CssTextField';
 import AuthUtils from '../../../utils/AuthUtils';
-
 import { useConfirmation } from '../../../services/ConfirmationService';
-import DeliveryInfoTab from '../tabs/DeliveryInfoTab';
-import ProfileInfo from '../../Profile-Info/ProfileInfo';
 import checkoutContext from '../CheckoutContext';
 import { AuthContext } from '../../../auth/AuthContext';
 import { useHistory } from 'react-router';
@@ -109,7 +106,18 @@ const OrderConfirmation = (props) => {
         setPasswordErrorMessage('Your passwords do not match');
         isPasswordError = true;
       }
+      var count = 0;
 
+      //Minimum eight characters, at least one letter and one number:
+      count += password.length >= 8 && password.length <= 32 ? 1 : 0;
+      count += /[a-z]/.test(password) ? 1 : 0;
+      count += /[A-Z]/.test(password) ? 1 : 0;
+      count += /\d/.test(password) ? 1 : 0;
+      if (count < 4) {
+        setPasswordError('stronger');
+        setPasswordErrorMessage('Your password does not pass the criteria');
+        isPasswordError = true;
+      }
       if (isEmailError || isEmptyError || isPasswordError) {
         return;
       }
@@ -273,6 +281,10 @@ const OrderConfirmation = (props) => {
         })} */}
 
         <Box mb={0.5} />
+        <FormHelperText style={{ textAlign: 'center' }}>
+          Minimum eight and maximum thirty-two characters, at least one capital
+          letter and one number:
+        </FormHelperText>
         <Box mb={spacing || 1}>
           <CssTextField
             error={passwordError}
@@ -415,57 +427,57 @@ const OrderConfirmation = (props) => {
               out before 9am.
             </p>
           </div>
-          <Box
-            hidden={auth.isAuth}
-            style={{ marginBottom: '1rem', justifyContent: 'center' }}
-          >
-            <div>
-              <h2
+          <Box style={{ marginBottom: '1rem', justifyContent: 'center' }}>
+            {' '}
+            <Box hidden={auth.isAuth}>
+              <div>
+                <h2
+                  style={{
+                    textDecoration: 'underline',
+                    color: appColors.secondary,
+                  }}
+                >
+                  You are so close to unlocking the full potential of Serving
+                  Fresh
+                </h2>
+              </div>
+              <div
                 style={{
-                  textDecoration: 'underline',
-                  color: appColors.secondary,
+                  textAlign: 'center',
+                  alignItems: 'center',
+                  fontSize: '18px',
                 }}
               >
-                You are so close to unlocking the full potential of Serving
-                Fresh
-              </h2>
-            </div>
-            <div
-              style={{
-                textAlign: 'center',
-                alignItems: 'center',
-                fontSize: '18px',
-              }}
-            >
-              <p>Sign Up via Social Media</p>
-              <SocialLogin />
-              <p>
-                Or Create a password to make Login easier <br></br> keep track
-                of your purchases
-              </p>
-              <Box>
-                <form onSubmit={onSubmit}>
-                  {auth.isAuth ? authFields() : noAuthFields(2)}
-                </form>
+                <p>Sign Up via Social Media</p>
+                <SocialLogin />
+                <p>
+                  Or Create a password to make Login easier <br></br> keep track
+                  of your purchases
+                </p>
                 <Box>
-                  <Button
-                    href="/store"
-                    variant="contained"
-                    type="submit"
-                    style={{
-                      color: 'white',
-                      width: '300px',
-                      marginBottom: '5%',
-                      background: '#FF8500 0% 0% no-repeat padding-box',
-                      borderRadius: '14px',
-                      opacity: 1,
-                    }}
-                  >
-                    Skip and return to Home Page
-                  </Button>
+                  <form onSubmit={onSubmit}>
+                    {auth.isAuth ? authFields() : noAuthFields(2)}
+                  </form>
                 </Box>
-              </Box>
-            </div>
+              </div>
+            </Box>
+            <Box style={{ marginBottom: '1rem', alignContent: 'center' }}>
+              <Button
+                href="/store"
+                variant="contained"
+                type="submit"
+                style={{
+                  color: 'white',
+                  width: '300px',
+                  marginBottom: '5%',
+                  background: '#FF8500 0% 0% no-repeat padding-box',
+                  borderRadius: '14px',
+                  opacity: 1,
+                }}
+              >
+                Return to store
+              </Button>
+            </Box>
           </Box>
         </div>
       </div>

@@ -30,8 +30,8 @@ export default class AuthUtils {
       city: userInfo.city,
       state: userInfo.state,
       zip_code: userInfo.zip,
-      latitude: userInfo.latitude,
-      longitude: userInfo.longitude,
+      latitude: userInfo.latitude.toString(),
+      longitude: userInfo.longitude.toString(),
       referral_source: 'WEB',
       role: 'CUSTOMER',
       social: 'FALSE',
@@ -41,7 +41,9 @@ export default class AuthUtils {
       mobile_access_token: 'FALSE',
       mobile_refresh_token: 'FALSE',
     };
+    console.log('object', object);
     return await axios
+
       .post(process.env.REACT_APP_SERVER_BASE_URI + 'createAccount', object, {
         headers: {
           'Content-Type': 'text/plain',
