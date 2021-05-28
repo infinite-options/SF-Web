@@ -251,35 +251,6 @@ const OrderConfirmation = (props) => {
   const noAuthFields = (spacing) => {
     return (
       <>
-        {/* {PlainTextField({
-          value: userInfo.firstName,
-          name: 'firstName',
-          label: 'First Name',
-          spacing: spacing,
-        })}
-        {PlainTextField({
-          value: userInfo.lastName,
-          name: 'lastName',
-          label: 'Last Name',
-          spacing: spacing,
-        })}
-        {PlainTextField({
-          value: userInfo.phoneNum,
-          name: 'phoneNum',
-          label: 'Phone Number',
-          spacing: spacing,
-        })}
-        <FormHelperText error={true} style={{ textAlign: 'center' }}>
-          {emailErrorMessage}
-        </FormHelperText>
-        {PlainTextField({
-          error: emailError,
-          value: userInfo.email,
-          name: 'email',
-          label: 'Email',
-          spacing: spacing,
-        })} */}
-
         <Box mb={0.5} />
         <FormHelperText style={{ textAlign: 'center' }}>
           Minimum eight and maximum thirty-two characters, at least one capital
@@ -291,17 +262,10 @@ const OrderConfirmation = (props) => {
             label="Password"
             type="password"
             InputProps={{ disableUnderline: true }}
-            InputLabelProps={{
-              classes: {
-                root: classes.labelRoot,
-              },
-            }}
+            variant="outlined"
+            size="small"
             style={{
-              background: '#FFFFFF 0% 0% no-repeat padding-box',
-              border: '1px solid #00000028',
               width: '400px',
-              borderRadius: '18px',
-              opacity: 1,
             }}
             onChange={onPasswordChange}
           />
@@ -313,17 +277,10 @@ const OrderConfirmation = (props) => {
             label="Confirm Password"
             type="password"
             InputProps={{ disableUnderline: true }}
-            InputLabelProps={{
-              classes: {
-                root: classes.labelRoot,
-              },
-            }}
+            variant="outlined"
+            size="small"
             style={{
-              background: '#FFFFFF 0% 0% no-repeat padding-box',
-              border: '1px solid #00000028',
               width: '400px',
-              borderRadius: '18px',
-              opacity: 1,
             }}
             onChange={onPasswordChange}
           />
