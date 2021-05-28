@@ -398,7 +398,7 @@ const Landing = ({ ...props }) => {
           paddingRight: 0,
           backgroundSize: 'cover',
           backgroundImage: `url(${'fruits-and-vegetables2.png'})`,
-          overflow: 'hidden',
+          // overflow: 'hidden',
           width: '100%',
         }}
       >
@@ -438,6 +438,8 @@ const Landing = ({ ...props }) => {
                 width: '306px',
                 height: '306px',
                 marginTop: '160px',
+                marginBottom:'190px'
+                // paddingBottom:'250px'
                 //marginLeft: '800px',
               }}
             />
@@ -451,7 +453,7 @@ const Landing = ({ ...props }) => {
         style={{
           backgroundColor: 'rgb(251,132,0)',
           minHeight: '200px',
-          maxHeight: '300px',
+          // maxHeight: '300px',
         }}
       >
         {/* <ZipcodeSearch/> */}
@@ -463,6 +465,7 @@ const Landing = ({ ...props }) => {
             fontWeight: '700',
             marginLeft: '20px',
             marginBottom: '50px',
+            position:'relative'
           }}
         >
           Local produce delivered to your doorstep

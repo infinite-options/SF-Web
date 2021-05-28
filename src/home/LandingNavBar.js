@@ -94,14 +94,14 @@ export default function LandingNavBar({ ...props }) {
           <MenuNavButton style={{color:'white'}}/>
           
           <Box flexGrow={1} >
-            <div style={{float:'center'}}>
+            <div style={{marginRight:'50px',marginLeft:'150px'}}>
             
-            <img style={{}} src={sf}></img>
+            <img style={{marginRight:'50px',marginLeft:'150px'}} src={sf}></img>
             
             </div>
             </Box>
           
-          <Box hidden={auth.isAuth}>
+          <Box hidden={auth.isAuth} style={{width:'18%'}}>
           
             <Button
               className={classes.authButton}
