@@ -66,6 +66,10 @@ const ProductSelectionPage = (props) => {
     setFarmsClicked(store.farmsClicked);
   }, [store.farmsClicked]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+}, [!store.isCheckoutLogin, !store.isCheckoutSignUp ]);
+
   // this state will notify if one of the days is clicked or not
   const [categoriesClicked, setCategoriesClicked] = useState(new Set());
 
@@ -90,7 +94,7 @@ const ProductSelectionPage = (props) => {
           setCategoriesClicked,
         }}
       >
-        <Box style ={{opacity: !store.isCheckoutLogin|| !store.isCheckoutSignUp  || auth.isAuth ? 1 : .6}} >
+        <Box >
         <Grid container>
           <Grid
             item
@@ -137,11 +141,11 @@ const ProductSelectionPage = (props) => {
         </Hidden>
         </Box>
 
-        <Box  position= 'absolute' left='40%' top='50%' hidden = {!(store.isCheckoutLogin) || (auth.isAuth)} >
+        <Box  position= 'absolute' left='60%' top='15%' hidden = {!(store.isCheckoutLogin) || (auth.isAuth)} >
           <AdminLogin/> 
           </Box> 
 
-          <Box  position= 'absolute' left='40%' top='50%' hidden = {!(store.isCheckoutSignUp) || (auth.isAuth)} >
+          <Box  position= 'absolute' left='60%' top='15%' hidden = {!(store.isCheckoutSignUp) || (auth.isAuth)} >
          <Signup/> 
         </Box> 
         <Footer/>

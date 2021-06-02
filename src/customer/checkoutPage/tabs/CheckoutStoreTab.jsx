@@ -1034,53 +1034,10 @@ export default function CheckoutTab(props) {
  
       </Box> 
 
-      {/* <Box  hidden={!(auth.isAuth)} style = {{marginBottom:"1rem"}}>
-        <Button
-          className={classes.buttonCheckout}
-          size="small"
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            setLeftTabChosen(4);
-            setDetailsDisplayType(!detailsDisplayType)
-          }}
-        >
-          Click to pay with Stripe or PayPal on the Payments Details page
-        </Button>
-      </Box> */}
-
-
-      
     <Box hidden = {detailsDisplayType} marginBottom="2rem">
     
-
     <PaymentTab/>
 
-      {/* <Box marginBottom="1rem">
-            {PlainTextField({
-          value: userInfo.firstName,
-          name: 'firstName',
-          label: 'First Name',
-        })}
-        {PlainTextField({
-          value: userInfo.lastName,
-          name: 'lastName',
-          label: 'Last Name',
-        })}
-       {PlainTextField({
-       //   error: emailError,
-          value: userInfo.email,
-          name: 'email',
-          label: 'Email',
-       //   spacing: spacing,
-        })}
-        {PlainTextField({
-          value: userInfo.phoneNum,
-          name: 'phoneNum',
-          label: 'Phone Number',
-        })}
-
-      </Box> */}
       </Box> 
 
       <Box hidden={!(auth.isAuth)} mb={3} >
@@ -1157,31 +1114,6 @@ export default function CheckoutTab(props) {
       )}
       </Box>
 
-
-
-  
-
-
-       
-{/* 
-        <Box display="flex" my={2} flexDirection="column" px="2%">
-        <Button
-          className={classes.button}
-          size="small"
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            setLeftTabChosen(4);
-            setPaymentDisplayType(!paymentDisplayType)
-          }}
-        >
-          Click to pay with Stripe or PayPal on the Payments Details page
-        </Button>
-      </Box> */}
-{/* 
-      <Box hidden = {paymentDisplayType}>
-            <PaymentTab/>
-      </Box> */}
     </Box>
     
   );

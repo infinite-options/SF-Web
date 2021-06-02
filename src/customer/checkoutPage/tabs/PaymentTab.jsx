@@ -74,7 +74,7 @@ const useStyles = makeStyles({
   },
   showButton: {
     color: 'white',
-    width: '300px',
+    width: '20rem',
 
   },
   notify: {
@@ -270,9 +270,9 @@ const PaymentTab = () => {
   return (
     <>
     <Box
-      pt={3}
+  //    pt={3}
       // px={10}
-      className="responsive-payment-tab"
+   //   className="responsive-payment-tab"
     >
 
       {paymentProcessing && (
@@ -364,12 +364,9 @@ const PaymentTab = () => {
                 <Typography
                   className = {classes.termsAndConditions}
                 >
-                  I’ve read and accept
-                  the <a
-                      className = {classes.termsAndConditionsLink}
-                      onClick = {() => history.push('/terms-and-conditions')}
-                    >
-                      Terms and Conditions
+                  I’ve read and accept the
+                  <a className = {classes.termsAndConditionsLink}
+                    onClick = {() => history.push('/terms-and-conditions')}> Terms and Conditions
                     </a>
                 </Typography>
               </Box>

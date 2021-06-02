@@ -258,13 +258,13 @@ const StripeCheckout = (props) => {
       </Box>
 
       <Button
-        className={props.classes.buttonCheckout}
+       // className={props.classes.buttonCheckout}
         variant="contianed"
         size="small"
         color="paragraphText"
         onClick={onPay}
         disabled={processing}
-        style={{ marginBottom: '2rem' }}
+        style={{ marginBottom: '2rem', color: appColors.buttonText, width:"20rem",backgroundColor:"#ff8500", }}
       >
         Complete Payment with Stripe
       </Button>
