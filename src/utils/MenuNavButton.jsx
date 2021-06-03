@@ -13,6 +13,13 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import { makeStyles } from '@material-ui/core/styles';
 import appColors from '../styles/AppColors';
+import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
+import StorefrontIcon from '@material-ui/icons/Storefront';
+import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
+import MoneyOffOutlinedIcon from '@material-ui/icons/MoneyOffOutlined';
+import HistoryOutlinedIcon from '@material-ui/icons/HistoryOutlined';
+import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
+import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -74,7 +81,7 @@ function MenuListComposition(props) {
       case 'Rewards':
         history.push({
           pathname: '/store',
-          state: { leftTabChosen: 2 },
+          state: { rightTabChosen: 0  },
         });
         break;
       case 'Payment Details':
@@ -99,6 +106,10 @@ function MenuListComposition(props) {
         history.push({
           pathname: '/store',
           state: { rightTabChosen: 4 },
+        });
+      case 'home':
+          history.push({
+          pathname: '',
         });
         break;
       default:
@@ -153,7 +164,7 @@ function MenuListComposition(props) {
           aria-haspopup="true"
           onClick={handleToggle}
         >
-            <MenuIcon style={{color:"white",width:'54px',height:'54px'}} 
+            <MenuIcon style={{color:"white",width:'3rem',height:'3rem'}} 
               aria-hidden="false"
               aria-label = 'Menu list'
             />
@@ -173,7 +184,7 @@ function MenuListComposition(props) {
                   placement === 'bottom' ? 'center top' : 'center bottom',
               }}
             >
-              <Paper style={{ backgroundColor: appColors.componentBg }}>
+              <Paper style={{ backgroundColor: appColors.secondary }}>
                 <ClickAwayListener onClickAway={handleClose}>
                   <MenuList
                     autoFocusItem={open}
@@ -206,30 +217,121 @@ function MenuListComposition(props) {
                         handleMenuItem(e, 'Store');
                       }}
                     >
+                      <div style={{display:'flex'}}>
+                      <div>
+                      <StorefrontIcon
+                       fontSize="Medium"
+                       key={props.storePage || ''}
+                       aria-hidden="false"
+                       aria-label="Shopping cart"
+                       style={{ color: 'white' }}
+                      />
+                      </div>
+            
+                      <div style={{marginLeft:'1rem', fontSize:'18px', color:'white'}}>
                       Store
+                      </div>
+                      </div>
+                      
                     </MenuItem>
-                    <MenuItem
-                      disabled={isDisabled}
-                      onClick={(e) => {
-                        handleMenuItem(e, 'Profile Info');
-                      }}
-                    >
-                      Profile Info
-                    </MenuItem>
+                  
                     <MenuItem
                       disabled={isDisabled}
                       onClick={(e) => {
                         handleMenuItem(e, 'Rewards');
                       }}
                     >
-                      Rewards
+                      <div style={{display:'flex'}}>
+                      <div>
+                      <ShoppingCartOutlinedIcon
+                       fontSize="Medium"
+                       key={props.storePage || ''}
+                       aria-hidden="false"
+                       aria-label="Shopping cart"
+                       style={{ color: 'white' }}
+                      />
+                      </div>
+            
+                      <div style={{marginLeft:'1rem', fontSize:'18px', color:'white'}}>
+                      Cart
+                      </div>
+                      </div>
                     </MenuItem>
                     <MenuItem
+                      disabled={isDisabled}
+                      onClick={(e) => {
+                        handleMenuItem(e, 'History');
+                      }}
+                    >
+                           <div style={{display:'flex'}}>
+                      <div>
+                      <HistoryOutlinedIcon
+                       fontSize="Medium"
+                       key={props.storePage || ''}
+                       aria-hidden="false"
+                       aria-label="Shopping cart"
+                       style={{ color: 'white' }}
+                      />
+                      </div>
+            
+                      <div style={{marginLeft:'1rem', fontSize:'18px', color:'white'}}>
+                      History
+                      </div>
+                      </div>
+                    </MenuItem>
+
+                    <MenuItem
+                      disabled={isDisabled}
+                      onClick={(e) => {
+                        handleMenuItem(e, 'Refund');
+                      }}
+                    >
+                            <div style={{display:'flex'}}>
+                      <div>
+                      <MoneyOffOutlinedIcon
+                       fontSize="Medium"
+                       key={props.storePage || ''}
+                       aria-hidden="false"
+                       aria-label="Shopping cart"
+                       style={{ color: 'white' }}
+                      />
+                      </div>
+            
+                      <div style={{marginLeft:'1rem', fontSize:'18px', color:'white'}}>
+                      Refund
+                      </div>
+                      </div>
+                    </MenuItem>
+
+                    <MenuItem
+                      disabled={isDisabled}
+                      onClick={(e) => {
+                        handleMenuItem(e, 'Profile Info');
+                      }}
+                    >
+                      <div style={{display:'flex'}}>
+                      <div>
+                      <AccountCircleOutlinedIcon
+                       fontSize="Medium"
+                       key={props.storePage || ''}
+                       aria-hidden="false"
+                       aria-label="Shopping cart"
+                       style={{ color: 'white' }}
+                      />
+                      </div>
+            
+                      <div style={{marginLeft:'1rem', fontSize:'18px', color:'white'}}>
+                      Profile
+                      </div>
+                      </div>
+                    </MenuItem>
+                    {/* <MenuItem
                       disabled={isDisabled}
                       onClick={(e) => {
                         handleMenuItem(e, 'Payment Details');
                       }}
                     >
+                      
                       Payment Details
                     </MenuItem>
                     <MenuItem
@@ -238,32 +340,56 @@ function MenuListComposition(props) {
                         handleMenuItem(e, 'Checkout');
                       }}
                     >
+
                       Checkout
-                    </MenuItem>
-                    <MenuItem
-                      disabled={isDisabled}
-                      onClick={(e) => {
-                        handleMenuItem(e, 'History');
-                      }}
-                    >
-                      History
-                    </MenuItem>
-                    <MenuItem
-                      disabled={isDisabled}
-                      onClick={(e) => {
-                        handleMenuItem(e, 'Refund');
-                      }}
-                    >
-                      Refund
-                    </MenuItem>
+                    </MenuItem> */}
+                 
+                 
                     {auth.isAuth && (
                       <MenuItem
                         disabled={isDisabled}
                         onClick={handleClickLogOut}
                       >
-                        Logout
+                          <div style={{display:'flex'}}>
+                      <div>
+                      <ExitToAppOutlinedIcon
+                       fontSize="Medium"
+                       key={props.storePage || ''}
+                       aria-hidden="false"
+                       aria-label="Shopping cart"
+                       style={{ color: 'white' }}
+                      />
+                      </div>
+            
+                      <div style={{marginLeft:'1rem', fontSize:'18px', color:'white'}}>
+                      Logout
+                      </div>
+                      </div>
                       </MenuItem>
-                    )}
+                        )}
+                       <MenuItem
+                       disabled={isDisabled}
+                       onClick={(e) => {
+                         handleMenuItem(e, 'Home');
+                       }}
+                     >
+                       <div style={{display:'flex'}}>
+                       <div>
+                       <HomeOutlinedIcon
+                        fontSize="Medium"
+                        key={props.storePage || ''}
+                        aria-hidden="false"
+                        aria-label="Shopping cart"
+                        style={{ color: 'white' }}
+                       />
+                       </div>
+             
+                       <div style={{marginLeft:'1rem', fontSize:'18px', color:'white'}}>
+                       Return to Home
+                       </div>
+                       </div>
+                     </MenuItem>
+                  
                   </MenuList>
                 </ClickAwayListener>
               </Paper>

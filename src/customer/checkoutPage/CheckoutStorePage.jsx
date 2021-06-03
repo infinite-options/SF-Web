@@ -78,28 +78,6 @@ export default function CheckoutPage() {
 
           <CheckoutRight />
         </Elements>
-        {/* <Elements stripe={stripePromise}>
-          <LoadingOverlay
-            active={paymentProcessing}
-            spinner
-            text="Processing Payment"
-          />
-
-          <Box 
-          // display="flex"
-          className="checkout-container"
-          >
-            
-            <Box 
-            width="55%"
-            className="checkout-right"
-            >
-              <CheckoutRight />
-            </Box>
-           
-            
-          </Box>
-        </Elements> */}
       </CheckoutContext.Provider>
     </>
   );

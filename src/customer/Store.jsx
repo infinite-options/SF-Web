@@ -621,74 +621,13 @@ const Store = ({ ...props }) => {
           setIsCheckoutSignUp,
         }}
       >
-        <Box hidden={!(Auth.isAuth)}>
+        <Box >
         <StoreNavBar storePage={storePage} setStorePage={setStorePage} />
-        </Box>
-        <Box hidden={(Auth.isAuth)}>
-         <LandingNavBar 
-           isLoginShown={isLoginShown}
-           setIsLoginShown={setIsLoginShown}
-           isSignUpShown={isSignUpShown}
-           setIsSignUpShown={setIsSignUpShown} />
-
-          <Box display="flex" justifyContent="flex-end">
-            {/* Login Modal */}
-            <Box
-              position="absolute"
-              width="50%"
-              display="flex"
-              justifyContent="center"
-              zIndex={40}
-            >
-              <Box
-                ref={loginWrapperRef}
-                className={classes.authModal}
-                hidden={!isLoginShown}
-              >
-                <AdminLogin />
-              </Box>
-            </Box>
-
-            {/* Sign Up Modal */}
-            <Box display="flex" justifyContent="flex-end">
-              <Box
-                position="absolute"
-                width="50%"
-                display="flex"
-                justifyContent="center"
-                zIndex={4000}
-              >
-                <Box
-                  ref={signupWrapperRef}
-                  className={classes.authModal}
-                  hidden={!isSignUpShown}
-                >
-                  <Signup />
-                </Box>
-              </Box>
-            </Box>
-          </Box>
         </Box>
         {/* <Box hidden={storePage !== 0}> */}
         <ProductSelectionPage farms={farmsList} />
         {/* </Box> */}
       </storeContext.Provider>
-      {/* <StoreNavBar
-          storePage={storePage}
-          setStorePage={setStorePage}
-        />
-        <Box hidden={storePage !== 0}>
-          <Box 
-          // display="flex"
-            className="responsive-store"
-          >
-            <ProductSelectionPage farms={farmsList} />
-          </Box>
-        </Box>
-        <Box hidden={storePage !== 1}>
-          <CheckoutPage />
-        </Box>
-      </storeContext.Provider> */}
     </div>
   );
 };

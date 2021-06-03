@@ -19,7 +19,8 @@ import Cookies from 'js-cookie';
 import { useHistory } from 'react-router-dom';
 import { Pointer } from 'highcharts';
 import appColor from '../styles/AppColors';
-
+import AdminLogin from '../auth/AdminLogin';
+import Signup from '../auth/Signup';
 import useWindowsDimensions from './WindowDimensions';
 
 const useStyles = makeStyles((theme) => ({
@@ -144,27 +145,30 @@ export default function StoreNavBar(props) {
                 </Button>
               </Box>
             </Box>
-            {/* <Box hidden={auth.isAuth}>
+            <Box hidden={auth.isAuth} >
               <Button
                 className={classes.authButton}
                 variant="contained"
                 size="small"
                 color="primary"
-                //  onClick={signUpClicked}
+                onClick={() => { store.setIsCheckoutSignUp(!store.isCheckoutSignUp)
+                }}
               >
                 Sign Up
               </Button>
               <Button
-                style={{ marginLeft: '1rem' }}
+              //  style={{ marginLeft: '1rem' }}
                 className={classes.authButton}
                 variant="contained"
                 size="small"
                 color="primary"
-                //  onClick={loginClicked}
-              >
+                onClick={ () => {store.setIsCheckoutLogin(!store.isCheckoutLogin) 
+                 
+                }} 
+                >
                 Login
               </Button>
-            </Box> */}
+            </Box>
           </Box>
           <Box hidden = {store.orderConfirmation}>
           <IconButton

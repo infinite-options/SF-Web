@@ -33,7 +33,7 @@ import StripeElement from '../utils/StripeElement';
 
 import TermsAndConditions from './TermsAndConditions';
 import Cookies from "js-cookie";
-
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
 import DeliveryInfoTab from '../tabs/DeliveryInfoTab';
 import LocationSearchInput from '../../../utils/LocationSearchInput'
@@ -974,6 +974,15 @@ export default function CheckoutTab(props) {
         <Box>Taxes</Box>
         <Box flexGrow={1} />
         <Box>${tax.toFixed(2)}</Box>
+      </Box>
+      <Box display="flex" mb={1} mt={1} >
+        <Button variant="outlined" color="secondary" size="small">
+          Enter Ambassador Code
+        </Button>
+        <Button >
+          <InfoOutlinedIcon
+           style={{ color: appColors.secondary }}/>
+        </Button>
       </Box>
       <Box className={classes.section} fontWeight="bold" display="flex">
         <Box>Total</Box>
