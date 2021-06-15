@@ -14,13 +14,10 @@ function help () {
 	echo "'-v' or '--verbose' : Turn on verbose mode. If a package is in use, the location of use will be echoed to the command line"
 }
 
-if [[ "$1" == "--help" or "$1" == "-h" or "$1" == "--man" or "$1" == "-m" ]]; then
+if [[ "$1" == "--help" ]] || [[ "$1" == "-h" ]] || [[ "$1" == "--man" ]] || [[ "$1" == "-m" ]]; then
 	help
 fi
 
-function prune () {
-	
-}
 PARSING_DEPS="FALSE"
 CURR_KEY="None"
 CURR_LINE=0
