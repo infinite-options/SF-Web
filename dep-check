@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Bash script to warn users about unused dependencies
+
+PARSING_DEPS="FALSE"
+CURR_KEY="None"
+
+while read line
+do
+	REGEX_DEP_START='^\s*\"(.+)\":\s*'
+	REGEX_DEP_END='^\s*\}'
+
+	if [[ $line =~ $REGEX_DEP_START ]]; then
+		CURR_KEY=${BASH_REMATCH[1]}
+	fi
+	
+	if [[ "$PARSING_DEPS" == "TRUE" && $line =~ $REGEX_DEP_END ]]; then
+		PARSING_DEPS="FALSE"
+		echo "All dependencies have been searched."
+	elif [[ "$CURR_KEY" == "dependencies" ]]; then
+		PARSING_DEPS="TRUE"
+	elif [[ "$PARSING_DEPS" == "TRUE" ]]; then	
+		ret="$(grep -nr "$CURR_KEY" ./src)"
+		
+		if [[ "$1" == "-v" || "$1" == "--verbose" ]]; then
+
+			if [[ "$#" == "1" ]] || [[ "$#" == "2" && "$CURR_KEY" == "$2" ]]; then
+				echo "=============== Start of $CURR_KEY Check ================"
+				echo "$ret"
+				echo "=============== End of $CURR_KEY Check ================"
+
+			fi
+		fi
+
+		if [[ "$ret" == "" ]]; then
+			echo "$CURR_KEY not found in ./src"
+		fi
+	fi
+done < package.json
