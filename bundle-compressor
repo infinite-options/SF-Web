@@ -1,6 +1,16 @@
 #!/bin/bash
 
-# Bash script to warn users about unused dependencies
+# Purpose:
+# Bash script to warn users about unused dependencies.
+
+# Requirements for successful use:
+# 1. Ensure that the script is located in the same directory as the package.json.
+# 2. Ensure that the script exists one level above the "src" directory, i.e. if you were to execute an "ls" command, you would see "src/ bundle-compressor* package.json etc..."
+# 3. Set the script to be executable. To do this, run "chmod +x bundle-compressor"
+
+# How to use:
+# 1. Run "./bundle-compressor [options] [targets]" where the options are the optional flags, i.e. verbose mode and deletion mode, and the targets are optional targeted dependencies. E.g. if you wanted to check if "google-maps-react" is in use, you would perform "./bundle-compressor google-maps-react", and if you wanted it to be deleted if the package is not imported anywhere, then you would execute "./bundle-compressor --delete google-maps-react". By default, the script is run on all packages, with no options turned on, unless specified as above. If a package is found in the package.json, but not anywhere in the src code, then that package's name will be echoed to the screen. If you turned on deletion mode, then all packages not found will be removed from the package.json. If you turned on deletion mode and specified a target, then that target would be removed from the package.json if it is not imported anywhere. If you turn on verbose mode, then the script will show you where each package is imported, unless it is not imported anywhere, in which case it'll echo a blank line. If you turn on verbose mode and specify a target, it'll show you which files aren't in use, and it'll also show you where the target is used, unless of course it isn't in use, in which case again, a blank line is echoed.
+# 2. Execute "./bundle-compressor --help" for a quick summary of each flags for ease-of-use.
 
 if [[ "$#" > 2 ]]; then
 	echo "Error: bundle-compressor takes two command-line arguments. Try ./bundle-compressor --help. Exiting..."
