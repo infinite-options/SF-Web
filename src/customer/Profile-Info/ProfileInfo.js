@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
 import { AuthContext } from 'auth/AuthContext';
@@ -98,7 +98,6 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(3),
         width: '75%',
         height: '50px',
-        color: 'primary',
         background: '#e88330',
         color: 'white',
         borderRadius: '10px',
@@ -154,17 +153,17 @@ function ProfileInfo() {
         ),
         'GOOGLE': (
             <Box className = {classes.socialSigninWrapper}>
-                <img height = '60px' src = {GoogleSignin} />
+                <img height = '60px' src = {GoogleSignin} alt = {''} />
             </Box>
         ),
         'FACEBOOK': (
             <Box className = {classes.socialSigninWrapper}>
-                <img height = '60px' src = {FacebookSignin} />
+                <img height = '60px' src = {FacebookSignin} alt = {''} />
             </Box>
         ),
         'APPLE': (
             <Box className = {classes.socialSigninWrapper}>
-                <img height = '60px' src = {AppleSignin} />
+                <img height = '60px' src = {AppleSignin} alt = {''} />
             </Box>
         ),
     }
@@ -247,7 +246,7 @@ function ProfileInfo() {
     const onSubmit = (event) => {
         const AuthMethods = new AuthUtils();
 
-        if (newPassword != '' && newPassword == confirmedPassword) {
+        if (newPassword !== '' && newPassword === confirmedPassword) {
             const cred = {
                 customer_email: profile.email,
                 password: newPassword,
@@ -329,25 +328,25 @@ function ProfileInfo() {
                     <TextField
                         className = {classes.profileEditField}
                         variant = 'outlined'
-                        label = {profile.firstName == '' ? 'John' : profile.firstName}
+                        label = {profile.firstName === '' ? 'John' : profile.firstName}
                         disabled
                     />
                     <TextField
                         className = {classes.profileEditField}
                         variant = 'outlined'
-                        label = {profile.lastName == '' ? 'Doe' : profile.lastName}
+                        label = {profile.lastName === '' ? 'Doe' : profile.lastName}
                         disabled
                     />
                     <TextField
                         className = {classes.profileEditField}
                         variant = 'outlined'
-                        placeholder = {profile.phoneNum == '' ? '123-456-7891' : profile.phoneNum}
+                        placeholder = {profile.phoneNum === '' ? '123-456-7891' : profile.phoneNum}
                         onChange = {(event) => setProfile({...profile, phoneNum: event.target.value})}
                     />
                     <TextField
                         className = {classes.profileEditField}
                         variant = 'outlined'
-                        label = {profile.email == '' ? 'johndoe@example.com' : profile.email}
+                        label = {profile.email === '' ? 'johndoe@example.com' : profile.email}
                         disabled
                     />
 
@@ -357,7 +356,7 @@ function ProfileInfo() {
                         
                     }
 
-                    <Box hidden = {profile.socialMedia != 'NULL' || !resetPasswordClicked}>
+                    <Box hidden = {profile.socialMedia !== 'NULL' || !resetPasswordClicked}>
                         <TextField
                             className = {classes.profileEditField}
                             variant = 'outlined'
@@ -378,13 +377,13 @@ function ProfileInfo() {
                     <TextField
                         className = {classes.profileEditField}
                         variant = 'outlined'
-                        placeholder = {profile.address == '' ? 'Street Address' : profile.address}
+                        placeholder = {profile.address === '' ? 'Street Address' : profile.address}
                         onChange = {(event) => setProfile({...profile, address: event.target.value})}
                     />
                     <TextField
                         className = {classes.profileEditField}
                         variant = 'outlined'
-                        placeholder = {profile.unit == '' ? 'Appt number' : profile.unit}
+                        placeholder = {profile.unit === '' ? 'Appt number' : profile.unit}
                         onChange = {(event) => setProfile({...profile, unit: event.target.value})}
                     />
 
@@ -392,19 +391,19 @@ function ProfileInfo() {
                         <TextField
                             className = {classes.profileEditField}
                             variant = 'outlined'
-                            placeholder = {profile.city == '' ? 'City' : profile.city} style = {{marginRight: "30px"}}
+                            placeholder = {profile.city === '' ? 'City' : profile.city} style = {{marginRight: "30px"}}
                             onChange = {(event) => setProfile({...profile, city: event.target.value})}
                         />
                         <TextField
                             className = {classes.profileEditField}
                             variant = 'outlined'
-                            placeholder = {profile.state == '' ? 'State' : profile.state} style = {{marginRight: "30px"}}
+                            placeholder = {profile.state === '' ? 'State' : profile.state} style = {{marginRight: "30px"}}
                             onChange = {(event) => setProfile({...profile, state: event.target.value})}
                         />
                         <TextField
                             className = {classes.profileEditField}
                             variant = 'outlined'
-                            placeholder = {profile.zip == '' ? 'Zip Code' : profile.zip}
+                            placeholder = {profile.zip === '' ? 'Zip Code' : profile.zip}
                             onChange = {(event) => setProfile({...profile, zip: event.target.value})}
                         />
                     </Box>

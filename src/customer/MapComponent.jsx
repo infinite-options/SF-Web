@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import GoogleMapReact from 'google-map-react';
 import RoomOutlinedIcon from '@material-ui/icons/RoomOutlined';
-import googleMapReact from 'google-map-react';
-
-const google = window.google;
 
 const SomeReactComponent = ({ text }) => {
 
