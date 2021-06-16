@@ -6,9 +6,6 @@ import appColors from '../../../../styles/AppColors';
 import ProdSelectContext from '../../ProdSelectContext';
 import storeContext from '../../../storeContext';
 
-
-
-
 const useStyles = makeStyles((theme) => ({
   dateCardContainer: {
     justifyContent: 'center',
@@ -36,7 +33,6 @@ const useStyles = makeStyles((theme) => ({
     color: props => props.clicked ? 'white' : appColors.secondary,
     textAlign: 'center',
     fontSize: 16,
-    fontWeight:'bold'
   },
   time: {
     textAlign: 'center',
@@ -67,7 +63,7 @@ const DateCard = (props) => {
   const confirm = useConfirmation();
 
   const [showCard, setShowCard] = useState(
-    productSelect.farmsClicked.size == 0 ? true : false
+    productSelect.farmsClicked.size === 0 ? true : false
   );
 
   const cardClicked = () => {
@@ -84,7 +80,7 @@ const DateCard = (props) => {
         clearCartAndDay();
       }
     } else {
-      if (store.dayClicked != '' && store.cartTotal !== 0) {
+      if (store.dayClicked !== '' && store.cartTotal !== 0) {
         //displayDialog(changeDay);
        changeDay();
 
@@ -95,19 +91,19 @@ const DateCard = (props) => {
     }
   };
 
-  function displayDialog(action) {
-    confirm({
-      variant: 'danger',
-      catchOnCancel: true,
-      title: 'About to Clear Cart',
-      description:
-        'If you change or deselect your delivery day your cart will be cleared. Would you like to proceed?',
-    })
-      .then(() => {
-        action();
-      })
-      .catch(() => {});
-  }
+  // function displayDialog(action) {
+  //   confirm({
+  //     variant: 'danger',
+  //     catchOnCancel: true,
+  //     title: 'About to Clear Cart',
+  //     description:
+  //       'If you change or deselect your delivery day your cart will be cleared. Would you like to proceed?',
+  //   })
+  //     .then(() => {
+  //       action();
+  //     })
+  //     .catch(() => {});
+  // }
 
   function clearCartAndDay() {
     store.setExpectedDelivery('');
@@ -164,7 +160,7 @@ const DateCard = (props) => {
   
 
  useEffect(() => {
-   if (props.unq == 0){
+   if (props.unq === 0){
    console.log("---On mount once",props)
   cardClicked()
 }

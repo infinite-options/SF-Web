@@ -3,12 +3,9 @@ import ProdSelectContext from '../../ProdSelectContext';
 import appColors from '../../../../styles/AppColors';
 import iconSizes from '../../../../styles/IconSizes';
 import { Box } from '@material-ui/core';
-import FilterContext from '../FilterContext';
 import storeContext from '../../../storeContext';
-import { StrikethroughS } from '@material-ui/icons';
 
 function FarmCard(props) {
-  const filter = useContext(FilterContext);
   const productSelect = useContext(ProdSelectContext);
   const store = useContext(storeContext);
 

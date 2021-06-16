@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
 import ItemCategory from './ItemCategory';
-import FarmCategory from './Farm';
 import DaysCategory from './Days';
 import ItemStack from './itemStack';
 import appColors from '../../../styles/AppColors';
@@ -8,7 +7,6 @@ import { Box, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import storeContext from '../../storeContext';
-import ProdSelectContext from '../ProdSelectContext';
 import FilterContext from './FilterContext';
 
 const useStyles = makeStyles((theme) => ({
@@ -23,26 +21,6 @@ const useStyles = makeStyles((theme) => ({
    
     color: appColors.paragraphText,
     
-  },
-  deliveryDates: {
-    color: '#397D87',
-    fontWeight: 'bold',
-    fontSize: '14px',
-    textAlign: 'start',
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-  },
-
-  filterItemsGrid: {
-    display: 'flex',
-    justifyContent: "space-between",
-
-    [theme.breakpoints.up('sm')]: {
-      gridTemplateColumns: '1fr 1fr',
-    },
-    [theme.breakpoints.down('xs')]: {
-      gridTemplateColumns: '1fr',
-    },
   },
 
   deliveryDates: {
@@ -77,7 +55,6 @@ const useStyles = makeStyles((theme) => ({
 const StoreFilter = () => {
   const classes = useStyles();
   const store = useContext(storeContext);
-  const productSelect = useContext(ProdSelectContext);
 
   const [shownDays, setShownDays] = useState([]);
 
@@ -186,7 +163,7 @@ const StoreFilter = () => {
     // const deliveryDeadline = store.acceptDayHour[];
     const dayClickedArr = store.dayClicked.split('&');
     const dayUpper = dayClickedArr[2];
-    if (store.acceptDayHour[dayUpper] == undefined) {
+    if (store.acceptDayHour[dayUpper] === undefined) {
       return '';
     }
     const deadlineInfo = dayUpper ? store.acceptDayHour[dayUpper].split(' ') : '';
@@ -205,7 +182,7 @@ const StoreFilter = () => {
     ];
 
     for (const fullDay of fullDays) {
-      if (fullDay.substring(0, dayShortUpper.length).toUpperCase() == dayShortUpper) {
+      if (fullDay.substring(0, dayShortUpper.length).toUpperCase() === dayShortUpper) {
         day = fullDay;
       }
     }
