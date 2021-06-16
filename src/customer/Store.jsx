@@ -1,25 +1,17 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
-import axios from 'axios';
 import Cookies from 'universal-cookie';
 import StoreNavBar from './StoreNavBar';
 import { AuthContext } from '../auth/AuthContext';
 import storeContext from './storeContext';
 import { Box } from '@material-ui/core';
 
-import CheckoutPage from './checkoutPage';
 import ProductSelectionPage from './productSelectionPage';
 import AuthUtils from '../utils/AuthUtils';
 import BusiApiReqs from '../utils/BusiApiReqs';
-import LandingNavBar from '../home/LandingNavBar';
-import AdminLogin from '../auth/AdminLogin';
-import Signup from '../auth/Signup';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { set } from 'js-cookie';
-
-const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI;
 const cookies = new Cookies();
 
 const testDate = new Date();
@@ -136,7 +128,6 @@ const Store = ({ ...props }) => {
   const Auth = useContext(AuthContext);
   const location = useLocation();
   const history = useHistory();
-  const classes = useStyles();
   const [orderConfirmation, setOrderConfirmation] = useState(false);
   // const currenttime = setInterval(checkIfAccepting, 60000);
 
@@ -312,18 +303,18 @@ const Store = ({ ...props }) => {
     }
   }
 
-  const checkIfAccepting = () => {
-    const today = new Date();
-    const dayString =
-      months[today.getMonth()] +
-      '&' +
-      today.getDate() +
-      '&' +
-      months[today.getDay()] +
-      '&';
-    if (today) {
-    }
-  };
+  // const checkIfAccepting = () => {
+  //   const today = new Date();
+  //   const dayString =
+  //     months[today.getMonth()] +
+  //     '&' +
+  //     today.getDate() +
+  //     '&' +
+  //     months[today.getDay()] +
+  //     '&';
+  //   if (today) {
+  //   }
+  // };
 
   function loadBusinesses(busiRes, updatedProfile) {
     console.log('busiRes: ', busiRes);
