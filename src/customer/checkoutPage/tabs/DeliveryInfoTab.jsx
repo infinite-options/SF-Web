@@ -1,13 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
-  Paper,
   Box,
-  TextField,
-  Switch,
-  Button,
   FormHelperText,
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
@@ -16,7 +11,6 @@ import FindLongLatWithAddr from '../../../utils/FindLongLatWithAddr';
 import AuthUtils from '../../../utils/AuthUtils';
 import BusiApiReqs from '../../../utils/BusiApiReqs';
 import appColors from '../../../styles/AppColors';
-import Signup from '../../../auth/Signup';
 import { AuthContext } from '../../../auth/AuthContext';
 import StoreContext from '../../storeContext';
 import checkoutContext from '../CheckoutContext';
@@ -42,19 +36,15 @@ const useStyles = makeStyles({
 // DONE: don't allow to change email on social login, and change to existing mail
 // DONE check with Prashant: push notification endpoint
 export default function DeliveryInfoTab() {
-  const classes = useStyles();
   const store = useContext(StoreContext);
   const auth = useContext(AuthContext);
-  const history = useHistory();
   const confirm = useConfirmation();
   const AuthMethods = new AuthUtils();
-  const BusiApiMethods = new BusiApiReqs();
 
   // Setting so that the store context isn't constantly re-rendered
   const [userInfo, setUserInfo] = useState(store.profile);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [isPassFieldShown, setIsPassFieldShown] = useState(false);
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
 
   const [signUpErrorMessage, setSignUpErrorMessage] = useState('');
@@ -79,15 +69,11 @@ export default function DeliveryInfoTab() {
     setEmailErrorMessage('');
   }
 
-  const { paymentProcessing, setLeftTabChosen } = useContext(checkoutContext);
-
   useEffect(() => {
     if (store.profile !== {}) {
       setUserInfo(store.profile);
     }
   }, [store.profile]);
-
-  const [map, setMap] = React.useState(null);
 
   const { setProfile } = store;
 
@@ -132,18 +118,6 @@ export default function DeliveryInfoTab() {
         setPasswordErrorMessage('Your passwords do not match');
         isPasswordError = true;
       }
-      // var count = 0;
-
-      // // Minimum eight characters, at least one letter and one number:
-      // count += password.length >= 8 && password.length <= 32 ? 1 : 0;
-      // count += /[a-z]/.test(password) ? 1 : 0;
-      // count += /[A-Z]/.test(password) ? 1 : 0;
-      // count += /\d/.test(password) ? 1 : 0;
-      // if (count < 4) {
-      //   setPasswordError('stronger');
-      //   setPasswordErrorMessage('Your password does not pass the criteria');
-      //   isPasswordError = true;
-      // }
 
       if (isEmailError || isEmptyError || isPasswordError) {
         return;
@@ -203,64 +177,64 @@ export default function DeliveryInfoTab() {
     return emailExists;
   };
 
-  const onLoad = React.useCallback(function callback(map) {
-    const bounds = new window.google.maps.LatLngBounds();
-    map.fitBounds(bounds);
-    setMap(map);
-  }, []);
+  // const onLoad = React.useCallback(function callback(map) {
+  //   const bounds = new window.google.maps.LatLngBounds();
+  //   map.fitBounds(bounds);
+  //   setMap(map);
+  // }, []);
 
-  const onUnmount = React.useCallback(function callback(map) {
-    setMap(null);
-  }, []);
+  // const onUnmount = React.useCallback(function callback(map) {
+  //   setMap(null);
+  // }, []);
 
   // TEST: refresh on farms when address is validated
-  const onCheckAddressClicked = () => {
-    console.log('Verifying longitude and latitude from Delivery Info');
-    FindLongLatWithAddr(
-      userInfo.address,
-      userInfo.city,
-      userInfo.state,
-      userInfo.zip
-    ).then((res) => {
-      if (res.status === 'found') {
-        BusiApiMethods.getLocationBusinessIds(res.longitude, res.latitude).then(
-          (busiRes) => {
-            if (busiRes.result && busiRes.result.length > 0) {
-              if (busiRes.result[0].zone === store.profile.zone) {
-                updateProfile(false, res.latitude, res.longitude);
-              } else {
-                confirm({
-                  variant: 'danger',
-                  catchOnCancel: true,
-                  title: 'About to Clear Cart',
-                  description:
-                    "Thanks for updating your address. Please note if you click 'Yes' your cart will be cleared. Would you like to proceed?",
-                })
-                  .then(() => {
-                    updateProfile(true, res.latitude, res.longitude);
-                  })
-                  .catch(() => {});
-              }
-            } else {
-              confirm({
-                variant: 'danger',
-                catchOnCancel: true,
-                title: 'Address Notification',
-                description:
-                  "We're happy to save your address. But please note, we are current not delivering to this address. Would you like to proceed?",
-              })
-                .then(() => {
-                  updateProfile(true, res.latitude, res.longitude);
-                })
-                .catch(() => {});
-            }
-          }
-        );
-      } else {
-        createLocError('Sorry, we could not find this Address');
-      }
-    });
-  };
+  // const onCheckAddressClicked = () => {
+  //   console.log('Verifying longitude and latitude from Delivery Info');
+  //   FindLongLatWithAddr(
+  //     userInfo.address,
+  //     userInfo.city,
+  //     userInfo.state,
+  //     userInfo.zip
+  //   ).then((res) => {
+  //     if (res.status === 'found') {
+  //       BusiApiMethods.getLocationBusinessIds(res.longitude, res.latitude).then(
+  //         (busiRes) => {
+  //           if (busiRes.result && busiRes.result.length > 0) {
+  //             if (busiRes.result[0].zone === store.profile.zone) {
+  //               updateProfile(false, res.latitude, res.longitude);
+  //             } else {
+  //               confirm({
+  //                 variant: 'danger',
+  //                 catchOnCancel: true,
+  //                 title: 'About to Clear Cart',
+  //                 description:
+  //                   "Thanks for updating your address. Please note if you click 'Yes' your cart will be cleared. Would you like to proceed?",
+  //               })
+  //                 .then(() => {
+  //                   updateProfile(true, res.latitude, res.longitude);
+  //                 })
+  //                 .catch(() => {});
+  //             }
+  //           } else {
+  //             confirm({
+  //               variant: 'danger',
+  //               catchOnCancel: true,
+  //               title: 'Address Notification',
+  //               description:
+  //                 "We're happy to save your address. But please note, we are current not delivering to this address. Would you like to proceed?",
+  //             })
+  //               .then(() => {
+  //                 updateProfile(true, res.latitude, res.longitude);
+  //               })
+  //               .catch(() => {});
+  //           }
+  //         }
+  //       );
+  //     } else {
+  //       createLocError('Sorry, we could not find this Address');
+  //     }
+  //   });
+  // };
 
   // 1445 Koch Ln, San Jose, CA 95125
   function updateProfile(isZoneUpdated, lat, long) {
@@ -291,61 +265,61 @@ export default function DeliveryInfoTab() {
     setUserInfo({ ...userInfo, [name]: value });
   };
 
-  const onPasswordChange = (event) => {
-    const { name, value } = event.target;
-    setPasswordError('');
-    setConfirmPasswordError('');
-    setPasswordErrorMessage('');
-    if (name === 'confirm') {
-      setConfirmPassword(value);
-    } else {
-      setPassword(value);
-    }
-  };
+  // const onPasswordChange = (event) => {
+  //   const { name, value } = event.target;
+  //   setPasswordError('');
+  //   setConfirmPasswordError('');
+  //   setPasswordErrorMessage('');
+  //   if (name === 'confirm') {
+  //     setConfirmPassword(value);
+  //   } else {
+  //     setPassword(value);
+  //   }
+  // };
 
-  const onNotificationChange = (event) => {
-    const { checked } = event.target;
-    setUserInfo({
-      ...userInfo,
-      pushNotifications: checked,
-    });
-  };
+  // const onNotificationChange = (event) => {
+  //   const { checked } = event.target;
+  //   setUserInfo({
+  //     ...userInfo,
+  //     pushNotifications: checked,
+  //   });
+  // };
 
-  const onPasswordClick = (event) => {
-    const { name, value } = event.target;
+  // const onPasswordClick = (event) => {
+  //   const { name, value } = event.target;
 
-    if (!isPassFieldShown) setIsPassFieldShown(true);
-    if (isPassFieldShown && password === '') setIsPassFieldShown(false);
-    if (isPassFieldShown) {
-      setPasswordError('');
-      setConfirmPasswordError('');
-      setPasswordErrorMessage('');
+  //   if (!isPassFieldShown) setIsPassFieldShown(true);
+  //   if (isPassFieldShown && password === '') setIsPassFieldShown(false);
+  //   if (isPassFieldShown) {
+  //     setPasswordError('');
+  //     setConfirmPasswordError('');
+  //     setPasswordErrorMessage('');
 
-      if (password === '') {
-        setConfirmPassword('');
-        return;
-      }
+  //     if (password === '') {
+  //       setConfirmPassword('');
+  //       return;
+  //     }
 
-      if (password !== confirmPassword) {
-        setPasswordError('Not Equal');
-        setConfirmPasswordError('Not Equal');
-        setPasswordErrorMessage('These passwords do not match');
-        return;
-      }
+  //     if (password !== confirmPassword) {
+  //       setPasswordError('Not Equal');
+  //       setConfirmPasswordError('Not Equal');
+  //       setPasswordErrorMessage('These passwords do not match');
+  //       return;
+  //     }
 
-      AuthMethods.updatePassword({
-        customer_email: store.profile.email,
-        password: password,
-        customer_uid: '',
-      }).then((res) => {
-        if (res.code === 200) {
-          setConfirmPassword('');
-          setPassword('');
-          setIsPassFieldShown(false);
-        }
-      });
-    }
-  };
+  //     AuthMethods.updatePassword({
+  //       customer_email: store.profile.email,
+  //       password: password,
+  //       customer_uid: '',
+  //     }).then((res) => {
+  //       if (res.code === 200) {
+  //         setConfirmPassword('');
+  //         setPassword('');
+  //         setIsPassFieldShown(false);
+  //       }
+  //     });
+  //   }
+  // };
 
   useEffect(() => {
     setIsAddressConfirmed(

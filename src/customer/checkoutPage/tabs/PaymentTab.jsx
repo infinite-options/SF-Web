@@ -1,29 +1,21 @@
 import React, { useMemo, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
-import { loadStripe } from '@stripe/stripe-js';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, FormHelperText,  Typography } from '@material-ui/core';
-import clsx from 'clsx';
 import {useHistory} from 'react-router-dom';
 
 import appColors from '../../../styles/AppColors';
-import AuthUtils from '../../../utils/AuthUtils';
 import CssTextField from '../../../utils/CssTextField';
-import FindLongLatWithAddr from '../../../utils/FindLongLatWithAddr';
 import storeContext from '../../storeContext';
 import { AuthContext } from '../../../auth/AuthContext';
 import checkoutContext from '../CheckoutContext';
 import PayPal from '../utils/Paypal';
 import StripeElement from '../utils/StripeElement';
-import DeliveryInfoTab from '../tabs/DeliveryInfoTab';
 
 import Checkbox from '@material-ui/core/Checkbox';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-
-import TermsAndConditions from './TermsAndConditions';
 
 
 
@@ -104,23 +96,17 @@ const PaymentTab = () => {
   const [paymentType, setPaymentType] = useState('NONE');
   const { 
     profile,
-    cartItems,
-    setCartItems, 
-    startDeliveryDate, 
-    setCartTotal } = useContext(storeContext);
+  } = useContext(storeContext);
 
   const {
     paymentDetails,
     paymentProcessing,
-    setPaymentProcessing,
-    setLeftTabChosen,
     guestInfo,
     setGuestInfo,
   } = useContext(checkoutContext);
 
   const [userInfo, setUserInfo] = useState(store.profile);
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
-  const [ishidden, setIsHidden] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const [firstNameError, setFirstNameError] = useState('');
   const [lastNameError, setLastNameError] = useState('');
@@ -227,25 +213,6 @@ const PaymentTab = () => {
     );
   };
 
-  const SectionContent = (contentProps) => {
-    return auth.isAuth ? (
-      <Box className={classes.info}>{contentProps.text}</Box>
-    ) : (
-      <CssTextField
-        error={contentProps.error}
-        name={contentProps.name}
-        size="medium"
-        variant="standard"
-        fullWidth
-        onChange={onFieldChange}
-        style={{
-          marginLeft: '30px',
-          height: '18px',
-        }}
-      />
-    );
-  };
-
   const PlainTextField = (props) => {
     return (
       <Box mb={props.spacing || 1}>
@@ -323,11 +290,11 @@ const PaymentTab = () => {
           className={classes.info}
           textAlign="Left"
           hidden={
-            userInfo.address == '' &&
-            userInfo.unit == '' &&
-            userInfo.city == '' &&
-            userInfo.state == '' &&
-            userInfo.zip == ''
+            userInfo.address === '' &&
+            userInfo.unit === '' &&
+            userInfo.city === '' &&
+            userInfo.state === '' &&
+            userInfo.zip === ''
           }
         >
           {userInfo.address}

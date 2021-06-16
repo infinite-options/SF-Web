@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Button';
 import { useConfirmation } from '../../../services/ConfirmationService';
@@ -66,7 +65,6 @@ const useStyles = makeStyles({
 const RefundTab = () => {
   const { profile } = useContext(storeContext);
   const confirm = useConfirmation();
-  const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
   const [imageUpload, setImageUpload] = useState({
     file: null,
     path: blankImg,
