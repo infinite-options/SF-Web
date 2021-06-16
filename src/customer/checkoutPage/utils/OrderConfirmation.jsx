@@ -9,9 +9,7 @@ import SocialLogin from '../../../admin/SocialLogin';
 import CssTextField from '../../../utils/CssTextField';
 import AuthUtils from '../../../utils/AuthUtils';
 import { useConfirmation } from '../../../services/ConfirmationService';
-import checkoutContext from '../CheckoutContext';
 import { AuthContext } from '../../../auth/AuthContext';
-import { useHistory } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
   labelRoot: {
@@ -22,9 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 const OrderConfirmation = (props) => {
   const store = useContext(storeContext);
-  const checkout = useContext(checkoutContext);
   const auth = useContext(AuthContext);
-  const history = useHistory();
   const confirm = useConfirmation();
   const classes = useStyles();
   const AuthMethods = new AuthUtils();

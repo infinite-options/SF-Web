@@ -1,6 +1,5 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Box } from '@material-ui/core';
-import { Elements, CardElement, useStripe } from '@stripe/react-stripe-js';
+import React from 'react';
+import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import StripeCheckout from './StripeCheckout';
 

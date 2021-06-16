@@ -1,18 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import storeContext from '../../storeContext';
-import ProdSelectContext from '../ProdSelectContext';
-import { makeStyles } from '@material-ui/core/styles';
 // import daysInWeek from "../daysInWeek";
 import DateCard from './cards/DateCard';
 import FilterContext from './FilterContext';
-
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    fontSize: 10,
-  },
-}));
 
 // DONE: Add extra days for multiple times
 // TEST: If date is unselected, clear the cart and give warning
@@ -22,9 +12,7 @@ const DaysCategory = () => {
 
   const filter = useContext(FilterContext);
   const store = useContext(storeContext);
-  let keysRev = Object.keys(filter.shownDays).reverse()
-  let i = keysRev.length - 1
-  let tmp = []
+
   for (let [key, prop] of Object.entries(filter.shownDays)) {
     
     prop["unq"] = key

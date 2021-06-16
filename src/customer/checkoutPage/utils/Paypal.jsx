@@ -1,9 +1,8 @@
-import React, { useRef, useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import { PayPalButton } from 'react-paypal-button-v2';
 import { useHistory } from 'react-router-dom';
-import { useConfirmation } from '../../../services/ConfirmationService';
 import { onPurchaseComplete } from './onPurchaseComplete';
 import checkoutContext from '../CheckoutContext';
 import storeContext from '../../storeContext';
@@ -15,13 +14,9 @@ const PayPal = ({ value, deliveryInstructions }) => {
   const store = useContext(storeContext);
   const checkout = useContext(checkoutContext);
   const auth = useContext(AuthContext);
-  const confirm = useConfirmation();
   const history = useHistory();
-
-  const [loaded, setLoaded] = useState(false);
   const { paymentDetails, chosenCoupon } = useContext(checkoutContext);
   const { profile, startDeliveryDate, cartItems } = useContext(storeContext);
-  let paypalRef = useRef();
   //[{"qty": "3", "name": "Opo Gourd", "price": "0.5", "item_uid": "310-000087", "itm_business_uid": "200-000005"}]
 
   // DONE: Add unit (bunch), desc (cOrganic)

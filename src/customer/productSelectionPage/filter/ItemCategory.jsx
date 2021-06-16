@@ -1,13 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import ItemCategoryItem from './cards/ItemCategoryCard';
-
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    textAlign: 'center',
-    fontSize: 10,
-  },
-}));
 
 const createItemCategoryItem = (item) => {
   return (
@@ -24,9 +16,6 @@ const createItemCategoryItem = (item) => {
 };
 
 const ItemCategory = () => {
-  const classes = useStyles();
-
-
   const categories = [
    // {
     //   onAsset: '../../footer_icon/orangeFruit.png',

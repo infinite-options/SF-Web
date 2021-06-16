@@ -1,8 +1,7 @@
-import React, { useMemo, useContext, useState, useEffect } from 'react';
+import React, { useMemo, useContext, useState } from 'react';
 import { useElements, useStripe, CardElement } from '@stripe/react-stripe-js';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
-import Stripe from 'stripe';
 import { useHistory } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
@@ -16,8 +15,6 @@ import CssTextField from '../../../utils/CssTextField';
 import { AuthContext } from '../../../auth/AuthContext';
 import storeContext from '../../storeContext';
 import checkoutContext from '../CheckoutContext';
-import OrderConfirmation from './OrderConfirmation';
-import HistoryTab from '../tabs/HistoryTab';
 
 const cookies = new Cookies();
 const useOptions = () => {
@@ -49,19 +46,14 @@ const StripeCheckout = (props) => {
   const history = useHistory();
   const store = useContext(storeContext);
   const checkout = useContext(checkoutContext);
-  const confirm = useConfirmation();
-  const location = useLocation();
   const elements = useElements();
   const stripe = useStripe();
   const options = useOptions();
   const [processing, setProcessing] = useState(false);
   const {
     profile,
-    setProfile,
     cartItems,
-    setCartItems,
     startDeliveryDate,
-    setCartTotal,
   } = useContext(storeContext);
 
   const { paymentDetails, setPaymentProcessing, chosenCoupon } =
@@ -194,7 +186,7 @@ const StripeCheckout = (props) => {
       };
 
       console.log('purchase_Data_SF data', data);
-      let res = axios
+      axios
         .post(
           process.env.REACT_APP_SERVER_BASE_URI + 'purchase_Data_SF',
           data,

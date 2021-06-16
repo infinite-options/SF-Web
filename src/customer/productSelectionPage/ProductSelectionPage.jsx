@@ -7,23 +7,17 @@ import {
   Box,
   Badge,
   Grid,
-  Dialog,
-  Button,
   Hidden,
   IconButton,
   Drawer,
 } from '@material-ui/core';
 import ProdSelectContext from './ProdSelectContext';
-import axios from 'axios';
 import storeContext from '../storeContext';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import OrderConfirmation from '../checkoutPage/utils/OrderConfirmation';
 import AdminLogin from '../../auth/AdminLogin';
 import { AuthContext } from 'auth/AuthContext';
 import Signup from '../../auth/Signup';
-
-
-const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI + '';
 
 //this function calculate the number of items in the cart and set it to global hook context
 function calTotal() {
@@ -45,7 +39,6 @@ const ProductSelectionPage = (props) => {
   const auth = useContext(AuthContext);
 
   const { checkingOut, setCheckingOut } = useContext(storeContext);
-  const profile = store.profile;
 
   const [loggingIn, setLoggingIn] = React.useState(false);
   const [signingUp, setSigningUp] = React.useState(false);
