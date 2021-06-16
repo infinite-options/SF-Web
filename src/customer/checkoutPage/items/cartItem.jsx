@@ -1,6 +1,6 @@
 import React, { useState, useContext,useEffect } from 'react';
 import storeContext from '../../storeContext';
-import { Box, IconButton } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import appColors from '../../../styles/AppColors';
@@ -18,7 +18,7 @@ function CartItem(props) {
     if (props.id in store.cartItems) {
       const itemCount = store.cartItems[props.id]['count'];
       if (itemCount > 0) {
-        if (itemCount == 1) {
+        if (itemCount === 1) {
           let clone = Object.assign({}, store.cartItems);
           delete clone[props.id];
           store.setCartItems(clone);
@@ -65,7 +65,7 @@ function CartItem(props) {
     console.log("props name day",props.business_uid) 
 
    // for (const farm in props.itm_business_uid) {
-     if (store.farmDaytimeDict[props.business_uid] != undefined){
+     if (store.farmDaytimeDict[props.business_uid] !== undefined){
 
        store.farmDaytimeDict[props.business_uid].forEach((daytime) => {
          if (store.dayClicked === daytime)

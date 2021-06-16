@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import React, { useContext } from 'react';
 import clsx from 'clsx';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/styles';
 import appColors from '../../../styles/AppColors';
-import storeContext from '../../storeContext';
 import CartItem from './cartItem';
 
 const useStyles = makeStyles((theme) => ({
@@ -59,7 +57,6 @@ function listItem(item) {
 }
 
 const HistoryCard = (props) => {
-  const { profile } = useContext(storeContext);
   const classes = useStyles();
 
   return (

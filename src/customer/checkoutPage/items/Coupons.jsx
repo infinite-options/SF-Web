@@ -261,7 +261,7 @@ export default function Coupons(props) {
             backgroundSize: '100% 100%',
             backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',
-            cursor: coupProps.status != 'unavailable' ? 'pointer' : '',
+            cursor: coupProps.status !== 'unavailable' ? 'pointer' : '',
           }}
         >
           <Box display='flex' flexDirection="column"  alignItems='flex-start' justifyContent='center' marginLeft='2rem'>

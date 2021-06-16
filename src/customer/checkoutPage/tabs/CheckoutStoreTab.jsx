@@ -1,6 +1,5 @@
-import React, { useContext, useState, useEffect, useMemo,useRef } from 'react';
+import React, { useContext, useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import { useElements, CardElement } from '@stripe/react-stripe-js';
 import {useHistory} from 'react-router-dom';
 
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -12,16 +11,13 @@ import CartItem from '../items/cartItem';
 import storeContext from '../../storeContext';
 import checkoutContext from '../CheckoutContext';
 import PaymentTab from '../tabs/PaymentTab'
-import PlaceOrder from '../PlaceOrder';
 import Coupons from '../items/Coupons';
 import MapComponent from '../../MapComponent';
 import { AuthContext } from 'auth/AuthContext';
 import FindLongLatWithAddr from '../../../utils/FindLongLatWithAddr';
 import BusiApiReqs from '../../../utils/BusiApiReqs';
 import { useConfirmation } from '../../../services/ConfirmationService';
-import ProductSelectContext from '../../productSelectionPage/ProdSelectContext'
-import AdminLogin from '../../../auth/AdminLogin';
-import Signup from '../../../auth/Signup';
+
 
 import Checkbox from '@material-ui/core/Checkbox';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -31,13 +27,8 @@ import FormControl from '@material-ui/core/FormControl';
 import PayPal from '../utils/Paypal';
 import StripeElement from '../utils/StripeElement';
 
-import TermsAndConditions from './TermsAndConditions';
 import Cookies from "js-cookie";
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-
-import DeliveryInfoTab from '../tabs/DeliveryInfoTab';
-import LocationSearchInput from '../../../utils/LocationSearchInput'
-import { StreetviewTwoTone } from '@material-ui/icons';
 
 const BASE_URL = process.env.REACT_APP_SERVER_BASE_URI;
 
@@ -178,25 +169,18 @@ export default function CheckoutTab(props) {
   const store = useContext(storeContext);
   const auth = useContext(AuthContext);
   const checkout = useContext(checkoutContext);
-  const productSelect = useContext(ProductSelectContext);
 
   const confirm = useConfirmation();
   const BusiApiMethods = new BusiApiReqs();
-
-  const [isInDay, setIsInDay] = useState(false);
-  const [map, setMap] = React.useState(null);
 
   // cartItems is a dictonary, need to convert it into an array
   const [cartItems, setCartItems] = useState(getItemsCart());
   // Retrieve items from store context
   const [userInfo, setUserInfo] = useState(store.profile);
 
-  const [detailsDisplayType, setDetailsDisplayType] = useState(true); 
-  const [paymentDisplayType, setPaymentDisplayType] = useState(true); 
+  const [detailsDisplayType, setDetailsDisplayType] = useState(true);
   const [isAddressConfirmed, setIsAddressConfirmed] = useState(true);
   const [addressDisplayType, setAddressDisplayType] = useState(true);
-  const [isClickedLogin , setIsClickedLogin] = useState(true);
-  const [isClickedSignUp , setIsClickedSignUp] = useState(true);
 
   const [errorMessage, setErrorMessage] = useState('');
   const [firstNameError, setFirstNameError] = useState('');
@@ -213,12 +197,9 @@ export default function CheckoutTab(props) {
   const [paymentType, setPaymentType] = useState('NONE');
 
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [viewTermsAndConds, setViewTermsAndConds] = useState(false);
   const FavoritePost = []
 
   const {
-    setPaymentProcessing,
-    setLeftTabChosen,
     paymentDetails,
     setPaymentDetails,
     
@@ -228,14 +209,16 @@ export default function CheckoutTab(props) {
     var result = 0;
     for (const item of items) {
       let isInDay = false;
-      if (store.farmDaytimeDict[item.business_uid] != undefined){
+      if (store.farmDaytimeDict[item.business_uid] !== undefined){
         store.farmDaytimeDict[item.business_uid].forEach((daytime) => {
           if (store.dayClicked === daytime)
             isInDay = true;
         }
       );
     } 
-        isInDay ? result += item.count * item.price :result = result;
+      if (isInDay) {
+        result += item.count * item.price;
+      }
   }
     return result;
   }
@@ -330,13 +313,6 @@ export default function CheckoutTab(props) {
     setUserInfo({ ...userInfo, [name]: value });
   };
 
-  const onFieldGuestChange = (event) => {
-    if (errorMessage !== '') resetError();
-    const { name, value } = event.target;
-    if (value === '') setPaymentType('NONE');
-    setGuestInfo({ ...guestInfo, [name]: value });
-  };
-
   function resetError() {
     setFirstNameError('');
     setLastNameError('');
@@ -356,15 +332,7 @@ export default function CheckoutTab(props) {
   }, [store.cartItems]);
   
   //console.log("this is lat and long", userInfo.latitude, userInfo.longitude)
-  var days = [
-    'SUNDAY',
-    'MONDAY',
-    'TUESDAY',
-    'WEDNESDAY',
-    'THURSDAY',
-    'FRIDAY',
-    'SATURDAY',
-  ];
+
   // TODO: Fee based on expected delivery day
   const loadFees = async () => {
     if (store.expectedDelivery !== '') {
@@ -545,7 +513,7 @@ export default function CheckoutTab(props) {
     
   const postRequest = async() => {
     try{
-    const response = await axios.post(BASE_URL + 'favorite_produce/post', reqBodyPost)
+      await axios.post(BASE_URL + 'favorite_produce/post', reqBodyPost)
       }catch(err) {
         console.log(err.response || err);
       }
@@ -606,8 +574,6 @@ export default function CheckoutTab(props) {
 
   return (
     <Box className="responsive-checkout-tab" display="flex" flexDirection="column">
-      {/* START: Expected Delivery */}
-      <TermsAndConditions opened = {viewTermsAndConds} />
 
       <Box hidden={store.expectedDelivery !== ''} m={2} />
       <Box hidden={store.expectedDelivery === ''}>
@@ -637,11 +603,11 @@ export default function CheckoutTab(props) {
       <Box hidden={!(addressDisplayType) || !(auth.isAuth)}>
         <Box fontSize="14px" fontWeight='bold' marginBottom="1rem" className={classes.info} textAlign="Left"
           hidden={
-            userInfo.address == '' &&
-            userInfo.unit == '' &&
-            userInfo.city == '' &&
-            userInfo.state == '' &&
-            userInfo.zip == ''
+            userInfo.address === '' &&
+            userInfo.unit === '' &&
+            userInfo.city === '' &&
+            userInfo.state === '' &&
+            userInfo.zip === ''
           }
         >
           {userInfo.address}
