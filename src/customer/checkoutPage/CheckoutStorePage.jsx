@@ -1,10 +1,9 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import LoadingOverlay from 'react-loading-overlay';
 
-import { Box } from '@material-ui/core';
 import CheckoutRight from './CheckoutStoreRight';
 import CheckoutContext from './CheckoutContext';
-import { Elements, CardElement, useStripe } from '@stripe/react-stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 // import storeContext from "customer/storeContext";
 // import axios from "axios";

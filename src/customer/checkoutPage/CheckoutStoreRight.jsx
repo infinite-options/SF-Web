@@ -70,16 +70,16 @@ export default function CheckoutRight() {
     setRightTabChosen(newValue);
   };
 
-  const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
+  // const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
 
-  React.useEffect(() => {
-    window.addEventListener('resize', updateWindowHeight);
-    return () => window.removeEventListener('resize', updateWindowHeight);
-  });
+  // React.useEffect(() => {
+  //   window.addEventListener('resize', updateWindowHeight);
+  //   return () => window.removeEventListener('resize', updateWindowHeight);
+  // });
 
-  const updateWindowHeight = () => {
-    setWindowHeight(window.innerHeight);
-  };
+  // const updateWindowHeight = () => {
+  //   setWindowHeight(window.innerHeight);
+  // };
 
   return (
     <Paper

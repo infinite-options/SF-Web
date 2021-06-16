@@ -16,7 +16,6 @@ export default function PlaceOrder(paymentType, paymentInfo) {
     delivery_email: paymentInfo.email,
     delivery_address: paymentInfo.address,
     delivery_unit: paymentInfo.unit,
-    delivery_unit: paymentInfo.unit,
     delivery_city: paymentInfo.city,
     delivery_state: paymentInfo.state,
     delivery_zip: paymentInfo.zip,
