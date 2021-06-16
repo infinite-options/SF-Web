@@ -1,6 +1,4 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import StorefrontIcon from '@material-ui/icons/Storefront';
 
@@ -9,18 +7,12 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import storeContext from './storeContext';
 import { Box, Badge, IconButton, Button } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
 
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import appColors from 'styles/AppColors';
 import MenuNavButton from '../utils/MenuNavButton';
 import { AuthContext } from 'auth/AuthContext';
 import Cookies from 'js-cookie';
 import { useHistory } from 'react-router-dom';
-import { Pointer } from 'highcharts';
-import appColor from '../styles/AppColors';
-import AdminLogin from '../auth/AdminLogin';
-import Signup from '../auth/Signup';
 import useWindowsDimensions from './WindowDimensions';
 
 const useStyles = makeStyles((theme) => ({
@@ -58,15 +50,15 @@ export default function StoreNavBar(props) {
     }
   }, [store.profile]);
 
-  function handleStoreClick() {
-    if (props.storePage === 1) props.setStorePage(0);
-  }
-  const handleCartClick = () => {
-    if (props.storePage === 0) props.setStorePage(1);
-    store.setCartClicked((prev) => {
-      return prev + 1;
-    });
-  };
+  // function handleStoreClick() {
+  //   if (props.storePage === 1) props.setStorePage(0);
+  // }
+  // const handleCartClick = () => {
+  //   if (props.storePage === 0) props.setStorePage(1);
+  //   store.setCartClicked((prev) => {
+  //     return prev + 1;
+  //   });
+  // };
 
   const Logoclick = () => {
     window.location.href = `${window.location.origin.toString()}/`;
