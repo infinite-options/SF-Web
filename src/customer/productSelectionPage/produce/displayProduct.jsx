@@ -4,19 +4,12 @@ import ProdSelectContext from '../ProdSelectContext';
 import storeContext from '../../storeContext';
 import {
   Box,
-  Button,
-  ButtonBase,
-  Grid,
   Paper,
   Typography,
 } from '@material-ui/core';
 import appColors from '../../../styles/AppColors';
-import { set } from 'js-cookie';
 import { createMuiTheme, makeStyles } from '@material-ui/core/styles';
-import ItemCategory from '../filter/ItemCategory';
-import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import GridList from '@material-ui/core/GridList';
 
 const theme2 = createMuiTheme({
   breakpoints: {
@@ -71,25 +64,25 @@ console.log('Theme2 = ', theme2.breakpoints);
 //   },
 // }));
 
-var responsive = {
-  superLargeDesktop: {
-    // the naming can be any, depends on you.
-    breakpoint: { max: 40, min: 3000 },
-    items: 5
-  },
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 5
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 7
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1
-  }
-};
+// var responsive = {
+//   superLargeDesktop: {
+//     // the naming can be any, depends on you.
+//     breakpoint: { max: 40, min: 3000 },
+//     items: 5
+//   },
+//   desktop: {
+//     breakpoint: { max: 3000, min: 1024 },
+//     items: 5
+//   },
+//   tablet: {
+//     breakpoint: { max: 1024, min: 464 },
+//     items: 7
+//   },
+//   mobile: {
+//     breakpoint: { max: 464, min: 0 },
+//     items: 1
+//   }
+// };
 
 // const responsive = {
 //   desktop: {
@@ -253,17 +246,17 @@ function DisplayProduct() {
     store.cartTotal,
   ]);
 
-  function handleClickOther() {
-    setOtherDisplayType(!OtherDisplayType);
-  }
+  // function handleClickOther() {
+  //   setOtherDisplayType(!OtherDisplayType);
+  // }
 
-  function handleClickFruit() {
-    setFruitDisplayType(!FruitDisplayType);
-  }
+  // function handleClickFruit() {
+  //   setFruitDisplayType(!FruitDisplayType);
+  // }
 
-  function handleClickVegetable() {
-    setVegetableDisplayType(!VegetableDisplayType);
-  }
+  // function handleClickVegetable() {
+  //   setVegetableDisplayType(!VegetableDisplayType);
+  // }
 
   if (!store.productsLoading && !productSelect.itemError) {
     return (
